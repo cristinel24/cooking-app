@@ -1,3 +1,4 @@
+from pprint import pprint
 
 if __name__ == '__main__':
     test_dict: dict = {
@@ -24,4 +25,4 @@ if __name__ == '__main__':
         }
     }
 
-    print(test_dict)
+    pprint(test_dict)

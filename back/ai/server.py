@@ -1,4 +1,11 @@
 from flask import Flask
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+FLASK_PORT = int(os.getenv('FLASK_PORT', '5000'))
+DEBUG_MODE = bool(os.getenv('DEBUG_MODE', 'False'))
 
 app = Flask(__name__)
 
@@ -14,4 +21,4 @@ def get_heartbeat():
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=FLASK_PORT, debug=DEBUG_MODE)

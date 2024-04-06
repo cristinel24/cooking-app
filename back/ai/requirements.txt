@@ -1,2 +1,5 @@
-Flask~=3.0.2
-python-dotenv~=1.0.1
+fastapi
+uvicorn
+python-dotenv
+asyncio
+openai

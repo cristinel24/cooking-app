@@ -1,24 +1,28 @@
-from flask import Flask
-from dotenv import load_dotenv
+import asyncio
 import os
+from fastapi import FastAPI
+from dotenv import load_dotenv
+from processor import gepeto
 
 load_dotenv()
 
-FLASK_PORT = int(os.getenv('FLASK_PORT', '5000'))
-DEBUG_MODE = bool(os.getenv('DEBUG_MODE', 'False'))
+PORT = int(os.getenv('PORT', '8000'))
 
-app = Flask(__name__)
-
-
-@app.get('/')
-def get_root():
-    return 'Request on root route!'
+app = FastAPI()
 
 
-@app.get('/heartbeat')
-def get_heartbeat():
-    return 'Alive!'
+@app.post('/tokenize/recipe/{id}', summary="", description="")
+async def tokenize_recipe():
+
+    return {'message': 'Request on root route!'}
+
+
+@app.get("/gpt/{query}")
+async def test(query):
+    return await gepeto(query)
 
 
 if __name__ == '__main__':
-    app.run(port=FLASK_PORT, debug=DEBUG_MODE)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=PORT)
+

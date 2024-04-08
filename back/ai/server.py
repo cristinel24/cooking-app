@@ -2,7 +2,7 @@ import asyncio
 import os
 from fastapi import FastAPI
 from dotenv import load_dotenv
-from processor import gepeto
+import processor
 
 load_dotenv()
 
@@ -13,13 +13,12 @@ app = FastAPI()
 
 @app.post('/tokenize/recipe/{id}', summary="", description="")
 async def tokenize_recipe():
-
     return {'message': 'Request on root route!'}
 
 
 @app.get("/gpt/{query}")
-async def test(query):
-    return await gepeto(query)
+async def tokenize_user_query(query):
+    return await processor.verify_generated_tokens(query, await processor.tokenize_user_query(query))
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-package com.b1.ip.app;
+package cooking_app;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class CookingAppSystemApplication {
+public class CookingAppMain {
     public static void main(String[] args) {
-        SpringApplication.run(CookingAppSystemApplication.class, args);
+        SpringApplication.run(CookingAppMain.class, args);
     }
 
     @Bean

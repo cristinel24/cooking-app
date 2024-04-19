@@ -4,6 +4,8 @@ from openai import AsyncOpenAI
 from pprint import pprint
 from dotenv import load_dotenv
 
+from utils import constants
+
 from dataclasses import dataclass
 
 load_dotenv()

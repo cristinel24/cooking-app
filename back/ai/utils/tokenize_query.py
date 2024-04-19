@@ -33,16 +33,16 @@ async def tokenize_user_query(query: str) -> str:
 
 
 async def verify_generated_tokens(original_prompt: str, generated_response: str) -> dict:
-    verification_header = f'''Din urmatorul TEXT:
+    verification_header = f"""Din urmatorul TEXT:
     
-    TEXT = '{generated_response}'
+    TEXT = "{generated_response}"
     
-    Daca nu este JSON, returneaza cuvantul 'None'
+    Daca nu este JSON, returneaza cuvantul "None"
     Daca este JSON, elimina toate tag-urile care nu au DELOC LEGATURA CU DOMENIUL CULINAR.
     Apoi, elimina toate tag-urile care nu au DELOC LEGATURA cu urmatorul INPUT:
     
-    INPUT = '{original_prompt}'
-    '''
+    INPUT = "{original_prompt}"
+    """
     chat_completion = await client.chat.completions.create(
         messages=[
             {
@@ -55,9 +55,9 @@ async def verify_generated_tokens(original_prompt: str, generated_response: str)
     try:
         dictionary = ast.literal_eval(chat_completion.choices[0].message.content)
     except (SyntaxError, ValueError, OverflowError):
-        return {'eroare': 'nu este dictionar'}
+        return {"eroare": "nu este dictionar"}
 
     if not isinstance(dictionary, dict):
-        return {'eroare': 'nu este dictionar'}
+        return {"eroare": "nu este dictionar"}
 
     return dictionary

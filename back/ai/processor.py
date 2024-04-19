@@ -11,7 +11,7 @@ load_dotenv()
 
 
 client = AsyncOpenAI(
-    api_key=str(os.getenv('AI_API_KEY', '')),
+    api_key=str(os.getenv("AI_API_KEY", "")),
 )
 
 

@@ -2,8 +2,6 @@ import os
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
-
 
 def singleton(cls):
     instances = {}
@@ -19,7 +17,7 @@ def singleton(cls):
 class DBWrapper:
 
     def __init__(self):
-        self._connection = MongoClient(MONGO_URI)
+        self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
 
     @property
     def _admin_database(self):

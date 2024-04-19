@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
+
 from utils import tokenize_query
 
 load_dotenv()
@@ -10,12 +11,12 @@ PORT = int(os.getenv("PORT", "8000"))
 app = FastAPI()
 
 
-@app.post("/tokenize/recipe/{id}", summary="", description="")
+@app.post("/tokenize/recipe", summary="", description="")
 async def tokenize_recipe():
     return {"message": "Request on root route!"}
 
 
-@app.get("/gpt/{query}")
+@app.get("/tokenize/user_query/{query}")
 async def tokenize_user_query(query):
     return await tokenize_query.verify_generated_tokens(query, await tokenize_query.tokenize_user_query(query))
 

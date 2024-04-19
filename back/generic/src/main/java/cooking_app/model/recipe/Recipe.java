@@ -2,14 +2,22 @@ package cooking_app.model.recipe;
 
 import cooking_app.model.common.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.*;
 
 @Getter @Setter
+@NoArgsConstructor
 public class Recipe {
     // Nu se schimba ever
+    @Id
+    @Indexed(unique = true)
     private int recipeId;
+
+    @Indexed(unique = true)
     private int authorId;
 
     private String title;

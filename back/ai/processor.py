@@ -1,11 +1,6 @@
-import ast
-import asyncio
 import os
-from openai import AsyncOpenAI
-from pprint import pprint
 from dotenv import load_dotenv
-
-from dataclasses import dataclass
+from openai import AsyncOpenAI
 
 load_dotenv()
 

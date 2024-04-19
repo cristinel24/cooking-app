@@ -1,12 +1,6 @@
 import ast
-import asyncio
-import os
-from openai import AsyncOpenAI
-from pprint import pprint
-from dotenv import load_dotenv
-from processor import client
 
-from dataclasses import dataclass
+from processor import client
 
 
 async def tokenize_user_query(query: str) -> str:

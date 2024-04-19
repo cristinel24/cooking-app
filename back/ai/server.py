@@ -1,8 +1,6 @@
-import asyncio
 import os
-from fastapi import FastAPI
 from dotenv import load_dotenv
-import processor
+from fastapi import FastAPI
 from utils import tokenize_query
 
 load_dotenv()

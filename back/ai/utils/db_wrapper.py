@@ -38,14 +38,14 @@ class DBWrapper:
             raise Exception(f"Failed to ping MongoDB! - {str(e)}")
         return item
 
-    def retrieve_recipe(self, entry_id: str) -> dict:
+    def get_recipe(self, entry_id: str) -> dict:
         try:
             item = self._recipe_collection.find_one({"_id": ObjectId(entry_id)})
         except Exception as e:
             raise Exception(f"Failed to retrieve recipe! - {str(e)}")
         return item
 
-    def retrieve_user_context(self, entry_id: str) -> dict:
+    def get_user_context(self, entry_id: str) -> dict:
         try:
             item = self._user_collection.find_one({"_id": ObjectId(entry_id)})
         except Exception as e:

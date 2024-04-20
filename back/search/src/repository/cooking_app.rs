@@ -1,4 +1,4 @@
-use crate::repository::service::{recipe, user, DATABASE_NAME};
+use crate::repository::service::{allergen, recipe, tag, user, DATABASE_NAME};
 use anyhow::Result;
 use mongodb::options::{ClientOptions, ConnectionString, ReadPreference, ReadPreferenceOptions};
 use mongodb::Client;
@@ -6,6 +6,8 @@ use mongodb::Client;
 pub struct CookingAppRepository {
     pub user_collection: user::Service,
     pub recipe_collection: recipe::Service,
+    pub tag_collection: tag::Service,
+    pub allergen_collection: allergen::Service,
 }
 
 impl CookingAppRepository {
@@ -15,6 +17,8 @@ impl CookingAppRepository {
         Ok(Self {
             user_collection: user::Service::new(&client),
             recipe_collection: recipe::Service::new(&client),
+            tag_collection: tag::Service::new(&client),
+            allergen_collection: allergen::Service::new(&client),
         })
     }
 

@@ -1,7 +1,6 @@
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 
-mod common;
 pub mod recipe;
 pub mod test;
 

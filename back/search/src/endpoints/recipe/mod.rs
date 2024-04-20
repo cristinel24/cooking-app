@@ -1,8 +1,12 @@
-use crate::repository::models::recipe::{Recipe, ResponseRecipe};
+use crate::repository::models::recipe::Recipe;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 
 pub mod search_ai_tokens;
+pub mod search_fuzzy_title;
+
+const TOP: u32 = 10u32;
+
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct AiTokensPayload {
@@ -35,11 +39,19 @@ impl Serialize for RecipeResponse {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 pub struct RecipeResponsePayload {
-    pub data: Vec<ResponseRecipe>,
     pub count: u32,
+    pub data: Vec<Recipe>,
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct ErrorResponse {
     pub message: String,
+}
+
+impl Default for ErrorResponse {
+    fn default() -> Self {
+        Self {
+            message: "Error!".to_string()
+        }
+    }
 }

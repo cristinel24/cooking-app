@@ -1,10 +1,17 @@
-use super::{
-    expiring_token::ExpiringToken, user_login_data_external::UserLoginDataExternal,
-    users_login_data::UserLoginData,
-};
 use bson::oid::ObjectId;
 use chrono::{DateTime, Utc};
+use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct Author {
+    pub icon: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
+    pub display_name: String,
+    pub roles: i32,
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -17,14 +24,11 @@ pub struct User {
     pub sum_rating: i32,
     pub count_rating: i32,
     pub description: String,
-    pub login: Option<UserLoginData>,
-    pub external_login: Option<UserLoginDataExternal>,
     pub message_history: Vec<String>,
     pub search_history: Vec<String>,
     pub saved_recipes: Vec<ObjectId>,
     pub ratings: Vec<ObjectId>,
     pub allergens: Vec<String>,
-    pub sessions: Vec<ExpiringToken>,
 }
 
 impl User {

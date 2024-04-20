@@ -1,9 +1,10 @@
-use super::{super::models::recipe::Recipe, DATABASE_NAME};
+use super::DATABASE_NAME;
+use crate::repository::models::tag::Tag;
 use mongodb::{Client, Collection};
 
 #[derive(Clone)]
 pub struct Service {
-    pub(crate) collection: Collection<Recipe>,
+    pub(crate) collection: Collection<Tag>,
 }
 
 impl Service {
@@ -11,7 +12,7 @@ impl Service {
     pub fn new(client: &Client) -> Self {
         let collection = client
             .database(DATABASE_NAME)
-            .collection::<Recipe>(Recipe::get_collection_name());
+            .collection::<Tag>(Tag::get_collection_name());
 
         Self { collection }
     }

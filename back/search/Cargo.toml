@@ -11,6 +11,7 @@ anyhow = {version = "1.0.82", default-features = true}
 mongodb = {version = "2.8.2", default-features = true }
 
 serde = {version = "1.0.198", features = ["derive"]}
+serde_json = {version = "1.0.116", default-features = true}
 
 salvo = { version = "0.67.0", features = ["oapi"]}
 

@@ -1,9 +1,3 @@
-mod endpoints;
-mod repository;
-
-// use crate::endpoints::test::test_route;
-use crate::endpoints::recipe::search_ai_tokens::search_ai_tokens;
-use crate::repository::cooking_app::CookingAppRepository;
 use anyhow::Result;
 use dotenv::dotenv;
 use once_cell::sync::OnceCell;
@@ -12,6 +6,14 @@ use salvo::oapi::OpenApi;
 use salvo::prelude::SwaggerUi;
 use salvo::{Listener, Router, Server};
 use tracing::{error, info, trace};
+
+// use crate::endpoints::test::test_route;
+use crate::endpoints::recipe::search_ai_tokens::search_ai_tokens;
+use crate::endpoints::user::search_user::search_user;
+use crate::repository::cooking_app::CookingAppRepository;
+
+mod endpoints;
+mod repository;
 
 const MONGO_KEY: &str = "MONGO_URI";
 pub static CONTEXT: OnceCell<CookingAppRepository> = OnceCell::new();
@@ -35,6 +37,7 @@ async fn main() -> Result<()> {
 
     let raw_router = Router::new().push(Router::with_path("/api").append(&mut vec![
         Router::with_path("/tokens").post(search_ai_tokens),
+        Router::with_path("/user/<display_name>").post(search_user),
     ]));
 
     info!("Cooking app!");

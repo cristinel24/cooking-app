@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize, Serializer};
 mod common;
 pub mod recipe;
 pub mod test;
+pub mod user;
 
 pub const INTERNAL_SERVER_ERROR: &str = "Internal Server Error!";
 

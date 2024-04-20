@@ -1,7 +1,7 @@
 mod endpoints;
 mod repository;
 
-use crate::endpoints::test::test_route;
+// use crate::endpoints::test::test_route;
 use crate::repository::cooking_app::CookingAppRepository;
 use anyhow::Result;
 use dotenv::dotenv;

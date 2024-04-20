@@ -1,3 +1,4 @@
+/*
 use crate::endpoints::{EndpointResponse, ErrorResponse, OkResponse};
 use crate::repository::get_context;
 use crate::repository::models::user::User;
@@ -9,8 +10,9 @@ use salvo::prelude::{endpoint, Json, Writer};
 pub async fn test_route(user: JsonBody<User>) -> Json<EndpointResponse> {
     if let Ok(db) = get_context() {
         let test = User {
-            username: user.username.clone(),
+            display_name: user.display_name.clone(),
             sum_rating: user.sum_rating,
+            ..Default::default()
         };
 
         if let Ok(e) = db
@@ -28,6 +30,7 @@ pub async fn test_route(user: JsonBody<User>) -> Json<EndpointResponse> {
     }
 
     return Json(EndpointResponse::Success(OkResponse {
-        data: vec![user.username.clone()],
+        data: vec![user.display_name.clone()],
     }));
 }
+*/

@@ -22,3 +22,5 @@ dotenv = {version = "0.15.0", default-features = true}
 once_cell = { version = "1.19.0", default-features = true }
 
 chrono = {version = "0.4.38", default-features = true}
+
+bson = {version = "2.10.0", features = ["chrono-0_4"]}

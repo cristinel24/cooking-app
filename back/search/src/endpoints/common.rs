@@ -1,6 +1,3 @@
-use serde::{Serialize, Deserialize};
-
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct AiTokensPayload {
-    pub tokens: Vec<String>,
-}
+use bson::oid::ObjectId;
+use paperclip::v2::models::{DataType, DefaultSchemaRaw};
+use salvo::oapi::{Components, RefOr, Schema, ToSchema};

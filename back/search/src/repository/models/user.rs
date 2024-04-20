@@ -1,7 +1,10 @@
+use super::{
+    expiring_token::ExpiringToken, user_login_data_external::UserLoginDataExternal,
+    users_login_data::UserLoginData,
+};
 use bson::oid::ObjectId;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use super::{expiring_token::ExpiringToken, user_login_data_external::UserLoginDataExternal, users_login_data::UserLoginData};
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]

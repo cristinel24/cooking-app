@@ -2,6 +2,7 @@ mod endpoints;
 mod repository;
 
 // use crate::endpoints::test::test_route;
+use crate::endpoints::recipe::search_ai_tokens::search_ai_tokens;
 use crate::repository::cooking_app::CookingAppRepository;
 use anyhow::Result;
 use dotenv::dotenv;
@@ -32,9 +33,9 @@ async fn main() -> Result<()> {
             Ok,
         )?;
 
-    let raw_router = Router::new().push(
-        Router::with_path("/api").append(&mut vec![Router::with_path("/test").post(test_route)]),
-    );
+    let raw_router = Router::new().push(Router::with_path("/api").append(&mut vec![
+        Router::with_path("/tokens").post(search_ai_tokens),
+    ]));
 
     info!("Cooking app!");
     error!("VALELEU");

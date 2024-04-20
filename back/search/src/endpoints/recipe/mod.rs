@@ -1,25 +1,27 @@
+use crate::repository::models::recipe::{Recipe, ResponseRecipe};
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 
-mod common;
-pub mod recipe;
-pub mod test;
+pub mod search_ai_tokens;
 
-pub const INTERNAL_SERVER_ERROR: &str = "Internal Server Error!";
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct AiTokensPayload {
+    pub tokens: Vec<String>,
+}
 
 #[derive(Deserialize, ToSchema)]
-pub enum EndpointResponse {
-    Success(OkResponse),
+pub enum RecipeResponse {
+    Success(RecipeResponsePayload),
     Error(ErrorResponse),
 }
 
-impl Default for EndpointResponse {
+impl Default for RecipeResponse {
     fn default() -> Self {
-        Self::Success(OkResponse::default())
+        Self::Success(RecipeResponsePayload::default())
     }
 }
 
-impl Serialize for EndpointResponse {
+impl Serialize for RecipeResponse {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -32,8 +34,9 @@ impl Serialize for EndpointResponse {
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
-pub struct OkResponse {
-    pub data: Vec<String>,
+pub struct RecipeResponsePayload {
+    pub data: Vec<ResponseRecipe>,
+    pub count: u32,
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]

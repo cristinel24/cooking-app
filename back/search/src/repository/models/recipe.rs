@@ -1,30 +1,54 @@
-use bson::Bson;
 use bson::oid::ObjectId;
-use chrono::{DateTime, Utc};
+use salvo::prelude::ToSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
 #[serde(rename_all = "camelCase")]
-pub struct Recipe {
-    #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
-    pub updated_at: DateTime<Utc>,
-    pub author_id: ObjectId,
+pub struct ResponseRecipe {
+    pub author: Author,
     pub title: String,
-    pub sum_rating: u32,
-    pub count_rating: u32,
     pub description: String,
     pub prep_time: u32,
-    pub steps: Vec<String>,
-    pub ingredients: Vec<String>,
-    pub allergens: Vec<String>,
-    pub tags: Vec<String>,
-    pub tokens: Vec<String>,
-    pub ratings: Vec<ObjectId>,
+    pub allergens: Vec<Option<String>>,
+    pub tags: Vec<Option<String>>,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct Author {
+    pub icon: String,
+    pub username: String,
+    pub display_name: String,
+    pub roles: i32,
+}
+
+impl From<Recipe> for ResponseRecipe {
+    fn from(value: Recipe) -> Self {
+        Self {
+            author: value.author,
+            title: value.title,
+            description: value.description,
+            prep_time: value.prep_time,
+            allergens: value.allergens,
+            tags: value.tags,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct Recipe {
+    pub author: Author,
+    pub title: String,
+    pub description: String,
+    pub prep_time: u32,
+    pub allergens: Vec<Option<String>>,
+    pub tags: Vec<Option<String>>,
 }
 
 impl Recipe {
     #[must_use]
     pub const fn get_collection_name() -> &'static str {
-        "report"
+        "recipe"
     }
 }

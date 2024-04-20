@@ -24,3 +24,7 @@ once_cell = { version = "1.19.0", default-features = true }
 chrono = {version = "0.4.38", default-features = true}
 
 bson = {version = "2.10.0", features = ["chrono-0_4"]}
+
+futures = { version = "0.3.30", default-features = true}
+async-trait = { version = "0.1.80", default-features = true}
+paperclip = { version = "0.8.2", features = ["v2"]}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -9,6 +9,7 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.4</version> <!-- Use the version suitable for your project -->
     </parent>
+
 
     <dependencies>
         <!-- Spring Boot Starter Web -->
@@ -25,14 +26,15 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.12.8</version>
+            <version>3.12.8</version> <!-- Use the version suitable for your MongoDB server -->
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.32</version>
+            <version>1.18.32</version> <!-- Use the latest version available -->
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
     <groupId>org.example</groupId>

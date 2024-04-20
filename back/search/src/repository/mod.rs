@@ -5,6 +5,7 @@ use anyhow::Result;
 pub mod cooking_app;
 pub mod models;
 pub mod service;
+mod extended_services;
 
 #[inline]
 pub fn get_context() -> Result<&'static CookingAppRepository> {

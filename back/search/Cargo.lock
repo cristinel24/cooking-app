@@ -264,6 +264,7 @@ dependencies = [
  "ahash 0.8.11",
  "base64 0.13.1",
  "bitvec",
+ "chrono",
  "hex",
  "indexmap",
  "js-sys",
@@ -1867,6 +1868,8 @@ name = "rust_search"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-trait",
+ "bson",
  "chrono",
  "dotenv",
  "mongodb",

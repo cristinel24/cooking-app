@@ -16,8 +16,9 @@ import java.util.*;
 public class Recipe {
     // Nu se schimba ever
     private ObjectId recipeId;
+    private ObjectId authorId;
 
-    private int authorId;
+    private Date updatedAt;
 
     private String title;
     private List<String> ingredients;
@@ -28,14 +29,12 @@ public class Recipe {
     private List<String> tokens; // date de AI
     private List<Allergen> allergens;
 
-    private Date dateCreated;
-    private Date dateModified;
 
     private List<Rating> ratings;
     private int sumRating;
     private int countRating;
 
-    public Recipe(int authorId, String title, List<String> ingredients, String desc, List<String> steps, int prepTime, List<Allergen> allergens){
+    public Recipe(ObjectId authorId, String title, List<String> ingredients, String desc, List<String> steps, int prepTime, List<Allergen> allergens){
         this.authorId = authorId;
         this.title = title;
         this.ingredients = ingredients;
@@ -46,8 +45,9 @@ public class Recipe {
         this.tags = new HashSet<>();
         this.tokens = new ArrayList<>();
         this.ratings = new ArrayList<>();
-        this.dateCreated = new Date();
-        this.dateModified = new Date();
+        this.sumRating = 0;
+        this.countRating = 0;
+        this.updatedAt = new Date();
     }
 
     public void modifyRecipe(Recipe newRecipe) {
@@ -57,7 +57,7 @@ public class Recipe {
         this.steps = newRecipe.getSteps();
         this.prepTime = newRecipe.getPrepTime();
         this.allergens = newRecipe.getAllergens();
-        this.dateModified = new Date(); // Resetam data modificarii la data curenta
+        this.updatedAt = new Date();
     }
 
     public void addRating(Rating rating) {

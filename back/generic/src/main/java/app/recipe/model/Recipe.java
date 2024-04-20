@@ -3,6 +3,7 @@ package app.recipe.model;
 import app.allergen.model.Allergen;
 import app.rating.model.Rating;
 import app.tag.model.Tag;
+import app.user.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +17,7 @@ import java.util.*;
 public class Recipe {
     // Nu se schimba ever
     private ObjectId recipeId;
-    private ObjectId authorId;
+    private User authorId;
 
     private Date updatedAt;
 
@@ -34,7 +35,7 @@ public class Recipe {
     private int sumRating;
     private int countRating;
 
-    public Recipe(ObjectId authorId, String title, List<String> ingredients, String desc, List<String> steps, int prepTime, List<Allergen> allergens){
+    public Recipe(User authorId, String title, List<String> ingredients, String desc, List<String> steps, int prepTime, List<Allergen> allergens){
         this.authorId = authorId;
         this.title = title;
         this.ingredients = ingredients;

@@ -9,7 +9,7 @@ use tracing::{error, info, trace};
 
 // use crate::endpoints::test::test_route;
 use crate::endpoints::recipe::search_ai_tokens::search_ai_tokens;
-use crate::endpoints::user::search_user::search_user;
+use crate::endpoints::user::search_users::search_users;
 use crate::repository::cooking_app::CookingAppRepository;
 
 mod endpoints;
@@ -37,7 +37,7 @@ async fn main() -> Result<()> {
 
     let raw_router = Router::new().push(Router::with_path("/api").append(&mut vec![
         Router::with_path("/tokens").post(search_ai_tokens),
-        Router::with_path("/user/<display_name>").post(search_user),
+        Router::with_path("/user/<name>").post(search_users),
     ]));
 
     info!("Cooking app!");

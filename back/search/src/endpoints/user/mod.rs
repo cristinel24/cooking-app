@@ -2,7 +2,7 @@ use crate::repository::models::user::{User, UserAggregation};
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 
-pub mod search_user;
+pub mod search_users;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub enum UserResponse {

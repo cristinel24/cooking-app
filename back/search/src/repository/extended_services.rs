@@ -70,18 +70,16 @@ impl RecipeDatabaseOperations for service::recipe::Service {
 }
 
 pub trait UserDatabaseOperations {
-    async fn find_by_username(&self, username: &String) -> Result<Vec<User>>;
-    async fn find_by_display_name(&self, display_name: &String) -> Result<UserAggregation>;
+    async fn find_by_name(&self, name: &str) -> Result<UserAggregation>;
 }
 
 impl UserDatabaseOperations for service::user::Service {
-    async fn find_by_username(&self, username: &String) -> Result<Vec<User>> {
-        todo!()
-    }
-
-    async fn find_by_display_name(&self, display_name: &String) -> Result<UserAggregation> {
-        let pipeline = vec![
-            doc! { "$match": {"displayName": display_name} },
+    async fn find_by_name(&self, name: &str) -> Result<UserAggregation> {
+        let pipeline_display_name = vec![
+            doc! { "$match": {  "$or": [
+              { "displayName": name },
+              { "login.username": name }
+            ]}},
             doc! { "$project": {
                 "_id": 0,
                 "icon": 1,
@@ -106,7 +104,10 @@ impl UserDatabaseOperations for service::user::Service {
                 }
             },
         ];
-        let mut cursor = self.collection.aggregate(pipeline, None).await?;
+        let mut cursor = self
+            .collection
+            .aggregate(pipeline_display_name, None)
+            .await?;
         let mut users_aggregation: UserAggregation = Default::default();
         if let Some(document) = cursor.try_next().await? {
             users_aggregation = from_document(document)?;

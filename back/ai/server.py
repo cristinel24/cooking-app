@@ -1,8 +1,9 @@
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 
-from utils import tokenize_query
+import processor
+from utils import tokenize_query, schemas
 
 load_dotenv()
 
@@ -10,16 +11,26 @@ PORT = int(os.getenv("PORT", "8000"))
 
 app = FastAPI()
 
+router = APIRouter(
+    prefix="/api"
+)
 
-@app.post("/tokenize/recipe", summary="", description="")
+
+@router.post("/tokenize/recipe", tags=["tokenize"])
 async def tokenize_recipe():
     return {"message": "Request on root route!"}
 
 
-@app.get("/tokenize/user_query/{query}")
+@router.get("/tokenize/user_query/{query}", tags=["tokenize"])
 async def tokenize_user_query(query):
     return await tokenize_query.verify_generated_tokens(query, await tokenize_query.tokenize_user_query(query))
 
+
+@router.post("/chatbot", tags=["chatbot"])
+async def process_chatbot(query: schemas.ChatbotInput):
+    return {"message": "query is good"}
+
+app.include_router(router)
 
 if __name__ == "__main__":
     import uvicorn

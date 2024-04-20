@@ -46,15 +46,15 @@ async def process_chatbot_query(message_history: list[str], user_query: str, sav
     return chat_completion.choices[0].message.content
 
 
-async def main():
-    res = await process_chatbot_query(
-        ["a b", "c d"],
-        "grafuri?",
-        ["sos", "dulce", "sarat"],
-        ["carne", "gluten", "cartofi", "lactate"],
-        []
-    )
-    print(f"{res}")
+# async def main():
+#     res = await process_chatbot_query(
+#         ["a b", "c d"],
+#         "grafuri?",
+#         ["sos", "dulce", "sarat"],
+#         ["carne", "gluten", "cartofi", "lactate"],
+#         []
+#     )
+#     print(f"{res}")
 
 
 # # FOR DEBUG:

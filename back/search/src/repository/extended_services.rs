@@ -4,7 +4,7 @@ use bson::{doc, from_document};
 use futures::TryStreamExt;
 
 use crate::repository::models::recipe::Recipe;
-use crate::repository::models::user::{User, UserAggregation};
+use crate::repository::models::user::UserAggregation;
 use crate::repository::service;
 
 #[async_trait]
@@ -75,20 +75,25 @@ pub trait UserDatabaseOperations {
 
 impl UserDatabaseOperations for service::user::Service {
     async fn find_by_name(&self, name: &str) -> Result<UserAggregation> {
-        let pipeline_display_name = vec![
+        let pipeline = vec![
             doc! { "$match": {  "$or": [
               { "displayName": name },
-              { "login.username": name }
+              { "username": name }
             ]}},
             doc! { "$project": {
                 "_id": 0,
                 "icon": 1,
                 "displayName": 1,
-                "username": "$login.username",
+                "username": 1,
                 "roles": 1,
-                "sumRating": 1,
-                "countRating": 1,
-            } },
+                "ratingRatio": {
+                    "$cond": {
+                        "if": { "$eq": ["$countRating", 0] },
+                        "then": 0,
+                        "else": { "$divide": ["$sumRating", "$countRating"] }
+                }}
+            }},
+            doc! { "$sort": { "ratingRatio": -1 } },
             doc! {
                 "$group": {
                     "_id": null,
@@ -104,10 +109,7 @@ impl UserDatabaseOperations for service::user::Service {
                 }
             },
         ];
-        let mut cursor = self
-            .collection
-            .aggregate(pipeline_display_name, None)
-            .await?;
+        let mut cursor = self.collection.aggregate(pipeline, None).await?;
         let mut users_aggregation: UserAggregation = Default::default();
         if let Some(document) = cursor.try_next().await? {
             users_aggregation = from_document(document)?;

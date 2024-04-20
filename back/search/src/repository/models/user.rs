@@ -8,8 +8,7 @@ pub struct User {
     pub display_name: String,
     pub username: String,
     pub roles: i32,
-    pub sum_rating: i32,
-    pub count_rating: i32,
+    pub rating_ratio: f32,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug)]

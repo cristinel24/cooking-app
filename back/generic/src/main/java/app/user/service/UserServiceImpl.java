@@ -1,15 +1,15 @@
 package app.user.service;
 
+import app.user.dto.UserProfileDto;
 import app.user.exceptions.LoginError;
 import app.user.exceptions.ValidationError;
-import app.user.request.LoginRequest;
-import app.utils.crypto.JwtConfig;
-import app.user.dto.UserProfileDto;
 import app.user.model.User;
 import app.user.model.UserLoginData;
 import app.user.model.UserRole;
 import app.user.repository.UserMapper;
 import app.user.repository.UserRepository;
+import app.user.request.ChangeAccountDataRequest;
+import app.user.request.LoginRequest;
 import app.user.request.RegisterRequest;
 import app.utils.crypto.TokenGenerator;
 import app.utils.expiring_token.model.ExpiringToken;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Log4j2
 @Component
@@ -97,5 +98,75 @@ public class UserServiceImpl implements UserService {
 
 //        return UserMapper.toLoginDto(user, JwtConfig.genToken(user.getUsername()));
         return null;
+    }
+
+    @Override
+    public List<String> getSearchHistory(String username) {
+        User user = userRepository.findByUsername(username);
+
+        return user.getSearchHistory();
+    }
+
+    @Override
+    public List<String> getMessageHistory(String username) {
+        User user = userRepository.findByUsername(username);
+
+        return user.getMessageHistory();
+    }
+
+    @Override
+    public void changeAccountData(String username, ChangeAccountDataRequest body) {
+        User user = userRepository.findByUsername(username);
+
+        log.info("{}", user);
+
+        user.setIcon(body.getIcon() != null ? body.getIcon() : user.getIcon())
+            .setDisplayName(body.getDisplayName() != null ? body.getDisplayName() : user.getDisplayName())
+            .setDescription(body.getDescription() != null ? body.getDescription() : user.getDescription())
+            .setAllergens(body.getAllergens() != null ? body.getAllergens() : user.getAllergens());
+
+        log.info("{}", user);
+
+        try {
+            userRepository.save(user);
+        } catch (MongoWriteException e) {
+            log.error(e);
+            throw new ValidationError(e);
+        }
+    }
+
+    @Override
+    public void changeUsername(String username, String newUsername) {
+        User user = userRepository.findByUsername(username);
+
+        user.setUsername(newUsername);
+
+        try {
+            userRepository.save(user);
+        } catch (MongoWriteException e) {
+            log.error(e);
+            throw new ValidationError(e);
+        }
+    }
+
+    @Override
+    public void changeEmail(String username, String newEmail) {
+        User user = userRepository.findByUsername(username);
+
+        user.setEmail(newEmail);
+
+        try {
+            userRepository.save(user);
+        } catch (MongoWriteException e) {
+            log.error(e);
+            throw new ValidationError(e);
+        }
+    }
+
+    @Override
+    public boolean userExistsByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+
+        return (user != null);
     }
 }

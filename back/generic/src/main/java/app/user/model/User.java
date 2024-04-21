@@ -47,7 +47,7 @@ public class User {
 //    @DBRef
 //    private List<Recipe> recipes;
 //    @DBRef
-//    private List<Recipe> savedRecipes;
+    private List<Recipe> savedRecipes;
 //    @DBRef
 //    private List<Rating> ratings;
     private List<String> allergens;

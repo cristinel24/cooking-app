@@ -1,3 +1,4 @@
+import datetime
 import random
 from pprint import pprint
 
@@ -38,6 +39,7 @@ db.command(
                 "_id": {
                     "bsonType": "objectId",
                 },
+                "_class": {},
                 "allergen": {
                     "bsonType": "string",
                     "minLength": 2,
@@ -66,10 +68,15 @@ db.command(
     validator={
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["_id", "userId", "value", "type"],
+            "required": ["_id", "createdAt", "userId", "value", "type"],
             "properties": {
                 "_id": {
                     "bsonType": "objectId",
+                },
+                "_class": {},
+                "createdAt": {
+                    "bsonType": "date",
+                    "description": "must be a date representing the creation time"
                 },
                 "userId": {
                     "bsonType": "objectId",
@@ -89,6 +96,26 @@ db.command(
         },
     },
 )
+expiring_token_collection = db["expiring_token"]
+expiring_token_collection.create_indexes([
+    IndexModel(["userId"], unique=True),
+    IndexModel(
+        ["createdAt"],
+        name="expiring_index_credential_change",
+        partialFilterExpression={
+            "type": "credentialChange",
+        },
+        expireAfterSeconds=20,
+    ),
+    IndexModel(
+        ["createdAt"],
+        name="expiring_index_session",
+        partialFilterExpression={
+            "type": "session",
+        },
+        expireAfterSeconds=100,
+    )
+])
 
 db.create_collection("external_provider")
 db.command(
@@ -102,6 +129,7 @@ db.command(
                 "_id": {
                     "bsonType": "objectId",
                 },
+                "_class": {},
                 "name": {
                     "bsonType": "string",
                     "maxLength": 64,
@@ -133,6 +161,7 @@ db.command(
                 "_id": {
                     "bsonType": "objectId",
                 },
+                "_class": {},
                 "userId": {
                     "bsonType": "objectId",
                     "description": "must be the object id of an user and is required, must not be equal to followsId",
@@ -166,10 +195,11 @@ db.command(
         "$jsonSchema": {
             "bsonType": "object",
             "required": [
-                ""
+                "_id",
             ],
             "properties": {
-
+                "_id": {},
+                "_class": {},
             },
             "additionalProperties": False,
         },
@@ -189,6 +219,7 @@ db.command(
                 "_id": {
                     "bsonType": "objectId",
                 },
+                "_class": {},
                 "name": {
                     "bsonType": "string",
                     "minLength": 1,
@@ -256,6 +287,7 @@ db.command(
                 "_id": {
                     "bsonType": "objectId",
                 },
+                "_class": {},
                 "name": {
                     "bsonType": "string",
                     "minLength": 1,
@@ -285,6 +317,11 @@ db.command(
                     "bsonType": "int",
                     "minimum": 0,
                     "description": "must be a non-negative integer",
+                },
+                "viewCount": {
+                    "bsonType": "int",
+                    "minimum": 0,
+                    "description": "must be a non-negative integer"
                 },
                 "description": {
                     "bsonType": "string",
@@ -369,7 +406,8 @@ recipe_collection.create_indexes([
             },
         },
     ),
-    IndexModel(["name"], unique=True)
+    IndexModel(["name"], unique=True),
+    IndexModel([("viewCount", pymongo.DESCENDING)]),
 ])
 
 db.create_collection("report")
@@ -384,6 +422,7 @@ db.command(
                 "_id": {
                     "bsonType": "objectId",
                 },
+                "_class": {},
                 "name": {
                     "bsonType": "string",
                     "minLength": 1,
@@ -438,6 +477,7 @@ db.command(
                 "_id": {
                     "bsonType": "objectId",
                 },
+                "_class": {},
                 "tag": {
                     "bsonType": "string",
                     "maxLength": 64,
@@ -481,6 +521,7 @@ db.command(
                 "_id": {
                     "bsonType": "objectId",
                 },
+                "_class": {},
                 "name": {
                     "bsonType": "string",
                     "minLength": 1,
@@ -527,11 +568,6 @@ db.command(
                     "bsonType": "int",
                     "minimum": 0,
                     "description": "must be a non-negative integer",
-                },
-                "viewCount": {
-                    "bsonType": "int",
-                    "minimum": 0,
-                    "description": "must be a non-negative integer"
                 },
                 "description": {
                     "bsonType": "string",
@@ -825,9 +861,11 @@ def get_tag():
 def get_expiring_token(user_id, token_type):
     return {
         "value": fake.sha256(),
+        "createdAt": datetime.datetime.utcnow(),
         "userId": user_id,
         "type": token_type,
     }
+
 
 def get_login_data():
     login_data = None
@@ -846,16 +884,16 @@ def get_login_data():
         status_chance = random.random()
 
         if status_chance < params["login_data"]["pending_max_chance"]:
-            status = email_status[0]
+            user_email_status = email_status[0]
         elif status_chance < params["login_data"]["confirmed_max_chance"]:
-            status = email_status[1]
+            user_email_status = email_status[1]
         elif status_chance < params["login_data"]["transitioning_max_chance"]:
-            status = email_status[2]
+            user_email_status = email_status[2]
         else:
-            status = email_status[3]
+            user_email_status = email_status[3]
 
         login_data = {
-            "emailStatus": status,
+            "emailStatus": user_email_status,
             "hashAlgName": random_from(hash_algos),
             "hash": fake.sha256(),
             "salt": fake.sha256(),
@@ -981,6 +1019,36 @@ except errors.BulkWriteError as e:
     pprint(e.details)
     exit(0)
 users = list(user_collection.find())
+print("Done")
+
+print("Cooking up expiring tokens...", end="")
+for user in users:
+
+    if user.get("login") is None:
+        continue
+
+    status = user["login"]["emailStatus"]
+    changingField = None
+
+    if status == "Pending" or status == "Transitioning":
+        changingField = "emailConfirmToken"
+    elif status == "Confirmed":
+        if random.random() < params["login_data"]["reset_state_chance"] / 2:
+            changingField = "passwordResetToken"
+        elif random.random() < params["login_data"]["reset_state_chance"]:
+            changingField = "userChangeToken"
+
+    if changingField is not None:
+        expiring_token_id = expiring_token_collection.insert_one(
+            get_expiring_token(user["_id"], "credentialChange")
+        ).inserted_id
+
+        user["login"][changingField] = expiring_token_id
+        user_collection.update_one(
+            {"_id": user["_id"]},
+            {"$set": {"login." + changingField: expiring_token_id}}
+        )
+
 print("Done")
 
 print("Cooking up recipes...", end="")

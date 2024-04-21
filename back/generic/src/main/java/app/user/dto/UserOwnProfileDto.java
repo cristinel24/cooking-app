@@ -11,6 +11,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -25,8 +27,8 @@ public class UserOwnProfileDto {
     private String description;
     private String username;
     private String email;
-    private Recipe[] recipes;
-    private Recipe[] savedRecipes;
-    private Rating[] ratings;
-    private String[] allergens;
+//    private List<Recipe> recipes;
+//    private List<Recipe> savedRecipes;
+//    private List<Rating> ratings;
+    private List<String> allergens;
 }

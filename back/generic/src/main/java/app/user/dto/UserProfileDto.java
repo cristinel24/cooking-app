@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,7 +26,7 @@ public class UserProfileDto {
     private int roles;
     private String description;
     private String username;
-    private Recipe[] recipes;
-    private Rating[] ratings;
-    private String[] allergens;
+//    private List<Recipe> recipes;
+//    private List<Rating> ratings;
+    private List<String> allergens;
 }

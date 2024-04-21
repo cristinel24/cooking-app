@@ -10,6 +10,8 @@ import lombok.experimental.Accessors;
 
 import app.rating.model.Rating;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -22,6 +24,6 @@ public class UserCardDto {
     private String icon;
     private String displayName;
     private int roles;
-    private Rating[] ratings;
+    private float rating;
     private String username;
 }

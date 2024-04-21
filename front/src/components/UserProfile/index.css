@@ -1,0 +1,260 @@
+@font-face {
+  font-display: swap;
+  font-style: normal;
+  src: url("../public/fonts/MontserratRomanRegular.ttf");
+  font-family: "Montserrat";
+  font-weight: 400;
+}
+
+.uspr {
+  width: 400px;
+  height: fit-content;
+  margin: 20px;
+  border-radius: 4px;
+  padding-bottom: 50px;
+  padding-top: 150px;
+}
+.liniuta {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.profile-down {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -100px;
+}
+
+.button_2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.button_2 icon {
+  font-size: 22px;
+}
+
+.button_2 .arrow {
+  font-size: 16px;
+}
+
+.profile-down button {
+  font-size: 24px;
+  color: var(--txtcolor);
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.profile-down img {
+  height: 215px;
+  max-width: fit-content;
+  border-radius: 200px;
+  padding: 5px;
+}
+
+.profile-name {
+  color: var(--profname);
+}
+
+.profile-description {
+  color: var(--txtcolor);
+  font-size: 18px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 10px 0px;
+}
+
+.profile-description a {
+  color: var(--txtcolor);
+}
+
+.profile-description a:hover {
+  color: var(--bkgcolor);
+}
+.profile-description dot {
+  margin-top: 6px;
+  margin-bottom: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 12px;
+}
+
+.report a {
+  font-size: 14px;
+  position: relative;
+  color: var(--txtcolor);
+}
+
+.report a::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: -3px;
+  width: 110%;
+  height: 2px;
+  border-radius: 5px;
+  background: var(--txtcolor);
+}
+
+.report a:hover::after {
+  background: var(--bkgcolor);
+}
+
+.report a:hover {
+  color: var(--bkgcolor);
+}
+
+@media only screen and (max-width: 767px) and (min-width: 481px) {
+  .uspr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: fit-content;
+    margin: 20px;
+    border-radius: 4px;
+    padding-bottom: 50px;
+    padding-top: 50px;
+  }
+
+  .profile-down img {
+    height: 150px;
+    border-radius: 200px;
+  }
+
+  .button_2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .button_2 icon {
+    font-size: 16px;
+  }
+
+  .button_2 .arrow {
+    font-size: 12px;
+  }
+
+  .profile-down button {
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .profile-name {
+    font-size: 14px;
+    color: var(--name);
+  }
+
+  .profile-description {
+    font-size: 16px;
+    padding: 10px 0px;
+  }
+
+  .profile-description dot {
+    margin-top: 6px;
+    margin-bottom: 60px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 10px;
+  }
+
+  .report a {
+    font-size: 10px;
+  }
+
+  .report a::after {
+    width: 115%;
+  }
+}
+
+@media only screen and (max-width: 480px) and (min-width: 320px) {
+  .uspr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: fit-content;
+    margin: none;
+    border-radius: 4px;
+    padding-bottom: 5px;
+  }
+
+  .profile-down {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: fit-content;
+    margin-top: 0px;
+  }
+
+  .button_2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .button_2 icon {
+    font-size: 14px;
+  }
+
+  .button_2 .arrow {
+    font-size: 10px;
+  }
+
+  .profile-down button {
+    font-size: 16px;
+  }
+
+  .profile-down img {
+    align-self: center;
+    margin-bottom: 8px;
+    height: 150px;
+  }
+
+  .profile-name {
+    align-self: center;
+    margin-top: -5px;
+    font-size: 16px;
+  }
+
+  .profile-description {
+    font-size: 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 10px 0px;
+  }
+
+  .profile-description dot {
+    margin-top: 6px;
+    margin-bottom: 60px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 10px;
+  }
+
+  .report {
+    align-self: center;
+    justify-self: flex-end;
+  }
+  .report a {
+    font-size: 10px;
+  }
+
+  .report a::after {
+    width: 115%;
+  }
+}

@@ -1,0 +1,135 @@
+.popUpContainer {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  z-index: 2;
+}
+
+.bot-logo {
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+}
+
+.custom-modal-overlay {
+  background-color: var(--border);
+}
+
+.custom-modal-content {
+  width: 400px;
+  height: 400px;
+  position: fixed;
+  bottom: 130px;
+  right: 40px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  background-color: var(--bkgcolor);
+  z-index: 1;
+}
+
+.chatContainer {
+  background-color: var(--bkgcolor);
+  padding: 20px;
+  border-radius: 20px;
+  border-color: var(--bkgcolor);
+}
+.custom-modal-content h2 {
+  padding-left: 30px;
+  color: var(--txtcolor);
+}
+.custom-modal-content p {
+  padding-left: 30px;
+  color: var(--txtcolor);
+}
+@media (min-width: 601px) and (max-width: 767px) {
+  .custom-modal-content {
+    width: 400px;
+    height: 600px;
+    position: fixed;
+    bottom: 130px;
+    right: 50px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    background-color: var(--bkgcolor);
+    z-index: 1;
+  }
+  .bot-logo {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    position: relative;
+    z-index: 3;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 487px) {
+  .custom-modal-content {
+    width: 60%;
+    height: 440px;
+    position: fixed;
+    bottom: 90px;
+    right: 40px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    background-color: var(--bkgcolor);
+    z-index: 1;
+    h2 {
+      padding: 0;
+    }
+    p {
+      padding: 10px;
+    }
+  }
+  .popUpContainer {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    z-index: 2;
+  }
+  .bot-logo {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    position: relative;
+    z-index: 3;
+  }
+}
+
+@media (min-width: 488) and (max-width: 600px) {
+  .custom-modal-content {
+    width: 50%;
+    height: 440px;
+    position: fixed;
+    bottom: 90px;
+    right: 40px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    background-color: var(--bkgcolor);
+    z-index: 1;
+    h2 {
+      padding: 0;
+    }
+    p {
+      padding: 10px;
+    }
+  }
+  .popUpContainer {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    z-index: 2;
+  }
+  .bot-logo {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    position: relative;
+    z-index: 3;
+  }
+}

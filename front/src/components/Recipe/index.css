@@ -1,0 +1,129 @@
+.recipe {
+  display: flex;
+  cursor: pointer;
+  align-content: center;
+  gap: 1rem;
+}
+
+.recipe:hover {
+  background: var(--hover);
+  border-radius: 20px;
+}
+
+.recipe-image {
+  height: 75px;
+  background-size: cover;
+  background-position: center;
+  width: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.recipe-description {
+  height: auto;
+  width: 65%;
+  place-content: center;
+  background: var(--compreteta);
+  border-radius: 20px;
+  padding: 0 1rem;
+  line-height: 1.6;
+}
+
+.recipe-description p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: "#0c1821";
+}
+
+.recipe-header {
+  display: flex;
+  gap: 1rem;
+}
+
+.recipe-title-and-author {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.recipe-title {
+  background: var(--caseta);
+  border-radius: 10px;
+  padding: 0.2rem 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: "#0c1821";
+}
+
+.recipe-author {
+  font-weight: 300;
+  color: var(--txtcolor);
+}
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  .recipe {
+    font-size: 14px;
+    gap: 0.6rem;
+  }
+
+  .recipe-description {
+    padding: 0 0.5rem;
+  }
+
+  .recipe-image {
+    width: 4.5rem;
+    height: auto;
+  }
+
+  .recipe-description {
+    height: 4.5rem;
+  }
+  .recipe-header {
+    margin-right: 10px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .recipe {
+    font-size: 14px;
+    gap: 0.6rem;
+  }
+
+  .recipe-description {
+    padding: 0 1rem;
+  }
+
+  .recipe-image {
+    width: 55px;
+    height: auto;
+  }
+
+  .recipe-description {
+    height: 55px;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .recipe {
+    flex-direction: column;
+    font-size: 11px;
+    gap: 0.5rem;
+  }
+
+  .recipe-description {
+    padding: 0 0.5rem;
+  }
+
+  .recipe-image {
+    width: 50px;
+    height: auto;
+  }
+
+  .recipe-description {
+    height: 50px;
+  }
+}

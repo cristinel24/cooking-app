@@ -69,10 +69,10 @@ db.command(
             "required": ["_id", "userId", "value", "type"],
             "properties": {
                 "_id": {
-                    "bsonType": "object",
+                    "bsonType": "objectId",
                 },
                 "userId": {
-                    "bsonType": "object",
+                    "bsonType": "objectId",
                     "description": "must be the objectId of the owning user",
                 },
                 "value": {

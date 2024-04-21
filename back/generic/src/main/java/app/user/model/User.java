@@ -8,11 +8,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,7 +25,13 @@ import java.util.Date;
 @Document(collection = "user")
 public class User {
     @Id
-    private String id;
+    private ObjectId id;
+//    @Indexed(unique = true)
+//    private String name;
+    @Indexed(unique = true)
+    private String username;
+    @Indexed(unique = true)
+    private String email;
     private Date updatedAt;
     private String icon;
     @Indexed
@@ -33,11 +42,14 @@ public class User {
     private String description;
     private UserLoginData login;
     private UserLoginDataExternal externalLogin;
-    private String[] messageHistory;
-    private String[] searchHistory;
-    private Recipe[] recipes;
-    private String[] savedRecipes;
-    private Rating[] ratings;
-    private String[] allergens;
-    private ExpiringToken[] sessions;
+    private List<String> messageHistory;
+    private List<String> searchHistory;
+//    @DBRef
+//    private List<Recipe> recipes;
+//    @DBRef
+//    private List<Recipe> savedRecipes;
+//    @DBRef
+//    private List<Rating> ratings;
+    private List<String> allergens;
+    private List<ExpiringToken> sessions;
 }

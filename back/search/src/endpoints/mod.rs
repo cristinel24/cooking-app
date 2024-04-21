@@ -9,6 +9,22 @@ pub mod user;
 
 pub const INTERNAL_SERVER_ERROR: &str = "Internal Server Error!";
 
+#[macro_export]
+macro_rules! get_context {
+    ($res:expr) => {
+        match get_context() {
+            Ok(value) => value,
+            Err(e) => {
+                error!("Error: {e}");
+                $res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+                return Json(EndpointResponse::Error(ErrorResponse {
+                    message: e.to_string(),
+                }));
+            }
+        }
+    };
+}
+
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct InputPayload {
     pub data: String,

@@ -1,15 +1,24 @@
 use crate::endpoints::recipe::{
     search_ai_tokens::search_ai_tokens, search_fuzzy_title::search_fuzz_title,
 };
-use crate::endpoints::{ErrorResponse, INTERNAL_SERVER_ERROR, search_general::search_general, user::search_users::search_users};
+use crate::endpoints::{
+    search_general::search_general, user::search_users::search_users, ErrorResponse,
+    INTERNAL_SERVER_ERROR,
+};
 use crate::repository::cooking_app::CookingAppRepository;
 use anyhow::Result;
 use dotenv::dotenv;
 use once_cell::sync::OnceCell;
-use salvo::{conn::TcpListener, handler, oapi::{OpenApi, RouterExt}, prelude::SwaggerUi, Listener, Request, Router, Server, Response, Depot, FlowCtrl};
 use salvo::http::{ResBody, StatusCode};
 use salvo::prelude::Json;
-use tracing::{info, error};
+use salvo::{
+    conn::TcpListener,
+    handler,
+    oapi::{OpenApi, RouterExt},
+    prelude::SwaggerUi,
+    Depot, FlowCtrl, Listener, Request, Response, Router, Server,
+};
+use tracing::{error, info};
 
 mod endpoints;
 mod repository;
@@ -21,13 +30,18 @@ const DOCS_PATH: &str = "docs";
 pub static CONTEXT: OnceCell<CookingAppRepository> = OnceCell::new();
 
 #[handler]
-async fn error_handler(req: &mut Request, res: &mut Response, depot: &mut Depot, ctrl: &mut FlowCtrl) {
+async fn error_handler(
+    req: &mut Request,
+    res: &mut Response,
+    depot: &mut Depot,
+    ctrl: &mut FlowCtrl,
+) {
     info!("{} {}", req.method(), req.uri());
 
     if ctrl.call_next(req, depot, res).await {
         if let ResBody::Error(error) = &res.body {
             let error = ErrorResponse {
-                message: error.brief.clone()
+                message: error.brief.clone(),
             };
             error!("{error:?}");
             res.status_code(StatusCode::BAD_REQUEST);
@@ -35,7 +49,7 @@ async fn error_handler(req: &mut Request, res: &mut Response, depot: &mut Depot,
         }
     } else {
         let error = ErrorResponse {
-            message: INTERNAL_SERVER_ERROR.to_string()
+            message: INTERNAL_SERVER_ERROR.to_string(),
         };
         error!("{error:?}");
     }

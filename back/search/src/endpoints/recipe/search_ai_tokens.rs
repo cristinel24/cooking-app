@@ -2,6 +2,7 @@ use crate::endpoints::recipe::{AiTokensPayload, TOP};
 use crate::endpoints::{
     AggregationResponse, EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR,
 };
+use crate::get_context;
 use crate::repository::extended_services::{
     AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations,
 };
@@ -31,16 +32,7 @@ pub async fn search_ai_tokens(
     ai_tokens: JsonBody<AiTokensPayload>,
     res: &mut Response,
 ) -> Json<EndpointResponse<Recipe>> {
-    let context = match get_context() {
-        Ok(value) => value,
-        Err(e) => {
-            error!("Error: {e}");
-            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-            return Json(EndpointResponse::Error(ErrorResponse {
-                message: e.to_string(),
-            }));
-        }
-    };
+    let context = get_context!(res);
 
     return match context
         .recipe_collection

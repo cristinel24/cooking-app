@@ -1,5 +1,6 @@
 use crate::endpoints::recipe::TOP;
 use crate::endpoints::{EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR};
+use crate::get_context;
 use crate::repository::extended_services::{
     AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations,
 };
@@ -20,16 +21,7 @@ pub async fn search_fuzz_title(
     res: &mut Response,
 ) -> Json<EndpointResponse<Recipe>> {
     let title = req.param::<String>("title").unwrap_or_default();
-    let context = match get_context() {
-        Ok(value) => value,
-        Err(e) => {
-            error!("Error: {e}");
-            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-            return Json(EndpointResponse::Error(ErrorResponse {
-                message: e.to_string(),
-            }));
-        }
-    };
+    let context = get_context!(res);
 
     return match context.recipe_collection.find_by_title(title).await {
         Ok(mut value) => {

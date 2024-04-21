@@ -2,6 +2,7 @@ use crate::endpoints::recipe::TOP;
 use crate::endpoints::{
     EndpointResponse, ErrorResponse, InputPayload, SearchResponse, INTERNAL_SERVER_ERROR,
 };
+use crate::get_context;
 use crate::repository::extended_services::{
     AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations,
     UserDatabaseOperations,
@@ -19,16 +20,7 @@ pub async fn search_general(
     payload: JsonBody<InputPayload>,
     res: &mut Response,
 ) -> Json<EndpointResponse<Recipe>> {
-    let context = match get_context() {
-        Ok(value) => value,
-        Err(e) => {
-            error!("Error: {e}");
-            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-            return Json(EndpointResponse::Error(ErrorResponse {
-                message: e.to_string(),
-            }));
-        }
-    };
+    let context = get_context!(res);
 
     let payload = payload.into_inner();
     let data = payload.data.clone();

@@ -3,6 +3,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+**/application.properties
+
+
 ### IntelliJ IDEA ###
 .idea/
 *.iws

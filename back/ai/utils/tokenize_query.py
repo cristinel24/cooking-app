@@ -7,7 +7,6 @@ client = openai_client()
 
 
 async def tokenize_user_query(query: str) -> str:
-    print("xddd")
     """
     Return tags relevant to user query.
     :param query: user query
@@ -32,7 +31,7 @@ async def tokenize_user_query(query: str) -> str:
         model=constants.GPT_MODEL,
     )
 
-    print(chat_completion.choices[0].message.content)
+    print("generated query: ", chat_completion.choices[0].message.content)
     return chat_completion.choices[0].message.content
 
 

@@ -13,14 +13,13 @@ client = openai_client()
 
 async def process_recipe(recipe):
     recipe_dict = dict(recipe)
-    print(recipe_dict)
 
     string_to_tokenize = f"""titlu: {recipe_dict["title"]}
     descriere: {recipe_dict["description"]}
     ingrediente: {recipe_dict["ingredients"]}
     pasi de preparare: {recipe_dict["prepare_steps"]}
     """
-    print(string_to_tokenize)
+    print("string to tokenize: ", string_to_tokenize)
 
     generated_tokens = await verify_generated_tokens(await tokenize_user_query(string_to_tokenize))
 

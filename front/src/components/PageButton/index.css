@@ -1,0 +1,37 @@
+* {
+  font-family: "Montserrat", sanf-serif;
+}
+.button {
+  background-color: var(--bkgcolor);
+  padding: 15px 20px 15px 20px;
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--txtcolor);
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: var(--hoverbkgcolor);
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .button {
+    font-size: 10px;
+    padding: 10px 15px 10px 15px;
+    border-radius: 10px;
+  }
+  .button:hover {
+    background-color: var(--hoverbkgcolor);
+  }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .button {
+    font-size: 8px;
+    padding: 8px 10px 8px 10px;
+    border-radius: 10px;
+  }
+  .button:hover {
+    background-color: var(--hoverbkgcolor);
+  }
+}

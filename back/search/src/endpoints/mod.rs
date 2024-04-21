@@ -92,7 +92,7 @@ pub struct AggregationResponse<T: Serialize> {
     pub data: Vec<T>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, Debug, ToSchema)]
 pub struct ErrorResponse {
     pub message: String,
 }

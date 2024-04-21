@@ -1,9 +1,8 @@
-import os
 from dotenv import load_dotenv
 from utils.db_wrapper import DBWrapper
 from utils.tokenize_query import tokenize_user_query, verify_generated_tokens, normalise_dict
 
-from utils.process_chatbot import process_chatbot_query
+from utils.process_chatbot import process_chatbot_query, get_tags_from_saved_recipes
 from utils.openai_client import openai_client
 
 load_dotenv()
@@ -55,8 +54,7 @@ async def process_chatbot(api_query):
 
     user_info = db_wrapper.get_user_context(user_id)
 
-    # TODO
-    saved_recipe_tags = []
+    saved_recipe_tags = get_tags_from_saved_recipes(user_info["savedRecipes"])
 
     return {
         "message": await process_chatbot_query(

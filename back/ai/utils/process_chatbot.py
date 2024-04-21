@@ -6,6 +6,26 @@ db_wrapper = DBWrapper()
 client = openai_client()
 
 
+def get_tags_from_saved_recipes(saved_recipes):
+    # TODO: might have to replace when modifying DB
+    recipe_tags = list(map(lambda recipe_id : db_wrapper.get_recipe(str(recipe_id))["tags"], saved_recipes))
+    recipe_tag_frequencies = dict()
+
+    for recipe_tag_list in recipe_tags:
+        for tag in recipe_tag_list:
+            if tag in recipe_tag_frequencies:
+                recipe_tag_frequencies[tag] += 1
+            else:
+                recipe_tag_frequencies[tag] = 1
+
+    sorted_tags = [pair[0] for pair in sorted(recipe_tag_frequencies.items(), key=lambda x: x[1], reverse=True)]
+
+    max_tags = 10
+
+    top_tags = sorted_tags[:max_tags]
+    return top_tags
+
+
 async def process_chatbot_query(message_history: list[str], user_query: str,
                                 user_tags: list[str], saved_recipe_tokens: list[str],
                                 allergens: list[str], blacklisted_items: list[str]) -> str:
@@ -47,13 +67,6 @@ async def process_chatbot_query(message_history: list[str], user_query: str,
 
     return chat_completion.choices[0].message.content
 
-
-
-
-# def get_tags_from_saved_recipes(user_id) -> list[str]:
-#     saved_recipes = dict()
-#
-#     pass
 
 
 # async def main():

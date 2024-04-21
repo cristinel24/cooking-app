@@ -1,5 +1,6 @@
 package app.user.service;
 
+import app.user.dto.LoginDto;
 import app.user.exceptions.LoginError;
 import app.user.exceptions.ValidationError;
 import app.user.request.LoginRequest;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -76,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileDto login(LoginRequest body) {
+    public LoginDto login(LoginRequest body) {
         User user = null;
 
         if (body.getUsername() != null) {
@@ -95,7 +97,10 @@ public class UserServiceImpl implements UserService {
             throw new LoginError("Passwords do not match");
         }
 
-//        return UserMapper.toLoginDto(user, JwtConfig.genToken(user.getUsername()));
-        return null;
+        try {
+            return UserMapper.toLoginDto(user, JwtConfig.get().genToken(user.getUsername()));
+        } catch (NoSuchAlgorithmException e) {
+            throw new LoginError("Unexpected error");
+        }
     }
 }

@@ -1,7 +1,5 @@
 package app.user.model;
 
-import app.rating.model.Rating;
-import app.recipe.model.Recipe;
 import app.utils.expiring_token.model.ExpiringToken;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +9,6 @@ import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;

@@ -1,5 +1,6 @@
 package app.user.service;
 
+import app.user.dto.LoginDto;
 import app.user.dto.UserProfileDto;
 import app.user.request.LoginRequest;
 import app.user.request.RegisterRequest;
@@ -11,5 +12,5 @@ public interface UserService {
 
     void createUser(RegisterRequest body);
 
-    UserProfileDto login(LoginRequest body);
+    LoginDto login(LoginRequest body);
 }

@@ -1,9 +1,13 @@
 package app.user.service;
 
+import app.user.dto.UserProfileDto;
+import app.user.model.User;
 import app.user.repository.UserRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Log4j2
 @Component
 public class UserServiceImpl implements UserService {
 
@@ -11,32 +15,17 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public void updateData(String icon, String displayName, String description, String[] allergens) {
+    public UserProfileDto getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
 
+        if (user == null) {
+            return null;
+        }
+
+        return UserMapper.toUserProfileDto(user);
     }
 
     @Override
-    public String[] getSearchHistory(String id) {
-        return new String[0];
-    }
-
-    @Override
-    public void updateSearchHistory(String id, String[] searchHistory) {
-
-    }
-
-    @Override
-    public void clearSearchHistory(String id) {
-
-    }
-
-    @Override
-    public String[] getMessageHistory(String id) {
-        return new String[0];
-    }
-
-    @Override
-    public void updateMessageHistory(String id, String[] messageHistory) {
 
     }
 

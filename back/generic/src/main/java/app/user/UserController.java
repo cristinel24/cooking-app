@@ -1,22 +1,24 @@
 package app.user;
 
-import app.user.model.User;
+import app.user.dto.UserProfileDto;
 import app.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-
     @Autowired
     private UserService userService;
 
-    @GetMapping("/user/{username}")
-    public User getUser(@PathVariable String username) {
-        return userService.getUserByUsername(username);
+    @GetMapping("/{username}/profile")
+    public ResponseEntity<?> getUserProfile(@PathVariable String username) {
+        UserProfileDto user = userService.getUserByUsername(username);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestMessage("User not found"));
+        }
+        return ResponseEntity.ok(user);
     }
+
 }

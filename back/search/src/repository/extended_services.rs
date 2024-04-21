@@ -202,7 +202,7 @@ impl RecipeDatabaseOperations<Recipe> for service::recipe::Service {
                 match_doc.insert("prepTime", doc! { "$lte": prep_time });
             }
             if let Some(rating) = filters.rating {
-                match_doc.insert("sumRating", doc! { "$gte": rating });
+                match_doc.insert("ratingSum", doc! { "$gte": rating });
             }
 
             pipeline.push(doc! { "$match": match_doc });
@@ -441,9 +441,9 @@ impl UserDatabaseOperations<User> for service::user::Service {
                     "roles": 1,
                     "rating": {
                         "$cond": {
-                            "if": { "$eq": ["$countRating", 0] },
+                            "if": { "$eq": ["$ratingCount", 0] },
                             "then": 0,
-                            "else": { "$divide": ["$sumRating", "$countRating"] }
+                            "else": { "$divide": ["$ratingSum", "$ratingCount"] }
                         }
                     }
                 }

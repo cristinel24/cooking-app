@@ -17,7 +17,8 @@ Pt a rula script-ul de populare sunt necesare urmatoarele:
 - instalati python
 - mergeti intr-un folder in care sa fie `populate.py`, `triggers.py` si `requirements.txt`
 - creati un virtual env (`python3 -m venv venv` pe linux)
-- `pip install -r requirements.txt`
+- `source venv/bin/activate` (pe windows ar tb sa fie ceva similar, look it up)
+- `pip install -r requirements.txt` (sau `venv/bin/pip install -r requirements.txt` daca cu `source`-ul de mai sus nu merge)
 - `python3 populate.py`
 
 Dupa toti pasii astia, ar tb sa aveti baza de date facuta cu date mockuite si cu validari puse (TOT TREBUIE FACUTE IN BACKEND VALIDARI REGARDLESS) <br>

@@ -1,5 +1,6 @@
 package app.user.repository;
 
+import app.user.dto.LoginDto;
 import app.user.dto.UserCardDto;
 import app.user.dto.UserOwnProfileDto;
 import app.user.dto.UserProfileDto;
@@ -11,8 +12,8 @@ public class UserMapper {
                 .setIcon(user.getIcon())
                 .setDisplayName(user.getDisplayName())
                 .setRoles(user.getRoles())
-                .setRatings(user.getRatings())
-                .setUsername(user.getLogin().getUsername());
+//                .setRatings(user.getRatings())
+                .setUsername(user.getUsername());
     }
 
     public static UserOwnProfileDto toUserOwnProfileDto(User user) {
@@ -20,9 +21,9 @@ public class UserMapper {
                 .setIcon(user.getIcon())
                 .setDisplayName(user.getDisplayName())
                 .setRoles(user.getRoles())
-                .setRatings(user.getRatings())
-                .setUsername(user.getLogin().getUsername())
-                .setEmail(user.getLogin().getEmail());
+//                .setRatings(user.getRatings())
+                .setEmail(user.getEmail())
+                .setUsername(user.getUsername());
     }
 
     public static UserProfileDto toUserProfileDto(User user) {
@@ -30,7 +31,16 @@ public class UserMapper {
                 .setIcon(user.getIcon())
                 .setDisplayName(user.getDisplayName())
                 .setRoles(user.getRoles())
-                .setRatings(user.getRatings())
-                .setUsername(user.getLogin().getUsername());
+//                .setRatings(user.getRatings())
+                .setUsername(user.getUsername());
+    }
+
+    public static LoginDto toLoginDto(User user, String sessionToken) {
+        return new LoginDto()
+                .setIcon(user.getIcon())
+                .setDisplayName(user.getDisplayName())
+                .setRoles(user.getRoles())
+                .setUsername(user.getUsername())
+                .setSessionToken(sessionToken);
     }
 }

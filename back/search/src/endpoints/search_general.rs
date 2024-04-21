@@ -1,16 +1,24 @@
+use crate::endpoints::recipe::TOP;
+use crate::endpoints::{
+    EndpointResponse, ErrorResponse, InputPayload, SearchResponse, INTERNAL_SERVER_ERROR,
+};
+use crate::repository::extended_services::{
+    AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations,
+    UserDatabaseOperations,
+};
 use crate::repository::get_context;
+use crate::repository::models::recipe::Recipe;
 use salvo::http::StatusCode;
 use salvo::oapi::extract::JsonBody;
 use salvo::prelude::{endpoint, Json, Writer};
 use salvo::Response;
 use tracing::error;
-use crate::endpoints::{EndpointResponse, ErrorResponse, InputPayload, INTERNAL_SERVER_ERROR};
-use crate::repository::extended_services::{AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations};
-
 
 #[endpoint]
-pub async fn search_general(payload: JsonBody<InputPayload>, res: &mut Response) -> Json<EndpointResponse> {
-    
+pub async fn search_general(
+    payload: JsonBody<InputPayload>,
+    res: &mut Response,
+) -> Json<EndpointResponse<Recipe>> {
     let context = match get_context() {
         Ok(value) => value,
         Err(e) => {
@@ -22,11 +30,10 @@ pub async fn search_general(payload: JsonBody<InputPayload>, res: &mut Response)
         }
     };
 
-    let recipes = match context
-        .recipe_collection
-        .search(payload.into_inner())
-        .await
-    {
+    let payload = payload.into_inner();
+    let data = payload.data.clone();
+
+    let recipes = match context.recipe_collection.search(payload).await {
         Ok(mut value) => {
             if value.data.is_empty() {
                 return Json(EndpointResponse::default());
@@ -35,7 +42,7 @@ pub async fn search_general(payload: JsonBody<InputPayload>, res: &mut Response)
             for recipe in value.data.iter_mut() {
                 let top_tags = match context
                     .tag_collection
-                    .filter_top_x_tags(recipe.tags.clone(), crate::endpoints::recipe::TOP)
+                    .filter_top_x_tags(recipe.tags.clone(), TOP)
                     .await
                 {
                     Ok(value) => value,
@@ -51,7 +58,7 @@ pub async fn search_general(payload: JsonBody<InputPayload>, res: &mut Response)
                 }
                 let top_tags = match context
                     .allergen_collection
-                    .filter_top_x_allergens(recipe.allergens.clone(), crate::endpoints::recipe::TOP)
+                    .filter_top_x_allergens(recipe.allergens.clone(), TOP)
                     .await
                 {
                     Ok(value) => value,
@@ -74,9 +81,23 @@ pub async fn search_general(payload: JsonBody<InputPayload>, res: &mut Response)
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
             return Json(EndpointResponse::Error(ErrorResponse {
                 message: e.to_string(),
-            }))
+            }));
         }
     };
 
-    Json(EndpointResponse::default())
+    let users = match context.user_collection.find_by_name(data).await {
+        Ok(value) => value,
+        Err(e) => {
+            error!("Error: {e}");
+            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            return Json(EndpointResponse::Error(ErrorResponse {
+                message: e.to_string(),
+            }));
+        }
+    };
+
+    Json(EndpointResponse::SuccessSearch(SearchResponse {
+        recipes,
+        users,
+    }))
 }

@@ -1,20 +1,23 @@
+use crate::endpoints::{AggregationResponse, InputPayload};
+use crate::repository::models::recipe::Recipe;
+use crate::repository::models::user::User;
 use crate::repository::service;
 use anyhow::Result;
 use async_trait::async_trait;
-use bson::{doc, from_document, Bson};
+use bson::{doc, from_document, Bson, Document};
 use futures::TryStreamExt;
-use crate::endpoints::{InputPayload, AggregationResponse};
+use serde::Serialize;
 
 #[async_trait]
-pub trait RecipeDatabaseOperations {
-    async fn find_by_tokens(&self, array: &[String]) -> Result<AggregationResponse>;
-    async fn find_by_title(&self, title: String) -> Result<AggregationResponse>;
-    async fn search(&self, payload: InputPayload) -> Result<AggregationResponse>;
+pub trait RecipeDatabaseOperations<T: Serialize> {
+    async fn find_by_tokens(&self, array: &[String]) -> Result<AggregationResponse<T>>;
+    async fn find_by_title(&self, title: String) -> Result<AggregationResponse<T>>;
+    async fn search(&self, payload: InputPayload) -> Result<AggregationResponse<T>>;
 }
 
 #[async_trait]
-impl RecipeDatabaseOperations for service::recipe::Service {
-    async fn find_by_tokens(&self, array: &[String]) -> Result<AggregationResponse> {
+impl RecipeDatabaseOperations<Recipe> for service::recipe::Service {
+    async fn find_by_tokens(&self, array: &[String]) -> Result<AggregationResponse<Recipe>> {
         let lower_cased_tokens: Vec<String> =
             array.iter().map(|item| item.to_lowercase()).collect();
         let pipeline = vec![
@@ -73,14 +76,14 @@ impl RecipeDatabaseOperations for service::recipe::Service {
 
         let mut cursor = self.collection.aggregate(pipeline, None).await?;
         if let Some(document) = cursor.try_next().await? {
-            let response: AggregationResponse = from_document(document)?;
+            let response: AggregationResponse<Recipe> = from_document(document)?;
             return Ok(response);
         };
 
         Ok(AggregationResponse::default())
     }
 
-    async fn find_by_title(&self, title: String) -> Result<AggregationResponse> {
+    async fn find_by_title(&self, title: String) -> Result<AggregationResponse<Recipe>> {
         let pipeline = vec![
             doc! {
                 "$match": {
@@ -132,47 +135,47 @@ impl RecipeDatabaseOperations for service::recipe::Service {
 
         let mut cursor = self.collection.aggregate(pipeline, None).await?;
         if let Some(document) = cursor.try_next().await? {
-            let response: AggregationResponse = from_document(document)?;
+            let response: AggregationResponse<Recipe> = from_document(document)?;
             return Ok(response);
         };
 
         Ok(AggregationResponse::default())
     }
 
-    async fn search(&self, payload: InputPayload) -> Result<AggregationResponse> {
-        let mut pipeline = vec![
-            doc! {
-                "$addFields": {
-                    "ingredients": {
-                        "$map": {
-                            "input": "$ingredients",
-                            "as": "ingredients",
-                            "in": {
-                                "$toLower": "$$ingredients",
-                            }
+    async fn search(&self, payload: InputPayload) -> Result<AggregationResponse<Recipe>> {
+        let mut pipeline = vec![doc! {
+            "$addFields": {
+                "ingredients": {
+                    "$map": {
+                        "input": "$ingredients",
+                        "as": "ingredients",
+                        "in": {
+                            "$toLower": "$$ingredients",
                         }
-                    },
-                    "tags": {
-                        "$map": {
-                            "input": "$tags",
-                            "as": "tags",
-                            "in": {
-                                "$toLower": "$$tags",
-                            }
+                    }
+                },
+                "tags": {
+                    "$map": {
+                        "input": "$tags",
+                        "as": "tags",
+                        "in": {
+                            "$toLower": "$$tags",
                         }
-                    },
-                    "allergens": {
-                        "$map": {
-                            "input": "$allergens",
-                            "as": "allergens",
-                            "in": {
-                                "$toLower": "$$allergens",
-                            }
+                    }
+                },
+                "allergens": {
+                    "$map": {
+                        "input": "$allergens",
+                        "as": "allergens",
+                        "in": {
+                            "$toLower": "$$allergens",
                         }
-                    },
-                }
+                    }
+                },
             }
-        ];
+        }];
+
+        let mut matched_authors: Option<Document> = None;
 
         if let Some(filters) = payload.filters {
             let mut match_doc = doc! {};
@@ -203,6 +206,23 @@ impl RecipeDatabaseOperations for service::recipe::Service {
             }
 
             pipeline.push(doc! { "$match": match_doc });
+
+            if let Some(users) = filters.authors {
+                let or_conditions = users
+                    .into_iter()
+                    .flat_map(|user| {
+                        vec![
+                            doc! {"author.displayName": { "$regex": &user, "$options": "i"} },
+                            doc! {"author.username": { "$regex": user, "$options": "i", } },
+                        ]
+                    })
+                    .collect::<Vec<_>>();
+                matched_authors = Some(doc! {
+                    "$match": {
+                        "$or": or_conditions
+                    }
+                })
+            }
         }
 
         pipeline.append(&mut vec![
@@ -251,6 +271,13 @@ impl RecipeDatabaseOperations for service::recipe::Service {
                     ]
                 }
             },
+        ]);
+
+        if let Some(user_pipe) = matched_authors {
+            pipeline.push(user_pipe);
+        };
+
+        pipeline.append(&mut vec![
             doc! {
                 "$project": {
                     "_id": 0,
@@ -284,12 +311,12 @@ impl RecipeDatabaseOperations for service::recipe::Service {
                     "data": 1,
                     "count": "$total.count",
                 }
-            }
+            },
         ]);
 
         let mut cursor = self.collection.aggregate(pipeline, None).await?;
         if let Some(document) = cursor.try_next().await? {
-            let response: AggregationResponse = from_document(document)?;
+            let response: AggregationResponse<Recipe> = from_document(document)?;
             return Ok(response);
         };
 
@@ -314,9 +341,10 @@ impl TagDatabaseOperations for service::tag::Service {
         number: u32,
     ) -> Result<Option<Vec<String>>> {
         let pipeline = vec![
+            doc! { "$addFields": { "tag": { "$toLower": "$tag"} } },
             doc! { "$match": { "tag": { "$in": tags } } },
             doc! { "$sort": { "counter" : -1 } },
-            doc! { "$limit": number },
+            doc! { "$limit": number as i32 },
             doc! { "$project": { "tag": 1, "_id": 0 } },
             doc! { "$group": { "_id": null, "tags": { "$push": "$tag" } } },
         ];
@@ -360,9 +388,10 @@ impl AllergenDatabaseOperations for service::allergen::Service {
         number: u32,
     ) -> Result<Option<Vec<String>>> {
         let pipeline = vec![
+            doc! { "$addFields": { "allergen": { "$toLower": "$allergen"} } },
             doc! { "$match": { "allergen": { "$in": allergens } } },
             doc! { "$sort": { "counter" : -1 } },
-            doc! { "$limit": number },
+            doc! { "$limit": number as i32},
             doc! { "$project": { "allergen": 1, "_id": 0 } },
             doc! { "$group": { "_id": null, "allergens": { "$push": "$allergen" } } },
         ];
@@ -386,5 +415,60 @@ impl AllergenDatabaseOperations for service::allergen::Service {
         } else {
             Ok(None)
         }
+    }
+}
+pub trait UserDatabaseOperations<T: Serialize> {
+    async fn find_by_name(&self, data: String) -> Result<AggregationResponse<T>>;
+}
+
+impl UserDatabaseOperations<User> for service::user::Service {
+    async fn find_by_name(&self, data: String) -> Result<AggregationResponse<User>> {
+        let pipeline = vec![
+            doc! {
+                "$match": {
+                    "$or": [
+                        { "username": { "$regex": data.clone(), "$options": "i" } },
+                        { "displayName": { "$regex": data, "$options": "i" } }
+                    ]
+                }
+            },
+            doc! {
+                "$project": {
+                    "_id": 0,
+                    "icon": 1,
+                    "displayName": 1,
+                    "username": 1,
+                    "roles": 1,
+                    "rating": {
+                        "$cond": {
+                            "if": { "$eq": ["$countRating", 0] },
+                            "then": 0,
+                            "else": { "$divide": ["$sumRating", "$countRating"] }
+                        }
+                    }
+                }
+            },
+            doc! { "$sort": { "rating": -1 } },
+            doc! {
+                "$group": {
+                    "_id": null,
+                    "data": { "$push": "$$ROOT" },
+                    "count": { "$sum": 1 }
+                }
+            },
+            doc! {
+                "$project": {
+                    "_id": 0,
+                    "data": 1,
+                    "count": 1
+                }
+            },
+        ];
+        let mut cursor = self.collection.aggregate(pipeline, None).await?;
+        if let Some(document) = cursor.try_next().await? {
+            let users_aggregation: AggregationResponse<User> = from_document(document)?;
+            return Ok(users_aggregation);
+        }
+        Ok(AggregationResponse::default())
     }
 }

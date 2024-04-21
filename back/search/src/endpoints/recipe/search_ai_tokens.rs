@@ -1,22 +1,24 @@
 use crate::endpoints::recipe::{AiTokensPayload, TOP};
-use crate::endpoints::{EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR, AggregationResponse};
+use crate::endpoints::{
+    AggregationResponse, EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR,
+};
 use crate::repository::extended_services::{
     AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations,
 };
 use crate::repository::get_context;
+use crate::repository::models::recipe::Recipe;
 use salvo::http::StatusCode;
 use salvo::oapi::extract::JsonBody;
 use salvo::prelude::{endpoint, Json, Writer};
 use salvo::Response;
 use tracing::error;
 
-
 #[endpoint(
     responses(
         (
             status_code = StatusCode::OK,
-            body = AggregationResponse,
-            example = json!(AggregationResponse::default())
+            body = AggregationResponse<Recipe>,
+            example = json!(AggregationResponse::<Recipe>::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -28,7 +30,7 @@ use tracing::error;
 pub async fn search_ai_tokens(
     ai_tokens: JsonBody<AiTokensPayload>,
     res: &mut Response,
-) -> Json<EndpointResponse> {
+) -> Json<EndpointResponse<Recipe>> {
     let context = match get_context() {
         Ok(value) => value,
         Err(e) => {

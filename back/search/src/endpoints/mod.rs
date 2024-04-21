@@ -1,13 +1,13 @@
+use crate::repository::models::recipe::Recipe;
+use crate::repository::models::user::User;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
-use crate::repository::models::recipe::Recipe;
 
 pub mod recipe;
-pub mod test;
 pub mod search_general;
+pub mod user;
 
 pub const INTERNAL_SERVER_ERROR: &str = "Internal Server Error!";
-
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct InputPayload {
@@ -19,7 +19,6 @@ pub struct InputPayload {
     pub page: u32,
     pub results_per_page: u32,
 }
-
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct Filters {
@@ -54,26 +53,27 @@ pub struct BlacklistedFilters {
     pub allergens: Option<Vec<String>>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, Default, ToSchema)]
 pub struct SearchResponse {
-    pub recipes: AggregationResponse,
-    pub users: AggregationResponse,
+    pub recipes: AggregationResponse<Recipe>,
+    pub users: AggregationResponse<User>,
 }
 
 #[derive(Deserialize, ToSchema)]
-pub enum EndpointResponse {
-    Success(AggregationResponse),
+pub enum EndpointResponse<T: Serialize> {
     SuccessSearch(SearchResponse),
+
+    Success(AggregationResponse<T>),
     Error(ErrorResponse),
 }
 
-impl Default for EndpointResponse {
+impl<T: Serialize> Default for EndpointResponse<T> {
     fn default() -> Self {
-        Self::Success(AggregationResponse::default())
+        Self::SuccessSearch(SearchResponse::default())
     }
 }
 
-impl Serialize for EndpointResponse {
+impl<T: Serialize> Serialize for EndpointResponse<T> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -87,9 +87,9 @@ impl Serialize for EndpointResponse {
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
-pub struct AggregationResponse {
+pub struct AggregationResponse<T: Serialize> {
     pub count: u32,
-    pub data: Vec<Recipe>,
+    pub data: Vec<T>,
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]

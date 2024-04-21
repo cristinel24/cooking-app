@@ -1,5 +1,3 @@
-use bson::oid::ObjectId;
-use chrono::{DateTime, Utc};
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
@@ -13,22 +11,20 @@ pub struct Author {
     pub roles: i32,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
-    #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
-    pub updated_at: DateTime<Utc>,
     pub icon: String,
     pub display_name: String,
+    pub username: String,
     pub roles: i32,
-    pub sum_rating: i32,
-    pub count_rating: i32,
-    pub description: String,
-    pub message_history: Vec<String>,
-    pub search_history: Vec<String>,
-    pub saved_recipes: Vec<ObjectId>,
-    pub ratings: Vec<ObjectId>,
-    pub allergens: Vec<String>,
+    pub rating: f32,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
+pub struct UserAggregation {
+    pub data: Vec<User>,
+    pub count: u32,
 }
 
 impl User {

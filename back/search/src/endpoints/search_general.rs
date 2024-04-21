@@ -1,34 +1,16 @@
-use crate::endpoints::recipe::{AiTokensPayload, TOP};
-use crate::endpoints::{EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR, AggregationResponse};
-use crate::repository::extended_services::{
-    AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations,
-};
 use crate::repository::get_context;
 use salvo::http::StatusCode;
 use salvo::oapi::extract::JsonBody;
 use salvo::prelude::{endpoint, Json, Writer};
 use salvo::Response;
 use tracing::error;
+use crate::endpoints::{EndpointResponse, ErrorResponse, InputPayload, INTERNAL_SERVER_ERROR};
+use crate::repository::extended_services::{AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations};
 
 
-#[endpoint(
-    responses(
-        (
-            status_code = StatusCode::OK,
-            body = AggregationResponse,
-            example = json!(AggregationResponse::default())
-        ),
-        (
-            status_code = StatusCode::INTERNAL_SERVER_ERROR,
-            body = ErrorResponse,
-            example = json!(ErrorResponse::default())
-        )
-    )
-)]
-pub async fn search_ai_tokens(
-    ai_tokens: JsonBody<AiTokensPayload>,
-    res: &mut Response,
-) -> Json<EndpointResponse> {
+#[endpoint]
+pub async fn search_general(payload: JsonBody<InputPayload>, res: &mut Response) -> Json<EndpointResponse> {
+    
     let context = match get_context() {
         Ok(value) => value,
         Err(e) => {
@@ -40,9 +22,9 @@ pub async fn search_ai_tokens(
         }
     };
 
-    return match context
+    let recipes = match context
         .recipe_collection
-        .find_by_tokens(&ai_tokens.tokens)
+        .search(payload.into_inner())
         .await
     {
         Ok(mut value) => {
@@ -53,7 +35,7 @@ pub async fn search_ai_tokens(
             for recipe in value.data.iter_mut() {
                 let top_tags = match context
                     .tag_collection
-                    .filter_top_x_tags(recipe.tags.clone(), TOP)
+                    .filter_top_x_tags(recipe.tags.clone(), crate::endpoints::recipe::TOP)
                     .await
                 {
                     Ok(value) => value,
@@ -69,7 +51,7 @@ pub async fn search_ai_tokens(
                 }
                 let top_tags = match context
                     .allergen_collection
-                    .filter_top_x_allergens(recipe.allergens.clone(), TOP)
+                    .filter_top_x_allergens(recipe.allergens.clone(), crate::endpoints::recipe::TOP)
                     .await
                 {
                     Ok(value) => value,
@@ -84,14 +66,17 @@ pub async fn search_ai_tokens(
                     recipe.allergens = top;
                 }
             }
-            Json(EndpointResponse::Success(value))
+
+            value
         }
         Err(e) => {
             error!("Error: {e}");
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-            Json(EndpointResponse::Error(ErrorResponse {
+            return Json(EndpointResponse::Error(ErrorResponse {
                 message: e.to_string(),
             }))
         }
     };
+
+    Json(EndpointResponse::default())
 }

@@ -12,6 +12,7 @@ use salvo::prelude::SwaggerUi;
 use salvo::{handler, Listener, Request, Router, Server};
 use tracing::info;
 use crate::endpoints::recipe::search_fuzzy_title::search_fuzz_title;
+use crate::endpoints::search_general::search_general;
 
 const MONGO_KEY: &str = "MONGO_URI";
 const PORT: u32 = 7777u32;
@@ -41,6 +42,7 @@ async fn main() -> Result<()> {
     let raw_router = Router::new().push(Router::with_path("/api")
         .hoop(logger_middleware)
         .append(&mut vec![
+            Router::with_path("/search").post(search_general),
             Router::with_path("/tokens").post(search_ai_tokens),
             Router::with_path("/title/<title>").get(search_fuzz_title),
     ]));

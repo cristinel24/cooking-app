@@ -1,11 +1,11 @@
-use crate::endpoints::recipe::{ErrorResponse, RecipeResponse, TOP};
 use crate::repository::extended_services::{AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations};
 use crate::repository::get_context;
 use salvo::http::StatusCode;
 use salvo::prelude::{endpoint, Json};
 use salvo::{Request, Response};
 use tracing::error;
-use crate::endpoints::INTERNAL_SERVER_ERROR;
+use crate::endpoints::{EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR};
+use crate::endpoints::recipe::TOP;
 
 
 #[endpoint(
@@ -13,14 +13,14 @@ use crate::endpoints::INTERNAL_SERVER_ERROR;
         ("title" = String, description = "Titlul retetei pe care o cauti")
     )
 )]
-pub async fn search_fuzz_title(req: &mut Request, res: &mut Response) -> Json<RecipeResponse> {
+pub async fn search_fuzz_title(req: &mut Request, res: &mut Response) -> Json<EndpointResponse> {
     let title = req.param::<String>("title").unwrap_or_default();
     let context = match get_context() {
         Ok(value) => value,
         Err(e) => {
             error!("Error: {e}");
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-            return Json(RecipeResponse::Error(ErrorResponse {
+            return Json(EndpointResponse::Error(ErrorResponse {
                 message: e.to_string(),
             }));
         }
@@ -33,7 +33,7 @@ pub async fn search_fuzz_title(req: &mut Request, res: &mut Response) -> Json<Re
     {
         Ok(mut value) => {
             if value.data.is_empty() {
-                return Json(RecipeResponse::default());
+                return Json(EndpointResponse::default());
             }
             for recipe in value.data.iter_mut() {
                 let top_tags = match context
@@ -44,7 +44,7 @@ pub async fn search_fuzz_title(req: &mut Request, res: &mut Response) -> Json<Re
                     Ok(value) => value,
                     Err(_) => {
                         res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                        return Json(RecipeResponse::Error(ErrorResponse {
+                        return Json(EndpointResponse::Error(ErrorResponse {
                             message: INTERNAL_SERVER_ERROR.to_string(),
                         }));
                     }
@@ -60,7 +60,7 @@ pub async fn search_fuzz_title(req: &mut Request, res: &mut Response) -> Json<Re
                     Ok(value) => value,
                     Err(_) => {
                         res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                        return Json(RecipeResponse::Error(ErrorResponse {
+                        return Json(EndpointResponse::Error(ErrorResponse {
                             message: INTERNAL_SERVER_ERROR.to_string(),
                         }));
                     }
@@ -69,12 +69,12 @@ pub async fn search_fuzz_title(req: &mut Request, res: &mut Response) -> Json<Re
                     recipe.allergens = top;
                 }
             }
-            Json(RecipeResponse::Success(value))
+            Json(EndpointResponse::Success(value))
         }
         Err(e) => {
             error!("Error: {e}");
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-            Json(RecipeResponse::Error(ErrorResponse {
+            Json(EndpointResponse::Error(ErrorResponse {
                 message: e.to_string(),
             }))
         }

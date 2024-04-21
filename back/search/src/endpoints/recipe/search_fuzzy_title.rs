@@ -4,7 +4,7 @@ use crate::get_context;
 use crate::repository::extended_services::{
     AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations,
 };
-use crate::repository::get_context;
+use crate::repository::get_repository;
 use crate::repository::models::recipe::Recipe;
 use salvo::http::StatusCode;
 use salvo::prelude::{endpoint, Json};

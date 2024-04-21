@@ -12,7 +12,7 @@ pub const INTERNAL_SERVER_ERROR: &str = "Internal Server Error!";
 #[macro_export]
 macro_rules! get_context {
     ($res:expr) => {
-        match get_context() {
+        match get_repository() {
             Ok(value) => value,
             Err(e) => {
                 error!("Error: {e}");

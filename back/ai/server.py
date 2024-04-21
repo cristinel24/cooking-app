@@ -19,13 +19,13 @@ router = APIRouter(
 
 
 @router.post("/tokenize/recipe", tags=["tokenize"])
-async def tokenize_recipe():
-    return {"message": "Request on root route!"}
+async def tokenize_recipe(recipe: schemas.TokenizeRecipeSchema):
+    return await processor.process_recipe(recipe)
 
 
 @router.get("/tokenize/user_query/{query}", tags=["tokenize"])
 async def tokenize_user_query(query):
-    return await tokenize_query.verify_generated_tokens(query, await tokenize_query.tokenize_user_query(query))
+    return await processor.process_query(query)
 
 
 @router.post("/chatbot", tags=["chatbot"])

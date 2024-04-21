@@ -3,8 +3,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, APIRouter
 
 import processor
-from utils import tokenize_query, schemas
-from utils import process_chatbot
+from utils import schemas
+
+from utils import tokenize_query
 
 load_dotenv()
 
@@ -29,7 +30,7 @@ async def tokenize_user_query(query):
 
 @router.post("/chatbot", tags=["chatbot"])
 async def process_chatbot_query(query: schemas.ChatbotInput):
-    return await process_chatbot.process_chatbot(query)
+    return await processor.process_chatbot(query)
 
 app.include_router(router)
 

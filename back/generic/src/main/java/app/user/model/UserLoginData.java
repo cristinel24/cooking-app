@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class UserLoginData {
-    private String emailStatus;
+    private String emailStatus = "Pending";
     private String hashAlgName;
     private String hash;
     private String salt; // 64 bytes

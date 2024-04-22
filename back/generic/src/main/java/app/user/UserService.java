@@ -1,7 +1,6 @@
 package app.user;
 
 import app.user.dto.LoginDto;
-import app.user.request.VerifyRequest;
 import app.utils.requests.RequestError;
 import app.user.request.LoginRequest;
 import app.user.dto.UserProfileDto;
@@ -45,7 +44,6 @@ public class UserService {
     public void createUser(RegisterRequest body) {
         String salt = BCrypt.gensalt(10);
         String hash = BCrypt.hashpw(body.getPassword(), salt);
-        String tokenValue = TokenGenerator.getToken();
 
         User user = new User()
                 .setName(IdGenerator.getId())
@@ -72,7 +70,10 @@ public class UserService {
         }
 
         // then create the token that the user will use to verify his account
-        ExpiringToken token = new ExpiringToken(tokenValue, user.getId(), "session");
+        ExpiringToken token = new ExpiringToken()
+                .setValue(TokenGenerator.getToken())
+                .setUserId(user.getId())
+                .setType("credentialChange");
         user.getLogin().setEmailChangeToken(token);
 
         // then save it to the database

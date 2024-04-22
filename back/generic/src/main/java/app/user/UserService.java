@@ -133,27 +133,52 @@ public class UserService {
     public LoginDto login(LoginRequest body) {
         User user = null;
 
+        // get the user by their credentials
         if (body.getUsername() != null) {
             user = userRepository.findByUsername(body.getUsername());
         } else if (body.getEmail() != null) {
             user = userRepository.findByEmail(body.getEmail());
         }
 
+        // check for existence
         if (user == null) {
-            throw new RequestError("User does not exist");
+            log.error("User not found");
+            throw new RequestError("Invalid credentials");
         }
 
+        // check that the passwords match
         String hash = BCrypt.hashpw(body.getPassword(), user.getLogin().getSalt());
 
-        if (user.getLogin().getHash().equals(hash)) {
-            throw new RequestError("Passwords do not match");
+        if (!user.getLogin().getHash().equals(hash)) {
+            log.error("Password did not match");
+            throw new RequestError("Invalid credentials");
         }
 
-//        try {
-//            return UserMapper.toLoginDto(user, );
-            return null;
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new LoginError("Unexpected error");
-//        }
+        // generate a new session for this user
+        ExpiringToken token = new ExpiringToken()
+                .setValue(TokenGenerator.getToken())
+                .setUserId(user.getId())
+                .setType("session");
+
+        try {
+            expiringTokenRepository.save(token);
+        } catch (Exception e) {
+            log.error(e);
+            throw new RequestError("Could not create session");
+        }
+
+        // add the session to the user
+        user.addSession(token);
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            log.error(e);
+            expiringTokenRepository.delete(token); // delete the token if save failed
+            throw new RequestError("Could not create session");
+        }
+
+        // return the newly created session to the user
+        return UserMapper.toLoginDto(user, token.getValue());
     }
 }

@@ -51,4 +51,8 @@ public class User {
 //    @DBRef private List<Rating> ratings;
     private List<String> allergens;
     private List<ExpiringToken> sessions;
+
+    public void addSession(ExpiringToken session) {
+        sessions.add(session);
+    }
 }

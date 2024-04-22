@@ -1,7 +1,6 @@
 package app.user;
 
 import app.user.dto.LoginDto;
-import app.user.exceptions.ValidationError;
 import app.utils.requests.RequestError;
 import app.user.dto.UserProfileDto;
 import app.user.model.User;
@@ -212,9 +211,9 @@ public class UserService {
 
         try {
             userRepository.save(user);
-        } catch (MongoWriteException e) {
+        } catch (Exception e) {
             log.error(e);
-            throw new ValidationError(e);
+            throw new RequestError("Could not update user");
         }
     }
 
@@ -225,9 +224,9 @@ public class UserService {
 
         try {
             userRepository.save(user);
-        } catch (MongoWriteException e) {
+        } catch (Exception e) {
             log.error(e);
-            throw new ValidationError(e);
+            throw new RequestError("Could not change username");
         }
     }
 
@@ -238,9 +237,9 @@ public class UserService {
 
         try {
             userRepository.save(user);
-        } catch (MongoWriteException e) {
+        } catch (Exception e) {
             log.error(e);
-            throw new ValidationError(e);
+            throw new RequestError("Could not change email");
         }
     }
 

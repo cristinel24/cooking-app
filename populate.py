@@ -88,8 +88,9 @@ db.command(
                 },
                 "type": {
                     "bsonType": "string",
-                    "enum": ["session", "credentialChange"],
-                    "description": "must be a session or credentialChange",
+                    "enum": ["session", "usernameChange", "emailChange", "passwordChange", "emailConfirm"],
+                    "description": "must be a valid type from the enum: [session, usernameChange, "
+                                   "emailChange, passwordChange, emailConfirm]",
                 },
             },
             "additionalProperties": False,
@@ -98,14 +99,14 @@ db.command(
 )
 expiring_token_collection = db["expiring_token"]
 expiring_token_collection.create_indexes([
-    IndexModel(["userId"], unique=True),
+    IndexModel(["userId", pymongo.HASHED]),
     IndexModel(
         ["createdAt"],
         name="expiring_index_credential_change",
         partialFilterExpression={
             "type": "credentialChange",
         },
-        expireAfterSeconds=20,
+        expireAfterSeconds=60 * 60 * 24,
     ),
     IndexModel(
         ["createdAt"],
@@ -113,7 +114,7 @@ expiring_token_collection.create_indexes([
         partialFilterExpression={
             "type": "session",
         },
-        expireAfterSeconds=100,
+        expireAfterSeconds=60 * 60 * 24 * 30,
     )
 ])
 
@@ -498,6 +499,35 @@ tag_collection.create_indexes([
     IndexModel(["tag"], unique=True)
 ])
 
+user_change_token_embed_object = {
+    "bsonType": ["object", "null"],
+    "description": "must be the objectId of an expiring token",
+    "additionalProperties": False,
+    "required": ["_id", "value", "type"],
+    "properties": {
+        "_id": {
+            "bsonType": "objectId",
+        },
+        "_class": {},
+        "value": {
+            "bsonType": "string",
+            "description": "must be the value of a valid expiring token"
+        },
+        "type": {
+            "bsonType": "string",
+            "enum": [
+                "session",
+                "usernameChange",
+                "emailChange",
+                "passwordChange",
+                "emailConfirm"
+            ],
+            "description": "must be a valid type from the enum: [session, usernameChange, "
+                           "emailChange, passwordChange, emailConfirm]",
+        },
+    },
+}
+
 db.create_collection("user")
 db.command(
     "collMod",
@@ -583,9 +613,6 @@ db.command(
                         "hashAlgName",
                         "hash",
                         "salt",
-                        "userChangeToken",
-                        "emailConfirmToken",
-                        "passwordResetToken",
                     ],
                     "properties": {
                         "emailStatus": {
@@ -608,17 +635,10 @@ db.command(
                             "maxLength": 512,
                             "description": "must be the salt used in the hashing of the password",
                         },
-                        "userChangeToken": {
-                            "bsonType": ["objectId", "null"],
-                            "description": "must be the objectId of an expiring token",
-                        },
-                        "emailConfirmToken": {
-                            "bsonType": ["objectId", "null"],
-                            "description": "must be the objectId of an expiring token",
-                        },
-                        "passwordResetToken": {
-                            "bsonType": ["objectId", "null"],
-                            "description": "must be the objectId of an expiring token",
+                        "changeToken": user_change_token_embed_object,
+                        "newEmail": {
+                            "bsonType": ["string", "null"],
+                            "description": "must "
                         }
                     },
                 },
@@ -700,10 +720,7 @@ db.command(
                 "sessions": {
                     "bsonType": "array",
                     "description": "must be an array containing all active user sessions",
-                    "items": {
-                        "bsonType": ["objectId"],
-                        "description": "items must be objectIds to expiring tokens",
-                    },
+                    "items": user_change_token_embed_object
                 },
             },
             "additionalProperties": False,
@@ -897,9 +914,7 @@ def get_login_data():
             "hashAlgName": random_from(hash_algos),
             "hash": fake.sha256(),
             "salt": fake.sha256(),
-            "emailConfirmToken": None,
-            "passwordResetToken": None,
-            "userChangeToken": None,
+            "changeToken": None,
         }
 
     return login_data, external_login_data
@@ -1024,30 +1039,53 @@ print("Done")
 print("Cooking up expiring tokens...", end="")
 for user in users:
 
+    no_sessions = random.randint(0, 2)
+    user["sessions"] = [get_expiring_token(user["_id"], "session") for _ in range(no_sessions)]
+    for session in user["sessions"]:
+        session["_id"] = expiring_token_collection.insert_one(
+            session
+        ).inserted_id
+
+        session.pop("createdAt")
+        session.pop("userId")
+
+    user_collection.update_one(
+        {"_id": user["_id"]},
+        {"$set": {"sessions": user["sessions"]}}
+    )
+
     if user.get("login") is None:
         continue
 
     status = user["login"]["emailStatus"]
-    changingField = None
+    changeType = None
 
-    if status == "Pending" or status == "Transitioning":
-        changingField = "emailConfirmToken"
+    if status == "Pending":
+        changeType = "emailChange"
     elif status == "Confirmed":
         if random.random() < params["login_data"]["reset_state_chance"] / 2:
-            changingField = "passwordResetToken"
+            changeType = "passwordChange"
         elif random.random() < params["login_data"]["reset_state_chance"]:
-            changingField = "userChangeToken"
+            changingField = "usernameChange"
+    elif status == "Transitioning":
+        changeType = "emailConfirm"
 
-    if changingField is not None:
-        expiring_token_id = expiring_token_collection.insert_one(
-            get_expiring_token(user["_id"], "credentialChange")
+    if changeType is not None:
+        expiring_token = get_expiring_token(user["_id"], changeType)
+        expiring_token["_id"] = expiring_token_collection.insert_one(
+            expiring_token
         ).inserted_id
+        expiring_token.pop("createdAt")
+        expiring_token.pop("userId")
 
-        user["login"][changingField] = expiring_token_id
+        user["login"]["changeToken"] = expiring_token
         user_collection.update_one(
             {"_id": user["_id"]},
-            {"$set": {"login." + changingField: expiring_token_id}}
+            {"$set": {"login.changeToken": expiring_token}}
         )
+
+        if status == "emailConfirm":
+            user["login"]["newEmail"] = fake.email()
 
 print("Done")
 

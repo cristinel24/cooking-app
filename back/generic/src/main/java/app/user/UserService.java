@@ -1,8 +1,8 @@
 package app.user;
 
 import app.user.dto.LoginDto;
-import app.user.exceptions.LoginError;
-import app.user.exceptions.RequestError;
+import app.user.request.VerifyRequest;
+import app.utils.requests.RequestError;
 import app.user.request.LoginRequest;
 import app.user.dto.UserProfileDto;
 import app.user.model.User;
@@ -14,7 +14,6 @@ import app.utils.crypto.IdGenerator;
 import app.utils.crypto.TokenGenerator;
 import app.utils.expiring_token.model.ExpiringToken;
 import app.utils.expiring_token.repository.ExpiringTokenRepository;
-import com.mongodb.MongoWriteException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -73,7 +72,7 @@ public class UserService {
         }
 
         // then create the token that the user will use to verify his account
-        ExpiringToken token = new ExpiringToken(tokenValue, user.getId(), "sessiona");
+        ExpiringToken token = new ExpiringToken(tokenValue, user.getId(), "session");
         user.getLogin().setEmailChangeToken(token);
 
         // then save it to the database
@@ -88,10 +87,9 @@ public class UserService {
         // here an email should be sent to the user with the token in order to verify their account
     }
 
-//    @Override
-//    public void verifyUser(VerifyRequest body) {
-//
-//    }
+    public void verifyUser(VerifyRequest body) {
+
+    }
 
     public LoginDto login(LoginRequest body) {
         User user = null;

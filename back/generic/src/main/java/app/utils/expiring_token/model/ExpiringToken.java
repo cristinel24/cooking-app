@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import nonapi.io.github.classgraph.json.Id;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
@@ -13,7 +17,11 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
+@Document(collection = "expiring_token")
 public class ExpiringToken {
+    @Indexed
     private String value;
-    private Date date;
+
+    private ObjectId userId;
+    private String type;
 }

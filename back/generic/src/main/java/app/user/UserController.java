@@ -1,10 +1,12 @@
 package app.user;
 
+import app.user.dto.LoginDto;
 import app.user.dto.UserProfileDto;
+import app.utils.requests.RequestError;
 import app.user.request.LoginRequest;
 import app.utils.requests.RequestMessage;
 import app.user.request.RegisterRequest;
-import app.user.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +17,25 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
+@Log4j2
 public class UserController {
     @Autowired
     private UserService userService;
 
     @GetMapping("/{username}/profile")
     public ResponseEntity<?> getUserProfile(@PathVariable String username) {
-        UserProfileDto user = userService.getUserByUsername(username);
+        UserProfileDto user = null;
+        try {
+            user = userService.getUserByUsername(username);
+        } catch (Exception e) {
+            log.error(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestMessage("Internal error"));
+        }
+
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestMessage("User not found"));
         }
+
         return ResponseEntity.ok(user);
     }
 
@@ -32,25 +43,32 @@ public class UserController {
     public ResponseEntity<?> register(@Validated @RequestBody RegisterRequest body, BindingResult result) {
         FieldError error = result.getFieldError();
         if (error != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestMessage(error.getField() + " " + error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(new RequestMessage(error.getField() + " " + error.getDefaultMessage()));
         }
 
-        userService.createUser(body);
+        try {
+            userService.createUser(body);
+        } catch (RequestError e) {
+            return ResponseEntity.badRequest().body(new RequestMessage(e.getMessage()));
+        }
+
         return ResponseEntity.ok(new RequestMessage("registered successfully"));
     }
+
+    @
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Validated @RequestBody LoginRequest body, BindingResult result) {
         if (body.getEmail() == null || body.getUsername() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestMessage("Username required"));
+            return ResponseEntity.badRequest().body(new RequestMessage("Username required"));
         }
 
         FieldError error = result.getFieldError();
         if (error != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestMessage(error.getField() + " " + error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(new RequestMessage(error.getField() + " " + error.getDefaultMessage()));
         }
 
-        UserProfileDto user = userService.login(body);
+        LoginDto user = userService.login(body);
         return ResponseEntity.ok(user);
     }
 

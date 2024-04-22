@@ -1,3 +1,5 @@
+mod endpoints;
+mod repository;
 use crate::endpoints::recipe::{
     search_ai_tokens::search_ai_tokens, search_fuzzy_title::search_fuzz_title,
 };
@@ -19,9 +21,6 @@ use salvo::{
     Depot, FlowCtrl, Listener, Request, Response, Router, Server,
 };
 use tracing::{error, info};
-
-mod endpoints;
-mod repository;
 
 const MONGO_KEY: &str = "MONGO_URI";
 const PORT: u32 = 7777u32;
@@ -58,10 +57,23 @@ async fn error_handler(
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt().init();
-    dotenv()?;
+
+    let authors = env!("CARGO_PKG_AUTHORS");
+    let name = env!("CARGO_PKG_NAME");
+    let version = env!("CARGO_PKG_VERSION");
+
+    info!("Package: {}", name);
+    info!("Version: {}", version);
+    info!("Authors: {}", authors);
+
+    if let Err(e) = dotenv() {
+        error!("Environment file '.env' not found! Full error: {e}");
+    };
+
+    let mongo_uri = std::env::var(MONGO_KEY).unwrap_or("mongodb://localhost:27017".to_owned());
 
     CONTEXT
-        .set(CookingAppRepository::new(std::env::var(MONGO_KEY)?).await?)
+        .set(CookingAppRepository::new(mongo_uri).await?)
         .map_or_else(
             |_| {
                 Err(anyhow::Error::msg(
@@ -86,10 +98,6 @@ async fn main() -> Result<()> {
             ])),
     );
 
-    let authors = env!("CARGO_PKG_AUTHORS");
-    let name = env!("CARGO_PKG_NAME");
-    let version = env!("CARGO_PKG_VERSION");
-
     let acceptor = TcpListener::new(format!("127.0.0.1:{}", PORT)).bind().await;
     let doc = OpenApi::new(name, version).merge_router(&raw_router);
 
@@ -99,9 +107,6 @@ async fn main() -> Result<()> {
             SwaggerUi::new(format!("/{}.json", DOCS_PATH)).into_router(format!("/{}", DOCS_PATH)),
         );
 
-    info!("Package: {}", name);
-    info!("Version: {}", version);
-    info!("Authors: {}", authors);
     info!("Docs on 127.0.0.1:{PORT}/{DOCS_PATH}");
     Server::new(acceptor).serve(router).await;
 

@@ -79,7 +79,8 @@ public class UserService {
         // then save it to the database
         try {
             expiringTokenRepository.save(token);
-        } catch (Exception e) {
+        } catch (DataIntegrityViolationException e) {
+            log.error(e.getMessage());
             userRepository.delete(user);
             throw new RequestError("Could not create user");
         }
@@ -102,13 +103,13 @@ public class UserService {
         }
 
         if (user == null) {
-            throw new LoginError("User does not exist");
+            throw new RequestError("User does not exist");
         }
 
         String hash = BCrypt.hashpw(body.getPassword(), user.getLogin().getSalt());
 
         if (user.getLogin().getHash().equals(hash)) {
-            throw new LoginError("Passwords do not match");
+            throw new RequestError("Passwords do not match");
         }
 
 //        try {

@@ -6,7 +6,7 @@ public class IdGenerator {
     static AtomicLong id = new AtomicLong(1);
     private static final String alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-    static String getId() {
+    public static String getId() {
         return base36encode(IdGenerator.id.getAndAdd(1));
     }
 

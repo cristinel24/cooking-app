@@ -29,7 +29,7 @@ public class UserController {
             user = userService.getUserByUsername(username);
         } catch (Exception e) {
             log.error(e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestMessage("Internal error"));
+            return ResponseEntity.badRequest().body(new RequestMessage("Internal error"));
         }
 
         if (user == null) {
@@ -49,13 +49,16 @@ public class UserController {
         try {
             userService.createUser(body);
         } catch (RequestError e) {
+            log.error(e);
             return ResponseEntity.badRequest().body(new RequestMessage(e.getMessage()));
+        } catch (Exception e) {
+            log.error(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestMessage("Internal error"));
         }
 
         return ResponseEntity.ok(new RequestMessage("registered successfully"));
     }
 
-    @
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Validated @RequestBody LoginRequest body, BindingResult result) {
@@ -68,7 +71,18 @@ public class UserController {
             return ResponseEntity.badRequest().body(new RequestMessage(error.getField() + " " + error.getDefaultMessage()));
         }
 
-        LoginDto user = userService.login(body);
+        LoginDto user = null;
+
+        try {
+            user = userService.login(body);
+        } catch (RequestError e) {
+            log.error(e);
+            return ResponseEntity.badRequest().body(new RequestMessage(e.getMessage()));
+        } catch (Exception e) {
+            log.error(e);
+            return ResponseEntity.badRequest().body(new RequestMessage("Internal error"));
+        }
+
         return ResponseEntity.ok(user);
     }
 

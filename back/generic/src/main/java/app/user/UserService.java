@@ -1,8 +1,9 @@
 package app.user;
 
 import app.user.dto.LoginDto;
-import app.user.dto.UserProfileDto;
 import app.user.exceptions.ValidationError;
+import app.utils.requests.RequestError;
+import app.user.dto.UserProfileDto;
 import app.user.model.User;
 import app.user.model.UserLoginData;
 import app.user.repository.UserMapper;
@@ -14,7 +15,6 @@ import app.utils.crypto.IdGenerator;
 import app.utils.crypto.TokenGenerator;
 import app.utils.expiring_token.model.ExpiringToken;
 import app.utils.expiring_token.repository.ExpiringTokenRepository;
-import app.utils.requests.RequestError;
 import com.mongodb.MongoWriteException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;

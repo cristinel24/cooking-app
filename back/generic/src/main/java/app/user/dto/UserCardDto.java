@@ -8,11 +8,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import app.rating.model.Rating;
-
-import java.util.List;
-
-
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -22,8 +17,8 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCardDto {
     private String icon;
+    private String username;
     private String displayName;
     private int roles;
     private float rating;
-    private String username;
 }

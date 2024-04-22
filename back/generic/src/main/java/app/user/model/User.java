@@ -48,7 +48,7 @@ public class User {
     private UserLoginDataExternal externalLogin;
     private List<String> messageHistory;
     private List<String> searchHistory;
-    //    @DBRef private List<Recipe> recipes;
+//    @DBRef private List<Recipe> recipes;
 //    @DBRef private List<Recipe> savedRecipes;
 //    @DBRef private List<Rating> ratings;
     private List<String> allergens;

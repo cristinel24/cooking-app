@@ -1,6 +1,8 @@
 package app.user.model;
 
 import app.utils.expiring_token.model.ExpiringToken;
+import app.utils.expiring_token.model.ExpiringTokenEmbed;
+import jakarta.persistence.Embedded;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,9 +52,10 @@ public class User {
 //    @DBRef private List<Recipe> savedRecipes;
 //    @DBRef private List<Rating> ratings;
     private List<String> allergens;
-    private List<ExpiringToken> sessions;
+    @Embedded
+    private List<ExpiringTokenEmbed> sessions;
 
-    public void addSession(ExpiringToken session) {
+    public void addSession(ExpiringTokenEmbed session) {
         sessions.add(session);
     }
 }

@@ -73,8 +73,8 @@ public class UserService {
         ExpiringToken token = new ExpiringToken()
                 .setValue(TokenGenerator.getToken())
                 .setUserId(user.getId())
-                .setType("credentialChange");
-        user.getLogin().setEmailChangeToken(token);
+                .setType("emailConfirm");
+        user.getLogin().setChangeToken(token.toEmbedded());
 
         // then save it to the database
         try {
@@ -116,7 +116,7 @@ public class UserService {
 
         // verify the user
         user.getLogin().setEmailStatus("Confirmed");
-        user.getLogin().setEmailChangeToken(null);
+        user.getLogin().setChangeToken(null);
 
         // save the state
         try {
@@ -168,7 +168,7 @@ public class UserService {
         }
 
         // add the session to the user
-        user.addSession(token);
+        user.addSession(token.toEmbedded());
 
         try {
             userRepository.save(user);

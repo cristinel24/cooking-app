@@ -28,4 +28,9 @@ public class ExpiringToken {
 
     private ObjectId userId;
     private String type;
+    private Date createdAt;
+
+    public ExpiringTokenEmbed toEmbedded() {
+        return new ExpiringTokenEmbed(id, value, type);
+    }
 }

@@ -8,13 +8,13 @@ import java.util.Date;
 public class TokenGenerator {
     private static final long EXPIRATION_TIME = 604800000L; // 7 days
 
-    public static ExpiringToken getToken() {
-        byte[] bytes = new byte[20];
+    public static String getToken() {
+        byte[] bytes = new byte[32];
         new SecureRandom().nextBytes(bytes);
-        return new ExpiringToken().setValue(bytesToHex(bytes)).setDate(new Date(new Date().getTime() + EXPIRATION_TIME));
+        return bytesToHex(bytes);
     }
 
-    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
 
     private static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];

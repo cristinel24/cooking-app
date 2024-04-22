@@ -1,6 +1,7 @@
 package app.user.model;
 
 import app.utils.expiring_token.model.ExpiringToken;
+import app.utils.expiring_token.model.ExpiringTokenEmbed;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +15,10 @@ import org.springframework.data.mongodb.core.index.Indexed;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class UserLoginData {
-    private String emailStatus;
+    private String emailStatus = "Pending";
     private String hashAlgName;
     private String hash;
     private String salt; // 64 bytes
-    private ExpiringToken userChangeToken;
-    private ExpiringToken emailChangeToken;
-    private ExpiringToken passResetToken;
+    private ExpiringTokenEmbed changeToken;
+    private String newEmail;
 }

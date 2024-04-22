@@ -59,6 +59,20 @@ public class UserController {
         return ResponseEntity.ok(new RequestMessage("registered successfully"));
     }
 
+    @PostMapping("/verify")
+    public ResponseEntity<?> verify(@RequestParam String token) {
+        try {
+            userService.verifyToken(token);
+        } catch (RequestError e) {
+            log.error(e);
+            return ResponseEntity.badRequest().body(new RequestMessage(e.getMessage()));
+        } catch (Exception e) {
+            log.error(e);
+            return ResponseEntity.badRequest().body(new RequestMessage("Internal error"));
+        }
+
+        return ResponseEntity.ok(new RequestMessage("Account verified successfully"));
+    }
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Validated @RequestBody LoginRequest body, BindingResult result) {

@@ -1,4 +1,4 @@
 package app.recipe;
 
-public interface RecipeRepositoryTest {
+public class RecipeRepositoryTest {
 }

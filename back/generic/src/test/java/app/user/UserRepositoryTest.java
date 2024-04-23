@@ -1,4 +1,4 @@
 package app.user;
 
-public interface UserRepositoryTest {
+public class UserRepositoryTest {
 }

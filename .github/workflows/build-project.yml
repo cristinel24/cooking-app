@@ -3,6 +3,10 @@ name: Build Java project - Generic Module
 on:
   release:
     types: [created]
+  push:
+    branches:
+      - '*'
+
 
 jobs:
   build:

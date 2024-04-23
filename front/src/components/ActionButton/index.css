@@ -1,37 +1,48 @@
 * {
-  font-family: "Montserrat", sanf-serif;
+    font-family: 'Montserrat', sanf-serif;
 }
-.button {
-  background-color: var(--bkgcolor);
-  padding: 15px 20px 15px 20px;
-  border-radius: 10px;
-  font-size: 12px;
-  color: var(--txtcolor);
-  font-weight: bold;
+.actionbutton {
+    background-color: var(--bkgcolor);
+    padding: 15px 20px 15px 20px;
+    border-radius: 10px;
 }
 
-.button:hover {
-  background-color: var(--hoverbkgcolor);
+.actionbutton:hover {
+    background-color: var(--hoverbkgcolor);
+}
+
+.actionbutton_icon {
+    color: var(--txtcolor);
+}
+
+.actionbutton_text {
+    font-size: 12px;
+    color: var(--txtcolor);
+    font-weight: bold;
 }
 
 @media (min-width: 481px) and (max-width: 767px) {
-  .button {
-    font-size: 10px;
-    padding: 10px 15px 10px 15px;
-    border-radius: 10px;
-  }
-  .button:hover {
-    background-color: var(--hoverbkgcolor);
-  }
+    .actionbutton {
+        padding: 10px 15px 10px 15px;
+        border-radius: 10px;
+    }
+    .actionbutton:hover {
+        background-color: var(--hoverbkgcolor);
+    }
+    .actionbutton_text {
+        font-size: 10px;
+    }
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
-  .button {
-    font-size: 8px;
-    padding: 8px 10px 8px 10px;
-    border-radius: 10px;
-  }
-  .button:hover {
-    background-color: var(--hoverbkgcolor);
-  }
+    .actionbutton {
+        padding: 8px 10px 8px 10px;
+        border-radius: 10px;
+    }
+    .actionbutton:hover {
+        background-color: var(--hoverbkgcolor);
+    }
+    .actionbutton_text {
+        font-size: 8px;
+    }
 }

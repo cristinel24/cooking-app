@@ -1,87 +1,91 @@
 .footer {
-  display: flex;
-  align-items: center;
-  background-color: var(--footercolor);
-  width: 100vw;
-  height: 80px;
-  position: fixed;
-  bottom: 0;
+    display: flex;
+    align-items: center;
+    background-color: var(--footercolor);
+    width: 100vw;
+    height: 80px;
 }
 
 .brand,
 .bug {
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
-  justify-content: center;
-  color: var(--body);
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    color: var(--body);
 }
 
 .brand a {
-  font-weight: bolder;
-  font-size: 16px;
-  color: var(--body);
-  text-decoration: none;
+    font-weight: bolder;
+    font-size: 16px;
+    color: var(--body);
+    text-decoration: none;
 }
 
 .bug {
-  font-size: 14px;
-  font-weight: bold;
-  text-decoration: underline;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.bug a {
+    font-size: 16px;
+    color: var(--body);
+    text-decoration: none;
 }
 
 .brand p {
-  margin-right: 2px;
+    margin-right: 2px;
 }
 
 .bug p {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 .brand .fa-icon {
-  font-size: 0.7em;
-  margin-top: -15px;
+    font-size: 0.7em;
+    margin-top: -15px;
 }
 
 .bug .fa-icon {
-  font-size: 1em;
+    font-size: 1em;
 }
 
 .brand a:hover,
 .brand .fa-icon:hover,
 .bug:hover {
-  color: var(--bkgcolor);
+    color: var(--bkgcolor);
 }
 
 @media screen and (max-width: 600px) {
-  .footer {
-    flex-direction: column;
-    height: auto;
-    padding: 5px;
-    align-items: center;
-    width: 100%;
-  }
+    .footer {
+        flex-direction: column;
+        /* height: auto; */
+        padding: 5px;
+        align-items: center;
+        width: 100%;
+    }
 
-  .brand a {
-    font-size: 12px;
-  }
+    .brand a {
+        font-size: 12px;
+    }
 
-  .bug p {
-    font-size: 10px;
-  }
+    .bug a {
+        font-size: 10px;
+    }
 
-  .brand,
-  .bug {
-    text-align: center;
-  }
+    .brand,
+    .bug {
+        text-align: center;
+    }
 
-  .brand .fa-icon,
-  .bug .fa-icon {
-    margin-top: 0;
-  }
+    .brand .fa-icon,
+    .bug .fa-icon {
+        margin-top: 0;
+    }
 
-  .brand .fa-icon {
-    font-size: 0.6em;
-    margin-top: -10px;
-  }
+    .brand .fa-icon {
+        font-size: 0.6em;
+        margin-top: -10px;
+    }
 }

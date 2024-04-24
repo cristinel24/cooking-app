@@ -21,6 +21,6 @@ jobs:
         cd back/search
         cargo build --release
     - name: Clippy
-      run:|
+      run: |
         cd back/search
         cargo clippy

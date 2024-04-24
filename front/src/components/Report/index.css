@@ -25,7 +25,7 @@
     margin: auto;
 }
 
-p {
+.wrapper p {
     align-self: flex-start;
     margin-left: 3vw;
     font-size: 20px;

@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Update & Intall Packages
-      run: sudo apt update --quiet --assume-yes && sudo apt upgrade --quiet --assume-yes && sudo apt install pkg-config libssl-dev --quiet --assume-yes 
+      run: sudo apt upgrade --quiet --assume-yes && sudo apt install pkg-config libssl-dev --quiet --assume-yes 
     - name: Build
       run: |
         cd back/search

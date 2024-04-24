@@ -30,14 +30,14 @@ a {
         justify-content: center;
     }
 
-    .admin-header h3 {
+    .admin-header .admin-header-left-title {
         margin: 0;
         margin-left: 1vw;
         font-size: 1.1vw;
         letter-spacing: 0.05vw;
     }
 
-    .admin-header-left img {
+    .admin-header-left .admin-header-left-img {
         width: 1vw;
         height: 1vw;
     }
@@ -47,7 +47,7 @@ a {
         font-size: 1vw;
     }
 
-    .admin-content p {
+    .admin-content .admin-content-description {
         padding: 0.8vw 2vw 0.3vw 2vw;
         font-size: 0.65vw;
         font-weight: 520;
@@ -59,7 +59,7 @@ a {
         align-items: center;
     }
 
-    .admin-footer-left p {
+    .admin-footer-left .admin-footer-left-description {
         font-weight: 700;
         padding-left: 2vw;
         font-size: 0.7vw;
@@ -72,27 +72,33 @@ a {
         align-items: center;
     }
 
-    .admin-footer-right img {
+    .admin-footer-right .admin-footer-right-customButtons-img {
         padding-left: 0.2vw;
-        width: 0.5vw;
-        height: 0.5vw;
+        width: 1.2vw;
+        height: 1.2vw;
     }
 
-    .customButtons {
-        padding-left: 0.6vw;
-    }
-
-    .customButtons .button {
+    .admin-footer-right-customButtons-view button {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 0.75vw;
-        padding: 0.5vw;
+        font-size: 0.1rem;
+        padding: 0.1vw;
         padding-right: 1vw;
         padding-left: 1vw;
         border: 0;
     }
 
+    .admin-footer-right-customButtons-read button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1rem;
+        padding: 1vw;
+        padding-right: 1vw;
+        padding-left: 1vw;
+        border: 0;
+    }
 }
 
 /* Tablets */
@@ -124,14 +130,14 @@ a {
         justify-content: center;
     }
 
-    .admin-header h3 {
+    .admin-header .admin-header-left-title {
         margin: 0;
         margin-left: 1vw;
         font-size: 2vw;
         letter-spacing: 0.05vw;
     }
 
-    .admin-header-left img {
+    .admin-header-left .admin-header-left-img {
         width: 2vw;
         height: 2vw;
         padding-bottom: 0.2vw;
@@ -142,7 +148,7 @@ a {
         font-size: 1.6vw;
     }
 
-    .admin-content p {
+    .admin-content .admin-content-description {
         font-weight: 510;
         padding: 1.2vw 3vw 1vw 3vw;
         font-size: 1.4vw;
@@ -154,7 +160,7 @@ a {
         align-items: center;
     }
 
-    .admin-footer-left p {
+    .admin-footer-left .admin-footer-left-description {
         font-weight: 600;
         padding-left: 3vw;
         font-size: 1.5vw;
@@ -167,24 +173,31 @@ a {
         align-items: center;
     }
 
-    .admin-footer-right img {
+    .admin-footer-right .admin-footer-right-customButtons-img {
         padding-left: 0.4vw;
         width: 1.4vw;
         height: 1.4vw;
     }
 
-    .customButtons {
-        padding-left: 1.5vw;
-    }
-
-    .customButtons .button {
+    .admin-footer-right-customButtons-view button {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 1.6vw;
-        padding: 0.7vw;
-        padding-right: 2vw;
-        padding-left: 2vw;
+        font-size: 0.1rem;
+        padding: 0.1vw;
+        padding-right: 1vw;
+        padding-left: 1vw;
+        border: 0;
+    }
+
+    .admin-footer-right-customButtons-read button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1rem;
+        padding: 1vw;
+        padding-right: 1vw;
+        padding-left: 1vw;
         border: 0;
     }
 }
@@ -218,14 +231,14 @@ a {
         justify-content: center;
     }
 
-    .admin-header h3 {
+    .admin-header .admin-header-left-title {
         margin: 0;
         margin-left: 1vw;
         font-size: 2.5vw;
         letter-spacing: 0.05vw;
     }
 
-    .admin-header-left img {
+    .admin-header-left .admin-header-left-img {
         width: 3vw;
         height: 3vw;
         padding-bottom: 0.3vw;
@@ -236,7 +249,7 @@ a {
         font-size: 2.2vw;
     }
 
-    .admin-content p {
+    .admin-content .admin-content-description {
         font-weight: 520;
         padding: 2vw 4vw 1vw 4vw;
         font-size: 1.6vw;
@@ -248,7 +261,7 @@ a {
         align-items: center;
     }
 
-    .admin-footer-left p {
+    .admin-footer-left .admin-footer-left-description {
         font-weight: 600;
         padding-left: 4vw;
         font-size: 1.9vw;
@@ -261,24 +274,31 @@ a {
         align-items: center;
     }
 
-    .admin-footer-right img {
+    .admin-footer-right .admin-footer-right-customButtons-img {
         padding-left: 0.2vw;
         width: 2vw;
         height: 2vw;
     }
 
-    .customButtons {
-        padding-left: 1.7vw;
-    }
-
-    .customButtons .button {
+    .admin-footer-right-customButtons-view button {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 1.8vw;
+        font-size: 0.1rem;
+        padding: 0.1vw;
+        padding-right: 1vw;
+        padding-left: 1vw;
+        border: 0;
+    }
+
+    .admin-footer-right-customButtons-read button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1rem;
         padding: 1vw;
-        padding-right: 3vw;
-        padding-left: 3vw;
+        padding-right: 1vw;
+        padding-left: 1vw;
         border: 0;
     }
 }

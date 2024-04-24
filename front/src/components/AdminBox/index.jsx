@@ -21,47 +21,44 @@ function Admin({
         <div className="admin-box">
             <div className="admin-header">
                 <div className="admin-header-left">
-                    <BsExclamationCircle />
-                    <h3>{userName}</h3>
+                    <BsExclamationCircle className="admin-header-left-img" />
+                    <h3 className="admin-header-left-title">{userName}</h3>
                 </div>
                 <div className="admin-header-right">
                     <p>{userNumber}</p>
                 </div>
             </div>
             <div className="admin-content">
-                <p>{content}</p>
+                <p className="admin-content-description">{content}</p>
             </div>
             <div className="admin-footer">
                 <div className="admin-footer-left">
-                    <p>{date}</p>
+                    <p className="admin-footer-left-description">{date}</p>
                 </div>
                 <div className="admin-footer-right">
-                    <div className="customButtons">
+                    <div className="admin-footer-right-customButtons-view">
                         <PageButton
                             children={
                                 <>
                                     <span>
-                                        <PiArrowSquareOutBold className="hey" />
+                                        <PiArrowSquareOutBold className="admin-footer-right-customButtons-img" />
                                     </span>
                                     <span>{view}</span>
                                 </>
                             }
                             path={pathPage}
-                            className="customButtonsPGBT"
                         />
                     </div>
-                    <div className="customButtons">
-                        <div>
-                            <ActionButton
-                                onClick={handleClick}
-                                text={
-                                    <>
-                                        <span>{read}</span>{' '}
-                                    </>
-                                }
-                                Icon={FaCheck}
-                            />
-                        </div>
+                    <div className="admin-footer-right-customButtons-read">
+                        <ActionButton
+                            onClick={handleClick}
+                            text={
+                                <>
+                                    <span>{read}</span>{' '}
+                                </>
+                            }
+                            Icon={FaCheck}
+                        />
                     </div>
                 </div>
             </div>

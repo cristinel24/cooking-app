@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Update & Intall Packages
-      run: apt update --quiet --assume-yes && apt upgrade --quiet --assume-yes && apt install pkg-config libssl-dev --quiet --assume-yes 
+      run: sudo apt update --quiet --assume-yes && sudo apt upgrade --quiet --assume-yes && sudo apt install pkg-config libssl-dev --quiet --assume-yes 
     - name: Install cargo-audit
       run: cargo install cargo-audit
     - name: Build

@@ -1,52 +1,77 @@
 .preview-recipe-container {
-  display: flex;
-  padding: 10px;
-  height: 500px;
-  width: 350px;
+    display: flex;
+    padding: 10px;
+    max-width: 350px;
 }
 
-.recipe-details-container {
-  background-color: #ff7878;
-  color: #ffffff;
-  padding: 20px 40px;
-  border-radius: 20px;
+.preview-recipe-details-container {
+    background-color: var(--caseta);
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 20px;
 }
 
-.recipe-title {
-  font-size: 24px;
-  margin-bottom: 10px;
-  font-weight: bold;
+.preview-recipe-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: bold;
 }
-.recipe-tags,
-.recipe-description,
-.recipe-allergens {
-  margin-top: 20px;
+.preview-recipe-tags,
+.preview-recipe-description,
+.preview-recipe-allergens {
+    margin-top: 20px;
 }
-.tags-title,
-.allergens-title,
-.description-title {
-  margin-bottom: 5px;
-  font-size: 16px;
-  width: 70px;
-}
-
-.tag,
-.allergen {
-  background-color: #ffffff;
-  color: black;
-  border-radius: 12px;
-  padding: 5px 20px;
-  margin-right: 5px;
-  margin-bottom: 10px;
-  display: inline-block;
-  font-size: 14px;
+.preview-tags-title,
+.preview-allergens-title,
+.preview-description-title {
+    margin-bottom: 5px;
+    font-size: 16px;
+    width: 70px;
 }
 
-.description-text {
-  background-color: #ffd4d4;
-  color: black;
-  font-size: 14px;
-  height: 40%;
-  padding: 10px;
-  border-radius: 20px;
+.preview-tag,
+.preview-allergen {
+    background-color: #ffffff;
+    color: black;
+    border-radius: 12px;
+    padding: 5px 20px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.preview-description-text {
+    background-color: #ffd4d4;
+    color: black;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 20px;
+    max-height: 200px;
+    word-break: break-all;
+    margin-bottom: 10px;
+}
+
+.preview-recipe-details-container .actionbutton {
+    padding: 6px 2px;
+    width: 75%;
+    color: white;
+    min-width: 100px;
+    align-self: center;
+    border-radius: 20px;
+    outline: 0;
+    border: 0;
+}
+.preview-recipe-details-container .actionbutton:hover {
+    cursor: pointer;
+    outline: 0;
+    border: 0;
+}
+
+@media screen and (max-width: 330px) {
+    .preview-recipe-details-container {
+        padding: 10px;
+    }
 }

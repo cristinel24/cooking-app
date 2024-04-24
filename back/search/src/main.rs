@@ -27,7 +27,7 @@ const PORT: u32 = 7777u32;
 const DOCS_PATH: &str = "docs";
 
 pub static CONTEXT: OnceCell<CookingAppRepository> = OnceCell::new();
-
+  
 #[handler]
 async fn error_handler(
     req: &mut Request,

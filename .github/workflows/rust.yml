@@ -3,12 +3,12 @@ name: Rust
 on:
   push:
     paths:
-      - 'search/**'
+      - 'back/search/**'
     branches: [ "master" ]
 
   pull_request:
     paths:
-      - 'search/**'
+      - 'back/search/**'
     branches: [ "master" ]
 
 jobs:

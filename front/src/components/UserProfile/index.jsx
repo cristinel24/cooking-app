@@ -3,10 +3,7 @@ import './index.css'
 import { FaAngleRight, FaUserAlt, FaHeart } from 'react-icons/fa'
 import { BsFillGridFill } from 'react-icons/bs'
 import { GoDotFill } from 'react-icons/go'
-import { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom' //necesara pt redirectionarea de la o pag la alta
 import PageButton from '../PageButton'
-import Page from '../../pages/Page'
 
 function UserProfile(props) {
     const pathPage = '../../pages/Page'

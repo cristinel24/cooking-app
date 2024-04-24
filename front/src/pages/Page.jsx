@@ -106,7 +106,6 @@ function Page() {
                 allergens={['apa', 'gluten', 'porumb', 'alergen4', 'alergen5']}
                 description="Descrierea Rețetei"
             /> */}
-
             <AdminBox
                 userName={userName}
                 userNumber={userNumber}
@@ -116,7 +115,6 @@ function Page() {
                 pathPage={pathPage}
                 handleClick={handleClick}
             />
-
             {/* <Navbar /> */}
 
             {/* <UserProfile /> */}

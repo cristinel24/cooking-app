@@ -1,0 +1,24 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "master" ]
+
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Update & Intall Packages
+      run: apt update --quiet --assume-yes && apt upgrade --quiet --assume-yes && apt install pkg-config libssl-dev --quiet --assume-yes 
+    - name: Install cargo-audit
+      run: cargo install cargo-audit
+    - name: Build
+      run: cargo build --release
+    - name: Clippy
+      run: cargo clippy

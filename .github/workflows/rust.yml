@@ -2,9 +2,13 @@ name: Rust
 
 on:
   push:
+    paths:
+      - 'search/**'
     branches: [ "master" ]
 
   pull_request:
+    paths:
+      - 'search/**'
     branches: [ "master" ]
 
 jobs:

@@ -1,12 +1,4 @@
-@font-face {
-  font-display: swap;
-  font-style: normal;
-  src: url("../public/fonts/MontserratRomanRegular.ttf");
-  font-family: "Montserrat";
-  font-weight: 400;
-}
-
-.uspr {
+.user-profile {
   width: 400px;
   height: fit-content;
   margin: 20px;
@@ -14,34 +6,32 @@
   padding-bottom: 50px;
   padding-top: 150px;
 }
-.liniuta {
+.user-profile-line {
+  font-size: 12px;
+  padding-top: 5px;
   padding-left: 10px;
   padding-right: 10px;
 }
 
-.profile-down {
+.user-profile-down {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: -100px;
 }
 
-.button_2 {
+.user-profile-button {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
 }
 
-.button_2 icon {
-  font-size: 22px;
-}
-
-.button_2 .arrow {
+.user-profile-button .user-profile-button-arrow {
   font-size: 16px;
 }
 
-.profile-down button {
+.user-profile-down button {
   font-size: 24px;
   color: var(--txtcolor);
   padding: 10px 20px;
@@ -50,18 +40,18 @@
   cursor: pointer;
 }
 
-.profile-down img {
+.user-profile-down img {
   height: 215px;
   max-width: fit-content;
   border-radius: 200px;
   padding: 5px;
 }
 
-.profile-name {
+.user-profile-name {
   color: var(--profname);
 }
 
-.profile-description {
+.user-profile-description {
   color: var(--txtcolor);
   font-size: 18px;
   display: flex;
@@ -70,14 +60,14 @@
   padding: 10px 0px;
 }
 
-.profile-description a {
+.user-profile-description a {
   color: var(--txtcolor);
 }
 
-.profile-description a:hover {
+.user-profile-description a:hover {
   color: var(--bkgcolor);
 }
-.profile-description dot {
+.user-profile-description dot {
   margin-top: 6px;
   margin-bottom: 40px;
   margin-left: 10px;
@@ -85,13 +75,13 @@
   font-size: 12px;
 }
 
-.report a {
+.user-profile-report a {
   font-size: 14px;
   position: relative;
   color: var(--txtcolor);
 }
 
-.report a::after {
+.user-profile-report a::after {
   content: "";
   position: absolute;
   bottom: -6px;
@@ -102,16 +92,16 @@
   background: var(--txtcolor);
 }
 
-.report a:hover::after {
+.user-profile-report a:hover::after {
   background: var(--bkgcolor);
 }
 
-.report a:hover {
+.user-profile-report a:hover {
   color: var(--bkgcolor);
 }
 
 @media only screen and (max-width: 767px) and (min-width: 481px) {
-  .uspr {
+  .user-profile {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -120,30 +110,26 @@
     margin: 20px;
     border-radius: 4px;
     padding-bottom: 50px;
-    padding-top: 50px;
+    padding-top: 150px;
   }
 
-  .profile-down img {
+  .user-profile-down img {
     height: 150px;
     border-radius: 200px;
   }
 
-  .button_2 {
+  .user-profile-button {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
   }
 
-  .button_2 icon {
-    font-size: 16px;
-  }
-
-  .button_2 .arrow {
+  .user-profile-button .user-profile-button-arrow {
     font-size: 12px;
   }
 
-  .profile-down button {
+  .user-profile-down button {
     font-size: 20px;
     padding: 10px 20px;
     border-radius: 5px;
@@ -151,17 +137,21 @@
     cursor: pointer;
   }
 
-  .profile-name {
+  .user-profile-name {
     font-size: 14px;
-    color: var(--name);
+    color: var(--profname);
   }
 
-  .profile-description {
+  .user-profile-line {
+    font-size: 10px;
+  }
+
+  .user-profile-description {
     font-size: 16px;
     padding: 10px 0px;
   }
 
-  .profile-description dot {
+  .user-profile-description dot {
     margin-top: 6px;
     margin-bottom: 60px;
     margin-left: 10px;
@@ -169,17 +159,17 @@
     font-size: 10px;
   }
 
-  .report a {
+  .user-profile-report a {
     font-size: 10px;
   }
 
-  .report a::after {
+  .user-profile-report a::after {
     width: 115%;
   }
 }
 
 @media only screen and (max-width: 480px) and (min-width: 320px) {
-  .uspr {
+  .user-profile {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -188,9 +178,11 @@
     margin: none;
     border-radius: 4px;
     padding-bottom: 5px;
+    padding-top: 40px;
+    padding-left: 20px;
   }
 
-  .profile-down {
+  .user-profile-down {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -199,38 +191,39 @@
     margin-top: 0px;
   }
 
-  .button_2 {
+  .user-profile-button {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5px;
   }
 
-  .button_2 icon {
-    font-size: 14px;
-  }
-
-  .button_2 .arrow {
+  .user-profile-button .user-profile-button-arrow {
     font-size: 10px;
   }
 
-  .profile-down button {
+  .user-profile-down button {
     font-size: 16px;
   }
 
-  .profile-down img {
+  .user-profile-down img {
     align-self: center;
     margin-bottom: 8px;
     height: 150px;
   }
 
-  .profile-name {
+  .user-profile-name {
+    color: var(--profname);
     align-self: center;
     margin-top: -5px;
     font-size: 16px;
   }
 
-  .profile-description {
+  .user-profile-line {
+    font-size: 8px;
+  }
+
+  .user-profile-description {
     font-size: 16px;
     display: flex;
     align-items: flex-start;
@@ -238,7 +231,7 @@
     padding: 10px 0px;
   }
 
-  .profile-description dot {
+  .user-profile-description dot {
     margin-top: 6px;
     margin-bottom: 60px;
     margin-left: 10px;
@@ -246,15 +239,15 @@
     font-size: 10px;
   }
 
-  .report {
+  .user-profile-report {
     align-self: center;
     justify-self: flex-end;
   }
-  .report a {
+  .user-profile-report a {
     font-size: 10px;
   }
 
-  .report a::after {
+  .user-profile-report a::after {
     width: 115%;
   }
 }

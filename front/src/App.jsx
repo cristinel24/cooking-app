@@ -78,7 +78,13 @@ function App() {
 
       <Navbar />
 
-      {/* <UserProfile /> */}
+      {/* <UserProfile
+        first_name="Popescu"
+        last_name="Ion"
+        followers="70"
+        following="6"
+        img="../public/ProfileImage.avif"
+      /> */}
 
       <Footer />
 

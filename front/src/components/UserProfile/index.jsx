@@ -1,12 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import "./index.css";
-import profile_img from "../../../public/ProfileImage.avif";
-import {
-  FaAngleRight,
-  FaUserAlt,
-  FaHeart,
-  FaAppStoreIos,
-} from "react-icons/fa";
+import { FaAngleRight, FaUserAlt, FaHeart } from "react-icons/fa";
 import { BsFillGridFill } from "react-icons/bs";
 import { GoDotFill } from "react-icons/go";
 import { useEffect, useState } from "react";
@@ -14,21 +8,24 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import PageButton from "../PageButton";
 import Page from "../../pages/Page";
 
-function UserProfile() {
-  const first_name = "Popescu";
-  const last_name = "Ion";
-  const followers = 70;
-  const following = 12;
-  const pathPage = "./Page";
+function UserProfile(props) {
+  const first_name = props.first_name;
+  const last_name = props.last_name;
+  const followers = props.followers;
+  const following = props.following;
+  const profile_img = props.img;
+  const pathPage = "../../pages/Page";
 
   return (
-    <div className="uspr">
-      <div className="profile-down">
+    <div className="user-profile">
+      <div className="user-profile-down">
         <img src={profile_img} alt="" />
-        <div className="profile-name">{last_name + " " + first_name}</div>
-        <div className="profile-description">
+        <div className="user-profile-name">{last_name + " " + first_name}</div>
+        <div className="user-profile-description">
           <a href="#">{followers} urmaritori</a>{" "}
-          <div className="liniuta">-</div>
+          <div className="user-profile-line">
+            <GoDotFill />
+          </div>
           <a href="#">{following} urmareste</a>
         </div>
         <Router>
@@ -38,15 +35,12 @@ function UserProfile() {
               <Route path={pathPage} element={<Page />} />
               <Route path={pathPage} element={<Page />} />
             </Routes>
-            <div className="button_2">
+            <div className="user-profile-button">
               <PageButton
                 title={
                   <>
-                    <icon>
-                      <FaUserAlt />
-                    </icon>{" "}
-                    Descriere{" "}
-                    <span className="arrow">
+                    <FaUserAlt /> Descriere{" "}
+                    <span className="user-profile-button-arrow">
                       <FaAngleRight />
                     </span>
                   </>
@@ -56,11 +50,8 @@ function UserProfile() {
               <PageButton
                 title={
                   <>
-                    <icon>
-                      <FaHeart />
-                    </icon>{" "}
-                    Favorite{" "}
-                    <span className="arrow">
+                    <FaHeart /> Favorite{" "}
+                    <span className="user-profile-button-arrow">
                       <FaAngleRight />
                     </span>
                   </>
@@ -70,11 +61,8 @@ function UserProfile() {
               <PageButton
                 title={
                   <>
-                    <icon>
-                      <BsFillGridFill />
-                    </icon>{" "}
-                    Postari{" "}
-                    <span className="arrow">
+                    <BsFillGridFill /> Postari{" "}
+                    <span className="user-profile-button-arrow">
                       <FaAngleRight />
                     </span>
                   </>
@@ -84,7 +72,7 @@ function UserProfile() {
             </div>
           </div>
         </Router>
-        <div className="report">
+        <div className="user-profile-report">
           <a href="#"> Raportează </a>
         </div>
       </div>

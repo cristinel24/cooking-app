@@ -69,11 +69,11 @@ form label {
     margin-left: 5vw;
     font-size: 12px;
 }
-p {
+/* p {
     padding-top: 50px;
     padding-left: 20px;
     padding-right: 20px;
-}
+} */
 @media screen and (min-width: 601px) and (max-width: 1100px) {
     .wrapper1 {
         position: fixed;
@@ -130,10 +130,10 @@ p {
         margin-left: 5vw;
         font-size: 12px;
     }
-    p {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
+    /* p {
+    padding-left: 20px;
+    padding-right: 20px;
+} */
 }
 
 @media screen and (max-width: 600px) {
@@ -191,8 +191,8 @@ p {
         margin-left: 5vw;
         font-size: 12px;
     }
-    p {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
+    /* p {
+    padding-left: 20px;
+    padding-right: 20px;
+} */
 }

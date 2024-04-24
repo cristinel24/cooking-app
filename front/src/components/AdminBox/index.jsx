@@ -2,6 +2,9 @@ import React from 'react'
 import './index.css'
 import PageButton from '../PageButton'
 import ActionButton from '../ActionButton'
+import { FaCheck } from 'react-icons/fa'
+import { PiArrowSquareOutBold } from 'react-icons/pi'
+import { BsExclamationCircle } from 'react-icons/bs'
 
 function Admin({
     userName,
@@ -18,7 +21,7 @@ function Admin({
         <div className="admin-box">
             <div className="admin-header">
                 <div className="admin-header-left">
-                    <img src="./!.png" alt="Admin Sign" />
+                    <BsExclamationCircle />
                     <h3>{userName}</h3>
                 </div>
                 <div className="admin-header-right">
@@ -37,11 +40,14 @@ function Admin({
                         <PageButton
                             children={
                                 <>
-                                    <span>{view}</span>{' '}
-                                    <img src="./view.png" alt="View ph" />
+                                    <span>
+                                        <PiArrowSquareOutBold className="hey" />
+                                    </span>
+                                    <span>{view}</span>
                                 </>
                             }
                             path={pathPage}
+                            className="customButtonsPGBT"
                         />
                     </div>
                     <div className="customButtons">
@@ -51,9 +57,9 @@ function Admin({
                                 text={
                                     <>
                                         <span>{read}</span>{' '}
-                                        <img src="./read.png" alt="Read ph" />
                                     </>
                                 }
+                                Icon={FaCheck}
                             />
                         </div>
                     </div>

@@ -87,6 +87,7 @@ function Page() {
     ]
 
     const func1 = () => {}
+
     return (
         <>
             {/* <Categories
@@ -106,7 +107,7 @@ function Page() {
                 description="Descrierea Rețetei"
             /> */}
 
-            {/* <AdminBox
+            <AdminBox
                 userName={userName}
                 userNumber={userNumber}
                 content={content}
@@ -114,7 +115,7 @@ function Page() {
                 view={view}
                 pathPage={pathPage}
                 handleClick={handleClick}
-            /> */}
+            />
 
             {/* <Navbar /> */}
 
@@ -134,7 +135,7 @@ function Page() {
 
             {/* <PageButton children="Buna" path={pathPage} className="da" /> */}
 
-            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} />
+            {/* <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
         </>
     )
 }

@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './index.css'
-import { ThemeContext, themes } from '../../context/index.jsx'
 import PageButton from '../PageButton/index.jsx'
-import Page from '../../pages/Page.jsx'
 
 export default function Report() {
     //Rutele pentru butoane
@@ -31,12 +29,12 @@ export default function Report() {
 
     return (
         <div>
-            <div className="wrapper">
-                <div className="titlu">
+            <div className="report-wrapper">
+                <div className="report-wrapper-title">
                     <p>Raporteza o problema!</p>
                 </div>
                 <p>Descrie problema</p>
-                <div className="textbox-container">
+                <div className="report-textbox-container">
                     <textarea
                         value={text}
                         onChange={handleChange}
@@ -45,36 +43,32 @@ export default function Report() {
                     />
                 </div>
                 <p>O captura de ecran ne-ar ajuta sa intelegem mai bine</p>
-                <div className="image-container" style={{ textAlign: 'left' }}>
-                    <div className="file">
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            onChange={handleFileChange}
-                            style={{ display: 'none' }}
+                <div className="report-image-container">
+                    <div className="report-choose-file">
+                        <input ref={fileInputRef}
+                         type="file"
+                         onChange={handleFileChange}
+                         className="report-hide-initial-msg"
                         />
-                        <div
-                            className="upload-button"
-                            onClick={handleButtonClick}
-                        >
+                        <div className="report-upload-button" onClick={handleButtonClick}>
                             {/* <FontAwesomeIcon icon={faPaperclip} /> */}
                             <span>
-                                {selectedFile
-                                    ? selectedFile.name
+                                {selectedFile 
+                                    ? selectedFile.name 
                                     : 'Incarca o captura de ecran'}
                             </span>
                         </div>
                     </div>
                 </div>
-                <div className="butoane">
-                    <div className="buton1">
+                <div className="report-buttons">
+                    <div className="report-button1">
                         <PageButton
                             children="Trimite"
                             path={pathPage}
                             className="btn11"
                         />
                     </div>
-                    <div className="buton2">
+                    <div className="report-button2">
                         <PageButton
                             children="Renunta"
                             path={pathPage}

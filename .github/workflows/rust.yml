@@ -17,6 +17,8 @@ jobs:
     - name: Update & Intall Packages
       run: sudo apt update --quiet --assume-yes && sudo apt upgrade --quiet --assume-yes && sudo apt install pkg-config libssl-dev --quiet --assume-yes 
     - name: Build
-      run: cargo build --release
+      run: |
+        cd back/search
+        cargo build --release
     - name: Clippy
       run: cargo clippy

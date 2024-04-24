@@ -87,6 +87,7 @@ function Page() {
     ]
 
     const func1 = () => {}
+
     return (
         <>
             {/* <Categories
@@ -105,12 +106,7 @@ function Page() {
                 allergens={['apa', 'gluten', 'porumb', 'alergen4', 'alergen5']}
                 description="Descrierea Rețetei"
             /> */}
-<<<<<<< HEAD
-            <AdminBox
-=======
-
             {/* <AdminBox
->>>>>>> parent of 5be36a3 (add icons)
                 userName={userName}
                 userNumber={userNumber}
                 content={content}
@@ -118,12 +114,7 @@ function Page() {
                 view={view}
                 pathPage={pathPage}
                 handleClick={handleClick}
-<<<<<<< HEAD
-            />
-=======
             /> */}
-
->>>>>>> parent of 5be36a3 (add icons)
             {/* <Navbar /> */}
 
             {/* <UserProfile /> */}
@@ -142,7 +133,7 @@ function Page() {
 
             {/* <PageButton children="Buna" path={pathPage} className="da" /> */}
 
-            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} />
+            {/* <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
         </>
     )
 }

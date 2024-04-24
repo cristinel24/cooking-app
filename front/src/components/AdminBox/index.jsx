@@ -2,6 +2,9 @@ import React from 'react'
 import './index.css'
 import PageButton from '../PageButton'
 import ActionButton from '../ActionButton'
+import { FaCheck } from 'react-icons/fa'
+import { PiArrowSquareOutBold } from 'react-icons/pi'
+import { BsExclamationCircle } from 'react-icons/bs'
 
 function Admin({
     userName,
@@ -18,13 +21,8 @@ function Admin({
         <div className="admin-box">
             <div className="admin-header">
                 <div className="admin-header-left">
-<<<<<<< HEAD
                     <BsExclamationCircle className="admin-header-left-img" />
                     <h3 className="admin-header-left-title">{userName}</h3>
-=======
-                    <img src="./!.png" alt="Admin Sign" />
-                    <h3>{userName}</h3>
->>>>>>> parent of 5be36a3 (add icons)
                 </div>
                 <div className="admin-header-right">
                     <p>{userNumber}</p>
@@ -42,21 +40,15 @@ function Admin({
                         <PageButton
                             children={
                                 <>
-<<<<<<< HEAD
                                     <span>
                                         <PiArrowSquareOutBold className="admin-footer-right-customButtons-img" />
                                     </span>
                                     <span>{view}</span>
-=======
-                                    <span>{view}</span>{' '}
-                                    <img src="./view.png" alt="View ph" />
->>>>>>> parent of 5be36a3 (add icons)
                                 </>
                             }
                             path={pathPage}
                         />
                     </div>
-<<<<<<< HEAD
                     <div className="admin-footer-right-customButtons-read">
                         <ActionButton
                             onClick={handleClick}
@@ -67,20 +59,6 @@ function Admin({
                             }
                             Icon={FaCheck}
                         />
-=======
-                    <div className="customButtons">
-                        <div>
-                            <ActionButton
-                                onClick={handleClick}
-                                text={
-                                    <>
-                                        <span>{read}</span>{' '}
-                                        <img src="./read.png" alt="Read ph" />
-                                    </>
-                                }
-                            />
-                        </div>
->>>>>>> parent of 5be36a3 (add icons)
                     </div>
                 </div>
             </div>

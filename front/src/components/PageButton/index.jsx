@@ -1,13 +1,13 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import "./index.css";
+import React from 'react'
+import { Link } from 'react-router-dom'
+import './index.css'
 
-function PageButton({ title, path }) {
-  return (
-    <Link to={path}>
-      <button className="button">{title}</button>
-    </Link>
-  );
+function PageButton({ children, path, className }) {
+    return (
+        <Link className={'link ${className}'} to={path}>
+            {children}
+        </Link>
+    )
 }
 
-export default PageButton;
+export default PageButton

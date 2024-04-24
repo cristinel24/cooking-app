@@ -1,0 +1,198 @@
+.wrapper1 {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    color: var(--body);
+    background-color: var(--ubody);
+    width: 40vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.titlu1 {
+    margin-top: 5vh;
+    margin-bottom: 10vh;
+    font-weight: bolder;
+    text-align: center;
+    width: 100%;
+}
+
+.titlu1 p {
+    font-size: 45px;
+    font-weight: bolder;
+    margin: auto;
+}
+
+form .doamne {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+label {
+    margin-left: 5px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.butoane1 {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    align-self: center;
+}
+
+.button1 .link {
+    background-color: var(--body);
+    margin-bottom: 2vh;
+    padding: 20px;
+    width: 40vw;
+    font-size: 16px;
+}
+
+.titlu1 p {
+    font-size: 32px;
+    font-weight: bolder;
+    margin: auto;
+}
+form label {
+    color: var(--hovercolor);
+    font-size: 18px;
+}
+
+.button2 .link {
+    background-color: var(--neutru);
+    padding: 20px;
+    width: 30vw;
+    margin-left: 5vw;
+    font-size: 12px;
+}
+p {
+    padding-top: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+@media screen and (min-width: 601px) and (max-width: 1100px) {
+    .wrapper1 {
+        position: fixed;
+        top: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        color: var(--body);
+        background-color: var(--ubody);
+        width: 50vw;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .butoane1 {
+        display: flex;
+        flex-direction: row;
+        margin: auto;
+        align-self: center;
+    }
+    .button1 .link {
+        background-color: var(--body);
+        margin-bottom: 2vh;
+        padding: 20px;
+        width: 40vw;
+        font-size: 16px;
+    }
+
+    .titlu1 p {
+        font-size: 32px;
+        font-weight: bolder;
+        margin: auto;
+    }
+    form label {
+        color: var(--hovercolor);
+        font-size: 16px;
+    }
+
+    label {
+        margin-left: 5px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 1vh;
+        text-align: center;
+        color: var(--hovercolor);
+    }
+
+    .button2 .link {
+        background-color: var(--neutru);
+        padding: 20px;
+        width: 30vw;
+        margin-left: 5vw;
+        font-size: 12px;
+    }
+    p {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .wrapper1 {
+        position: fixed;
+        top: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        color: var(--body);
+        background-color: var(--ubody);
+        width: 100vw;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Montserrat', sans-serif;
+        padding-top: 70px;
+    }
+
+    form label {
+        color: var(--hovercolor);
+        font-size: 13px;
+    }
+
+    .butoane1 {
+        display: flex;
+        flex-direction: row;
+        margin: auto;
+        align-self: center;
+    }
+    .button1 .link {
+        background-color: var(--body);
+        margin-bottom: 2vh;
+        padding: 20px;
+        width: 40vw;
+        font-size: 16px;
+    }
+
+    .titlu1 p {
+        font-size: 32px;
+        font-weight: bolder;
+        margin: auto;
+    }
+    label {
+        margin-left: 5px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 1vh;
+        text-align: center;
+    }
+    .button2 .link {
+        background-color: var(--neutru);
+        padding: 20px;
+        width: 30vw;
+        margin-left: 5vw;
+        font-size: 12px;
+    }
+    p {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}

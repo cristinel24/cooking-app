@@ -1,12 +1,13 @@
-import React from "react";
-import "./index.css";
+import React from 'react'
+import './index.css'
 
-function ActionButton({ onClick, text }) {
-  return (
-    <button className="button" onClick={onClick}>
-      {text}
-    </button>
-  );
+function ActionButton({ onClick, text, Icon }) {
+    return (
+        <button className="actionbutton" onClick={onClick}>
+            <Icon className="actionbutton_icon" />
+            {text && <span className="actionbutton_text">{text}</span>}
+        </button>
+    )
 }
 
-export default ActionButton;
+export default ActionButton

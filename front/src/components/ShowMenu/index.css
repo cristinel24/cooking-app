@@ -1,0 +1,40 @@
+.menu-wrapper {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 5%;
+    width: 210px;
+}
+
+.menu-container {
+    position: center;
+    width: 100%;
+    font-size: 8px;
+    margin-bottom: 10px;
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .menu-wrapper {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+    }
+    .menu-container {
+        position: center;
+        margin-bottom: 10px;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .menu-wrapper {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        left: 5%;
+    }
+    .menu-container {
+        position: center;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+}

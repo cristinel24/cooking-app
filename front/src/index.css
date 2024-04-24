@@ -1,7 +1,5 @@
-:root {
-  font-family: "Montserrat";
-}
 body {
-  margin: 0;
-  background-color: var(--body);
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    background-color: var(--body);
 }

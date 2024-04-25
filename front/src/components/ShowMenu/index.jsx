@@ -11,8 +11,8 @@ function ShowMenu() {
     }
 
     return (
-        <div className="menu-wrapper">
-            <div className="menu-container">
+        <div className="filters-menu-wrapper">
+            <div className="filters-menu-container">
                 <ActionButton text="Filtre" onClick={toggleMenu}></ActionButton>
                 {menuOpen && <Filters />}
             </div>

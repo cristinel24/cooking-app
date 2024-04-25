@@ -1,4 +1,4 @@
-.menu-wrapper {
+.filters-menu-wrapper {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -6,33 +6,33 @@
     width: 210px;
 }
 
-.menu-container {
+.filters-menu-container {
     position: center;
     width: 100%;
-    font-size: 8px;
+    font-size: 0.5rem;
     margin-bottom: 10px;
 }
 
 @media (min-width: 481px) and (max-width: 767px) {
-    .menu-wrapper {
+    .filters-menu-wrapper {
         display: flex;
         flex-direction: column;
         position: absolute;
     }
-    .menu-container {
+    .filters-menu-container {
         position: center;
         margin-bottom: 10px;
     }
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
-    .menu-wrapper {
+    .filters-menu-wrapper {
         display: flex;
         flex-direction: column;
         position: absolute;
         left: 5%;
     }
-    .menu-container {
+    .filters-menu-container {
         position: center;
         margin-bottom: 10px;
         width: 100%;

@@ -37,11 +37,11 @@ function Filters() {
     }
 
     return (
-        <div className="container1">
+        <div className="filters-container">
             <div className="filters">
-                <div className="nameAndSearch1">
-                    <div className="TitluTip">Filtre</div>
-                    <div className="search-bar1">
+                <div className="filters-search">
+                    <div className="filter-type">Filtre</div>
+                    <div className="search-bar-filters">
                         <input
                             type="text"
                             value={filterSearchTerm}
@@ -66,9 +66,9 @@ function Filters() {
                         ))}
                 </div>
                 <div className="alergens">
-                    <div className="nameAndSearch2">
-                        <div className="TitluTip">Alergeni</div>
-                        <div className="search-bar2">
+                    <div className="alergens-search">
+                        <div className="filter-type">Alergeni</div>
+                        <div className="search-bar-alergens">
                             <input
                                 type="text"
                                 value={alergenSearchTerm}

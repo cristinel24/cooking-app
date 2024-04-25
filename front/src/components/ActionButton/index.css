@@ -16,7 +16,7 @@
 }
 
 .actionbutton_text {
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--txtcolor);
     font-weight: bold;
 }
@@ -30,7 +30,7 @@
         background-color: var(--hoverbkgcolor);
     }
     .actionbutton_text {
-        font-size: 10px;
+        font-size: 0.625rem;
     }
 }
 
@@ -43,6 +43,6 @@
         background-color: var(--hoverbkgcolor);
     }
     .actionbutton_text {
-        font-size: 8px;
+        font-size: 0.5rem;
     }
 }

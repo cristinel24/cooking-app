@@ -7,7 +7,7 @@
     padding-top: 150px;
 }
 .user-profile-line {
-    font-size: 12px;
+    font-size: 0.7rem;
     padding-top: 5px;
     padding-left: 10px;
     padding-right: 10px;
@@ -28,11 +28,11 @@
 }
 
 .user-profile-button .user-profile-button-arrow {
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 .user-profile-down .link {
-    font-size: 24px;
+    font-size: 1.5rem;
     color: var(--txtcolor);
     padding: 10px 20px;
     border-radius: 5px;
@@ -53,7 +53,7 @@
 
 .user-profile-description {
     color: var(--txtcolor);
-    font-size: 18px;
+    font-size: 1.125rem;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
@@ -72,11 +72,11 @@
     margin-bottom: 40px;
     margin-left: 10px;
     margin-right: 10px;
-    font-size: 12px;
+    font-size: 0.75rem;
 }
 
 .user-profile-report a {
-    font-size: 14px;
+    font-size: 0.875rem;
     position: relative;
     color: var(--txtcolor);
 }
@@ -119,7 +119,7 @@
     }
 
     .user-profile-button {
-        font-size: 10px;
+        font-size: 0.625rem;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -127,11 +127,11 @@
     }
 
     .user-profile-button .user-profile-button-arrow {
-        font-size: 12px;
+        font-size: 0.75rem;
     }
 
     .user-profile-down button {
-        font-size: 20px;
+        font-size: 1.25rem;
         padding: 10px 20px;
         border-radius: 5px;
         border: none;
@@ -139,16 +139,16 @@
     }
 
     .user-profile-name {
-        font-size: 14px;
+        font-size: 0.875rem;
         color: var(--profname);
     }
 
     .user-profile-line {
-        font-size: 10px;
+        font-size: 0.625rem;
     }
 
     .user-profile-description {
-        font-size: 16px;
+        font-size: 1rem;
         padding: 10px 0px;
     }
 
@@ -157,11 +157,11 @@
         margin-bottom: 60px;
         margin-left: 10px;
         margin-right: 10px;
-        font-size: 10px;
+        font-size: 0.625rem;
     }
 
     .user-profile-report a {
-        font-size: 10px;
+        font-size: 0.625rem;
     }
 
     .user-profile-report a::after {
@@ -200,11 +200,11 @@
     }
 
     .user-profile-button .user-profile-button-arrow {
-        font-size: 10px;
+        font-size: 0.625rem;
     }
 
     .user-profile-down button {
-        font-size: 16px;
+        font-size: 1rem;
     }
 
     .user-profile-down img {
@@ -217,15 +217,15 @@
         color: var(--profname);
         align-self: center;
         margin-top: -5px;
-        font-size: 16px;
+        font-size: 1rem;
     }
 
     .user-profile-line {
-        font-size: 8px;
+        font-size: 0.5rem;
     }
 
     .user-profile-description {
-        font-size: 16px;
+        font-size: 1rem;
         display: flex;
         align-items: flex-start;
         justify-content: center;
@@ -237,7 +237,7 @@
         margin-bottom: 60px;
         margin-left: 10px;
         margin-right: 10px;
-        font-size: 10px;
+        font-size: 0.625rem;
     }
 
     .user-profile-report {
@@ -245,7 +245,7 @@
         justify-self: flex-end;
     }
     .user-profile-report a {
-        font-size: 10px;
+        font-size: 0.625rem;
     }
 
     .user-profile-report a::after {

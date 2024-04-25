@@ -48,12 +48,12 @@
 }
 
 .footer-brand{
-    font-size: 0.7em;
+    font-size: 0.7rem;
     margin-top: -1rem;
 }
 
 .footer-bug {
-    font-size: 1em;
+    font-size: 1rem;
 }
 
 .footer-brand a:hover,

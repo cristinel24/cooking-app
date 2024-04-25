@@ -20,7 +20,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 2vw 0 2vw;
+        padding: 0 1.5rem 0 1.5rem;
         margin: 0;
     }
 
@@ -33,7 +33,7 @@
 
     .admin-header .admin-header-left-title {
         margin: 0;
-        margin-left: 1vw;
+        margin-left: 0.5rem;
         font-size: 1rem;
     }
 
@@ -50,7 +50,7 @@
     }
 
     .admin-content .admin-content-description {
-        padding: 0.8vw 2vw 0.3vw 2vw;
+        padding: 0.5rem 1.5rem 0.3rem 1.5rem;
         font-size: 0.6rem;
         font-weight: 600;
     }
@@ -59,42 +59,42 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-bottom: 0.5vw;
+        padding-bottom: 0.4rem;
     }
 
     .admin-footer-left .admin-footer-left-description {
         font-weight: 700;
-        padding-left: 2vw;
+        padding-left: 1.5rem;
         font-size: 0.7rem;
     }
 
     .admin-footer-right {
         display: flex;
         flex-direction: row;
-        gap: 0.3vw;
-        padding-right: 2vw;
+        gap: 0.4rem;
+        padding-right: 1.5rem;
         justify-content: center;
         align-items: center;
     }
 
-    .admin-footer-right .admin-footer-right-customButtons-img {
+    .admin-footer-right .admin-footer-right-custom-buttons-img {
         width: 1rem;
         height: 1rem;
     }
 
-    .admin-footer-right-customButtons-view .link {
+    .admin-footer-right-custom-buttons-view .link {
         margin: 0;
         border: 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 0.3rem;
+        padding: 0.25rem;
         font-size: 0.7rem;
-        padding-right: 0.5vw;
-        padding-left: 0.5vw;
+        padding-right: 0.4rem;
+        padding-left: 0.4rem;
     }
 
-    .admin-footer-right-customButtons-read .actionbutton {
+    .admin-footer-right-custom-buttons-read .actionbutton {
         margin: 0;
         border: 0;
         display: flex;
@@ -102,11 +102,11 @@
         align-items: center;
         font-size: 0.7rem;
         padding: 0.4rem;
-        padding-right: 0.5vw;
-        padding-left: 0.5vw;
+        padding-right: 0.4rem;
+        padding-left: 0.4rem;
     }
 
-    .admin-footer-right-customButtons-read .actionbutton_text {
+    .admin-footer-right-custom-buttons-read .actionbutton_text {
         font-size: 0.7rem;
     }
 }
@@ -130,7 +130,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 3vw 0 3vw;
+        padding: 0 2rem 0 2rem;
         margin: 0;
     }
 
@@ -143,7 +143,7 @@
 
     .admin-header .admin-header-left-title {
         margin: 0;
-        margin-left: 1vw;
+        margin-left: 0.5rem;
         font-size: 1.2rem;
     }
 
@@ -161,7 +161,7 @@
 
     .admin-content .admin-content-description {
         font-weight: 580;
-        padding: 1.2vw 3vw 1vw 3vw;
+        padding: 0.8rem 2rem 0.5rem 2rem;
         font-size: 0.7rem;
     }
 
@@ -169,54 +169,54 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-bottom: 0.5vw;
+        padding-bottom: 0.4rem;
     }
 
     .admin-footer-left .admin-footer-left-description {
         font-weight: 600;
-        padding-left: 3vw;
+        padding-left: 2rem;
         font-size: 0.8rem;
     }
 
     .admin-footer-right {
         display: flex;
         flex-direction: row;
-        gap: 1vw;
-        padding-right: 3vw;
+        gap: 0.5rem;
+        padding-right: 2rem;
         justify-content: center;
         align-items: center;
     }
 
-    .admin-footer-right .admin-footer-right-customButtons-img {
+    .admin-footer-right .admin-footer-right-custom-buttons-img {
         width: 1rem;
         height: 1rem;
     }
 
-    .admin-footer-right-customButtons-view .link {
+    .admin-footer-right-custom-buttons-view .link {
         margin: 0;
         border: 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 0.5vw;
+        padding: 0.4rem;
         font-size: 0.85rem;
-        padding-right: 1vw;
-        padding-left: 1vw;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
     }
 
-    .admin-footer-right-customButtons-read .actionbutton {
+    .admin-footer-right-custom-buttons-read .actionbutton {
         margin: 0;
         border: 0;
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 0.85rem;
-        padding: 0.8vw;
-        padding-right: 1vw;
-        padding-left: 1vw;
+        padding: 0.45rem;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
     }
 
-    .admin-footer-right-customButtons-read .actionbutton_text {
+    .admin-footer-right-custom-buttons-read .actionbutton_text {
         font-size: 0.9rem;
     }
 }
@@ -240,7 +240,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 4vw 0 4vw;
+        padding: 0 1rem 0 1rem;
         margin: 0;
     }
 
@@ -253,7 +253,7 @@
 
     .admin-header .admin-header-left-title {
         margin: 0;
-        margin-left: 1vw;
+        margin-left: 0.5rem;
         font-size: 0.8rem;
     }
 
@@ -271,7 +271,7 @@
 
     .admin-content .admin-content-description {
         font-weight: 580;
-        padding: 2vw 4vw 1vw 4vw;
+        padding: 0.6rem 1rem 0.4rem 1rem;
         font-size: 0.45rem;
     }
 
@@ -279,55 +279,55 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-bottom: 1vw;
+        padding-bottom: 0.5rem;
     }
 
     .admin-footer-left .admin-footer-left-description {
         margin: 0;
         font-weight: 600;
-        padding-left: 4vw;
+        padding-left: 1rem;
         font-size: 0.5rem;
     }
 
     .admin-footer-right {
         display: flex;
         flex-direction: row;
-        gap: 0.4vw;
-        padding-right: 2vw;
+        gap: 0.4rem;
+        padding-right: 1rem;
         justify-content: center;
         align-items: center;
     }
 
-    .admin-footer-right .admin-footer-right-customButtons-img {
+    .admin-footer-right .admin-footer-right-custom-buttons-img {
         width: 0.7rem;
         height: 0.7rem;
     }
 
-    .admin-footer-right-customButtons-view .link {
+    .admin-footer-right-custom-buttons-view .link {
         margin: 0;
         border: 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 0.3vw;
+        padding: 0.2rem;
         font-size: 0.5rem;
-        padding-right: 1vw;
-        padding-left: 1vw;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
     }
 
-    .admin-footer-right-customButtons-read .actionbutton {
+    .admin-footer-right-custom-buttons-read .actionbutton {
         margin: 0;
         border: 0;
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 0.5rem;
-        padding: 0.6vw;
-        padding-right: 1vw;
-        padding-left: 1vw;
+        padding: 0.3rem;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
     }
 
-    .admin-footer-right-customButtons-read .actionbutton_text {
+    .admin-footer-right-custom-buttons-read .actionbutton_text {
         font-size: 0.5rem;
     }
 }

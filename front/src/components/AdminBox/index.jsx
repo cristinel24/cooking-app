@@ -36,12 +36,12 @@ function Admin({
                     <p className="admin-footer-left-description">{date}</p>
                 </div>
                 <div className="admin-footer-right">
-                    <div className="admin-footer-right-customButtons-view">
+                    <div className="admin-footer-right-custom-buttons-view">
                         <PageButton
                             children={
                                 <>
                                     <span>
-                                        <PiArrowSquareOutBold className="admin-footer-right-customButtons-img" />
+                                        <PiArrowSquareOutBold className="admin-footer-right-custom-buttons-img" />
                                     </span>
                                     <span>{view}</span>
                                 </>
@@ -49,7 +49,7 @@ function Admin({
                             path={pathPage}
                         />
                     </div>
-                    <div className="admin-footer-right-customButtons-read">
+                    <div className="admin-footer-right-custom-buttons-read">
                         <ActionButton
                             onClick={handleClick}
                             text={

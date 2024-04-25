@@ -1,0 +1,30 @@
+name: Rust
+
+on:
+  push:
+    paths:
+      - 'back/rust/search/**'
+    branches: [ "master" ]
+
+  pull_request:
+    paths:
+      - 'back/rust/search/**'
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Update & Intall Packages
+      run: sudo apt upgrade --quiet --assume-yes && sudo apt install pkg-config libssl-dev --quiet --assume-yes 
+    - name: Build
+      run: |
+        cd back/rust/search
+        cargo build --release
+    - name: Clippy
+      run: |
+        cd back/rust/search
+        cargo clippy

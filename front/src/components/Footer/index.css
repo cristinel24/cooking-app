@@ -6,8 +6,7 @@
     height: 80px;
 }
 
-.brand,
-.bug {
+.footer-brand,.footer-bug {
     display: flex;
     flex-grow: 1;
     align-items: center;
@@ -15,76 +14,80 @@
     color: var(--body);
 }
 
-.brand a {
+.footeer-brand{
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.footer-brand a {
     font-weight: bolder;
-    font-size: 16px;
+    font-size: 1rem;
     color: var(--body);
     text-decoration: none;
 }
 
-.bug {
-    font-size: 14px;
+.footer-bug {
+    font-size: 0.875rem;
     font-weight: bold;
     text-decoration: underline;
 }
 
-.bug a {
-    font-size: 16px;
+.footer-bug a {
+    font-size: 1rem;
     color: var(--body);
     text-decoration: none;
 }
 
-.brand p {
+.footer-brand p {
     margin-right: 2px;
 }
 
-.bug p {
+.footer-bug p {
     margin-left: 10px;
 }
 
-.brand .fa-icon {
+.footer-brand .fa-icon {
     font-size: 0.7em;
-    margin-top: -15px;
+    margin-top: -1rem;
 }
 
-.bug .fa-icon {
+.footer-bug .fa-icon {
     font-size: 1em;
 }
 
-.brand a:hover,
-.brand .fa-icon:hover,
-.bug:hover {
+.footer-brand a:hover,
+.footer-brand .fa-icon:hover,
+.footer-bug a:hover {
     color: var(--bkgcolor);
 }
 
 @media screen and (max-width: 600px) {
     .footer {
         flex-direction: column;
-        /* height: auto; */
         padding: 5px;
         align-items: center;
         width: 100%;
     }
 
-    .brand a {
-        font-size: 12px;
+    .footer-brand a {
+        font-size: 0.75rem;
     }
 
-    .bug a {
-        font-size: 10px;
+    .footer-bug a {
+        font-size: 0.625rem;
     }
 
-    .brand,
-    .bug {
+    .footeer-brand,.footer-bug {
         text-align: center;
     }
 
-    .brand .fa-icon,
-    .bug .fa-icon {
+    .footer-brand .fa-icon,
+    .footer-bug .fa-icon {
         margin-top: 0;
     }
 
-    .brand .fa-icon {
+    .footer-brand .fa-icon {
         font-size: 0.6em;
         margin-top: -10px;
     }

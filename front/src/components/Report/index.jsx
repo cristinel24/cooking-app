@@ -31,7 +31,7 @@ export default function Report() {
         <div>
             <div className="report-wrapper">
                 <div className="report-wrapper-title">
-                    <p>Raporteza o problema!</p>
+                    <p>Raporteaza o problema!</p>
                 </div>
                 <p>Descrie problema</p>
                 <div className="report-textbox-container">
@@ -65,14 +65,12 @@ export default function Report() {
                         <PageButton
                             children="Trimite"
                             path={pathPage}
-                            className="btn11"
                         />
                     </div>
                     <div className="report-button2">
                         <PageButton
                             children="Renunta"
                             path={pathPage}
-                            className={'btn22'}
                         />
                     </div>
                 </div>

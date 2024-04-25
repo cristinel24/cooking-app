@@ -15,19 +15,19 @@
 
 .report-wrapper p {
     align-self: flex-start;
-    margin-left: 3vw;
-    font-size: 20px;
-    margin-bottom: 2vh;
+    margin-left: 30px;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
 }
 
 .report-wrapper-title {
-    margin-bottom: 5vh;
+    margin-bottom: 50px;
     font-weight: bolder;
     text-align: center;
     width: 100%;
 }
 .report-wrapper-title p {
-    font-size: 45px;
+    font-size: 2.75rem;
     font-weight: bolder;
     margin: auto;
 }
@@ -37,9 +37,10 @@
     height: 15vh;
     margin: auto;
     padding: 5px;
-    border-radius: 15px;
-    margin-bottom: 5vh;
+    border-radius: 1rem;
+    margin-bottom: 30px;
 }
+
 .report-hide-initial-msg{
     display: none;
 }
@@ -55,36 +56,37 @@
     border: 2px solid;
     border-radius: 10px;
     padding: 10px;
-    margin-bottom: 10vh;
+    margin-bottom: 3.75rem;
     width: 30vw;
 }
+
 .report-buttons {
     display: flex;
     flex-direction: row;
     align-self: center;
 }
 
-.report-button1 .link {
+.report-send-button .link {
     background-color: var(--body);
-    margin-bottom: 2vh;
+    margin-bottom: 20px;
     padding: 20px;
     width: 40vw;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
-.report-button1 .link:hover{
+.report-send-button .link:hover{
     background-color: var(--bkgcolor);
 }
 
-.report-button2 .link {
+.report-give-up-button .link{
     background-color: var(--neutru);
     padding: 20px;
     width: 30vw;
-    margin-left: 5vw;
-    font-size: 16px;
+    margin-left: 100px;
+    font-size: 0.8rem;
 }
 
-.report-button2 .link:hover{
+.report-give-up-button .link:hover{
     background-color: var(--bkgcolor);
 }
 
@@ -103,9 +105,13 @@
         align-items: center;
         font-family: 'Montserrat', sans-serif;
     }
+ 
+    .report-wrapper p{
+        font-size: 1.25rem;
+    }
 
     .report-wrapper-title p {
-        font-size: 40px;
+        font-size: 2.5rem;
         font-weight: bolder;
         margin: auto;
     }
@@ -116,7 +122,7 @@
         margin: auto;
         padding: 5px;
         border-radius: 15px;
-        margin-bottom: 5vh;
+        margin-bottom: 20px;
     }
 
     .report-image-container {
@@ -126,9 +132,9 @@
         border: 2px solid;
         border-radius: 10px;
         padding: 10px;
-        margin-bottom: 5vh;
+        margin-bottom: 30px;
         width: 40vw;
-        margin-top: -1vh;
+        margin-top: -1rem;
     }
 
     .report-buttons {
@@ -137,27 +143,27 @@
         align-self: center;
     }
 
-    .report-button1 .link {
+    .report-send-button .link {
         background-color: var(--body);
-        margin-bottom: 2vh;
+        margin-bottom: 20px;
         padding: 20px;
         width: 40vw;
-        font-size: 16px;
+        font-size: 1rem;
     }
 
-    .report-button1 .link:hover{
+    .report-send-button .link:hover{
         background-color: var(--bkgcolor);
     }
 
-    .report-button2 .link {
+    .report-give-up-button .link {
         background-color: var(--neutru);
         padding: 20px;
         width: 30vw;
-        margin-left: 5vw;
-        font-size: 16px;
+        margin-left: 50px;
+        font-size: 0.8rem;
     }
 
-    .report-button2 .link:hover{
+    .report-give-up-button .link:hover{
         background-color: var(--bkgcolor);
     }
 }
@@ -179,7 +185,7 @@
     }
 
     .report-wrapper-title p {
-        font-size: 32px;
+        font-size: 2rem;
         font-weight: bolder;
         margin: auto;
     }
@@ -190,7 +196,7 @@
         margin: auto;
         padding: 5px;
         border-radius: 15px;
-        margin-bottom: 5vh;
+        margin-bottom: 30px;
     }
 
     .report-image-container {
@@ -200,7 +206,7 @@
         border: 2px solid;
         border-radius: 10px;
         padding: 10px;
-        margin-bottom: 10vh;
+        margin-bottom: 30px;
         width: 75vw;
     }
     .report-buttons {
@@ -209,27 +215,27 @@
         align-self: center;
     }
 
-    .report-button1 .link {
+    .report-send-button .link {
         background-color: var(--body);
-        margin-bottom: 2vh;
+        margin-bottom: 20px;
         padding: 20px;
         width: 40vw;
-        font-size: 16px;
+        font-size: 1rem;
     }
 
-    .report-button1 .link:hover{
+    .report-send-button .link:hover{
         background-color: var(--bkgcolor);
     }
 
-    .report-button2 .link {
+    .report-give-up-button .link {
         background-color: var(--neutru);
         padding: 20px;
         width: 30vw;
-        margin-left: 5vw;
-        font-size: 16px;
+        margin-left: 50px;
+        font-size: 0.8rem;
     }
 
-    .report-button2 .link:hover{
+    .report-give-up-button .link:hover{
         background-color: var(--bkgcolor);
     }
 }

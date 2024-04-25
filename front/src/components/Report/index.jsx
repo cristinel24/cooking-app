@@ -38,39 +38,44 @@ export default function Report() {
                     <textarea
                         value={text}
                         onChange={handleChange}
-                        className="textarea"
                         placeholder="Atunci când utilizam aplicația, am întâlnit eroarea..."
                     />
                 </div>
                 <p>O captura de ecran ne-ar ajuta sa intelegem mai bine</p>
                 <div className="report-image-container">
-                    <div className="report-choose-file">
-                        <input ref={fileInputRef}
-                         type="file"
-                         onChange={handleFileChange}
-                         className="report-hide-initial-msg"
+                    <div className="report-upload-file">
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            onChange={handleFileChange}
+                            className="report-hide-initial-msg"
                         />
-                        <div className="report-upload-button" onClick={handleButtonClick}>
+                        <div
+                            className="report-upload-button"
+                            onClick={handleButtonClick}
+                        >
                             {/* <FontAwesomeIcon icon={faPaperclip} /> */}
                             <span>
-                                {selectedFile 
-                                    ? selectedFile.name 
+                                {selectedFile
+                                    ? selectedFile.name
                                     : 'Incarca o captura de ecran'}
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className="report-buttons">
-                    <div className="report-button1">
+                    <div className="report-send-button">
                         <PageButton
                             children="Trimite"
                             path={pathPage}
+                            className="report-button1"
                         />
                     </div>
-                    <div className="report-button2">
+                    <div className="report-give-up-button">
                         <PageButton
                             children="Renunta"
                             path={pathPage}
+                            className="report-button2"
                         />
                     </div>
                 </div>

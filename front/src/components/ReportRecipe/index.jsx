@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import PageButton from '../PageButton'
 import './index.css'
 function ReportRecipe() {
-    const title1 = 'Trimite'
-    const title2 = 'Renunta'
     const pathPage = 'https://www.google.ro/'
     localStorage.setItem('theme', 'light')
 
@@ -28,14 +26,14 @@ function ReportRecipe() {
     }
     return (
         <div>
-            <div className="reportRecipe-wrapper">
-                <div className="reportRecipe-wrapper-title">
+            <div className="report-recipe-wrapper">
+                <div className="report-recipe-wrapper-title">
                     <p>Raporteaza</p>
                 </div>
-                <div className="reportRecipe-content">
-                    <form divclassName="reportRecipe-form">
+                <div className="report-recipe-content">
+                    <form divclassName="report-recipe-form">
                         {formVariants.map((variant) => (
-                            <div className="reportRecipe-inputs" key={variant.id}>
+                            <div className="report-recipe-inputs" key={variant.id}>
                                 <input
                                     type="checkbox"
                                     id={`variant-${variant.id}`}
@@ -51,19 +49,19 @@ function ReportRecipe() {
                         ))}
                     </form>
                 </div>
-                <div className="reportRecipe-buttons">
-                    <div className="reportRecipe-button1">
+                <div className="report-recipe-buttons">
+                    <div className="report-recipe-send-button">
                         <PageButton
-                            children={title1}
+                            children="Trimite"
                             path={pathPage}
-                            className="btn1"
+                            className="report-button1"
                         />
                     </div>
-                    <div className="reportRecipe-button2">
+                    <div className="report-recipe-give-up-button">
                         <PageButton
-                            children={title2}
+                            children="Renunta"
                             path={pathPage}
-                            className="btn2"
+                            className="report-button2"
                         />
                     </div>
                 </div>

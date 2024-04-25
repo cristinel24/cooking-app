@@ -47,17 +47,16 @@
     margin-left: 10px;
 }
 
-.footer-brand .fa-icon {
+.footer-brand{
     font-size: 0.7em;
     margin-top: -1rem;
 }
 
-.footer-bug .fa-icon {
+.footer-bug {
     font-size: 1em;
 }
 
 .footer-brand a:hover,
-.footer-brand .fa-icon:hover,
 .footer-bug a:hover {
     color: var(--bkgcolor);
 }
@@ -80,15 +79,5 @@
 
     .footer-brand,.footer-bug {
         text-align: center;
-    }
-
-    .footer-brand .fa-icon,
-    .footer-bug .fa-icon {
-        margin-top: 0;
-    }
-
-    .footer-brand .fa-icon {
-        font-size: 0.6em;
-        margin-top: -10px;
     }
 }

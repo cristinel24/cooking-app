@@ -1,4 +1,4 @@
-.wrapper1 {
+.reportRecipe-wrapper{
     position: fixed;
     top: 0;
     right: 0;
@@ -13,38 +13,45 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-.titlu1 {
-    margin-top: 5vh;
+.reportRecipe-wrapper-title {
+    margin-top: 15vh;
     margin-bottom: 10vh;
     font-weight: bolder;
     text-align: center;
     width: 100%;
 }
 
-.titlu1 p {
+.reportRecipe-wrapper-title p {
     font-size: 45px;
     font-weight: bolder;
     margin: auto;
 }
 
-form .doamne {
+.reportRecipe-form .reportRecipe-inputs {
     display: flex;
     align-items: center;
     padding: 10px;
 }
-label {
+
+.reportRecipe-inputs{
+    margin-bottom: 1em;
+}
+
+.reportRecipe-inputs label {
     margin-left: 5px;
     font-size: 24px;
     font-weight: bold;
+    text-align: center;
 }
-.butoane1 {
+
+.reportRecipe-buttons {
     display: flex;
     flex-direction: row;
     margin: auto;
     align-self: center;
 }
 
-.button1 .link {
+.reportRecipe-button1 .link {
     background-color: var(--body);
     margin-bottom: 2vh;
     padding: 20px;
@@ -52,30 +59,24 @@ label {
     font-size: 16px;
 }
 
-.titlu1 p {
-    font-size: 32px;
-    font-weight: bolder;
-    margin: auto;
-}
-form label {
-    color: var(--hovercolor);
-    font-size: 18px;
-}
-
-.button2 .link {
+.reportRecipe-button2 .link {
     background-color: var(--neutru);
     padding: 20px;
     width: 30vw;
     margin-left: 5vw;
-    font-size: 12px;
+    font-size: 16px;
 }
-p {
-    padding-top: 50px;
-    padding-left: 20px;
-    padding-right: 20px;
+
+.reportRecipe-button1 .link:hover{
+    background-color: var(--bkgcolor);
 }
+
+.reportRecipe-buttons .link:hover{
+    background-color: var(--bkgcolor);
+}
+
 @media screen and (min-width: 601px) and (max-width: 1100px) {
-    .wrapper1 {
+    .reportRecipe-wrapper {
         position: fixed;
         top: 0;
         right: 0;
@@ -90,13 +91,39 @@ p {
         font-family: 'Montserrat', sans-serif;
     }
 
-    .butoane1 {
+    .reportRecipe-wrapper-title {
+        margin-top: 15vh;
+        margin-bottom: 10vh;
+        font-weight: bolder;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .reportRecipe-wrapper-title p {
+        font-size: 32px;
+        font-weight: bolder;
+        margin: auto;
+    }
+
+    .reportRecipe-inputs{
+        margin-bottom: 1em;
+    }
+
+    .reportRecipe-inputs label {
+        margin-left: 5px;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+    }
+    
+    .reportRecipe-buttons {
         display: flex;
         flex-direction: row;
         margin: auto;
         align-self: center;
     }
-    .button1 .link {
+    
+    .reportRecipe-button1 .link {
         background-color: var(--body);
         margin-bottom: 2vh;
         padding: 20px;
@@ -104,40 +131,17 @@ p {
         font-size: 16px;
     }
 
-    .titlu1 p {
-        font-size: 32px;
-        font-weight: bolder;
-        margin: auto;
-    }
-    form label {
-        color: var(--hovercolor);
-        font-size: 16px;
-    }
-
-    label {
-        margin-left: 5px;
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 1vh;
-        text-align: center;
-        color: var(--hovercolor);
-    }
-
-    .button2 .link {
+    .reportRecipe-button2 .link {
         background-color: var(--neutru);
         padding: 20px;
         width: 30vw;
         margin-left: 5vw;
-        font-size: 12px;
-    }
-    p {
-        padding-left: 20px;
-        padding-right: 20px;
+        font-size: 16px;
     }
 }
 
 @media screen and (max-width: 600px) {
-    .wrapper1 {
+    .reportRecipe-wrapper {
         position: fixed;
         top: 0;
         right: 0;
@@ -150,21 +154,40 @@ p {
         justify-content: center;
         align-items: center;
         font-family: 'Montserrat', sans-serif;
-        padding-top: 70px;
+    }
+    
+    .reportRecipe-wrapper-title {
+        margin-top: 15vh;
+        margin-bottom: 10vh;
+        font-weight: bolder;
+        text-align: center;
+        width: 100%;
     }
 
-    form label {
-        color: var(--hovercolor);
-        font-size: 13px;
+    .reportRecipe-wrapper-title p {
+        font-size: 32px;
+        font-weight: bolder;
+        margin: auto;
     }
 
-    .butoane1 {
+    .reportRecipe-inputs label {
+        margin-left: 5px;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+    }
+    
+    .reportRecipe-inputs{
+        margin-bottom: 1em;
+    }
+
+    .reportRecipe-buttons {
         display: flex;
         flex-direction: row;
         margin: auto;
         align-self: center;
     }
-    .button1 .link {
+    .reportRecipe-button1 .link {
         background-color: var(--body);
         margin-bottom: 2vh;
         padding: 20px;
@@ -172,27 +195,11 @@ p {
         font-size: 16px;
     }
 
-    .titlu1 p {
-        font-size: 32px;
-        font-weight: bolder;
-        margin: auto;
-    }
-    label {
-        margin-left: 5px;
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 1vh;
-        text-align: center;
-    }
-    .button2 .link {
+    .reportRecipe-button2 .link {
         background-color: var(--neutru);
         padding: 20px;
         width: 30vw;
         margin-left: 5vw;
-        font-size: 12px;
-    }
-    p {
-        padding-left: 20px;
-        padding-right: 20px;
+        font-size: 16px;
     }
 }

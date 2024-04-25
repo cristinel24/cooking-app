@@ -5,18 +5,15 @@ export default function Recipe(props) {
         backgroundImage: `url(${props.image})`,
     }
     return (
-        <div className="recipe1">
-            <div className="recipe-header1">
-                <div
-                    className="recipe-image1"
-                    style={divRecipeImageStype}
-                ></div>
-                <div className="recipe-title-and-author1">
-                    <div className="recipe-title1">{props.title}</div>
-                    <div className="recipe-author1">{props.author}</div>
+        <div className="recipe">
+            <div className="recipe-header">
+                <div className="recipe-image" style={divRecipeImageStype}></div>
+                <div className="recipe-title-and-author">
+                    <div className="recipe-title">{props.title}</div>
+                    <div className="recipe-author">{props.author}</div>
                 </div>
             </div>
-            <div className="recipe-description1">
+            <div className="recipe-description">
                 <p>{props.description}</p>
             </div>
         </div>

@@ -3,18 +3,18 @@ name: Rust
 on:
   push:
     paths:
-      - 'back/search/**'
+      - 'back/rust/search/**'
     branches: [ "master" ]
 
   pull_request:
     paths:
-      - 'back/search/**'
+      - 'back/rust/search/**'
     branches: [ "master" ]
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: rust:1.76.0-slim-buster
 
     steps:
     - uses: actions/checkout@v3
@@ -22,9 +22,9 @@ jobs:
       run: sudo apt upgrade --quiet --assume-yes && sudo apt install pkg-config libssl-dev --quiet --assume-yes 
     - name: Build
       run: |
-        cd back/search
+        cd back/rust/search
         cargo build --release
     - name: Clippy
       run: |
-        cd back/search
+        cd back/rust/search
         cargo clippy

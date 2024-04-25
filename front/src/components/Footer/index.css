@@ -14,7 +14,7 @@
     color: var(--body);
 }
 
-.footeer-brand{
+.footer-brand{
     font-size: 1rem;
     font-weight: bold;
     text-decoration: none;
@@ -78,7 +78,7 @@
         font-size: 0.625rem;
     }
 
-    .footeer-brand,.footer-bug {
+    .footer-brand,.footer-bug {
         text-align: center;
     }
 

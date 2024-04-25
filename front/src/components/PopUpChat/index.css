@@ -1,65 +1,53 @@
-.popUpContainer {
+.popUpChat-Container {
     position: fixed;
-    bottom: 100px;
-    right: 20px;
+    bottom: 8rem;
+    right: 1rem;
     z-index: 2;
 }
-
-.bot-logo {
-    width: 60px;
-    height: 60px;
+.popUpChat-bot-logo {
+    width: 4rem;
+    height: 4rem;
     cursor: pointer;
     position: relative;
     z-index: 3;
 }
 
-.custom-modal-overlay {
+.popUpChat-custom-modal-overlay {
     background-color: var(--border);
 }
 
-.custom-modal-content {
-    width: 400px;
-    height: 400px;
+.popUpChat-modal-content {
+    width: 25rem;
+    height: 34rem;
     position: fixed;
-    bottom: 130px;
-    right: 40px;
+    bottom: 9rem;
+    right: 2rem;
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 20px;
     background-color: var(--bkgcolor);
     z-index: 1;
 }
 
-.chatContainer {
-    background-color: var(--bkgcolor);
-    padding: 20px;
-    border-radius: 20px;
-    border-color: var(--bkgcolor);
-}
-.custom-modal-content h2 {
-    padding-left: 30px;
+.popUpChat-title {
+    padding-left: 2rem;
     color: var(--txtcolor);
 }
-.custom-modal-content p {
-    padding-left: 30px;
-    color: var(--txtcolor);
-}
-@media (min-width: 601px) and (max-width: 767px) {
-    .custom-modal-content {
-        width: 400px;
-        height: 600px;
+@media (min-width: 488px) and (max-width: 767px) {
+    .popUpChat-modal-content {
+        width: 25rem;
+        height: 30rem;
         position: fixed;
-        bottom: 130px;
-        right: 50px;
+        bottom: 9rem;
+        right: 2rem;
         border: 1px solid var(--border);
         border-radius: 20px;
-        padding: 20px;
+        /*padding: 1.5rem;*/
         background-color: var(--bkgcolor);
         z-index: 1;
     }
-    .bot-logo {
-        width: 60px;
-        height: 60px;
+    .popUpChat-bot-logo {
+        width: 3.5rem;
+        height: 3.5rem;
         cursor: pointer;
         position: relative;
         z-index: 3;
@@ -67,67 +55,21 @@
 }
 
 @media (min-width: 320px) and (max-width: 487px) {
-    .custom-modal-content {
-        width: 60%;
-        height: 440px;
+    .popUpChat-modal-content {
+        width: 80%;
+        height: 38rem;
         position: fixed;
-        bottom: 90px;
-        right: 40px;
+        bottom: 9rem;
+        right: 2rem;
         border: 1px solid var(--border);
         border-radius: 20px;
-        padding: 20px;
         background-color: var(--bkgcolor);
         z-index: 1;
-        h2 {
-            padding: 0;
-        }
-        p {
-            padding: 10px;
-        }
     }
-    .popUpContainer {
-        position: fixed;
-        bottom: 70px;
-        right: 20px;
-        z-index: 2;
-    }
-    .bot-logo {
-        width: 50px;
-        height: 50px;
-        cursor: pointer;
-        position: relative;
-        z-index: 3;
-    }
-}
 
-@media (min-width: 488) and (max-width: 600px) {
-    .custom-modal-content {
-        width: 50%;
-        height: 440px;
-        position: fixed;
-        bottom: 90px;
-        right: 40px;
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 20px;
-        background-color: var(--bkgcolor);
-        z-index: 1;
-        h2 {
-            padding: 0;
-        }
-        p {
-            padding: 10px;
-        }
-    }
-    .popUpContainer {
-        position: fixed;
-        bottom: 70px;
-        right: 20px;
-        z-index: 2;
-    }
-    .bot-logo {
-        width: 50px;
-        height: 50px;
+    .popUpChat-bot-logo {
+        width: 3rem;
+        height: 3rem;
         cursor: pointer;
         position: relative;
         z-index: 3;

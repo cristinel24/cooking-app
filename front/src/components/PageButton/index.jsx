@@ -4,7 +4,7 @@ import './index.css'
 
 function PageButton({ children, path, className }) {
     return (
-        <Link className={'link ${className}'} to={path}>
+        <Link className={`link ${className}`} to={path}>
             {children}
         </Link>
     )

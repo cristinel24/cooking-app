@@ -16,5 +16,5 @@ class ExpiringTokenCollection(MongoCollection):
             raise Exception(f"Failed to retrieve user context! - {str(e)}")
         return item
 
-    def insert_token(self, token: str, ):
+    def insert_token(self, token: str):
         pass

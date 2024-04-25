@@ -1,10 +1,16 @@
 import pymongo.errors
+from pymongo import MongoClient
 
 from db.mongo_collection import MongoCollection
 from bson import ObjectId
 
 
 class UserCollection(MongoCollection):
+
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.cooking_app.user
+
     def get_user_by_name(self, user_name: str):
         try:
             item = self._collection.find_one({"name": user_name})
@@ -30,3 +36,7 @@ class UserCollection(MongoCollection):
             raise Exception(f"Failed to insert user! - {str(e)}")
         return item
 
+#
+# if __name__ == "__main__":
+#     coll = UserCollection()
+#     print(coll.get_user_by_id("662a7f9fb88c6d15242bfa74"))

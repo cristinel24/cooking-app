@@ -5,44 +5,38 @@ from db.mongo_collection import MongoCollection
 from bson import ObjectId
 
 
-class UserCollection(MongoCollection):
+class RecipeCollection(MongoCollection):
 
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.user
+        self._collection = self._connection.cooking_app.recipe
 
-    def get_user_by_name(self, user_name: str):
+    def get_recipe_by_name(self, recipe_name: str):
         try:
-            item = self._collection.find_one({"name": user_name})
+            item = self._collection.find_one({"name": recipe_name})
         # TODO: exception handling
         except pymongo.errors.Any as e:
-            raise Exception(f"Failed to get user by name! - {str(e)}")
+            raise Exception(f"Failed to get recipe by name! - {str(e)}")
         return item
 
-    def get_user_by_id(self, user_id: str):
+    def get_recipe_by_id(self, recipe_id: str):
         try:
-            item = self._collection.find_one({"_id": ObjectId(user_id)})
+            item = self._collection.find_one({"_id": ObjectId(recipe_id)})
         # TODO: exception handling
         except pymongo.errors.Any as e:
-            raise Exception(f"Failed to get user by id! - {str(e)}")
+            raise Exception(f"Failed to get recipe by id! - {str(e)}")
         return item
 
-    def insert_user(self, user_data):
+    def insert_recipe(self, recipe_data):
         try:
-            item = self._collection.insert_one(user_data)
+            item = self._collection.insert_one(recipe_data)
             return item.inserted_id
         # TODO: exception handling
         except pymongo.errors.Any as e:
-            raise Exception(f"Failed to insert user! - {str(e)}")
+            raise Exception(f"Failed to insert recipe! - {str(e)}")
         return item
 
-
-#get_recipe_by_author_id
-#get_recipe_by_name
-#inset_recipe
-
-
-#
-# if __name__ == "__main__":
-#     coll = UserCollection()
-#     print(coll.get_user_by_id("662a7f9fb88c6d15242bfa74"))
+   
+    if __name__ == "__main__":
+     coll = RecipeCollection()
+     print(coll.get_recipe_by_id("662b72941e41bc3685bb727b"))

@@ -1,1 +1,3 @@
-from fastapi import FastAPI, APIRouter
+import logging
+
+logger = logging.getLogger("__name__")

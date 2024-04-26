@@ -1,4 +1,1 @@
-USER = 0b1
-VERIFIED = 0b10
-ADMIN = 0b100
-MODERATOR = 0b1000
+DEFAULT_MONGO_URI = "mongodb://localhost:27017/?directConnection=true"

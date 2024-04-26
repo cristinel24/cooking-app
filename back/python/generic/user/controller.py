@@ -1,6 +1,7 @@
-from user import schemas
-
 from fastapi import APIRouter
+
+from user.schemas import AccountChangeData
+from user import services
 
 router = APIRouter(
     prefix="/api/users"
@@ -9,11 +10,11 @@ router = APIRouter(
 
 @router.get("/{name}", tags=["users"])
 async def get_user(name: str) -> dict:
-    return {"name": name}
+    return await services.get_user(name)
 
 
 @router.patch("/{name}", tags=["users"])
-async def change_account_data(name: str, data: schemas.AccountChangeData) -> dict:
+async def change_account_data(name: str, data: AccountChangeData) -> dict:
     return {"name": name, "data": data.dict()}
 
 

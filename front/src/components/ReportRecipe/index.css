@@ -69,7 +69,8 @@ form label {
     margin-left: 5vw;
     font-size: 12px;
 }
-p {
+
+.wrapper1 p {
     padding-top: 50px;
     padding-left: 20px;
     padding-right: 20px;
@@ -130,7 +131,7 @@ p {
         margin-left: 5vw;
         font-size: 12px;
     }
-    p {
+    .wrapper1 p {
         padding-left: 20px;
         padding-right: 20px;
     }
@@ -191,7 +192,7 @@ p {
         margin-left: 5vw;
         font-size: 12px;
     }
-    p {
+    .wrapper1 p {
         padding-left: 20px;
         padding-right: 20px;
     }

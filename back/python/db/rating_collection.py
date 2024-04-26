@@ -5,44 +5,44 @@ from db.mongo_collection import MongoCollection
 from bson import ObjectId
 
 
-class UserCollection(MongoCollection):
+class RatingCollection(MongoCollection):
 
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
         self._collection = self._connection.cooking_app.user
 
-    def get_user_by_name(self, user_name: str):
+    '''
+    in the Rating collection, there is a rating property, we refer to that;
+    as a side-node, it's confusing :)
+    '''
+    def get_rating_by_rating(self, rating: int):
         try:
-            item = self._collection.find_one({"name": user_name})
+            item = self._collection.find_one({"rating": rating})
         # TODO: exception handling
         except pymongo.errors.Any as e:
-            raise Exception(f"Failed to get user by name! - {str(e)}")
+            raise Exception(f"Failed to get rating column from Rating table ! - {str(e)}")
         return item
 
-    def get_user_by_id(self, user_id: str):
+    def get_rating_by_author_id(self, author_id: str):
         try:
-            item = self._collection.find_one({"_id": ObjectId(user_id)})
+            item = self._collection.find_one({"authorId": ObjectId(author_id)})
         # TODO: exception handling
         except pymongo.errors.Any as e:
-            raise Exception(f"Failed to get user by id! - {str(e)}")
+            raise Exception(f"Failed to get rating by author id! - {str(e)}")
         return item
 
-    def insert_user(self, user_data):
+    def get_rating_by_name(self, param_name: str):
         try:
-            item = self._collection.insert_one(user_data)
-            return item.inserted_id
+            item = self._collection.find_one({"name": param_name})
         # TODO: exception handling
         except pymongo.errors.Any as e:
-            raise Exception(f"Failed to insert user! - {str(e)}")
+            raise Exception(f"Failed to get rating column from Rating table ! - {str(e)}")
         return item
 
-
-#get_recipe_by_author_id
-#get_recipe_by_name
-#inset_recipe
-
-
-#
-# if __name__ == "__main__":
-#     coll = UserCollection()
-#     print(coll.get_user_by_id("662a7f9fb88c6d15242bfa74"))
+    def get_rating_by_recipe_id(self, recipe_id: str):
+        try:
+            item = self._collection.find_one({"recipeId": ObjectId(recipe_id)})
+        # TODO: exception handling
+        except pymongo.errors.Any as e:
+            raise Exception(f"Failed to get rating by recipe! - {str(e)}")
+        return item

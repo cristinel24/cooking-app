@@ -37,6 +37,6 @@ class RecipeCollection(MongoCollection):
         return item
 
    
-    if __name__ == "__main__":
-     coll = RecipeCollection()
-     print(coll.get_recipe_by_id("662b72941e41bc3685bb727b"))
+if __name__ == "__main__":
+    coll = RecipeCollection()
+    print(coll.get_recipe_by_id("662b72941e41bc3685bb727b"))

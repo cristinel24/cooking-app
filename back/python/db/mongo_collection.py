@@ -7,7 +7,7 @@ load_dotenv()
 
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
-        self._connection = connection if connection is not None else MongoClient(os.getenv("MONGO_URI", "mongodb://172.30.189.108:27017/?directConnection=true"))
+        self._connection = connection if connection is not None else MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
 
     def ping_db(self) -> bool:
         try:

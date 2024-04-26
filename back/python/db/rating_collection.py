@@ -1,7 +1,7 @@
 import pymongo.errors
 from pymongo import MongoClient
 
-from db.mongo_collection import MongoCollection
+from mongo_collection import MongoCollection
 from bson import ObjectId
 
 
@@ -11,18 +11,7 @@ class RatingCollection(MongoCollection):
         super().__init__(connection)
         self._collection = self._connection.cooking_app.user
 
-    '''
-    in the Rating collection, there is a rating property, we refer to that;
-    as a side-node, it's confusing :)
-    '''
-    def get_rating_by_rating(self, rating: int):
-        try:
-            item = self._collection.find_one({"rating": rating})
-        # TODO: exception handling
-        except pymongo.errors.Any as e:
-            raise Exception(f"Failed to get rating column from Rating table ! - {str(e)}")
-        return item
-
+    
     def get_rating_by_author_id(self, author_id: str):
         try:
             item = self._collection.find_one({"authorId": ObjectId(author_id)})

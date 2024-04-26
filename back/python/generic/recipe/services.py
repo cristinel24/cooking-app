@@ -1,30 +1,43 @@
-from pydantic import json
+
+import os
+import sys
+import json
+from bson import json_util
+
+###pentru import de module(nu)
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+sys.path.insert(2, os.path.join(sys.path[0], '../..'))
 
 from recipe import schemas
-from db import recipe_collection
-from db import user_collection
 
+from db.recipe_collection import RecipeCollection
+
+x=RecipeCollection()
 
 def get_recipe(recipe_name: str) -> dict:
-    recipe_data = recipe_collection.get_recipe_by_name(recipe_name)
+    recipe_data = x.get_recipe_by_name(recipe_name)
+    return recipe_data
+
+
+def add_tokens(recipe_name: str, recipe_tokens:list[str]):
+    recipe_data= RecipeCollection.add_tokens_by_name(recipe_name,recipe_tokens)
     return json.loads(recipe_data) if recipe_data else {}
 
 
-def add_tokens(recipe_name: str):
-    pass
-
-
-def create_recipe(data: schemas.RecipeData) -> dict:
-    inserted_id = recipe_collection.insert_recipe(data.dict())
+def create_recipe(data) -> dict:
+    inserted_id = x.insert_recipe(data)
     return {"id": str(inserted_id)}
 
 
-def update_recipe(data: schemas.RecipeData):
-    pass
+def update_recipe(recipe_name: str, update_data: dict):
+    print(update_data)
+    recipe_data = x.update_recipe_by_name(recipe_name,update_data)
+    return json.loads(json_util.dumps(recipe_data))
 
 
 def delete_recipe(name: str):
-    pass
+    recipe_data=x.delete_recipe_by_name(name)
+    return recipe_data
 
 
 def get_recipe_ratings(data: schemas.GetRatingsData):

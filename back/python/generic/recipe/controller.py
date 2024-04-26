@@ -1,30 +1,38 @@
 from fastapi import APIRouter
-
-from recipe import schemas
+from fastapi import Request
+import schemas
+from bson import json_util
+import services
+import json
 
 router = APIRouter(
     prefix="/api"
 )
 
+@router.get("/")
+async def open():
+   return "Hello world"
 
 @router.get("/get_recipe/{recipe_name}")
 async def get_recipe(recipe_name: str):
-    return {}
+    print(recipe_name)
+    return json.loads(json_util.dumps(services.get_recipe(recipe_name)))
 
 
 @router.post("/create_recipe")
-async def create_recipe(data: schemas.RecipeData):
-    return {}
+async def create_recipe(data: dict):
+    return services.create_recipe(data)
 
 
-@router.patch("/edit_recipe")
-async def update_recipe(data: schemas.RecipeData):
-    return {}
+@router.patch("/edit_recipe/{recipe_name}")
+async def update_recipe(recipe_name, req:Request):
+    body=await req.json()
+    services.update_recipe(recipe_name,body)
 
 
 @router.delete("/delete_recipe/{name}")
 async def delete_recipe(name: str):
-    return {}
+    return {services.delete_recipe(name)}
 
 
 @router.get("/recipe_ratings/{parent_name}")

@@ -1,3 +1,5 @@
+docker network create mongoCluster
+
 docker stop mongo1 mongo2 mongo3
 
 docker run -d --rm -p 27017:27017 --name mongo1 --network mongoCluster mongo:7.0.2 mongod --replSet myReplicaSet --port 27017

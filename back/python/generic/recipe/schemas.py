@@ -13,7 +13,7 @@ class RecipeData(BaseModel):
 
 
 class RatingData(BaseModel):
-    parent_name: str[Optional]
+    parent_name: Optional[str]
     recipe_name: str
     rating: conint(ge=0, le=5)
     description: str
@@ -26,6 +26,6 @@ class EditRatingData(BaseModel):
 
 
 class GetRatingsData(BaseModel):
-    parent_name: str[Optional]
+    parent_name: Optional[str]
     start: int
     offset: int

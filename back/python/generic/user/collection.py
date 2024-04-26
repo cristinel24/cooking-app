@@ -30,12 +30,7 @@ class RecipeCollection(MongoCollection):
         self._collection = self._db.recipe
 
     def find_recipe_by_id(self, recipe_id: str) -> dict:
-        recipe = self._collection.find_one({"_id": recipe_id}, {"_id": 0})
-
-        return recipe
-
-    def find_saved_recipe_by_id(self, recipe_id: str) -> dict:
-        recipe = self._collection.find_one({"_id": recipe_id}, {"_id": 0})
+        recipe = self._collection.find_one({"_id": recipe_id})
 
         return recipe
 
@@ -52,6 +47,7 @@ class UserCollection(MongoCollection):
         super().__init__(client)
         self._db = self._client.cooking_app
         self._collection = self._db.user
+        self.recipe_collection = RecipeCollection()
 
     def get_user_by_name(self, name: str) -> dict:
         try:
@@ -64,11 +60,13 @@ class UserCollection(MongoCollection):
 
         for i in range(len(recipes_list)):
             recipe_id = recipes_list[i]
-            recipes_list[i] = RecipeCollection().find_recipe_by_id(recipe_id)
+            recipes_list[i] = self.recipe_collection.find_recipe_by_id(recipe_id)
+            del recipes_list[i]["_id"]
 
         for i in range(len(saved_recipes_list)):
             saved_recipe_id = saved_recipes_list[i]
-            saved_recipes_list[i] = RecipeCollection().find_saved_recipe_by_id(saved_recipe_id)
+            saved_recipes_list[i] = self.recipe_collection.find_recipe_by_id(saved_recipe_id)
+            del saved_recipes_list[i]["_id"]
 
         user_dict = {
             "name": user["name"],
@@ -84,19 +82,19 @@ class UserCollection(MongoCollection):
         return user_json
 
     def change_account_data(self, name: str, data: AccountChangeData) -> dict:
-        update_operations = []
+        update_operations = dict()
 
         if data.display_name:
-            update_operations.append(UpdateOne({"name": name}, {"$set": {"displayName": data.display_name}}))
+            update_operations["displayName"] = data.display_name
         if data.icon:
-            update_operations.append(UpdateOne({"name": name}, {"$set": {"icon": data.icon}}))
+            update_operations["icon"] = data.icon
         if data.description:
-            update_operations.append(UpdateOne({"name": name}, {"$set": {"description": data.description}}))
+            update_operations["description"] = data.description
         if data.allergens:
-            update_operations.append(UpdateOne({"name": name}, {"$set": {"allergens": data.allergens}}))
+            update_operations["allergens"] = data.allergens
 
         if update_operations:
-            self._collection.bulk_write(update_operations)
+            self._collection.update_one({"name": name}, {"$set": update_operations})
 
         return {"name": name, "data": data.dict()}
 

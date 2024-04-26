@@ -27,10 +27,13 @@ class RecipeCollection(MongoCollection):
         self._db = self._client.cooking_app
         self._collection = self._db.recipe
 
-    def find_saved_recipe_by_id(self, recipe_id: str) -> dict:
-        recipe = self._collection.find_one({"_id": recipe_id}, {"_id": 0})
+    def find_recipe_by_id(self, recipe_id: str) -> dict:
+        recipe = self._collection.find_one({"_id": recipe_id})
 
         return recipe
+
+
+recipe_collection = RecipeCollection()
 
 
 class FollowCollection(MongoCollection):
@@ -39,10 +42,8 @@ class FollowCollection(MongoCollection):
         self._db = self._client.cooking_app
         self._collection = self._db.follow
 
-    def find_follower_by_id(self, follower_id: str) -> dict:
-        follower = self._collection.find_one({"_id": follower_id}, {"_id": 0})
 
-        return follower
+follow_collection = FollowCollection()
 
 
 class UserCollection(MongoCollection):
@@ -72,28 +73,28 @@ class UserCollection(MongoCollection):
 
         return {"name": name, "data": data.dict()}
 
-    def save_recipe(self, name: str, recipe_name: str) -> dict:
-        recipe = RecipeCollection()._collection.find_one({"name": recipe_name})
+    def save_recipe(self, user_name: str, recipe_name: str) -> dict:
+        recipe = recipe_collection._collection.find_one({"name": recipe_name})
         recipe_id = recipe["_id"]
         self._collection.update_one(
-            {"name": name},
+            {"name": user_name},
             {"$push": {"savedRecipes": recipe_id}}
         )
 
-        return {"name": name, "recipe": recipe_name}
+        return {"name": user_name, "recipe": recipe_name}
 
-    def unsave_recipe(self, name: str, recipe_name: str) -> dict:
-        recipe = RecipeCollection()._collection.find_one({"name": recipe_name})
+    def unsave_recipe(self, user_name: str, recipe_name: str) -> dict:
+        recipe = recipe_collection._collection.find_one({"name": recipe_name})
         recipe_id = recipe["_id"]
         self._collection.update_one(
-            {"name": name},
+            {"name": user_name},
             {"$pull": {"savedRecipes": recipe_id}}
         )
 
-        return {"name": name, "recipe": recipe_name}
+        return {"name": user_name, "recipe": recipe_name}
 
-    def add_follow(self, name: str, follow_name: str) -> dict:
-        user = self._collection.find_one({"name": name})
+    def add_follow(self, user_name: str, follow_name: str) -> dict:
+        user = self._collection.find_one({"name": user_name})
         follower = self._collection.find_one({"name": follow_name})
 
         if not user or not follower:
@@ -104,9 +105,9 @@ class UserCollection(MongoCollection):
 
         dict_follow = {"userId": name_id, "followsId": follow_id}
 
-        FollowCollection()._collection.insert_one(dict_follow)
+        follow_collection._collection.insert_one(dict_follow)
 
-        return {"userId": str(name_id), "followsId": str(follow_id)}
+        return {"follower": user_name, "followed": follow_name}
 
     def delete_follow(self, follower_name: str, followee_name: str) -> dict:
         user = self._collection.find_one({"name": followee_name})
@@ -120,13 +121,13 @@ class UserCollection(MongoCollection):
 
         dict_follow = {"userId": name_id, "followsId": follow_id}
 
-        FollowCollection()._collection.delete_one(dict_follow)
+        follow_collection._collection.delete_one(dict_follow)
 
-        return {"userId": str(name_id), "followsId": str(follow_id)}
+        return {"follower": follower_name, "followed": followee_name}
 
-    def get_following(self, name: str, start: int, count: int) -> dict:
+    def get_following(self, user_name: str, start: int, count: int) -> dict:
         try:
-            user = self._collection.find_one({"name": name})
+            user = self._collection.find_one({"name": user_name})
             if not user:
                 return {"error": "User not found"}
         except Exception as e:
@@ -134,7 +135,8 @@ class UserCollection(MongoCollection):
 
         user_id = user["_id"]
 
-        following_cursor = FollowCollection()._collection.find({"userId": user_id}, {"_id": 0, "followsId": 1}).skip(start).limit(count)
+        following_cursor = follow_collection._collection.find({"userId": user_id}, {"_id": 0, "followsId": 1}).skip(
+            start).limit(count)
 
         following_list = list(following_cursor)
         if not following_list:
@@ -142,7 +144,8 @@ class UserCollection(MongoCollection):
 
         for i in range(len(following_list)):
             follows_id = following_list[i]["followsId"]
-            followed_user_details = self._collection.find_one({"_id": follows_id}, {"displayName": 1, "name": 1,  "_id": 0})
+            followed_user_details = self._collection.find_one({"_id": follows_id},
+                                                              {"displayName": 1, "name": 1, "_id": 0})
             if followed_user_details:
                 following_list[i] = followed_user_details
             else:
@@ -152,9 +155,9 @@ class UserCollection(MongoCollection):
 
         return follow_dict
 
-    def get_followers(self, name: str, start: int, count: int) -> dict:
+    def get_followers(self, user_name: str, start: int, count: int) -> dict:
         try:
-            user = self._collection.find_one({"name": name})
+            user = self._collection.find_one({"name": user_name})
             if not user:
                 return {"error": "User not found"}
         except Exception as e:
@@ -162,7 +165,8 @@ class UserCollection(MongoCollection):
 
         user_id = user["_id"]
 
-        followers_cursor = FollowCollection()._collection.find({"followsId": user_id}, {"_id": 0, "userId": 1}).skip(start).limit(count)
+        followers_cursor = follow_collection._collection.find({"followsId": user_id}, {"_id": 0, "userId": 1}).skip(
+            start).limit(count)
 
         followers_list = list(followers_cursor)
         if not followers_list:
@@ -180,9 +184,9 @@ class UserCollection(MongoCollection):
         followers_json = parse_json(follow_dict)
         return followers_json
 
-    def get_recipes(self, name: str) -> dict:
+    def get_recipes(self, user_name: str) -> dict:
         try:
-            user = self._collection.find_one({"name": name}, {"_id": 0})
+            user = self._collection.find_one({"name": user_name}, {"_id": 0})
         except Exception as e:
             raise Exception(f"User not found! - {str(e)}")
 
@@ -190,7 +194,8 @@ class UserCollection(MongoCollection):
 
         for i in range(len(saved_recipes_list)):
             saved_recipe_id = saved_recipes_list[i]
-            saved_recipes_list[i] = RecipeCollection().find_saved_recipe_by_id(saved_recipe_id)
+            saved_recipes_list[i] = recipe_collection.find_recipe_by_id(saved_recipe_id)
+            del saved_recipes_list[i]["_id"]
 
         user_dict = {
             "name": user["name"],
@@ -200,7 +205,3 @@ class UserCollection(MongoCollection):
         user_json = parse_json(user_dict)
 
         return user_json
-
-    def find_follower_by_id(self, following_id):
-        user = self._collection.find_one({"_id": following_id}, {"_id": 0}, {"name": 1}, {"displayName": 1})
-        return parse_json(user)

@@ -2,7 +2,7 @@
 import pymongo.errors
 from pymongo import MongoClient
 
-from mongo_collection import MongoCollection
+from db.mongo_collection import MongoCollection
 from bson import ObjectId
 
 
@@ -10,14 +10,8 @@ class RatingCollection(MongoCollection):
 
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-<<<<<<< HEAD
-        self._collection = self._connection.cooking_app.user
-
-    
-=======
         self._collection = self._connection.cooking_app.rating
 
->>>>>>> f552a5b16d0f0c5be3cd1816776c223cf7e5abda
     def get_rating_by_author_id(self, author_id: str):
         try:
             item = self._collection.find_one({"authorId": ObjectId(author_id)})

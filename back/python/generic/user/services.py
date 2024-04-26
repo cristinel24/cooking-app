@@ -11,7 +11,7 @@ async def get_user(name: str) -> dict:
 
 
 async def change_account_data(name: str, data: schemas.AccountChangeData) -> dict:
-    return {"name": name, "data": data.dict()}
+    return user_collection.change_account_data(name, data)
 
 
 async def add_recipe(name: str, recipe_name: str) -> dict:
@@ -27,27 +27,27 @@ async def delete_recipe(name: str, recipe_name: str) -> dict:
 
 
 async def add_search(name: str, search: str) -> dict:
-    return {"search": search}
+    return user_collection.add_search(name, search)
 
 
 async def get_search_history(name: str) -> dict:
-    pass
+    return user_collection.get_search_history(name)
 
 
 async def clear_search_history(name: str) -> dict:
-    pass
+    return user_collection.clear_search_history(name)
 
 
 async def add_message(name: str, message: str) -> dict:
-    return {"message": message}
+    return user_collection.add_message(name, message)
 
 
 async def get_message_history(name: str) -> dict:
-    pass
+    return user_collection.get_message_history(name)
 
 
 async def clear_message_history(name: str) -> dict:
-    pass
+    return user_collection.clear_message_history(name)
 
 
 async def add_follow(name: str, follow_name: str) -> dict:

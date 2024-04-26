@@ -15,7 +15,7 @@ async def get_user(name: str) -> dict:
 
 @router.patch("/{name}", tags=["users"])
 async def change_account_data(name: str, data: AccountChangeData) -> dict:
-    return {"name": name, "data": data.dict()}
+    return await services.change_account_data(name, data)
 
 
 @router.put("/{name}/saved-recipes", tags=["users"])
@@ -35,32 +35,32 @@ async def delete_recipe(name: str, recipe_name: str) -> dict:
 
 @router.put("/{name}/search-history", tags=["users"])
 async def add_search(name: str, search: str) -> dict:
-    return {"search": search}
+    return await services.add_search(name, search)
 
 
 @router.get("/{name}/search-history", tags=["users"])
 async def get_search_history(name: str) -> dict:
-    pass
+    return await services.get_search_history(name)
 
 
 @router.delete("/{name}/search-history", tags=["users"])
 async def clear_search_history(name: str) -> dict:
-    pass
+    return await services.clear_search_history(name)
 
 
 @router.patch("/{name}/message-history", tags=["users"])
 async def add_message(name: str, message: str) -> dict:
-    return {"message": message}
+    return await services.add_message(name, message)
 
 
 @router.get("/{name}/message-history", tags=["users"])
 async def get_message_history(name: str) -> dict:
-    pass
+    return await services.get_message_history(name)
 
 
 @router.delete("/{name}/message-history", tags=["users"])
 async def clear_message_history(name: str) -> dict:
-    pass
+    return await services.clear_message_history(name)
 
 
 @router.post("/{name}/following", tags=["users"])

@@ -24,6 +24,7 @@ import {
 import Page from './pages/Page'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import SearchPage from './pages/SearchPage'
 
 function App() {
     const titlu = 'Buton'
@@ -78,6 +79,7 @@ function App() {
                     <Route path="/LoginPage" element={<LoginPage />} />
                     <Route path="/UserProfile" element={<UserProfile />} />
                     <Route path="/RegisterPage" element={<RegisterPage />} />
+                    <Route path="/SearchPage" element={<SearchPage />} />
                 </Routes>
             </Router>
         </ThemeContext.Provider>

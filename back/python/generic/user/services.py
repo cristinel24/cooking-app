@@ -14,16 +14,16 @@ async def change_account_data(name: str, data: schemas.AccountChangeData) -> dic
     return {"name": name, "data": data.dict()}
 
 
-async def add_recipe(name: str, recipe_name: str) -> dict:
-    return {"name": name, "recipe_name": recipe_name}
+async def save_recipe(name: str, recipe_name: str) -> dict:
+    return user_collection.save_recipe(name, recipe_name)
 
 
 async def get_recipes(name: str) -> dict:
-    pass
+    return user_collection.get_recipes(name)
 
 
-async def delete_recipe(name: str, recipe_name: str) -> dict:
-    pass
+async def unsave_recipe(name: str, recipe_name: str) -> dict:
+    return user_collection.unsave_recipe(name, recipe_name)
 
 
 async def add_search(name: str, search: str) -> dict:
@@ -51,15 +51,15 @@ async def clear_message_history(name: str) -> dict:
 
 
 async def add_follow(name: str, follow_name: str) -> dict:
-    pass
+    return user_collection.add_follow(name, follow_name)
 
 
 async def get_following(name: str, start: int, count: int) -> dict:
-    pass
+    return user_collection.get_following(name, start, count)
 
 
 async def unfollow(name: str, follow_name: str) -> dict:
-    pass
+    return user_collection.delete_follow(name, follow_name)
 
 
 async def get_followers(name: str) -> dict:

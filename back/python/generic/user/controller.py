@@ -1,7 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from user.schemas import AccountChangeData
 from user import services
+from user.services import user_collection
 
 router = APIRouter(
     prefix="/api/users"
@@ -15,22 +16,22 @@ async def get_user(name: str) -> dict:
 
 @router.patch("/{name}", tags=["users"])
 async def change_account_data(name: str, data: AccountChangeData) -> dict:
-    return {"name": name, "data": data.dict()}
+    return await services.change_account_data(name, data)
 
 
 @router.put("/{name}/saved-recipes", tags=["users"])
-async def add_recipe(name: str, recipe_name: str) -> dict:
-    return {"name": name, "recipe_name": recipe_name}
+async def save_recipe(name: str, recipe_name: str) -> dict:
+    return await services.save_recipe(name, recipe_name)
+
+
+@router.delete("/{name}/saved-recipes", tags=["users"])
+async def unsave_recipe(name: str, recipe_name: str) -> dict:
+    return await services.unsave_recipe(name, recipe_name)
 
 
 @router.get("/{name}/saved-recipes", tags=["users"])
 async def get_recipes(name: str) -> dict:
-    pass
-
-
-@router.delete("/{name}/saved-recipes", tags=["users"])
-async def delete_recipe(name: str, recipe_name: str) -> dict:
-    pass
+    return await services.get_recipes(name)
 
 
 @router.put("/{name}/search-history", tags=["users"])
@@ -65,17 +66,17 @@ async def clear_message_history(name: str) -> dict:
 
 @router.post("/{name}/following", tags=["users"])
 async def add_follow(name: str, follow_name: str) -> dict:
-    pass
-
-
-@router.get("/{name}/following", tags=["users"])
-async def get_following(name: str, start: int, count: int) -> dict:
-    pass
+    return await services.add_follow(name, follow_name)
 
 
 @router.delete("/{name}/following", tags=["users"])
 async def unfollow(name: str, follow_name: str) -> dict:
-    pass
+    return await services.unfollow(name, follow_name)
+
+
+@router.get("/{name}/following", tags=["users"])
+async def get_following(name: str, start: int, count: int) -> dict:
+    return await services.get_following(name, start, count)
 
 
 @router.get("/{name}/followers", tags=["users"])

@@ -3,36 +3,80 @@ from user import schemas
 from fastapi import APIRouter
 
 router = APIRouter(
-    prefix="/api"
+    prefix="/api/users"
 )
 
 
-@router.get("/users/{name}", tags=["users"])
+@router.get("/{name}", tags=["users"])
 async def get_user(name: str) -> dict:
     return {"name": name}
 
 
-# session token needed
-@router.patch("/users/{name}", tags=["users"])
+@router.patch("/{name}", tags=["users"])
 async def change_account_data(name: str, data: schemas.AccountChangeData) -> dict:
     return {"name": name, "data": data.dict()}
 
 
-# admin action
-@router.delete("/users/{name}", tags=["admin"])
-async def delete_user(name: str) -> dict:
-    return {"name": name}
-
-
-# admin action
-# todo determine how the role is passed to us
-@router.patch("/admin/{solver_name}/users/{name}", tags=["admin"])
-async def change_user_role(solver_name: str, name: str, role: int) -> dict:
-    return {"name": name, "role": role}
-
-
-# session token needed for the rest of the functions
-@router.patch("/users/{name}/saved-recipes/{recipe_name}", tags=["users"])
-async def save_recipe(name: str, recipe_name: str) -> dict:
+@router.put("/{name}/saved-recipes", tags=["users"])
+async def add_recipe(name: str, recipe_name: str) -> dict:
     return {"name": name, "recipe_name": recipe_name}
 
+
+@router.get("/{name}/saved-recipes", tags=["users"])
+async def get_recipes(name: str) -> dict:
+    pass
+
+
+@router.delete("/{name}/saved-recipes", tags=["users"])
+async def delete_recipe(name: str, recipe_name: str) -> dict:
+    pass
+
+
+@router.put("/{name}/search-history", tags=["users"])
+async def add_search(name: str, search: str) -> dict:
+    return {"search": search}
+
+
+@router.get("/{name}/search-history", tags=["users"])
+async def get_search_history(name: str) -> dict:
+    pass
+
+
+@router.delete("/{name}/search-history", tags=["users"])
+async def clear_search_history(name: str) -> dict:
+    pass
+
+
+@router.patch("/{name}/message-history", tags=["users"])
+async def add_message(name: str, message: str) -> dict:
+    return {"message": message}
+
+
+@router.get("/{name}/message-history", tags=["users"])
+async def get_message_history(name: str) -> dict:
+    pass
+
+
+@router.delete("/{name}/message-history", tags=["users"])
+async def clear_message_history(name: str) -> dict:
+    pass
+
+
+@router.post("/{name}/following", tags=["users"])
+async def add_follow(name: str, follow_name: str) -> dict:
+    pass
+
+
+@router.get("/{name}/following", tags=["users"])
+async def get_following(name: str, start: int, count: int) -> dict:
+    pass
+
+
+@router.delete("/{name}/following", tags=["users"])
+async def unfollow(name: str, follow_name: str) -> dict:
+    pass
+
+
+@router.get("/{name}/followers", tags=["users"])
+async def get_followers(name: str) -> dict:
+    pass

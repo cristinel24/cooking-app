@@ -7,6 +7,7 @@ router = APIRouter(
 )
 
 
+
 @router.get("/get_recipe/{recipe_name}")
 async def get_recipe(recipe_name: str):
     return {}

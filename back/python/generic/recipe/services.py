@@ -7,7 +7,10 @@ from db import user_collection
 
 def get_recipe(recipe_name: str) -> dict:
     recipe_data = recipe_collection.get_recipe_by_name(recipe_name)
-    return json.loads(recipe_data) if recipe_data else {}
+    if recipe_data:
+        return json.loads(recipe_data)
+    else:
+        return {}
 
 
 def add_tokens(recipe_name: str):
@@ -36,13 +39,24 @@ def get_rating_replies(data: schemas.GetRatingsData):
 
 
 def add_rating(data: schemas.RatingData) -> dict:
-    inserted_id = recipe_collection.add_rating(data.dict())
+    inserted_id = recipe_collection.insert_rating(data.dict())
     return {"id": str(inserted_id)}
 
 
 def edit_rating(data: schemas.EditRatingData):
-    pass
+    existing_rating = recipe_collection.get_rating_by_name(data.rating_name)
+    if existing_rating:
+        updated_count = recipe_collection.update_rating(existing_rating["_id"], data.dict())
+        return {"updated_count": updated_count}
+    else:
+        return {"error": "Rating not found with the provided name"}
 
 
 def delete_rating(rating_name: str):
-    pass
+    existing_rating = recipe_collection.get_rating_by_name(rating_name)
+
+    if existing_rating:
+        deleted_count = recipe_collection.delete_rating(existing_rating["_id"])
+        return {"deleted_count": deleted_count}
+    else:
+        return {"error": "Rating not found with the provided name"}

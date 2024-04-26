@@ -1,9 +1,6 @@
 import os
 import sys
 
-###pentru import de module(nu)
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
-
 import pymongo.errors
 from pymongo import DeleteOne, MongoClient
 

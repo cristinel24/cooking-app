@@ -80,5 +80,5 @@ async def get_following(name: str, start: int, count: int) -> dict:
 
 
 @router.get("/{name}/followers", tags=["users"])
-async def get_followers(name: str) -> dict:
-    pass
+async def get_followers(name: str, start: int, count: int) -> dict:
+    return await services.get_followers(name, start, count)

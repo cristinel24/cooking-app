@@ -142,7 +142,7 @@ class UserCollection(MongoCollection):
 
         for i in range(len(following_list)):
             follows_id = following_list[i]["followsId"]
-            followed_user_details = self._collection.find_one({"_id": follows_id}, {"displayName": 1, "_id": 0})
+            followed_user_details = self._collection.find_one({"_id": follows_id}, {"displayName": 1, "name": 1,  "_id": 0})
             if followed_user_details:
                 following_list[i] = followed_user_details
             else:
@@ -151,6 +151,34 @@ class UserCollection(MongoCollection):
         follow_dict = {"following": following_list}
 
         return follow_dict
+
+    def get_followers(self, name: str, start: int, count: int) -> dict:
+        try:
+            user = self._collection.find_one({"name": name})
+            if not user:
+                return {"error": "User not found"}
+        except Exception as e:
+            return {"error": f"Database error: {str(e)}"}
+
+        user_id = user["_id"]
+
+        followers_cursor = FollowCollection()._collection.find({"followsId": user_id}, {"_id": 0, "userId": 1}).skip(start).limit(count)
+
+        followers_list = list(followers_cursor)
+        if not followers_list:
+            return {"error": "No followers found"}
+
+        for i in range(len(followers_list)):
+            follower_id = followers_list[i]["userId"]
+            follower_details = self._collection.find_one({"_id": follower_id}, {"displayName": 1, "name": 1, "_id": 0})
+            if follower_details:
+                followers_list[i] = follower_details
+            else:
+                followers_list[i] = {"error": "Follower details not found"}
+
+        follow_dict = {"followers": followers_list}
+        followers_json = parse_json(follow_dict)
+        return followers_json
 
     def get_recipes(self, name: str) -> dict:
         try:

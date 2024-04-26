@@ -62,5 +62,5 @@ async def unfollow(name: str, follow_name: str) -> dict:
     return user_collection.delete_follow(name, follow_name)
 
 
-async def get_followers(name: str) -> dict:
-    pass
+async def get_followers(name: str, start: int, count: int) -> dict:
+    return user_collection.get_followers(name, start, count)

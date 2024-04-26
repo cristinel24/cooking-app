@@ -29,6 +29,16 @@ class RecipeCollection(MongoCollection):
         self._db = self._client.cooking_app
         self._collection = self._db.recipe
 
+    def find_recipe_by_id(self, recipe_id: str) -> dict:
+        recipe = self._collection.find_one({"_id": recipe_id}, {"_id": 0})
+
+        return recipe
+
+    def find_saved_recipe_by_id(self, recipe_id: str) -> dict:
+        recipe = self._collection.find_one({"_id": recipe_id}, {"_id": 0})
+
+        return recipe
+
 
 class FollowCollection(MongoCollection):
     def __init__(self, client: MongoClient | None = None):
@@ -44,9 +54,33 @@ class UserCollection(MongoCollection):
         self._collection = self._db.user
 
     def get_user_by_name(self, name: str) -> dict:
-        user = self._collection.find_one({"name": name})
+        try:
+            user = self._collection.find_one({"name": name}, {"_id": 0})
+        except Exception as e:
+            raise Exception(f"User not found! - {str(e)}")
 
-        user_json = parse_json(user)
+        recipes_list = user["recipes"]
+        saved_recipes_list = user["savedRecipes"]
+
+        for i in range(len(recipes_list)):
+            recipe_id = recipes_list[i]
+            recipes_list[i] = RecipeCollection().find_recipe_by_id(recipe_id)
+
+        for i in range(len(saved_recipes_list)):
+            saved_recipe_id = saved_recipes_list[i]
+            saved_recipes_list[i] = RecipeCollection().find_saved_recipe_by_id(saved_recipe_id)
+
+        user_dict = {
+            "name": user["name"],
+            "displayName": user["displayName"],
+            "icon": user["icon"],
+            "allergens": user["allergens"],
+            "recipes": recipes_list,
+            "savedRecipes": saved_recipes_list
+        }
+
+        user_json = parse_json(user_dict)
+
         return user_json
 
     def change_account_data(self, name: str, data: AccountChangeData) -> dict:

@@ -50,7 +50,7 @@ class RecipeCollection(MongoCollection):
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to insert recipe! - {str(e)}")
 
-    def find_recipe_id_by_name(self, recipe_name: str) -> ObjectId:
+    def get_recipe_id_by_name(self, recipe_name: str) -> ObjectId:
         return self._collection.find_one(
             {"name": recipe_name},
             {"_id": 1}
@@ -93,7 +93,7 @@ class RecipeCollection(MongoCollection):
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to add tokens to recipe tags! - {str(e)}")
 
-    def find_recipe_card_by_id(self, recipe_id: str) -> dict:
+    def get_recipe_card_by_id(self, recipe_id: str) -> dict:
         return self._collection.find_one(
             {"_id": ObjectId(recipe_id)},
             {

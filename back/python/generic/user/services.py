@@ -30,7 +30,7 @@ async def change_account_data(user_name: str, data: AccountChangeData) -> dict:
 
 
 async def save_recipe(user_name: str, recipe_name: str) -> dict:
-    recipe_id = recipe_collection.find_recipe_id_by_name(recipe_name)
+    recipe_id = recipe_collection.get_recipe_id_by_name(recipe_name)
     user = user_collection.get_user_by_name(user_name)
     if recipe_id not in user["savedRecipes"]:
         user_collection.update_saved_recipes_by_name(user_name, recipe_id)
@@ -46,7 +46,7 @@ async def get_recipes(user_name: str) -> dict:
     user = user_collection.get_user_by_name(user_name)
     saved_recipes_list = list()
     for saved_recipe_id in user["savedRecipes"]:
-        recipe = recipe_collection.find_recipe_card_by_id(saved_recipe_id)
+        recipe = recipe_collection.get_recipe_card_by_id(saved_recipe_id)
         recipe["author"] = user_collection.get_user_name_by_id(recipe["authorId"])
         recipe.pop("authorId")
         saved_recipes_list.append(recipe)

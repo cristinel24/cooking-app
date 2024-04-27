@@ -39,7 +39,6 @@ async def change_account_data(user_name: str, data: AccountChangeData) -> dict:
     for item in data:
         if item[1] is not None:
             updated_fields[to_lower_camel_case(item[0])] = item[1]
-    pprint(updated_fields)
     user_collection.update_user_by_name(user_name, updated_fields)
     return {"name": user_name, "data": data.dict()}
 
@@ -55,7 +54,6 @@ async def save_recipe(user_name: str, recipe_name: str) -> dict:
 async def unsave_recipe(user_name: str, recipe_name: str) -> dict:
     recipe_id = recipe_collection.find_recipe_id_by_name(recipe_name)
     user_collection.delete_saved_recipe_by_name(user_name, recipe_id)
-    # funny
     return {"ok": 1}
 
 
@@ -67,7 +65,6 @@ async def get_recipes(user_name: str) -> dict:
     for saved_recipe_id in user["savedRecipes"]:
         recipe = recipe_collection.find_recipe_by_id(saved_recipe_id)
         del recipe["_id"]
-        pprint(recipe)
         saved_recipes_list.append(recipe)
     response = {
         "name": user["name"],

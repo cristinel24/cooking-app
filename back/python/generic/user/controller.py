@@ -8,17 +8,17 @@ router = APIRouter(
 )
 
 
-@router.get("/{name}", tags=["users"])
-async def get_user(name: str) -> dict:
-    return await services.get_user_profile(name)
+@router.get("/{user_name}", tags=["users"])
+async def get_user_profile(user_name: str) -> dict:
+    return await services.get_user_profile(user_name)
 
 
-@router.patch("/{user_name}", tags=["users"])
+@router.post("/{user_name}", tags=["users"])
 async def change_account_data(user_name: str, data: AccountChangeData) -> dict:
     return await services.change_account_data(user_name, data)
 
 
-@router.put("/{user_name}/saved-recipes", tags=["users"])
+@router.patch("/{user_name}/saved-recipes", tags=["users"])
 async def save_recipe(user_name: str, recipe_name: str) -> dict:
     return await services.save_recipe(user_name, recipe_name)
 
@@ -33,7 +33,7 @@ async def get_recipes(user_name: str) -> dict:
     return await services.get_recipes(user_name)
 
 
-@router.put("/{user_name}/search-history", tags=["users"])
+@router.patch("/{user_name}/search-history", tags=["users"])
 async def add_search(user_name: str, search: str) -> dict:
     return await services.add_search(user_name, search)
 
@@ -63,7 +63,7 @@ async def get_message_history(user_name: str) -> dict:
     return await services.get_message_history(user_name)
 
 
-@router.post("/{user_name}/following", tags=["users"])
+@router.put("/{user_name}/following", tags=["users"])
 async def add_follow(user_name: str, follow_name: str) -> dict:
     return await services.add_follow(user_name, follow_name)
 

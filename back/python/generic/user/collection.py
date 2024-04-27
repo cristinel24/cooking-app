@@ -115,7 +115,7 @@ class UserCollection(MongoCollection):
                 {"$set": {updated_field[0]: updated_field[1]}}
             )
 
-    def update_saved_recipes_by_name(self, user_name: str, recipe_id: str) -> None:
+    def update_saved_recipes_by_name(self, user_name: str, recipe_id: ObjectId) -> None:
         self._collection.update_one(
             {"name": user_name},
             {"$push": {"savedRecipes": recipe_id}}

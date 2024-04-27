@@ -1,9 +1,10 @@
 import json
 from pprint import pprint
 
-from user.schemas import AccountChangeData
-from user.collection import UserCollection, RecipeCollection, FollowCollection
 from bson import json_util
+
+from user.collection import UserCollection, RecipeCollection, FollowCollection
+from user.schemas import AccountChangeData
 
 user_collection = UserCollection()
 recipe_collection = RecipeCollection()
@@ -37,10 +38,11 @@ async def change_account_data(user_name: str, data: AccountChangeData) -> dict:
     return {"name": user_name, "data": data.dict()}
 
 
-# to be tested
 async def save_recipe(user_name: str, recipe_name: str) -> dict:
-    recipe_id = recipe_collection.find_recipe_by_name(recipe_name)["_id"]
-    user_collection.update_saved_recipes_by_name(user_name, recipe_id)
+    recipe_id = recipe_collection.find_recipe_id_by_name(recipe_name)
+    user = user_collection.get_user_by_name(user_name)
+    if recipe_id not in user["savedRecipes"]:
+        user_collection.update_saved_recipes_by_name(user_name, recipe_id)
     return {"name": user_name, "recipe": recipe_name}
 
 

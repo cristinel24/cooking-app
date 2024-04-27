@@ -1,10 +1,10 @@
-.popUpChat-Container {
+.pop-up-chat-container {
     position: fixed;
     bottom: 8rem;
     right: 1rem;
     z-index: 2;
 }
-.popUpChat-bot-logo {
+.pop-up-chat-bot-logo {
     width: 4rem;
     height: 4rem;
     cursor: pointer;
@@ -12,11 +12,11 @@
     z-index: 3;
 }
 
-.popUpChat-custom-modal-overlay {
+.pop-up-chat-custom-modal-overlay {
     background-color: var(--border);
 }
 
-.popUpChat-modal-content {
+.pop-up-chat-modal-content {
     width: 25rem;
     height: 34rem;
     position: fixed;
@@ -28,12 +28,12 @@
     z-index: 1;
 }
 
-.popUpChat-title {
+.pop-up-chat-title {
     padding-left: 2rem;
     color: var(--txtcolor);
 }
 @media (min-width: 488px) and (max-width: 767px) {
-    .popUpChat-modal-content {
+    .pop-up-chat-modal-content {
         width: 25rem;
         height: 30rem;
         position: fixed;
@@ -45,7 +45,7 @@
         background-color: var(--bkgcolor);
         z-index: 1;
     }
-    .popUpChat-bot-logo {
+    .pop-up-chat-bot-logo {
         width: 3.5rem;
         height: 3.5rem;
         cursor: pointer;
@@ -55,7 +55,7 @@
 }
 
 @media (min-width: 320px) and (max-width: 487px) {
-    .popUpChat-modal-content {
+    .pop-up-chat-modal-content {
         width: 80%;
         height: 38rem;
         position: fixed;
@@ -67,7 +67,7 @@
         z-index: 1;
     }
 
-    .popUpChat-bot-logo {
+    .pop-up-chat-bot-logo {
         width: 3rem;
         height: 3rem;
         cursor: pointer;

@@ -3,9 +3,11 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
+from generic.recipe.controller import router
+
 ###pentru import de module(nu)
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from recipe.controller import *
+
 
 load_dotenv()
 

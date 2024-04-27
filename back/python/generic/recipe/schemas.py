@@ -1,15 +1,18 @@
 from pydantic import BaseModel, conint
 from typing import Optional
 
+import db.mongo_collection
+
 
 class RecipeData(BaseModel):
-    title: str
-    description: str
-    prep_time: conint(ge=0, le=2 ** 31 - 1)
-    steps: str
-    ingredients: str
-    allergens: str
-    tags: str
+    name: str
+    title: Optional[str] = None
+    description: Optional[str] = None
+    prepTime: Optional[int] = None
+    steps: Optional[list[str]] = None
+    ingredients: Optional[list[str]] = None
+    allergens: Optional[list[str]] = None
+    tags: Optional[list[str]] = None
 
 
 class RatingData(BaseModel):

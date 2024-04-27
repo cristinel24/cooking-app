@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './index.css'
-import { ThemeContext, themes } from '../../context/index.jsx'
 import PageButton from '../PageButton/index.jsx'
-import Page from '../../pages/Page.jsx'
 
 export default function Report() {
     //Rutele pentru butoane
@@ -31,30 +29,29 @@ export default function Report() {
 
     return (
         <div>
-            <div className="wrapper">
-                <div className="titlu">
-                    <p>Raporteza o problema!</p>
+            <div className="report-wrapper">
+                <div className="report-wrapper-title">
+                    <p>Raporteaza o problema!</p>
                 </div>
                 <p>Descrie problema</p>
-                <div className="textbox-container">
+                <div className="report-textbox-container">
                     <textarea
                         value={text}
                         onChange={handleChange}
-                        className="textarea"
                         placeholder="Atunci când utilizam aplicația, am întâlnit eroarea..."
                     />
                 </div>
                 <p>O captura de ecran ne-ar ajuta sa intelegem mai bine</p>
-                <div className="image-container" style={{ textAlign: 'left' }}>
-                    <div className="file">
+                <div className="report-image-container">
+                    <div className="report-upload-file">
                         <input
                             ref={fileInputRef}
                             type="file"
                             onChange={handleFileChange}
-                            style={{ display: 'none' }}
+                            className="report-hide-initial-msg"
                         />
                         <div
-                            className="upload-button"
+                            className="report-upload-button"
                             onClick={handleButtonClick}
                         >
                             {/* <FontAwesomeIcon icon={faPaperclip} /> */}
@@ -66,19 +63,19 @@ export default function Report() {
                         </div>
                     </div>
                 </div>
-                <div className="butoane">
-                    <div className="buton1">
+                <div className="report-buttons">
+                    <div className="report-send-button">
                         <PageButton
                             children="Trimite"
                             path={pathPage}
-                            className="btn11"
+                            className="report-button1"
                         />
                     </div>
-                    <div className="buton2">
+                    <div className="report-give-up-button">
                         <PageButton
                             children="Renunta"
                             path={pathPage}
-                            className={'btn22'}
+                            className="report-button2"
                         />
                     </div>
                 </div>

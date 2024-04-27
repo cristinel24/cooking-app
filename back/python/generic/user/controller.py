@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from user import services
-from user.schemas import AccountChangeData
+from generic.user import services
+from generic.user.schemas import AccountChangeData
 
 router = APIRouter(
     prefix="/api/users"

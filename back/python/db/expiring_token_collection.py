@@ -1,4 +1,6 @@
 from datetime import datetime
+
+import pymongo.errors
 from bson import ObjectId
 
 from db.mongo_collection import MongoCollection
@@ -12,7 +14,7 @@ class ExpiringTokenCollection(MongoCollection):
     def get_expiring_token_by_value(self, value: str) -> dict:
         try:
             item = self._collection.find_one({"value": value})
-        except Exception as e:
+        except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to get token! - {str(e)}")
         return item
 
@@ -21,16 +23,16 @@ class ExpiringTokenCollection(MongoCollection):
             result = self._collection.delete_one({"_id": token_id})
             if result.deleted_count == 0:
                 raise Exception(f"No tokens were removed")
-        except Exception as e:
+        except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to remove token! - {str(e)}")
 
-    def insert_token(self, value: str, user_id: ObjectId, type_token: str) -> int:
+    def insert_token(self, value: str, user_id: ObjectId, type_token: str) -> str:
         """
         insert a new token in the db, return the inserted token's id
         :param value: token value
         :param user_id: token's user id
         :param type_token: token's type
-        :return: id of the newly inserted token, as int (must be manually cast to ObjectId)
+        :return: id of the newly inserted token, as str (must be manually cast to ObjectId)
         """
         try:
             item = self._collection.insert_one({
@@ -39,11 +41,6 @@ class ExpiringTokenCollection(MongoCollection):
                 "userId": user_id,
                 "type": type_token
             })
-            return item.inserted_id
-        except Exception as e:
+            return str(item.inserted_id)
+        except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to insert token! - {str(e)}")
-
-#
-# if __name__ == "__main__":
-#     coll = ExpiringTokenCollection()
-#     print(coll.insert_token("a7c6e4b3821299857824f9bc0c89d7a70714361b8dacd6e22a4240197fe69420", ObjectId("662bba36255bb1d5983c66db"), "session"))

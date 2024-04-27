@@ -1,14 +1,20 @@
-use crate::endpoints::recipe::TOP;
-use crate::endpoints::{EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR};
-use crate::get_context;
-use crate::repository::extended_services::{
-    AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations,
+use crate::{
+    endpoints::{recipe::TOP, EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR},
+    get_context,
+    repository::{
+        get_repository,
+        models::recipe::Recipe,
+        service::{
+            allergen::Repository as AllergenRepository, recipe::Repository as RecipeRepository,
+            tag::Repository as TagRepository,
+        },
+    },
 };
-use crate::repository::get_repository;
-use crate::repository::models::recipe::Recipe;
-use salvo::http::StatusCode;
-use salvo::prelude::{endpoint, Json};
-use salvo::{Request, Response};
+use salvo::{
+    http::StatusCode,
+    prelude::{endpoint, Json},
+    Request, Response,
+};
 use tracing::error;
 
 #[endpoint(

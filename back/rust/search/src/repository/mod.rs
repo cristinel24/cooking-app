@@ -3,7 +3,6 @@ use crate::CONTEXT;
 use anyhow::Result;
 
 pub mod cooking_app;
-pub mod extended_services;
 pub mod models;
 pub mod service;
 

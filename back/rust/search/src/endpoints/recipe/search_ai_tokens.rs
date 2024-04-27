@@ -1,17 +1,24 @@
-use crate::endpoints::recipe::{AiTokensPayload, TOP};
-use crate::endpoints::{
-    AggregationResponse, EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR,
+use crate::{
+    endpoints::{
+        recipe::{AiTokensPayload, TOP},
+        AggregationResponse, EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR,
+    },
+    get_context,
+    repository::{
+        get_repository,
+        models::recipe::Recipe,
+        service::{
+            allergen::Repository as AllergenRepository, recipe::Repository as RecipeRepository,
+            tag::Repository as TagRepository,
+        },
+    },
 };
-use crate::get_context;
-use crate::repository::extended_services::{
-    AllergenDatabaseOperations, RecipeDatabaseOperations, TagDatabaseOperations,
+use salvo::{
+    http::StatusCode,
+    oapi::extract::JsonBody,
+    prelude::{endpoint, Json, Writer},
+    Response,
 };
-use crate::repository::get_repository;
-use crate::repository::models::recipe::Recipe;
-use salvo::http::StatusCode;
-use salvo::oapi::extract::JsonBody;
-use salvo::prelude::{endpoint, Json, Writer};
-use salvo::Response;
 use tracing::error;
 
 #[endpoint(

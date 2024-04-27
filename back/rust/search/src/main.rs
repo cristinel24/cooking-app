@@ -20,7 +20,7 @@ use salvo::{
     prelude::SwaggerUi,
     Depot, FlowCtrl, Listener, Request, Response, Router, Server,
 };
-use tracing::{error, info};
+use tracing::{error, info, warn};
 
 const MONGO_KEY: &str = "MONGO_URI";
 const PORT: u32 = 7777u32;
@@ -66,11 +66,12 @@ async fn main() -> Result<()> {
     info!("Version: {}", version);
     info!("Authors: {}", authors);
 
-    if let Err(e) = dotenv() {
-        error!("Environment file '.env' not found! Full error: {e}");
+    let mongo_uri = if let Err(e) = dotenv() {
+        warn!("Environment file '.env' not found! Full error: {e}");
+        "mongodb://localhost:27017".to_owned()
+    } else {
+        std::env::var(MONGO_KEY)?
     };
-
-    let mongo_uri = std::env::var(MONGO_KEY).unwrap_or("mongodb://localhost:27017".to_owned());
 
     CONTEXT
         .set(CookingAppRepository::new(mongo_uri).await?)

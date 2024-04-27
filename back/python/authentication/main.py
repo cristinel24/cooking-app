@@ -6,7 +6,8 @@ from authentication.controller import *
 
 load_dotenv()
 
-PORT = int(os.getenv("PORT", "8081"))
+HOST = os.getenv("AUTH_MODULE_HOST", "localhost")
+PORT = int(os.getenv("AUTH_MODULE_PORT", "8082"))
 
 app = FastAPI()
 
@@ -14,4 +15,4 @@ app.include_router(router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=PORT)
+    uvicorn.run(app, host=HOST, port=PORT)

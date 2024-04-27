@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 
-from authentication import schemas
-from authentication import services
+from authentication import schemas, services
 
 router = APIRouter(
     prefix="/api"
@@ -10,8 +9,8 @@ router = APIRouter(
 
 @router.post("/register")
 async def register(data: schemas.RegisterData):
-    token = services.register(data)
-    return token
+    response = services.register(data)
+    return response
 
 
 @router.post("/verify")

@@ -1,5 +1,7 @@
 import json
 import os
+from pprint import pprint
+
 from user.schemas import AccountChangeData
 from dotenv import load_dotenv
 from pymongo import MongoClient, UpdateOne
@@ -17,10 +19,6 @@ class MongoCollection:
             if client is not None else MongoClient(os.getenv("MONGO_URI", DEFAULT_MONGO_URI))
 
 
-def parse_json(data):
-    return json.loads(json_util.dumps(data))
-
-
 class RecipeCollection(MongoCollection):
     def __init__(self, client: MongoClient | None = None):
         super().__init__(client)
@@ -28,9 +26,11 @@ class RecipeCollection(MongoCollection):
         self._collection = self._db.recipe
 
     def find_recipe_by_id(self, recipe_id: str) -> dict:
-        recipe = self._collection.find_one({"_id": recipe_id})
-
+        recipe = self._collection.find_one({"_id": ObjectId(recipe_id)})
         return recipe
+
+    def find_recipe_by_name(self, recipe_name: str) -> dict:
+        return self._collection.find_one({"name": recipe_name})
 
 
 recipe_collection = RecipeCollection()
@@ -52,36 +52,24 @@ class UserCollection(MongoCollection):
         self._db = self._client.cooking_app
         self._collection = self._db.user
 
-    def get_user_by_name(self, name: str) -> dict:
-        user = self._collection.find_one({"name": name})
-        return parse_json(user)
+    def get_user_by_name(self, user_name: str) -> dict:
+        user = self._collection.find_one({"name": user_name})
+        return user
 
-    def change_account_data(self, name: str, data: AccountChangeData) -> dict:
-        update_operations = []
+    def update_user_by_name(self, user_name: str, updated_fields: dict):
+        # todo Exception Handling
+        for updated_field in updated_fields.items():
+            self._collection.update_one(
+                {"name": user_name},
+                {"$set": {updated_field[0]: updated_field[1]}}
+            )
 
-        if data.display_name:
-            update_operations.append(UpdateOne({"name": name}, {"$set": {"displayName": data.display_name}}))
-        if data.icon:
-            update_operations.append(UpdateOne({"name": name}, {"$set": {"icon": data.icon}}))
-        if data.description:
-            update_operations.append(UpdateOne({"name": name}, {"$set": {"description": data.description}}))
-        if data.allergens:
-            update_operations.append(UpdateOne({"name": name}, {"$set": {"allergens": data.allergens}}))
-
-        if update_operations:
-            self._collection.bulk_write(update_operations)
-
-        return {"name": name, "data": data.dict()}
-
-    def save_recipe(self, user_name: str, recipe_name: str) -> dict:
-        recipe = recipe_collection._collection.find_one({"name": recipe_name})
-        recipe_id = recipe["_id"]
+    def update_saved_recipes_by_name(self, user_name: str, recipe_id: str) -> None:
+        # todo Exception Handling
         self._collection.update_one(
             {"name": user_name},
             {"$push": {"savedRecipes": recipe_id}}
         )
-
-        return {"name": user_name, "recipe": recipe_name}
 
     def unsave_recipe(self, user_name: str, recipe_name: str) -> dict:
         recipe = recipe_collection._collection.find_one({"name": recipe_name})
@@ -183,25 +171,3 @@ class UserCollection(MongoCollection):
         follow_dict = {"followers": followers_list}
         followers_json = parse_json(follow_dict)
         return followers_json
-
-    def get_recipes(self, user_name: str) -> dict:
-        try:
-            user = self._collection.find_one({"name": user_name}, {"_id": 0})
-        except Exception as e:
-            raise Exception(f"User not found! - {str(e)}")
-
-        saved_recipes_list = user["savedRecipes"]
-
-        for i in range(len(saved_recipes_list)):
-            saved_recipe_id = saved_recipes_list[i]
-            saved_recipes_list[i] = recipe_collection.find_recipe_by_id(saved_recipe_id)
-            del saved_recipes_list[i]["_id"]
-
-        user_dict = {
-            "name": user["name"],
-            "savedRecipes": saved_recipes_list
-        }
-
-        user_json = parse_json(user_dict)
-
-        return user_json

@@ -67,8 +67,7 @@ class RecipeCollection(MongoCollection):
         try:
             update_dict = {"$set": update_data}
             update_dict["$set"]["updatedAt"] = datetime.utcnow()
-            result = self._collection.update_one({"name": recipe_name}, update_dict)
-            return result.raw_result
+            self._collection.update_one({"name": recipe_name}, update_dict)
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to update recipe by name! - {str(e)}")
 
@@ -76,27 +75,24 @@ class RecipeCollection(MongoCollection):
         try:
             update_dict = {"$set": update_data}
             update_dict["$set"]["updatedAt"] = datetime.utcnow()
-            result = self._collection.update_one({"name": ObjectId(recipe_id)}, update_dict)
-            return result
+            self._collection.update_one({"name": ObjectId(recipe_id)}, update_dict)
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to update recipe by id! - {str(e)}")
 
     def add_tokens_by_name(self, recipe_name: str, recipe_tokens: list[str]):
         try:
-            update_result = self._collection.update_one(
+            self._collection.update_one(
                 {"name": recipe_name},
                 {"$addToSet": {"tokens": {"$each": recipe_tokens}}}
             )
-            return update_result
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to add tokens to recipe tags! - {str(e)}")
 
     def add_tokens_by_id(self, recipe_id: str, recipe_tokens: list[str]):
         try:
-            update_result = self._collection.update_one(
+            self._collection.update_one(
                 {"_id": ObjectId(recipe_id)},
                 {"$addToSet": {"tokens": {"$each": recipe_tokens}}}
             )
-            return update_result
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to add tokens to recipe tags! - {str(e)}")

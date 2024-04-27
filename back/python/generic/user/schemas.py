@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class AccountChangeData(BaseModel):
-    display_name: str | None
-    icon: str | None
-    description: str | None
-    allergens: list[str] | None
+    display_name: str | None = None
+    icon: str | None = None
+    description: str | None = None
+    allergens: list[str] | None = None

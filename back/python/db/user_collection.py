@@ -107,13 +107,13 @@ class UserCollection(MongoCollection):
             {"$push": {"savedRecipes": recipe_id}}
         )
 
-    def delete_saved_recipe_by_name(self, user_name: str, recipe_id: ObjectId) -> None:
+    def delete_saved_recipe_by_name(self, user_name: str, recipe_str: str) -> None:
         self._collection.update_one(
             {"name": user_name},
-            {"$pull": {"savedRecipes": recipe_id}}
+            {"$pull": {"savedRecipes": recipe_str}}
         )
 
-    def update_search_by_name(self, user_name: str, search: str) -> None:
+    def update_search_history_by_name(self, user_name: str, search: str) -> None:
         self._collection.update_one(
             {"name": user_name},
             {"$push": {"searchHistory": search}}
@@ -131,7 +131,7 @@ class UserCollection(MongoCollection):
             {"_id": 0, "searchHistory": 1}
         )["searchHistory"]
 
-    def update_message_by_name(self, user_name: str, message: str) -> None:
+    def update_message_history_by_name(self, user_name: str, message: str) -> None:
         self._collection.update_one(
             {"name": user_name},
             {"$push": {"messageHistory": message}}

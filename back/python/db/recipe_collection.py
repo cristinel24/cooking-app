@@ -21,19 +21,12 @@ class RecipeCollection(MongoCollection):
             raise Exception(f"Failed to get recipe by name! - {str(e)}")
         return item
 
-    def find_recipe_by_id(self, recipe_id: str) -> dict:
-        recipe = self._collection.find_one({"_id": ObjectId(recipe_id)})
-        return recipe
-
     def get_recipe_by_id(self, recipe_id: str):
         try:
             item = self._collection.find_one({"_id": ObjectId(recipe_id)})
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to get recipe by id! - {str(e)}")
         return item
-
-    def find_recipe_by_name(self, recipe_name: str) -> dict:
-        return self._collection.find_one({"name": recipe_name})
 
     def insert_recipe(self, params):
         try:

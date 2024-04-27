@@ -8,8 +8,8 @@ class EmailStatus(Enum):
 
 
 class ExpiringTokenType(Enum):
-    SESSION = "session",
-    USERNAME_CHANGE = "usernameChange",
-    EMAIL_CHANGE = "emailChange",
-    PASSWORD_CHANGE = "passwordChange",
+    SESSION = "session"
+    USERNAME_CHANGE = "usernameChange"
+    EMAIL_CHANGE = "emailChange"
+    PASSWORD_CHANGE = "passwordChange"
     EMAIL_CONFIRM = "emailConfirm"

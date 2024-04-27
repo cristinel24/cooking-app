@@ -67,7 +67,7 @@ def verify(token):
     token_type = expiring_token["type"]
     if token_type == ExpiringTokenType.EMAIL_CONFIRM.value:
         user = user_db.get_user_by_id(expiring_token["userId"])
-        user["login"]["emailStatus"] = EmailStatus.CONFIRMED
+        user["login"]["emailStatus"] = EmailStatus.CONFIRMED.value
         user_db.update_user(user)
         expiring_token_db.remove_token(ObjectId(expiring_token["_id"]))
         return {"message": "email confirmed"}
@@ -100,9 +100,10 @@ def login(data: schemas.LoginData):
     # insert session token
     session_token_value = generate_token()
     inserted_token_id = expiring_token_db.insert_token(session_token_value, user["_id"], "session")
+    print(str(ExpiringTokenType.SESSION.value))
     user["sessions"].append({
         "value": session_token_value,
-        "type": ExpiringTokenType.SESSION,
+        "type": ExpiringTokenType.SESSION.value,
         "_id": ObjectId(inserted_token_id)
     })
     user_db.update_user(user)

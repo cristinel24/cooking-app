@@ -11,7 +11,7 @@ def hash_password(password, salt):
 
 
 def generate_salt():
-    return secrets.token_bytes(random.randint(8, 8))
+    return secrets.token_bytes(32)
 
 
 if __name__ == "__main__":

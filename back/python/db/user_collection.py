@@ -42,7 +42,7 @@ class UserCollection(MongoCollection):
         """
         insert a user into the db and returns the id of the newly inserted user
         :param user_data
-        :return: ObjectId of the newly inserted user
+        :return: id of the newly inserted user, as int (must be manually cast to ObjectId)
         """
         try:
             item = self._collection.insert_one(user_data)
@@ -54,7 +54,7 @@ class UserCollection(MongoCollection):
         """
         update a user and return the id of the user
         :param user_data
-        :return: ObjectId of the newly updated user
+        :return: id of the newly updated user, as int (must be manually cast to ObjectId)
         """
         try:
             item = self._collection.update_one({"_id": user_data["_id"]}, {"$set": user_data})

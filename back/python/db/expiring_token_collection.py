@@ -30,7 +30,7 @@ class ExpiringTokenCollection(MongoCollection):
         :param value: token value
         :param user_id: token's user id
         :param type_token: token's type
-        :return: ObjectId of the newly inserted token
+        :return: id of the newly inserted token, as int (must be manually cast to ObjectId)
         """
         try:
             item = self._collection.insert_one({

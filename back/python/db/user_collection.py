@@ -1,14 +1,14 @@
+from bson import ObjectId
 from pymongo import MongoClient
 
 from db.mongo_collection import MongoCollection
-from bson import ObjectId
 
 
 class UserCollection(MongoCollection):
-
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.user
+        self._db = self._connection.cooking_app
+        self._collection = self._db.user
 
     def get_user_by_mail(self, mail: str) -> dict:
         try:
@@ -62,8 +62,88 @@ class UserCollection(MongoCollection):
         except Exception as e:
             raise Exception(f"Failed to update user! - {str(e)}")
 
+    def get_user_id_by_name(self, user_name: str) -> ObjectId:
+        return self._collection.find_one(
+            {"name": user_name},
+            {"_id": 1}
+        )["_id"]
 
-# if __name__ == "__main__":
-#     coll = UserCollection()
-#     print(coll.get_user_by_mail("ionut.dawfawf@gmail.com"))
-#     print(coll.get_user_by_username("ionut.calin"))
+    def get_user_name_by_id(self, user_id: ObjectId) -> str:
+        return self._collection.find_one(
+            {"_id": user_id},
+            {
+                "name": 1,
+                "_id": 0
+            }
+        )["name"]
+
+    def get_user_profile_by_name(self, user_name: str) -> dict:
+        return self._collection.find_one(
+            {"name": user_name},
+            {
+                "_id": 0,
+                "username": 1,
+                "displayName": 1,
+                "icon": 1,
+                "description": 1,
+                "allergens": 1,
+                "tags": 1,
+                "ratingSum": 1,
+                "ratingCount": 1,
+            }
+        )
+
+    def update_user_by_name(self, user_name: str, updated_fields: dict) -> None:
+        for updated_field in updated_fields.items():
+            self._collection.update_one(
+                {"name": user_name},
+                {"$set": {updated_field[0]: updated_field[1]}}
+            )
+
+    def update_saved_recipes_by_name(self, user_name: str, recipe_id: ObjectId) -> None:
+        self._collection.update_one(
+            {"name": user_name},
+            {"$push": {"savedRecipes": recipe_id}}
+        )
+
+    def delete_saved_recipe_by_name(self, user_name: str, recipe_id: ObjectId) -> None:
+        self._collection.update_one(
+            {"name": user_name},
+            {"$pull": {"savedRecipes": recipe_id}}
+        )
+
+    def update_search_by_name(self, user_name: str, search: str) -> None:
+        self._collection.update_one(
+            {"name": user_name},
+            {"$push": {"searchHistory": search}}
+        )
+
+    def delete_search_history_by_name(self, user_name: str) -> None:
+        self._collection.update_one(
+            {"name": user_name},
+            {"$set": {"searchHistory": []}}
+        )
+
+    def get_search_history_by_name(self, user_name: str) -> list:
+        return self._collection.find_one(
+            {"name": user_name},
+            {"_id": 0, "searchHistory": 1}
+        )["searchHistory"]
+
+    def update_message_by_name(self, user_name: str, message: str) -> None:
+        self._collection.update_one(
+            {"name": user_name},
+            {"$push": {"messageHistory": message}}
+        )
+
+    def get_message_history_by_name(self, user_name: str) -> list:
+        return self._collection.find_one(
+            {"name": user_name},
+            {"_id": 0, "messageHistory": 1}
+        )["messageHistory"]
+
+    def delete_message_history_by_name(self, user_name: str) -> None:
+        self._collection.update_one(
+            {"name": user_name},
+            {"$set": {"messageHistory": []}}
+        )

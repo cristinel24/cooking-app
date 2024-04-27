@@ -32,6 +32,7 @@ const SearchPage = () => {
         <Page>
             <div className="search-page">
                 <div className="search-page-filter-box">
+                    <strong>Filtre</strong>
                     <SearchFilter
                         onIngredientsFilter={handleFilterIngredients}
                         onTagsFilter={handleFilterIngredients}
@@ -46,6 +47,8 @@ const SearchPage = () => {
                             text="Retete"
                             Icon={MdFoodBank}
                         />
+                    </div>
+                    <div className="search-page-result-buttons">
                         <ActionButton
                             onClick={handleClickUsers}
                             text="Utiliztori"

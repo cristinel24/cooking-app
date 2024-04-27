@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import { CiStar } from 'react-icons/ci'
 import { FaStar } from 'react-icons/fa6'
+import './index.css'
 
 const SearchFilter = (
     onIngredientsFilter,
@@ -66,8 +67,8 @@ const SearchFilter = (
         })
     }
     return (
-        <div className="search-page-filter-box">
-            <div className="search-page-filter-box-ingredients">
+        <div className="search-page-filter-lbox">
+            <div className="search-page-filter-box-input">
                 <label htmlFor="search-page-filter-box-ingredients-name">
                     Ingrediente:
                 </label>
@@ -81,10 +82,8 @@ const SearchFilter = (
                     )}
                 />
             </div>
-            <div className="search-page-filter-box-tags">
-                <label htmlFor="search-page-filter-box-ingredients-tags">
-                    Taguri:
-                </label>
+            <div className="search-page-filter-box-input">
+                <label htmlFor="search-page-filter-box-tags">Taguri:</label>
                 <input
                     type="text"
                     className="form-control"
@@ -95,7 +94,7 @@ const SearchFilter = (
                     )}
                 />
             </div>
-            <div className="search-page-filter-box-allergens">
+            <div className="search-page-filter-box-input">
                 <label htmlFor="search-page-filter-box-ingredients-allergens">
                     Alergeni:
                 </label>
@@ -109,7 +108,7 @@ const SearchFilter = (
                     )}
                 />
             </div>
-            <div className="search-page-filter-box-authors">
+            <div className="search-page-filter-box-input">
                 <label htmlFor="search-page-filter-box-ingredients-authors">
                     Autori:
                 </label>
@@ -124,10 +123,10 @@ const SearchFilter = (
                 />
             </div>
             <div className="search-page-filter-box-prep-time">
-                Timp de preparare:
+                <strong>Timp de preparare:</strong>
                 <div className="search-page-filter-box-prep-time-spinner">
                     <p className="search-page-filter-box-prep-time-spinner-data">
-                        {prepTime}
+                        {prepTime} min
                     </p>
                     <div className="search-page-filter-box-prep-time-spinner-icons">
                         <IoIosArrowUp
@@ -140,7 +139,7 @@ const SearchFilter = (
                 </div>
             </div>
             <div className="search-page-filter-box-rating">
-                Evaluare
+                <strong>Evaluare</strong>
                 <div className="search-page-filter-box-rating-stars">
                     {[1, 2, 3, 4, 5].map((starNumber) => (
                         <span
@@ -162,6 +161,7 @@ const SearchFilter = (
                 </div>
             </div>
             <div className="search-page-filter-box-creation-date">
+                <strong>Sorteaza</strong>
                 <label htmlFor="search-page-filter-box-creation-date"></label>
                 <select
                     className="search-page-filter-box-creation-date-select"
@@ -177,7 +177,7 @@ const SearchFilter = (
                     <option value="one-year"> Acum un an</option>
                 </select>
             </div>
-            <div className="search-page-filter-box-black-list">
+            <div className="search-page-filter-box-input">
                 <label htmlFor="search-page-filter-box-black-list">
                     Lista neagra:
                 </label>

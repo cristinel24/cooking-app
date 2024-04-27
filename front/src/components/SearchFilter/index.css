@@ -1,0 +1,79 @@
+.search-page-filter-box-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-page-filter-box-input label {
+    font-size: 1rem;
+    margin: none;
+    margin-top: 10px;
+    color: var(--txtcolor);
+}
+
+.search-page-filter-box-input .form-control {
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    margin-top: 5px;
+    padding: 5px 0 5px;
+    text-align: center;
+}
+
+.search-page-filter-box-prep-time {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 1rem;
+    margin-top: 15px;
+}
+
+.search-page-filter-box-prep-time-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-page-filter-box-prep-time-spinner-data {
+    font-size: 0.8rem;
+}
+
+.search-page-filter-box-prep-time-spinner-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.search-page-filter-box-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.search-page-filter-box-rating-stars {
+    cursor: pointer;
+    color: var(--stars);
+    font-size: 1.3rem;
+}
+
+.search-page-filter-box-creation-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.search-page-filter-box-creation-date-select {
+    border-radius: 20px;
+}

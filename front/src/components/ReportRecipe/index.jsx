@@ -3,8 +3,6 @@ import PageButton from '../PageButton'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import './index.css'
 function ReportRecipe() {
-    const title1 = 'Trimite'
-    const title2 = 'Renunta'
     const pathPage = 'https://www.google.ro/'
     localStorage.setItem('theme', 'light')
 
@@ -57,18 +55,14 @@ function ReportRecipe() {
                 </div>
                 <div className="butoane1">
                     <div className="button1">
-                        <PageButton
-                            children={title1}
-                            path={pathPage}
-                            className="btn1"
-                        />
+                        <PageButton path={pathPage} className="btn1">
+                            Trimite
+                        </PageButton>
                     </div>
                     <div className="button2">
-                        <PageButton
-                            children={title2}
-                            path={pathPage}
-                            className="btn2"
-                        />
+                        <PageButton path={pathPage} className="btn2">
+                            Renunta
+                        </PageButton>
                     </div>
                 </div>
             </div>

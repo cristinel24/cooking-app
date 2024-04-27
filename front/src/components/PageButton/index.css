@@ -2,7 +2,7 @@
     background-color: var(--bkgcolor);
     padding: 15px 20px 15px 20px;
     border-radius: 10px;
-    font-size: 12px;
+    font-size: 0.8rem;
     color: var(--txtcolor);
     font-weight: bold;
 }
@@ -13,7 +13,7 @@
 
 @media (min-width: 481px) and (max-width: 767px) {
     .link {
-        font-size: 10px;
+        font-size: 0.7rem;
         padding: 10px 15px 10px 15px;
         border-radius: 10px;
     }
@@ -24,7 +24,7 @@
 
 @media (min-width: 320px) and (max-width: 480px) {
     .link {
-        font-size: 8px;
+        font-size: 0.6rem;
         padding: 8px 10px 8px 10px;
         border-radius: 10px;
     }

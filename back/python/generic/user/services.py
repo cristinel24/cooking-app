@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from bson import json_util
 
@@ -39,6 +40,7 @@ async def change_account_data(user_name: str, data: AccountChangeData) -> dict:
     for item in data:
         if item[1] is not None:
             updated_fields[to_lower_camel_case(item[0])] = item[1]
+    updated_fields["updatedAt"] = datetime.utcnow()
     user_collection.update_user_by_name(user_name, updated_fields)
     return {"ok": 1}
 

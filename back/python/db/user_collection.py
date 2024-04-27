@@ -94,11 +94,10 @@ class UserCollection(MongoCollection):
         )
 
     def update_user_by_name(self, user_name: str, updated_fields: dict) -> None:
-        for updated_field in updated_fields.items():
-            self._collection.update_one(
-                {"name": user_name},
-                {"$set": {updated_field[0]: updated_field[1]}}
-            )
+        self._collection.update_one(
+            {"name": user_name},
+            {"$set": updated_fields}
+        )
 
     def update_saved_recipes_by_name(self, user_name: str, recipe_id: ObjectId) -> None:
         self._collection.update_one(

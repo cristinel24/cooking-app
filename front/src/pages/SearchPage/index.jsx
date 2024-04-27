@@ -7,26 +7,95 @@ import { FaRegUser } from 'react-icons/fa'
 import ActionButton from '../../components/ActionButton'
 import SearchFilter from '../../components/SearchFilter'
 import User from '../../components/User'
+import Recipe from '../../components/Recipe'
 
 const SearchPage = () => {
-    const data = {
-        users: [],
-        recipes: [],
+    const [showUsers, setShowUsers] = useState(false)
+    const [allData, setData] = useState({
+        users: [
+            {
+                name: 'Name',
+                posts: '/',
+                image: 'https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+                description:
+                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea.',
+            },
+            {
+                name: 'Name',
+                posts: '/',
+                image: 'https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+                description:
+                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea.',
+            },
+            {
+                name: 'Name',
+                posts: '/',
+                image: 'https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+                description:
+                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea.',
+            },
+            {
+                name: 'Name',
+                posts: '/',
+                image: 'https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+                description:
+                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea.',
+            },
+        ],
+        recipes: [
+            {
+                title: 'Title',
+                author: 'Author',
+                image: 'https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png',
+                description:
+                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea.',
+            },
+            {
+                title: 'Title',
+                author: 'Author',
+                image: 'https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png',
+                description:
+                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea.',
+            },
+            {
+                title: 'Title',
+                author: 'Author',
+                image: 'https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png',
+                description:
+                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea.',
+            },
+            {
+                title: 'Title',
+                author: 'Author',
+                image: 'https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png',
+                description:
+                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea.',
+            },
+        ],
+    })
+    // allData.recipes.length = 0
+    // allData.users.length = 0
+
+    const handleClickRecipes = () => {
+        setShowUsers(false)
     }
 
-    const [allData, setData] = useState(data)
-    const handleClickRecipes = () => {}
-    const handleClickUsers = () => {}
+    const handleClickUsers = () => {
+        setShowUsers(true)
+    }
 
     const handleFilterIngredients = (ingredients) => {
-        const filteredData = data.filter((item) => {
-            const fullName = `${item.first_name} ${item.last_name}`
-            if (fullName.toLowerCase().includes(ingredients.toLowerCase())) {
-                return item
-            }
-        })
+        const filteredUsers = allData.users.filter((user) =>
+            user.name.toLowerCase().includes(ingredients.toLowerCase())
+        )
+        const filteredRecipes = allData.recipes.filter((recipe) =>
+            recipe.title.toLowerCase().includes(ingredients.toLowerCase())
+        )
 
-        setData(filteredData)
+        setData({
+            users: filteredUsers,
+            recipes: filteredRecipes,
+        })
     }
 
     return (
@@ -41,28 +110,97 @@ const SearchPage = () => {
                         onAuthorsFilter={handleFilterIngredients}
                     />
                 </div>
-                <div className="search-page-results">
-                    <div className="search-page-results-buttons">
-                        <ActionButton
-                            onClick={handleClickRecipes}
-                            text="Retete"
-                            Icon={MdFoodBank}
-                        />
-                        <ActionButton
-                            onClick={handleClickUsers}
-                            text="Utilizatori"
-                            Icon={FaRegUser}
-                        />
+                {allData.users.length === 0 && allData.recipes.length === 0 && (
+                    <div className="search-page-results">
+                        <div className="search-page-results-no-found">
+                            No users or recipes found.
+                        </div>
                     </div>
-                    <div className="search-page-results-content">
-                        <User
-                            name="Name"
-                            posts="/"
-                            image="https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                            description="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea"
-                        ></User>
+                )}
+                {allData.users.length !== 0 && allData.recipes.length !== 0 && (
+                    <div className="search-page-results">
+                        <div className="search-page-results-buttons">
+                            <ActionButton
+                                onClick={handleClickRecipes}
+                                text="Retete"
+                                Icon={MdFoodBank}
+                            />
+                            <ActionButton
+                                onClick={handleClickUsers}
+                                text="Utilizatori"
+                                Icon={FaRegUser}
+                            />
+                        </div>
+                        <div className="search-page-results-content">
+                            <div
+                                className="search-page-results-content-users"
+                                style={{
+                                    display: showUsers ? 'flex' : 'none',
+                                }}
+                            >
+                                {allData.users.map((user, index) => (
+                                    <User
+                                        key={index}
+                                        name={user.name}
+                                        posts={user.posts}
+                                        image={user.image}
+                                        description={user.description}
+                                    />
+                                ))}
+                            </div>
+                            <div
+                                className="search-page-results-content-recipes"
+                                style={{
+                                    display: showUsers ? 'none' : 'flex',
+                                }}
+                            >
+                                {allData.recipes.map((recipe, index) => (
+                                    <Recipe
+                                        key={index}
+                                        title={recipe.title}
+                                        author={recipe.author}
+                                        image={recipe.image}
+                                        description={recipe.description}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     </div>
-                </div>
+                )}
+                {allData.recipes.length !== 0 && allData.users.length === 0 && (
+                    <div className="search-page-results">
+                        <div className="search-page-results-content">
+                            <div className="search-page-results-content-recipes">
+                                {allData.recipes.map((recipe, index) => (
+                                    <Recipe
+                                        key={index}
+                                        title={recipe.title}
+                                        author={recipe.author}
+                                        image={recipe.image}
+                                        description={recipe.description}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {allData.users.length !== 0 && allData.recipes.length === 0 && (
+                    <div className="search-page-results">
+                        <div className="search-page-results-content">
+                            <div className="search-page-results-content-users">
+                                {allData.users.map((user, index) => (
+                                    <User
+                                        key={index}
+                                        name={user.name}
+                                        posts={user.posts}
+                                        image={user.image}
+                                        description={user.description}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </Page>
     )

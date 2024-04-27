@@ -1,20 +1,20 @@
-.recipe-view {
+.categories {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 40px 0;
+    padding: 5% 0;
     width: 60%;
 }
 
-.recipe-view > * {
+.categories > * {
     margin-bottom: 20px;
 }
 
-.recipe-view .recipe:last-child {
+.categories .recipe:last-child {
     margin-bottom: 0;
 }
-.recipe-view button {
+/* .categories-button {
     border-radius: 20px;
     font-size: 1.2rem;
     background-color: var(--compreteta);
@@ -22,6 +22,6 @@
     cursor: pointer;
 }
 
-.recipe-view button:hover {
+.categories-button:hover {
     background-color: var(--caseta);
-}
+} */

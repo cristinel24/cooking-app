@@ -32,7 +32,7 @@ const ViewRecipe = (props) => {
         )
     }
     return (
-        <div className="recipe-view" id={props.id}>
+        <div className="categories" id={props.id}>
             <ActionButton onClick={toogleRecipe} text={props.name} />
             {recipes}
         </div>

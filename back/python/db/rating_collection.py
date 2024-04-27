@@ -1,4 +1,3 @@
-from datetime import datetime
 
 import pymongo.errors
 from pymongo import MongoClient
@@ -24,8 +23,7 @@ class RatingCollection(MongoCollection):
     def get_rating_by_name(self, rating_name: str):
         try:
             item = self._collection.find_one({"name": rating_name})
-        # TODO: exception handling
-        except pymongo.errors.Any as e:
+        except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to get rating column from Rating table ! - {str(e)}")
         return item
 
@@ -39,42 +37,25 @@ class RatingCollection(MongoCollection):
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to get ratings by recipe id! - {str(e)}")
 
-    def get_comments_by_rating_id(self, rating_id: str, limit: int) -> list[str]:
+    def get_comments_by_rating_id(self, rating_id: str, start: int, limit: int) -> list[str]:
         try:
-            items = self._collection.find({"parentId": ObjectId(rating_id)}).limit(limit)
-            comment_ids = [str(item["_id"]) for item in items]
-            if not comment_ids:
+            items = self._collection.find({"parentId": ObjectId(rating_id)}).skip(start).limit(limit)
+            comment = [item for item in items]
+            if not comment:
                 raise Exception("No comments found for the provided rating_id!")
-            return comment_ids
+            return comment
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to get comments by rating id! - {str(e)}")
 
     def get_rating_by_id(self, rating_id: str):
         try:
-            item = self._collection.find_one({"recipeId": ObjectId(rating_id)})
-        # TODO: exception handling
-        except pymongo.errors.Any as e:
+            item = self._collection.find_one({"_id": ObjectId(rating_id)})
+        except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to get rating by recipe! - {str(e)}")
         return item
 
     def insert_rating(self, rating_data):
         try:
-            item = self._collection.insert_one(rating_data)
-            return item.inserted_id
-        except pymongo.errors.Any as e:
-            raise Exception(f"Failed to insert rating! - {str(e)}")
-
-    def insert_rating_with_all_paramether(self, name: str, updatedAt: datetime, authorId: ObjectId, recipeId: ObjectId, rating: int,
-                                          description: str) -> ObjectId:
-        try:
-            rating_data = {
-                "name": name,
-                "updatedAt": updatedAt,
-                "authorId": authorId,
-                "recipeId": recipeId,
-                "rating": rating,
-                "description": description,
-            }
             item = self._collection.insert_one(rating_data)
             return item.inserted_id
         except pymongo.errors.PyMongoError as e:

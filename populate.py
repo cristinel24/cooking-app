@@ -4,6 +4,7 @@ from pprint import pprint
 
 import bson
 import pymongo
+from bson import ObjectId
 from faker import Faker
 from faker_food import FoodProvider
 from pymongo import MongoClient, IndexModel, errors
@@ -247,7 +248,7 @@ db.command(
     validator={
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["_id", "name", "updatedAt", "authorId", "recipeId", "rating"],
+            "required": ["_id", "name", "updatedAt", "authorId", "rating"],
             "properties": {
                 "_id": {
                     "bsonType": "objectId",
@@ -268,12 +269,12 @@ db.command(
                     "description": "must be the object id of an user and is required",
                 },
                 "recipeId": {
-                    "bsonType": "objectId",
+                    "bsonType": ["objectId", "null"],
                     "description": "must be the object id of a recipe and is required",
                 },
                 "rating": {
                     "bsonType": "int",
-                    "minimum": 1,
+                    "minimum": 0,
                     "maximum": 5,
                     "description": "must be an integer between 1 and 5 and is required",
                 },
@@ -282,6 +283,18 @@ db.command(
                     "maxLength": 10_000,
                     "description": "must be a string of maximum 10_000 characters and is required",
                 },
+                "parentId": {
+                    "bsonType": ["objectId", "null"],
+                    "description": "must be the objectId of a rating",
+                },
+                "children": {
+                    "bsonType": ["array", "null"],
+                    "description": "must be null or an array",
+                    "items": {
+                        "bsonType": ["objectId"],
+                        "description": "items must be the objectIds of the child comments",
+                    }
+                }
             },
             "additionalProperties": False,
         },
@@ -292,7 +305,15 @@ rating_collection.create_indexes([
     IndexModel([("authorId", pymongo.HASHED)]),
     IndexModel([("recipeId", pymongo.HASHED)]),
     IndexModel([("rating", pymongo.DESCENDING)]),
-    IndexModel(["authorId", "recipeId"], unique=True),
+    IndexModel(
+        ["authorId", "recipeId"],
+        unique=True,
+        partialFilterExpression={
+            "recipeId": {
+                "$type": "objectId"
+            },
+        },
+    ),
     IndexModel(["name"], unique=True),
 ])
 
@@ -594,7 +615,7 @@ db.command(
                     "bsonType": "string",
                     "minLength": 8,
                     "maxLength": 64,
-                    "pattern": "[A-Za-z0-9_.]+",
+                    "pattern": "[A-Za-z0-9_\\.]+",
                     "description": "must be a string",
                 },
                 "email": {
@@ -973,7 +994,7 @@ def get_user():
     while username in get_user.usernames:
         username = fake.user_name()
         while len(username) < 8:
-            username += ' ' + fake.user_name()
+            username += '_' + fake.user_name()
 
     get_user.usernames.add(username)
 
@@ -1041,6 +1062,7 @@ def get_rating():
         "recipeId": None,
         "rating": random.randint(1, 5),
         "description": fake.text()[:1_000],
+        "children": [],
     }
 
 
@@ -1210,7 +1232,7 @@ print("Done")
 
 print("Cooking up ratings...", end="")
 # generate ratings
-ratings = random_arr(get_rating, 1_000)
+ratings = random_arr(get_rating, 1_000, 500)
 user_recipe_rating_combinations = set()
 for rating in ratings:
     user = random_from(users)
@@ -1249,6 +1271,28 @@ for rating in ratings:
             "$push": {"ratings": rating["_id"]},
         },
     )
+
+replies = random_arr(get_rating, 1_000, 500)
+for reply in replies:
+    reply["rating"] = 0
+
+    reply["authorId"] = random_from(users)["_id"]
+
+    parent = random_from(ratings)
+    reply["parentId"] = parent["_id"]
+
+    reply["_id"] = rating_collection.insert_one(
+        reply
+    ).inserted_id
+
+    parent["children"].append(reply)
+
+    rating_collection.update_one(
+        {"_id": parent["_id"]},
+        {"$push": {"children": reply["_id"]}},
+    )
+
+
 print("Done")
 
 print("Cooking up reports...", end="")

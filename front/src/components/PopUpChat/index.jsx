@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Modal from 'react-modal'
 import './index.css'
-import botLogo from '/public/bot.png'
+import botLogo from '/bot.png'
 
 function PopUpChat() {
     const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -11,22 +11,26 @@ function PopUpChat() {
     }
 
     return (
-        <div className="popUpContainer">
+        <div className="pop-up-chat-container">
             <img
                 src={botLogo}
                 alt="Logo"
-                className="bot-logo"
+                className="pop-up-chat-bot-logo"
                 onClick={toggleModal}
             />
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={toggleModal}
-                contentLabel="Chat Modal"
-                className="custom-modal-content"
-                overlayClassName="custom-modal-overlay"
+                contentLabel="chat-modal"
+                className="pop-up-chat-modal-content"
+                overlayClassName="pop-up-chat-modal-overlay"
             >
-                <h2>Chat</h2>
-                <p>Chatul tău va fi aici...</p>
+                <div className="pop-up-chat-title">
+                    <h2>Chat</h2>
+                </div>
+                <div className="pop-up-chat-conversation">
+                    <p>Chatul tău va fi aici...</p>
+                </div>
             </Modal>
         </div>
     )

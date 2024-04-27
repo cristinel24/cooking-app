@@ -105,8 +105,23 @@ class UserCollection(MongoCollection):
         )["name"]
 
     def get_user_by_name(self, user_name: str) -> dict:
-        user = self._collection.find_one({"name": user_name})
-        return user
+        return self._collection.find_one({"name": user_name})
+
+    def get_user_profile_by_name(self, user_name: str) -> dict:
+        return self._collection.find_one(
+            {"name": user_name},
+            {
+                "_id": 0,
+                "username": 1,
+                "displayName": 1,
+                "icon": 1,
+                "description": 1,
+                "allergens": 1,
+                "tags": 1,
+                "ratingSum": 1,
+                "ratingCount": 1,
+             }
+        )
 
     def update_user_by_name(self, user_name: str, updated_fields: dict) -> None:
         for updated_field in updated_fields.items():
@@ -125,4 +140,40 @@ class UserCollection(MongoCollection):
         self._collection.update_one(
             {"name": user_name},
             {"$pull": {"savedRecipes": recipe_id}}
+        )
+
+    def update_search_by_name(self, user_name: str, search: str) -> None:
+        self._collection.update_one(
+            {"name": user_name},
+            {"$push": {"searchHistory": search}}
+        )
+
+    def delete_search_history_by_name(self, user_name: str) -> None:
+        self._collection.update_one(
+            {"name": user_name},
+            {"$set": {"searchHistory": []}}
+        )
+
+    def get_search_history_by_name(self, user_name: str) -> list:
+        return self._collection.find_one(
+            {"name": user_name},
+            {"_id": 0, "searchHistory": 1}
+        )["searchHistory"]
+
+    def update_message_by_name(self, user_name: str, message: str) -> None:
+        self._collection.update_one(
+            {"name": user_name},
+            {"$push": {"messageHistory": message}}
+        )
+
+    def get_message_history_by_name(self, user_name: str) -> list:
+        return self._collection.find_one(
+            {"name": user_name},
+            {"_id": 0, "messageHistory": 1}
+        )["messageHistory"]
+
+    def delete_message_history_by_name(self, user_name: str) -> None:
+        self._collection.update_one(
+            {"name": user_name},
+            {"$set": {"messageHistory": []}}
         )

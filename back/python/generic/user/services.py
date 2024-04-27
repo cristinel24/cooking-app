@@ -24,8 +24,14 @@ def to_lower_camel_case(snake_str: str) -> str:
     return snake_str[0].lower() + camel_string[1:]
 
 
-async def get_user(user_name: str) -> dict:
-    return user_collection.get_user_by_name(user_name)
+async def get_user_profile(user_name: str) -> dict:
+    user = user_collection.get_user_profile_by_name(user_name)
+    user_rating = round(user["ratingSum"] / user["ratingCount"], 2) if user["ratingCount"] != 0 else 0
+    del user["ratingSum"]
+    del user["ratingCount"]
+    user["rating"] = str(user_rating)
+
+    return parse_json(user)
 
 
 async def change_account_data(user_name: str, data: AccountChangeData) -> dict:
@@ -46,6 +52,13 @@ async def save_recipe(user_name: str, recipe_name: str) -> dict:
     return {"name": user_name, "recipe": recipe_name}
 
 
+async def unsave_recipe(user_name: str, recipe_name: str) -> dict:
+    recipe_id = recipe_collection.find_recipe_id_by_name(recipe_name)
+    user_collection.delete_saved_recipe_by_name(user_name, recipe_id)
+    # funny
+    return {"ok": 1}
+
+
 # for now retrieves all info about the recipe
 # it should retrieve only what a recipe card contains
 async def get_recipes(user_name: str) -> dict:
@@ -63,45 +76,59 @@ async def get_recipes(user_name: str) -> dict:
     return parse_json(response)
 
 
-async def unsave_recipe(user_name: str, recipe_name: str) -> dict:
-    recipe_id = recipe_collection.find_recipe_id_by_name(recipe_name)
-    user_collection.delete_saved_recipe_by_name(user_name, recipe_id)
-    # funny
+async def add_search(user_name: str, search: str) -> dict:
+    user_collection.update_search_by_name(user_name, search)
     return {"ok": 1}
 
 
-async def add_search(name: str, search: str) -> dict:
-    return {"search": search}
+async def clear_search_history(user_name: str) -> dict:
+    user_collection.delete_search_history_by_name(user_name)
+    return {"ok": 1}
 
 
-async def get_search_history(name: str) -> dict:
-    pass
+async def get_search_history(user_name: str) -> dict:
+    user = user_collection.get_user_by_name(user_name)
+    search_history = user_collection.get_search_history_by_name(user_name)
+    response = {
+        "name": user["name"],
+        "searchHistory": search_history
+    }
+    return parse_json(response)
 
 
-async def clear_search_history(name: str) -> dict:
-    pass
+async def add_message(user_name: str, message: str) -> dict:
+    user_collection.update_message_by_name(user_name, message)
+    return {"ok": 1}
 
 
-async def add_message(name: str, message: str) -> dict:
-    return {"message": message}
+async def clear_message_history(user_name: str) -> dict:
+    user_collection.delete_message_history_by_name(user_name)
+    return {"ok": 1}
 
 
-async def get_message_history(name: str) -> dict:
-    pass
+async def get_message_history(user_name: str) -> dict:
+    user = user_collection.get_user_by_name(user_name)
+    message_history = user_collection.get_message_history_by_name(user_name)
+    response = {
+        "name": user["name"],
+        "messageHistory": message_history
+    }
+    return parse_json(response)
 
 
-async def clear_message_history(name: str) -> dict:
-    pass
-
-
-# 865smf
-# 3zze3d
 async def add_follow(user_name: str, followee_name: str) -> dict:
     user_id = user_collection.get_user_id_by_name(user_name)
     followee_id = user_collection.get_user_id_by_name(followee_name)
     if follow_collection.get_follow(user_id, followee_id) is None:
         follow_collection.insert_follow(user_id, followee_id)
     return {"follower": user_name, "followed": followee_name}
+
+
+async def unfollow(user_name: str, follow_name: str) -> dict:
+    user_id = user_collection.get_user_id_by_name(user_name)
+    followee_id = user_collection.get_user_id_by_name(follow_name)
+    follow_collection.delete_follow(user_id, followee_id)
+    return {"follower": user_name, "followed": follow_name}
 
 
 async def get_following(user_name: str, start: int, count: int) -> dict:
@@ -114,13 +141,6 @@ async def get_following(user_name: str, start: int, count: int) -> dict:
         "following": following
     }
     return parse_json(response)
-
-
-async def unfollow(user_name: str, follow_name: str) -> dict:
-    user_id = user_collection.get_user_id_by_name(user_name)
-    followee_id = user_collection.get_user_id_by_name(follow_name)
-    follow_collection.delete_follow(user_id, followee_id)
-    return {"follower": user_name, "followed": follow_name}
 
 
 async def get_followers(user_name: str, start: int, count: int) -> dict:

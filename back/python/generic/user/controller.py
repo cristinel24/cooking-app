@@ -1,8 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
-from user.schemas import AccountChangeData
 from user import services
-from user.services import user_collection
+from user.schemas import AccountChangeData
 
 router = APIRouter(
     prefix="/api/users"
@@ -11,74 +10,74 @@ router = APIRouter(
 
 @router.get("/{name}", tags=["users"])
 async def get_user(name: str) -> dict:
-    return await services.get_user(name)
+    return await services.get_user_profile(name)
 
 
-@router.patch("/{name}", tags=["users"])
-async def change_account_data(name: str, data: AccountChangeData) -> dict:
-    return await services.change_account_data(name, data)
+@router.patch("/{user_name}", tags=["users"])
+async def change_account_data(user_name: str, data: AccountChangeData) -> dict:
+    return await services.change_account_data(user_name, data)
 
 
-@router.put("/{name}/saved-recipes", tags=["users"])
-async def save_recipe(name: str, recipe_name: str) -> dict:
-    return await services.save_recipe(name, recipe_name)
+@router.put("/{user_name}/saved-recipes", tags=["users"])
+async def save_recipe(user_name: str, recipe_name: str) -> dict:
+    return await services.save_recipe(user_name, recipe_name)
 
 
-@router.delete("/{name}/saved-recipes", tags=["users"])
-async def unsave_recipe(name: str, recipe_name: str) -> dict:
-    return await services.unsave_recipe(name, recipe_name)
+@router.delete("/{user_name}/saved-recipes", tags=["users"])
+async def unsave_recipe(user_name: str, recipe_name: str) -> dict:
+    return await services.unsave_recipe(user_name, recipe_name)
 
 
-@router.get("/{name}/saved-recipes", tags=["users"])
-async def get_recipes(name: str) -> dict:
-    return await services.get_recipes(name)
+@router.get("/{user_name}/saved-recipes", tags=["users"])
+async def get_recipes(user_name: str) -> dict:
+    return await services.get_recipes(user_name)
 
 
-@router.put("/{name}/search-history", tags=["users"])
-async def add_search(name: str, search: str) -> dict:
-    return {"search": search}
+@router.put("/{user_name}/search-history", tags=["users"])
+async def add_search(user_name: str, search: str) -> dict:
+    return await services.add_search(user_name, search)
 
 
-@router.get("/{name}/search-history", tags=["users"])
-async def get_search_history(name: str) -> dict:
-    pass
+@router.delete("/{user_name}/search-history", tags=["users"])
+async def clear_search_history(user_name: str) -> dict:
+    return await services.clear_search_history(user_name)
 
 
-@router.delete("/{name}/search-history", tags=["users"])
-async def clear_search_history(name: str) -> dict:
-    pass
+@router.get("/{user_name}/search-history", tags=["users"])
+async def get_search_history(user_name: str) -> dict:
+    return await services.get_search_history(user_name)
 
 
-@router.patch("/{name}/message-history", tags=["users"])
-async def add_message(name: str, message: str) -> dict:
-    return {"message": message}
+@router.patch("/{user_name}/message-history", tags=["users"])
+async def add_message(user_name: str, message: str) -> dict:
+    return await services.add_message(user_name, message)
 
 
-@router.get("/{name}/message-history", tags=["users"])
-async def get_message_history(name: str) -> dict:
-    pass
+@router.delete("/{user_name}/message-history", tags=["users"])
+async def clear_message_history(user_name: str) -> dict:
+    return await services.clear_message_history(user_name)
 
 
-@router.delete("/{name}/message-history", tags=["users"])
-async def clear_message_history(name: str) -> dict:
-    pass
+@router.get("/{user_name}/message-history", tags=["users"])
+async def get_message_history(user_name: str) -> dict:
+    return await services.get_message_history(user_name)
 
 
-@router.post("/{name}/following", tags=["users"])
-async def add_follow(name: str, follow_name: str) -> dict:
-    return await services.add_follow(name, follow_name)
+@router.post("/{user_name}/following", tags=["users"])
+async def add_follow(user_name: str, follow_name: str) -> dict:
+    return await services.add_follow(user_name, follow_name)
 
 
-@router.delete("/{name}/following", tags=["users"])
-async def unfollow(name: str, follow_name: str) -> dict:
-    return await services.unfollow(name, follow_name)
+@router.delete("/{user_name}/following", tags=["users"])
+async def unfollow(user_name: str, follow_name: str) -> dict:
+    return await services.unfollow(user_name, follow_name)
 
 
-@router.get("/{name}/following", tags=["users"])
-async def get_following(name: str, start: int, count: int) -> dict:
-    return await services.get_following(name, start, count)
+@router.get("/{user_name}/following", tags=["users"])
+async def get_following(user_name: str, start: int, count: int) -> dict:
+    return await services.get_following(user_name, start, count)
 
 
-@router.get("/{name}/followers", tags=["users"])
-async def get_followers(name: str, start: int, count: int) -> dict:
-    return await services.get_followers(name, start, count)
+@router.get("/{user_name}/followers", tags=["users"])
+async def get_followers(user_name: str, start: int, count: int) -> dict:
+    return await services.get_followers(user_name, start, count)

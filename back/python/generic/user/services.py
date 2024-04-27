@@ -31,7 +31,6 @@ async def get_user_profile(user_name: str) -> dict:
     del user["ratingSum"]
     del user["ratingCount"]
     user["rating"] = str(user_rating)
-
     return parse_json(user)
 
 

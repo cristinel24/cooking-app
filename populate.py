@@ -2,6 +2,7 @@ import datetime
 import random
 from pprint import pprint
 
+import bson
 import pymongo
 from faker import Faker
 from faker_food import FoodProvider
@@ -14,6 +15,7 @@ print("Done")
 
 print("Dropping previous collections...", end="")
 db.drop_collection("allergen")
+db.drop_collection("counters")
 db.drop_collection("expiring_token")
 db.drop_collection("external_provider")
 db.drop_collection("follow")
@@ -59,6 +61,36 @@ db.command(
 allergen_collection = db["allergen"]
 allergen_collection.create_indexes([
     IndexModel(["allergen"], unique=True),
+])
+
+db.create_collection("counters")
+db.command(
+    "collMod",
+    "counters",
+    validator={
+        "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["_id", "type", "value"],
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId",
+                },
+                "_class": {},
+                "type": {
+                    "bsonType": "string",
+                    "description": "must be a string representing the name of the counter and is required",
+                },
+                "value": {
+                    "bsonType": "long",
+                    "description": "must be a long and is required"
+                },
+            },
+        },
+    },
+)
+counters_collection = db["counters"]
+counters_collection.create_indexes([
+    IndexModel(["type"], unique=True)
 ])
 
 db.create_collection("expiring_token")
@@ -246,7 +278,7 @@ db.command(
                     "description": "must be an integer between 1 and 5 and is required",
                 },
                 "description": {
-                    "bsonType": "string",
+                    "bsonType": ["string", "null"],
                     "maxLength": 10_000,
                     "description": "must be a string of maximum 10_000 characters and is required",
                 },
@@ -279,10 +311,8 @@ db.command(
                 "prepTime",
                 "steps",
                 "ingredients",
-                "allergens",
-                "tags",
-                "tokens",
-                "ratings",
+                "ratingSum",
+                "ratingCount",
             ],
             "properties": {
                 "_id": {
@@ -418,7 +448,7 @@ db.command(
     validator={
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["_id", "name", "authorId", "reportedId", "content", "type", "solved"],
+            "required": ["_id", "name", "authorId", "reportedId", "content", "type"],
             "properties": {
                 "_id": {
                     "bsonType": "objectId",
@@ -440,7 +470,6 @@ db.command(
                 },
                 "content": {
                     "bsonType": "string",
-                    "minLength": 10,
                     "maxLength": 10_000,
                     "description": "must be a string of minimum 10 and maximum 10_000 characters and is required",
                 },
@@ -449,9 +478,9 @@ db.command(
                     "enum": ["user", "rating", "recipe"],
                     "description": "must be one of: user, rating or recipe",
                 },
-                "solved": {
-                    "bsonType": "bool",
-                    "description": "must be a boolean value",
+                "solver": {
+                    "bsonType": "objectId",
+                    "description": "must be the objectId of the solver",
                 },
             },
             "additionalProperties": False,
@@ -543,7 +572,6 @@ db.command(
                 "email",
                 "displayName",
                 "roles",
-                "description",
                 "savedRecipes",
                 "sessions",
             ],
@@ -617,7 +645,7 @@ db.command(
                     "properties": {
                         "emailStatus": {
                             "bsonType": "string",
-                            "enum": ["Pending", "Confirmed", "Transitioning", "Banned"],
+                            "enum": ["Pending", "Confirmed", "Transitioning"],
                         },
                         "hashAlgName": {
                             "bsonType": "string",
@@ -774,8 +802,7 @@ params = {
     "login_data": {
         "external_chance": 0.4,
         "pending_max_chance": 0.05,
-        "confirmed_max_chance": 0.85,
-        "transitioning_max_chance": 0.90,
+        "transitioning_max_chance": 0.10,
         "reset_state_chance": 0.3,
     },
     "report_solved_chance": 0.8,
@@ -806,11 +833,11 @@ def base36encode(number: int):
     return base36 or alphabet[0]
 
 
-@static_vars(generated=set())
-def random_base36():
-    num = random.randint(1, 1_000_000_000)
-    while num in random_base36.generated:
-        num = random.randint(1, 1_000_000_000)
+def generate_name():
+    num = counters_collection.find_one_and_update(
+        {"type": "nameIncrementor"},
+        {"$inc": {"value": 1}}
+    )["value"]
 
     return base36encode(num)
 
@@ -827,24 +854,30 @@ def random_unique_arr(generator, range_max=params["arr"]["max"], range_min=param
     return list(set([generator() for _ in range(random.randint(range_min, range_max))]))
 
 
-def get_role():
-    available_roles = {
-        "user": 0b1,
-        "verified": 0b10,
-        "admin": 0b100,
-        "premium": 0b1000,
-    }
+available_roles = {
+    "verified": 0b1,
+    "admin": 0b10,
+    "premium": 0b100,
+    "banned": 0b1000
+}
 
+
+def get_role():
     role = 0
 
     # is premium with 20% probability
     if random.random() < params["role_premium_chance"]:
         role |= available_roles["premium"]
 
-    role |= 1 << random.randint(0, 2)
+    if random.random() < 0.10:
+        role |= available_roles["admin"]
 
     if role & available_roles["admin"]:
         role |= available_roles["premium"]
+
+    if random.random() < 0.05:
+        role |= available_roles["banned"]
+        role &= ~available_roles["admin"]
 
     return role
 
@@ -895,19 +928,17 @@ def get_login_data():
             "providerData": random_from(providers)["name"],
         }
     else:
-        email_status = ["Pending", "Confirmed", "Transitioning", "Banned"]
-        hash_algos = ["sha256", "sha1", "sha2", "md5", "argon2", "bcrypt"]
+        email_status = ["Pending", "Confirmed", "Transitioning"]
+        hash_algos = ["argon2", "bcrypt"]
 
         status_chance = random.random()
 
         if status_chance < params["login_data"]["pending_max_chance"]:
             user_email_status = email_status[0]
-        elif status_chance < params["login_data"]["confirmed_max_chance"]:
-            user_email_status = email_status[1]
         elif status_chance < params["login_data"]["transitioning_max_chance"]:
             user_email_status = email_status[2]
         else:
-            user_email_status = email_status[3]
+            user_email_status = email_status[1]
 
         login_data = {
             "emailStatus": user_email_status,
@@ -954,7 +985,7 @@ def get_user():
 
     return {
         "updatedAt": fake.date_time(),
-        "name": random_base36(),
+        "name": generate_name(),
         "username": username,
         "email": email,
         "icon": fake.url(),
@@ -986,7 +1017,7 @@ def get_recipe():
 
     return {
         "updatedAt": fake.date_time(),
-        "name": random_base36(),
+        "name": generate_name(),
         "authorId": None,
         "title": title,
         "ratingSum": 0,
@@ -1005,7 +1036,7 @@ def get_recipe():
 def get_rating():
     return {
         "updatedAt": fake.date_time(),
-        "name": random_base36(),
+        "name": generate_name(),
         "authorId": None,
         "recipeId": None,
         "rating": random.randint(1, 5),
@@ -1018,18 +1049,28 @@ def get_report():
 
     return {
         "authorId": None,
-        "name": random_base36(),
+        "name": generate_name(),
         "reportedId": None,
         "content": fake.text(),
         "type": random_from(report_type),
-        "solved": random.random() < params["report_solved_chance"],
     }
 
+
+counter = {
+    "type": "nameIncrementor",
+    "value": bson.Int64(1),
+}
+counter["_id"] = counters_collection.insert_one(
+    counter
+).inserted_id
 
 print("Cooking up users...", end="")
 # generate users
 try:
-    user_collection.insert_many(random_arr(get_user), False)
+    users = random_arr(get_user)
+    users[0]["roles"] &= ~available_roles["banned"]
+    users[0]["roles"] |= available_roles["admin"]
+    user_collection.insert_many(users, False)
 except errors.BulkWriteError as e:
     pprint(e.details)
     exit(0)
@@ -1213,6 +1254,7 @@ print("Done")
 print("Cooking up reports...", end="")
 # generate reports
 reports = random_arr(get_report)
+admins = [user for user in users if user["roles"] & available_roles["admin"]]
 
 for report in reports:
     user = random_from(users)
@@ -1231,6 +1273,9 @@ for report in reports:
         reported_id = random_from(ratings)["_id"]
     else:  # recipe
         reported_id = random_from(recipes)["_id"]
+
+    if random.random() < params["report_solved_chance"]:
+        report["solver"] = random_from(admins)["_id"]
 
     report["reportedId"] = reported_id
 

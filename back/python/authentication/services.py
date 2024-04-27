@@ -100,12 +100,14 @@ def login(data: schemas.LoginData):
     # insert session token
     session_token_value = generate_token()
     inserted_token_id = expiring_token_db.insert_token(session_token_value, user["_id"], "session")
+
     user["sessions"].append({
         "value": session_token_value,
         "type": ExpiringTokenType.SESSION.value,
         "_id": ObjectId(inserted_token_id)
     })
     user_db.update_user(user)
+
     return {"token": session_token_value}
 
 
@@ -123,3 +125,19 @@ def change_email_step_2(user_name):
 
 def change_password(user_name, password):
     pass
+
+
+def is_authenticated(session_token) -> bool:
+    # TODO: exception handling
+    token = expiring_token_db.get_expiring_token_by_value(session_token)
+    if token is None:
+        return False
+
+    if token["type"] != ExpiringTokenType.SESSION.value:
+        return False
+
+    user = user_db.get_user_by_id(token["userId"])
+    if user is None:
+        return False
+
+    return True

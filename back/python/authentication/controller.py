@@ -37,4 +37,4 @@ async def confirm_change(data: schemas.ConfirmAccountChangeData):
 
 @router.get("/is_authenticated/{token}")
 async def is_authenticated(token):
-    return {}
+    return services.is_authenticated(token)

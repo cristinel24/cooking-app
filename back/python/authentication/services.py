@@ -54,7 +54,7 @@ def register(data: schemas.RegisterData):
         id_user = user_db.insert_user(user)
     # TODO: error handling
     except Exception as e:
-        return {"error:" "invalid user data"}
+        return {"error": "invalid user data"}
 
     expiring_token_db.insert_token(token, ObjectId(id_user), "emailConfirm")
     return {"message": "user registered successfully"}
@@ -100,7 +100,6 @@ def login(data: schemas.LoginData):
     # insert session token
     session_token_value = generate_token()
     inserted_token_id = expiring_token_db.insert_token(session_token_value, user["_id"], "session")
-    print(str(ExpiringTokenType.SESSION.value))
     user["sessions"].append({
         "value": session_token_value,
         "type": ExpiringTokenType.SESSION.value,

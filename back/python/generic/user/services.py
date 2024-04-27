@@ -61,8 +61,11 @@ async def get_recipes(user_name: str) -> dict:
     return parse_json(response)
 
 
-async def unsave_recipe(name: str, recipe_name: str) -> dict:
-    return user_collection.unsave_recipe(name, recipe_name)
+async def unsave_recipe(user_name: str, recipe_name: str) -> dict:
+    recipe_id = recipe_collection.find_recipe_id_by_name(recipe_name)
+    user_collection.delete_saved_recipe_by_name(user_name, recipe_id)
+    # funny
+    return {"ok": 1}
 
 
 async def add_search(name: str, search: str) -> dict:
@@ -89,17 +92,42 @@ async def clear_message_history(name: str) -> dict:
     pass
 
 
-async def add_follow(name: str, follow_name: str) -> dict:
-    return user_collection.add_follow(name, follow_name)
+# 865smf
+# 3zze3d
+async def add_follow(user_name: str, followee_name: str) -> dict:
+    user_id = user_collection.get_user_id_by_name(user_name)
+    followee_id = user_collection.get_user_id_by_name(followee_name)
+    if follow_collection.get_follow(user_id, followee_id) is None:
+        follow_collection.insert_follow(user_id, followee_id)
+    return {"follower": user_name, "followed": followee_name}
 
 
-async def get_following(name: str, start: int, count: int) -> dict:
-    return user_collection.get_following(name, start, count)
+async def get_following(user_name: str, start: int, count: int) -> dict:
+    user_id = user_collection.get_user_id_by_name(user_name)
+    following_ids = follow_collection.get_following_by_user_id(user_id, start, count)
+    following = list()
+    for following_id in following_ids:
+        following.append(user_collection.get_user_name_by_id(following_id))
+    response = {
+        "following": following
+    }
+    return parse_json(response)
 
 
-async def unfollow(name: str, follow_name: str) -> dict:
-    return user_collection.delete_follow(name, follow_name)
+async def unfollow(user_name: str, follow_name: str) -> dict:
+    user_id = user_collection.get_user_id_by_name(user_name)
+    followee_id = user_collection.get_user_id_by_name(follow_name)
+    follow_collection.delete_follow(user_id, followee_id)
+    return {"follower": user_name, "followed": follow_name}
 
 
-async def get_followers(name: str, start: int, count: int) -> dict:
-    return user_collection.get_followers(name, start, count)
+async def get_followers(user_name: str, start: int, count: int) -> dict:
+    user_id = user_collection.get_user_id_by_name(user_name)
+    follower_ids = follow_collection.get_followers_by_user_id(user_id, start, count)
+    followers = list()
+    for follower_id in follower_ids:
+        followers.append(user_collection.get_user_name_by_id(follower_id))
+    response = {
+        "followers": followers
+    }
+    return parse_json(response)

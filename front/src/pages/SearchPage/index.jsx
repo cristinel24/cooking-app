@@ -6,6 +6,7 @@ import { MdFoodBank } from 'react-icons/md'
 import { FaRegUser } from 'react-icons/fa'
 import ActionButton from '../../components/ActionButton'
 import SearchFilter from '../../components/SearchFilter'
+import User from '../../components/User'
 
 const SearchPage = () => {
     const data = {
@@ -41,19 +42,25 @@ const SearchPage = () => {
                     />
                 </div>
                 <div className="search-page-results">
-                    <div className="search-page-result-buttons">
+                    <div className="search-page-results-buttons">
                         <ActionButton
                             onClick={handleClickRecipes}
                             text="Retete"
                             Icon={MdFoodBank}
                         />
-                    </div>
-                    <div className="search-page-result-buttons">
                         <ActionButton
                             onClick={handleClickUsers}
-                            text="Utiliztori"
+                            text="Utilizatori"
                             Icon={FaRegUser}
                         />
+                    </div>
+                    <div className="search-page-results-content">
+                        <User
+                            name="Name"
+                            posts="/"
+                            image="https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            description="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea"
+                        ></User>
                     </div>
                 </div>
             </div>

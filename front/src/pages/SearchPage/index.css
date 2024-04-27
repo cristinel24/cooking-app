@@ -24,11 +24,18 @@
 
 .search-page-results {
     display: flex;
-    justify-content: space-evenly;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    gap: 1.5rem;
+    margin-left: 12rem;
     flex: 1;
 }
 
-.search-page-result-buttons {
+.search-page-results-buttons {
     margin-top: 20px;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
 }

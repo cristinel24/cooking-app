@@ -1,6 +1,5 @@
 .user-profile {
-    width: 400px;
-    height: fit-content;
+    width: fit-content;
     margin: 20px;
     border-radius: 4px;
     padding-bottom: 50px;
@@ -17,27 +16,74 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: -100px;
+    justify-content: center;
 }
 
-.user-profile-button {
+.user-profile-follow-button .action-button {
+    padding: 10px 20px;
+}
+
+.user-profile-follow-button .action-button-icon {
+    display: none;
+}
+
+.user-profile-follow-button .action-button {
+    cursor: pointer;
+}
+.user-profile-follow-button .action-button-text {
+    margin: 0;
+}
+
+.user-profile-first-line {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 10px;
 }
 
-.user-profile-button .user-profile-button-arrow {
-    font-size: 1rem;
+.user-profile-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: var(--txtcolor);
+    font-size: 1.5rem;
 }
 
-.user-profile-down .link {
-    font-size: 1.5rem;
-    color: var(--txtcolor);
-    padding: 10px 20px;
-    border-radius: 5px;
+.user-profile-buttons {
+    justify-content: center;
+    /* width: 100%; */
+    margin-top: 30px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.user-profile-buttons .action-button {
+    /* justify-content: center; */
+    font-size: 1.4rem;
+    width: 100%;
+    background-color: transparent;
     border: none;
     cursor: pointer;
+}
+
+.user-profile-buttons .action-button-text {
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.user-profile-buttons .action-button:hover {
+    background-color: var(--transparentbutton);
+    .action-button-text {
+        color: var(--text);
+        font-weight: 700;
+    }
+    .action-button-icon {
+        color: var(--text);
+    }
 }
 
 .user-profile-down img {
@@ -45,10 +91,6 @@
     max-width: fit-content;
     border-radius: 200px;
     padding: 5px;
-}
-
-.user-profile-name {
-    color: var(--profname);
 }
 
 .user-profile-description {
@@ -67,36 +109,27 @@
 .user-profile-description a:hover {
     color: var(--bkgcolor);
 }
-.user-profile-description dot {
-    margin-top: 6px;
-    margin-bottom: 40px;
-    margin-left: 10px;
-    margin-right: 10px;
-    font-size: 0.75rem;
+
+.user-profile-report .action-button {
+    padding: 0;
+    border: none;
+    background-color: transparent;
 }
 
-.user-profile-report a {
-    font-size: 0.875rem;
-    position: relative;
+.user-profile-report .action-button-text {
+    font-size: 1rem;
+    /* position: relative; */
+    text-decoration: underline;
     color: var(--txtcolor);
 }
-
-.user-profile-report a::after {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    left: -3px;
-    width: 110%;
-    height: 2px;
-    border-radius: 5px;
-    background: var(--txtcolor);
+.user-profile-report .action-button-text:hover {
+    color: var(--bkgcolor);
 }
 
-.user-profile-report a:hover::after {
-    background: var(--bkgcolor);
+.user-profile-report .action-button-icon {
+    color: var(--txtcolor);
 }
-
-.user-profile-report a:hover {
+.user-profile-report .action-button-icon:hover {
     color: var(--bkgcolor);
 }
 
@@ -118,7 +151,7 @@
         border-radius: 200px;
     }
 
-    .user-profile-button {
+    .user-profile-buttons {
         font-size: 0.625rem;
         display: flex;
         flex-direction: column;
@@ -126,21 +159,9 @@
         gap: 6px;
     }
 
-    .user-profile-button .user-profile-button-arrow {
-        font-size: 0.75rem;
-    }
-
-    .user-profile-down button {
-        font-size: 1.25rem;
-        padding: 10px 20px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-    }
-
     .user-profile-name {
-        font-size: 0.875rem;
-        color: var(--profname);
+        font-size: 1rem;
+        color: var(--txtcolor);
     }
 
     .user-profile-line {
@@ -148,24 +169,16 @@
     }
 
     .user-profile-description {
-        font-size: 1rem;
+        font-size: 0.8rem;
         padding: 10px 0px;
     }
 
-    .user-profile-description dot {
-        margin-top: 6px;
-        margin-bottom: 60px;
-        margin-left: 10px;
-        margin-right: 10px;
-        font-size: 0.625rem;
+    .user-profile-report .action-button-icon {
+        height: 90%;
+        width: 90%;
     }
-
-    .user-profile-report a {
-        font-size: 0.625rem;
-    }
-
-    .user-profile-report a::after {
-        width: 115%;
+    .user-profile-buttons .action-button-text {
+        font-size: 0.8rem;
     }
 }
 
@@ -192,14 +205,14 @@
         margin-top: 0px;
     }
 
-    .user-profile-button {
+    .user-profile-buttons {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 5px;
     }
 
-    .user-profile-button .user-profile-button-arrow {
+    .user-profile-buttons .user-profile-buttons-arrow {
         font-size: 0.625rem;
     }
 
@@ -214,10 +227,14 @@
     }
 
     .user-profile-name {
-        color: var(--profname);
+        color: var(--txtcolor);
         align-self: center;
-        margin-top: -5px;
         font-size: 1rem;
+    }
+
+    .user-profile-report .action-button-icon {
+        height: 70%;
+        width: 70%;
     }
 
     .user-profile-line {
@@ -225,30 +242,19 @@
     }
 
     .user-profile-description {
-        font-size: 1rem;
+        font-size: 0.7rem;
         display: flex;
         align-items: flex-start;
         justify-content: center;
         padding: 10px 0px;
     }
 
-    .user-profile-description dot {
-        margin-top: 6px;
-        margin-bottom: 60px;
-        margin-left: 10px;
-        margin-right: 10px;
-        font-size: 0.625rem;
-    }
-
     .user-profile-report {
         align-self: center;
-        justify-self: flex-end;
-    }
-    .user-profile-report a {
-        font-size: 0.625rem;
+        justify-self: center;
     }
 
-    .user-profile-report a::after {
-        width: 115%;
+    .user-profile-buttons .action-button-text {
+        font-size: 0.8rem;
     }
 }

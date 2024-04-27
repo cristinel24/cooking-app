@@ -54,8 +54,7 @@ class RecipeCollection(MongoCollection):
                 return {"ok": 1, "error": f"Recipe '{recipe_name}' is nonexistent"}
 
             user = user_collection.UserCollection()
-            print(item)
-            print(str(item["authorId"]))
+
             recipe_data = {
                 "ok": 0,
                 # TODO: get_user() instead of get_user_by_id()
@@ -66,7 +65,6 @@ class RecipeCollection(MongoCollection):
                 "allergens": item["allergens"],
                 "tags": item["tags"],
             }
-            print(recipe_data)
             # TODO: exception handling
         except Exception as e:
             # TODO: err code

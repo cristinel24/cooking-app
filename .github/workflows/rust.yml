@@ -14,7 +14,7 @@ on:
 jobs:
   build:
 
-    runs-on: rust:1.76.0-slim-buster
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -27,4 +27,4 @@ jobs:
     - name: Clippy
       run: |
         cd back/rust/search
-        cargo clippy
+        cargo clippy -- -D warnings

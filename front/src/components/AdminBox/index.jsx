@@ -34,15 +34,10 @@ function Admin({
                 </div>
                 <div className="admin-footer-right">
                     <div className="customButtons">
-                        <PageButton
-                            children={
-                                <>
-                                    <span>{view}</span>{' '}
-                                    <img src="./view.png" alt="View ph" />
-                                </>
-                            }
-                            path={pathPage}
-                        />
+                        <PageButton path={pathPage}>
+                            <span>{view}</span>{' '}
+                            <img src="./view.png" alt="View ph" />
+                        </PageButton>
                     </div>
                     <div className="customButtons">
                         <div>

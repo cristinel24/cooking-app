@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import PageButton from '../PageButton'
+import ActionButton from '../ActionButton'
 import './index.css'
+import { LuSend } from "react-icons/lu";
+import { MdOutlineCancel } from "react-icons/md";
 function ReportRecipe() {
     const pathPage = 'https://www.google.ro/'
     localStorage.setItem('theme', 'light')
@@ -24,6 +26,8 @@ function ReportRecipe() {
             )
         )
     }
+
+    const fuctionForButton = ()=>{}
     return (
         <div>
             <div className="report-recipe-wrapper">
@@ -31,7 +35,7 @@ function ReportRecipe() {
                     <p>Raporteaza</p>
                 </div>
                 <div className="report-recipe-content">
-                    <form divclassName="report-recipe-form">
+                    <form className="report-recipe-form">
                         {formVariants.map((variant) => (
                             <div className="report-recipe-inputs" key={variant.id}>
                                 <input
@@ -51,17 +55,17 @@ function ReportRecipe() {
                 </div>
                 <div className="report-recipe-buttons">
                     <div className="report-recipe-send-button">
-                        <PageButton
-                            children="Trimite"
-                            path={pathPage}
-                            className="report-button1"
+                        <ActionButton
+                            text="Trimite"
+                            Icon={LuSend}
+                            onClick={fuctionForButton}
                         />
                     </div>
                     <div className="report-recipe-give-up-button">
-                        <PageButton
-                            children="Renunta"
-                            path={pathPage}
-                            className="report-button2"
+                        <ActionButton
+                            text="Renunta"
+                            Icon={MdOutlineCancel}
+                            onClick={fuctionForButton}
                         />
                     </div>
                 </div>

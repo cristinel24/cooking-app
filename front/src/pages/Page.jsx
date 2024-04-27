@@ -132,7 +132,9 @@ function Page() {
 
             {/* <PopUpChat /> */}
 
-            <PageButton children="Buna" path={pathPage} className="da" />
+            <PageButton path={pathPage} className="da">
+                Buna
+            </PageButton>
 
             <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} />
         </>

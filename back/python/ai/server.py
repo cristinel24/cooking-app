@@ -23,6 +23,11 @@ async def tokenize_recipe(recipe: schemas.TokenizeRecipeSchema):
     return await processor.process_recipe(recipe)
 
 
+@router.post("/tokenize/replace_ingredient", tags=["tokenize"])
+async def replace_ingredient(ingredient_schema: schemas.ReplaceIngredientSchema):
+    return await processor.replace_ingredient(ingredient_schema)
+
+
 @router.get("/tokenize/user_query/{query}", tags=["tokenize"])
 async def tokenize_user_query(query):
     return await processor.process_query(query)

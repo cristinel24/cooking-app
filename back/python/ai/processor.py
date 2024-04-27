@@ -11,6 +11,10 @@ db_wrapper = DBWrapper()
 client = openai_client()
 
 
+async def replace_ingredient(ingredient_schema):
+    ingredient_dict = dict(ingredient_schema)
+
+
 async def process_recipe(recipe):
     recipe_dict = dict(recipe)
 

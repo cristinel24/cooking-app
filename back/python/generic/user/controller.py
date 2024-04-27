@@ -13,12 +13,12 @@ async def get_user_profile(user_name: str) -> dict:
     return await services.get_user_profile(user_name)
 
 
-@router.post("/{user_name}", tags=["users"])
+@router.patch("/{user_name}", tags=["users"])
 async def change_account_data(user_name: str, data: AccountChangeData) -> dict:
     return await services.change_account_data(user_name, data)
 
 
-@router.patch("/{user_name}/saved-recipes", tags=["users"])
+@router.post("/{user_name}/saved-recipes", tags=["users"])
 async def save_recipe(user_name: str, recipe_name: str) -> dict:
     return await services.save_recipe(user_name, recipe_name)
 
@@ -33,7 +33,7 @@ async def get_recipes(user_name: str) -> dict:
     return await services.get_recipes(user_name)
 
 
-@router.patch("/{user_name}/search-history", tags=["users"])
+@router.post("/{user_name}/search-history", tags=["users"])
 async def add_search(user_name: str, search: str) -> dict:
     return await services.add_search(user_name, search)
 
@@ -48,7 +48,7 @@ async def get_search_history(user_name: str) -> dict:
     return await services.get_search_history(user_name)
 
 
-@router.patch("/{user_name}/message-history", tags=["users"])
+@router.post("/{user_name}/message-history", tags=["users"])
 async def add_message(user_name: str, message: str) -> dict:
     return await services.add_message(user_name, message)
 

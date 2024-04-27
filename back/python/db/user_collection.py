@@ -1,6 +1,7 @@
 import pymongo.errors
 from pymongo import MongoClient
 
+
 from db.mongo_collection import MongoCollection
 from bson import ObjectId
 
@@ -36,7 +37,7 @@ class UserCollection(MongoCollection):
             raise Exception(f"Failed to insert user! - {str(e)}")
         return item
 
-#
-# if __name__ == "__main__":
-#     coll = UserCollection()
-#     print(coll.get_user_by_id("662a7f9fb88c6d15242bfa74"))
+
+if __name__ == "__main__":
+   coll = UserCollection()
+   print(coll.get_user_by_id("662b72721e41bc3685bb71d1"))

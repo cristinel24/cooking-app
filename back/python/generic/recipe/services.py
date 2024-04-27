@@ -1,16 +1,17 @@
-from pydantic import json
+from datetime import datetime
+
+from bson import ObjectId
 
 from recipe import schemas
 from db import recipe_collection
-from db import user_collection
+from db import rating_collection
+
+rating_coll = rating_collection.RatingCollection()
+recipe_coll = recipe_collection.RecipeCollection()
 
 
 def get_recipe(recipe_name: str) -> dict:
-    recipe_data = recipe_collection.get_recipe_by_name(recipe_name)
-    if recipe_data:
-        return json.loads(recipe_data)
-    else:
-        return {}
+    pass
 
 
 def add_tokens(recipe_name: str):
@@ -18,8 +19,7 @@ def add_tokens(recipe_name: str):
 
 
 def create_recipe(data: schemas.RecipeData) -> dict:
-    inserted_id = recipe_collection.insert_recipe(data.dict())
-    return {"id": str(inserted_id)}
+    pass
 
 
 def update_recipe(data: schemas.RecipeData):
@@ -30,33 +30,73 @@ def delete_recipe(name: str):
     pass
 
 
-def get_recipe_ratings(data: schemas.GetRatingsData):
-    pass
+def get_recipe_ratings(data: schemas.GetRatingsData, limit: int) -> list[str]:
+    try:
+        recipe_id = recipe_coll.get_recipe_by_name(data.parent_name)["_id"]
+        if not recipe_id:
+            raise Exception("Recipe not found")
+
+        ratings = rating_coll.get_ratings_by_recipe_id(recipe_id, limit=limit)
+
+        rating_ids = [str(rating["_id"]) for rating in ratings]
+
+        return rating_ids
+    except Exception as e:
+        raise Exception(f"Failed to get recipe ratings: {str(e)}")
 
 
-def get_rating_replies(data: schemas.GetRatingsData):
-    pass
+def get_rating_replies(data: schemas.GetRatingsData, limit: int) -> list[str]:
+    try:
+        comments = rating_coll.get_comments_by_rating_id(data.parent_name, limit=limit)
+        return comments
+    except Exception as e:
+        raise Exception(f"Failed to get rating replies: {str(e)}")
 
 
 def add_rating(data: schemas.RatingData) -> dict:
-    inserted_id = recipe_collection.insert_rating(data.dict())
+    recipe_id = recipe_coll.get_recipe_by_name(data.recipe_name)["_id"]
+    rating_data = {
+        "name": "111111",  # needs middleware to generate unique name
+        "updatedAt": datetime.utcnow(),
+        "authorId": ObjectId("662b8abbabbd5f853c665299"),
+        # need middleware to get the user id
+        "recipeId": ObjectId(recipe_id),
+        "rating": data.rating,
+        "description": data.description,
+    }
+    inserted_id = rating_coll.insert_rating(rating_data)
     return {"id": str(inserted_id)}
 
 
-def edit_rating(data: schemas.EditRatingData):
-    existing_rating = recipe_collection.get_rating_by_name(data.rating_name)
+def edit_rating(data: schemas.EditRatingData, parent_name: str):
+    existing_rating = rating_coll.get_rating_by_name(data.rating_name)
     if existing_rating:
-        updated_count = recipe_collection.update_rating(existing_rating["_id"], data.dict())
-        return {"updated_count": updated_count}
-    else:
-        return {"error": "Rating not found with the provided name"}
+        recipe = recipe_coll.get_recipe_by_name(parent_name)
+        if recipe and recipe["_id"] == existing_rating.get("recipeId"):
+            rating_data = {
+                "name": data.rating_name,
+                "rating": data.rating,
+                "description": data.description,
+            }
+            updated_id = rating_coll.update_rating(existing_rating["_id"], rating_data)
+            return {"updated_id": str(updated_id)}
+        else:
+            if existing_rating:
+                rating_data = {
+                    "name": data.rating_name,
+                    "description": data.description,
+                }
+                updated_id = rating_coll.update_rating(existing_rating["_id"], rating_data)
+                return {"updated_id": str(updated_id)}
+            else:
+                return {"error": "Rating not found with the provided name/or not authorized to edit this rating"}
 
 
 def delete_rating(rating_name: str):
-    existing_rating = recipe_collection.get_rating_by_name(rating_name)
+    existing_rating = rating_coll.get_rating_by_name(rating_name)
 
     if existing_rating:
-        deleted_count = recipe_collection.delete_rating(existing_rating["_id"])
-        return {"deleted_count": deleted_count}
+        deleted_name = rating_coll.delete_rating(existing_rating["_id"])
+        return {"deleted_name": str(deleted_name)}
     else:
         return {"error": "Rating not found with the provided name"}

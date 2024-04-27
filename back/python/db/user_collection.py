@@ -38,27 +38,27 @@ class UserCollection(MongoCollection):
             raise Exception(f"Failed to get user by id! - {str(e)}")
         return item
 
-    def insert_user(self, user_data) -> int:
+    def insert_user(self, user_data) -> str:
         """
         insert a user into the db and returns the id of the newly inserted user
         :param user_data
-        :return: id of the newly inserted user, as int (must be manually cast to ObjectId)
+        :return: id of the newly inserted user, as str (must be manually cast to ObjectId)
         """
         try:
             item = self._collection.insert_one(user_data)
-            return item.inserted_id
+            return str(item.inserted_id)
         except Exception as e:
             raise Exception(f"Failed to insert user! - {str(e)}")
 
-    def update_user(self, user_data) -> int:
+    def update_user(self, user_data) -> str:
         """
         update a user and return the id of the user
         :param user_data
-        :return: id of the newly updated user, as int (must be manually cast to ObjectId)
+        :return: id of the newly updated user, as str (must be manually cast to ObjectId)
         """
         try:
             item = self._collection.update_one({"_id": user_data["_id"]}, {"$set": user_data})
-            return item.upserted_id
+            return str(item.upserted_id)
         except Exception as e:
             raise Exception(f"Failed to update user! - {str(e)}")
 

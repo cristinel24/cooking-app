@@ -24,13 +24,13 @@ class ExpiringTokenCollection(MongoCollection):
         except Exception as e:
             raise Exception(f"Failed to remove token! - {str(e)}")
 
-    def insert_token(self, value: str, user_id: ObjectId, type_token: str) -> int:
+    def insert_token(self, value: str, user_id: ObjectId, type_token: str) -> str:
         """
         insert a new token in the db, return the inserted token's id
         :param value: token value
         :param user_id: token's user id
         :param type_token: token's type
-        :return: id of the newly inserted token, as int (must be manually cast to ObjectId)
+        :return: id of the newly inserted token, as str (must be manually cast to ObjectId)
         """
         try:
             item = self._collection.insert_one({
@@ -39,7 +39,7 @@ class ExpiringTokenCollection(MongoCollection):
                 "userId": user_id,
                 "type": type_token
             })
-            return item.inserted_id
+            return str(item.inserted_id)
         except Exception as e:
             raise Exception(f"Failed to insert token! - {str(e)}")
 

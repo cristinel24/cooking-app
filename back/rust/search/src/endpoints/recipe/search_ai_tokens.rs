@@ -1,6 +1,6 @@
 use crate::{
     get_context,
-    context::get_repository,
+    context::get_global_context,
     endpoints::{
         recipe::AiTokensPayload,
         AggregationResponse, EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR,

@@ -1,5 +1,5 @@
 use crate::{
-    context::get_repository,
+    context::get_global_context,
     repository::service::expiring_token::Repository
 };
 use salvo::{handler, http::StatusCode, Request, Response};
@@ -10,7 +10,7 @@ pub async fn auth_handler(req: &mut Request, res: &mut Response) {
     if let Some(header_value) = req.headers().get("Authorization") {
         if let Ok(auth_value) = header_value.to_str() {
             let key = auth_value.trim_start_matches("Bearer ");
-            let context = match get_repository() {
+            let context = match get_global_context() {
                 Ok(context) => context,
                 Err(e) => {
                     error!("Error fetching repository: {e}");

@@ -1,6 +1,6 @@
 use crate::{
     get_context,
-    context::get_repository,
+    context::get_global_context,
     endpoints::{EndpointResponse, ErrorResponse},
     repository::{models::user::User, service::user::Repository as UserRepository},
 };

@@ -8,6 +8,7 @@ pub const AI_SERVER_VAR: &str = "AI_SERVER";
 pub struct EnvironmentVariables {
     pub mongo_db: String,
     pub ai_server: String,
+    pub port: u32,
 }
 
 impl Default for EnvironmentVariables {
@@ -15,6 +16,7 @@ impl Default for EnvironmentVariables {
         Self {
             mongo_db: "mongodb://localhost:27017".to_owned(),
             ai_server: "http://127.0.0.1:8000".to_owned(),
+            port: 3000,
         }
     }
 }
@@ -27,7 +29,7 @@ pub struct CookingAppContext {
 pub static CONTEXT: OnceCell<CookingAppContext> = OnceCell::new();
 
 #[inline]
-pub fn get_repository() -> Result<&'static CookingAppContext> {
+pub fn get_global_context() -> Result<&'static CookingAppContext> {
     CONTEXT.get().map_or_else(
         || Err(anyhow::Error::msg("Couldn't load CookingApp Context")),
         Ok,
@@ -37,7 +39,7 @@ pub fn get_repository() -> Result<&'static CookingAppContext> {
 #[macro_export]
 macro_rules! get_context {
     ($res:expr) => {
-        match get_repository() {
+        match get_global_context() {
             Ok(value) => value,
             Err(e) => {
                 error!("Error: {e}");

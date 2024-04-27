@@ -25,8 +25,6 @@ use salvo::{
     Listener, Router, Server,
 };
 use tracing::{info, warn};
-
-const PORT: u32 = 7777u32;
 const DOCS_PATH: &str = "docs";
 
 #[tokio::main]
@@ -48,8 +46,10 @@ async fn main() -> Result<()> {
         EnvironmentVariables {
             mongo_db: std::env::var(MONGO_URI_VAR)?,
             ai_server: std::env::var(AI_SERVER_VAR)?,
+            port: std::env::var(AI_SERVER_VAR)?.parse::<u32>()?,
         }
     };
+    let port = env_variables.port;
 
     CONTEXT
         .set(CookingAppContext {
@@ -84,7 +84,7 @@ async fn main() -> Result<()> {
             ])),
     );
 
-    let acceptor = TcpListener::new(format!("127.0.0.1:{}", PORT)).bind().await;
+    let acceptor = TcpListener::new(format!("127.0.0.1:{port}")).bind().await;
     let doc = OpenApi::new(name, version)
         .add_security_scheme("Bearer", auth_scheme)
         .merge_router(&raw_router);
@@ -95,7 +95,7 @@ async fn main() -> Result<()> {
             SwaggerUi::new(format!("/{}.json", DOCS_PATH)).into_router(format!("/{}", DOCS_PATH)),
         );
 
-    info!("Docs on 127.0.0.1:{PORT}/{DOCS_PATH}");
+    info!("Docs on 127.0.0.1:{port}/{DOCS_PATH}");
     Server::new(acceptor).serve(router).await;
 
     Ok(())

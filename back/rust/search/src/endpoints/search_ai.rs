@@ -1,6 +1,6 @@
 use crate::{
     get_context,
-    context::get_repository,
+    context::get_global_context,
     endpoints::{
         common::normalize_recipe, EndpointResponse, ErrorResponse, InputPayload, SearchResponse,
         INTERNAL_SERVER_ERROR,

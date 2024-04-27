@@ -1,6 +1,6 @@
 use crate::{
     get_context,
-    context::get_repository,
+    context::get_global_context,
     endpoints::{EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR},
     repository::{
         models::recipe::Recipe,

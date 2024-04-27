@@ -1,8 +1,8 @@
 [package]
 name = "search_cooking_app"
 authors = [
-    "Cristian George ANDREI cristianandrei@gmail.com",
-    "Razvan Ionut MIHAI razvan.mihai3781@gmail.com "
+    "Cristian George ANDREI <cristianandrei@gmail.com>",
+    "Razvan Ionut MIHAI <razvan.mihai3781@gmail.com>"
 ]
 version = "0.1.0"
 edition = "2021"

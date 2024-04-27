@@ -4,7 +4,7 @@ use crate::{
         common::normalize_recipe,
         EndpointResponse, ErrorResponse, InputPayload, SearchResponse, INTERNAL_SERVER_ERROR,
     },
-    context::get_repository,
+    context::get_global_context,
     repository::{
         models::recipe::Recipe,
         service::{recipe::Repository as RecipeRepository, user::Repository as UserRepository},

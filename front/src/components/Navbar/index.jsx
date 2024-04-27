@@ -18,12 +18,12 @@ const Navbar = () => {
 
     const search = () => {
         const searchInput = Array.from(
-            document.getElementsByClassName('search')
+            document.getElementsByClassName('nav-search')
         )
             .filter(
                 (element) => window.getComputedStyle(element).display != 'none'
             )[0]
-            .querySelector('.search__input')
+            .querySelector('.nav-search-input')
 
         console.log(searchInput.value)
     }
@@ -78,19 +78,19 @@ const Navbar = () => {
             }}
         >
             <nav className="nav" id="nav">
-                <a href="/" className="nav__brand">
-                    <span>Cooking</span>
-                    <span>App</span>
-                    <img src="./logo.png"></img>
+                <a href="/" className="nav-brand">
+                    <span className='nav-brand-span'>Cooking</span>
+                    <span className='nav-brand-span'>App</span>
+                    <img className='nav-brand-img' src="./logo.png"></img>
                 </a>
 
-                <div className="search" id="search">
+                <div className="nav-search" id="search">
                     <i
-                        className="fa-solid fa-magnifying-glass search__icon"
+                        className="fa-solid fa-magnifying-glass nav-search-icon"
                         onClick={search}
                     ></i>
                     <input
-                        className="search__input"
+                        className="nav-search-input"
                         placeholder="Search"
                         type="text"
                         id="searchInput"
@@ -98,17 +98,17 @@ const Navbar = () => {
                     />
                 </div>
 
-                <div className="nav__buttons">
-                    <button className="nav__button" onClick={toggleTheme}>
+                <div className="nav-buttons">
+                    <button className="nav-button" onClick={toggleTheme}>
                         <i className="fa-regular fa-moon"></i>
                     </button>
-                    <button className="nav__button" onClick={settings}>
+                    <button className="nav-button" onClick={settings}>
                         <i className="fa-solid fa-gear"></i>
                     </button>
-                    <button className="nav__button" onClick={profile}>
+                    <button className="nav-button" onClick={profile}>
                         <i className="fa-regular fa-user"></i>
                     </button>
-                    <button className="nav__button" onClick={heart}>
+                    <button className="nav-button" onClick={heart}>
                         <i className="fa-regular fa-heart"></i>
                     </button>
                 </div>

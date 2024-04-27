@@ -1,4 +1,4 @@
-use super::DATABASE_NAME;
+use super::{CollectionName, DATABASE_NAME};
 use crate::repository::models::allergen::Allergen;
 use anyhow::Result;
 use async_trait::async_trait;

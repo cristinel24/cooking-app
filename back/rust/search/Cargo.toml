@@ -21,6 +21,7 @@ serde = {version = "1.0.198", features = ["derive"]}
 serde_json = {version = "1.0.116", default-features = true}
 
 salvo = { version = "0.67.0", features = ["oapi"]}
+reqwest = {version = "0.12.4", features = ["json"]}
 
 tracing-subscriber = {version = "0.3.18", features = ["json"]}
 tracing = {version = "0.1.40", default-features = true}

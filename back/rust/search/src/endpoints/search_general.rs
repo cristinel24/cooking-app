@@ -1,16 +1,13 @@
 use crate::{
-    endpoints::{
-        recipe::TOP, EndpointResponse, ErrorResponse, InputPayload, SearchResponse,
-        INTERNAL_SERVER_ERROR,
-    },
     get_context,
+    endpoints::{
+        common::normalize_recipe,
+        EndpointResponse, ErrorResponse, InputPayload, SearchResponse, INTERNAL_SERVER_ERROR,
+    },
+    context::get_repository,
     repository::{
-        get_repository,
         models::recipe::Recipe,
-        service::{
-            allergen::Repository as AllergenRepository, recipe::Repository as RecipeRepository,
-            tag::Repository as TagRepository, user::Repository as UserRepository,
-        },
+        service::{recipe::Repository as RecipeRepository, user::Repository as UserRepository},
     },
 };
 use salvo::{
@@ -27,53 +24,10 @@ pub async fn search_general(
     res: &mut Response,
 ) -> Json<EndpointResponse<Recipe>> {
     let context = get_context!(res);
-
     let payload = payload.into_inner();
-    let data = payload.data.clone();
 
-    let recipes = match context.recipe_collection.search(payload).await {
-        Ok(mut value) => {
-            if value.data.is_empty() {
-                return Json(EndpointResponse::default());
-            }
-
-            for recipe in value.data.iter_mut() {
-                let top_tags = match context
-                    .tag_collection
-                    .filter_top_x_tags(recipe.tags.clone(), TOP)
-                    .await
-                {
-                    Ok(value) => value,
-                    Err(_) => {
-                        res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                        return Json(EndpointResponse::Error(ErrorResponse {
-                            message: INTERNAL_SERVER_ERROR.to_string(),
-                        }));
-                    }
-                };
-                if let Some(top) = top_tags {
-                    recipe.tags = top;
-                }
-                let top_tags = match context
-                    .allergen_collection
-                    .filter_top_x_allergens(recipe.allergens.clone(), TOP)
-                    .await
-                {
-                    Ok(value) => value,
-                    Err(_) => {
-                        res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                        return Json(EndpointResponse::Error(ErrorResponse {
-                            message: INTERNAL_SERVER_ERROR.to_string(),
-                        }));
-                    }
-                };
-                if let Some(top) = top_tags {
-                    recipe.allergens = top;
-                }
-            }
-
-            value
-        }
+    let users = match context.repository.user_collection.find_by_name(&payload.data).await {
+        Ok(value) => value,
         Err(e) => {
             error!("Error: {e}");
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
@@ -83,8 +37,19 @@ pub async fn search_general(
         }
     };
 
-    let users = match context.user_collection.find_by_name(data).await {
-        Ok(value) => value,
+    let recipes = match context.repository.recipe_collection.search(payload).await {
+        Ok(mut value) => {
+            for recipe in &mut value.data {
+                if let Err(e) = normalize_recipe(recipe, &context.repository).await {
+                    error!("Error: {e}");
+                    res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+                    return Json(EndpointResponse::Error(ErrorResponse {
+                        message: INTERNAL_SERVER_ERROR.to_string(),
+                    }));
+                }
+            }
+            value
+        }
         Err(e) => {
             error!("Error: {e}");
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);

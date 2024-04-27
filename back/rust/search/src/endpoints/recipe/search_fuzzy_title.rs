@@ -1,13 +1,10 @@
 use crate::{
-    endpoints::{recipe::TOP, EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR},
     get_context,
+    context::get_repository,
+    endpoints::{EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR},
     repository::{
-        get_repository,
         models::recipe::Recipe,
-        service::{
-            allergen::Repository as AllergenRepository, recipe::Repository as RecipeRepository,
-            tag::Repository as TagRepository,
-        },
+        service::recipe::Repository as RecipeRepository,
     },
 };
 use salvo::{
@@ -16,6 +13,7 @@ use salvo::{
     Request, Response,
 };
 use tracing::error;
+use crate::endpoints::common::normalize_recipe;
 
 #[endpoint(
     parameters(
@@ -29,43 +27,15 @@ pub async fn search_fuzz_title(
     let title = req.param::<String>("title").unwrap_or_default();
     let context = get_context!(res);
 
-    return match context.recipe_collection.find_by_title(title).await {
+    return match context.repository.recipe_collection.find_by_title(title).await {
         Ok(mut value) => {
-            if value.data.is_empty() {
-                return Json(EndpointResponse::default());
-            }
-            for recipe in value.data.iter_mut() {
-                let top_tags = match context
-                    .tag_collection
-                    .filter_top_x_tags(recipe.tags.clone(), TOP)
-                    .await
-                {
-                    Ok(value) => value,
-                    Err(_) => {
-                        res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                        return Json(EndpointResponse::Error(ErrorResponse {
-                            message: INTERNAL_SERVER_ERROR.to_string(),
-                        }));
-                    }
-                };
-                if let Some(top) = top_tags {
-                    recipe.tags = top;
-                }
-                let top_tags = match context
-                    .allergen_collection
-                    .filter_top_x_allergens(recipe.allergens.clone(), TOP)
-                    .await
-                {
-                    Ok(value) => value,
-                    Err(_) => {
-                        res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                        return Json(EndpointResponse::Error(ErrorResponse {
-                            message: INTERNAL_SERVER_ERROR.to_string(),
-                        }));
-                    }
-                };
-                if let Some(top) = top_tags {
-                    recipe.allergens = top;
+            for recipe in &mut value.data {
+                if let Err(e) = normalize_recipe(recipe, &context.repository).await {
+                    error!("Error: {e}");
+                    res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+                    return Json(EndpointResponse::Error(ErrorResponse {
+                        message: INTERNAL_SERVER_ERROR.to_string(),
+                    }));
                 }
             }
             Json(EndpointResponse::Success(value))

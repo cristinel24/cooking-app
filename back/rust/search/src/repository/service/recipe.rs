@@ -1,4 +1,4 @@
-use super::{super::models::recipe::Recipe, DATABASE_NAME};
+use super::{super::models::recipe::Recipe, CollectionName, DATABASE_NAME};
 use crate::endpoints::{AggregationResponse, InputPayload};
 use anyhow::Result;
 use async_trait::async_trait;

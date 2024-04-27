@@ -1,4 +1,4 @@
-use super::{super::models::user::User, DATABASE_NAME};
+use super::{super::models::user::User, CollectionName, DATABASE_NAME};
 use crate::endpoints::AggregationResponse;
 use anyhow::Result;
 use bson::{doc, from_document};
@@ -23,16 +23,16 @@ impl Service {
 }
 
 pub trait Repository<T: Serialize> {
-    async fn find_by_name(&self, data: String) -> Result<AggregationResponse<T>>;
+    async fn find_by_name(&self, data: &str) -> Result<AggregationResponse<T>>;
 }
 
 impl Repository<User> for Service {
-    async fn find_by_name(&self, data: String) -> Result<AggregationResponse<User>> {
+    async fn find_by_name(&self, data: &str) -> Result<AggregationResponse<User>> {
         let pipeline = vec![
             doc! {
                 "$match": {
                     "$or": [
-                        { "username": { "$regex": data.clone(), "$options": "i" } },
+                        { "username": { "$regex": data, "$options": "i" } },
                         { "displayName": { "$regex": data, "$options": "i" } }
                     ]
                 }

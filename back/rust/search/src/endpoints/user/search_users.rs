@@ -1,7 +1,8 @@
 use crate::{
-    endpoints::{EndpointResponse, ErrorResponse},
     get_context,
-    repository::{get_repository, models::user::User, service::user::Repository as UserRepository},
+    context::get_repository,
+    endpoints::{EndpointResponse, ErrorResponse},
+    repository::{models::user::User, service::user::Repository as UserRepository},
 };
 use salvo::{
     http::StatusCode,
@@ -20,7 +21,7 @@ pub async fn search_users(res: &mut Response, req: &mut Request) -> Json<Endpoin
     let id = req.param::<String>("name").unwrap_or_default();
     let context = get_context!(res);
 
-    return match context.user_collection.find_by_name(id).await {
+    return match context.repository.user_collection.find_by_name(&id).await {
         Ok(value) => Json(EndpointResponse::Success(value)),
         Err(e) => {
             error!("Error: {e}");

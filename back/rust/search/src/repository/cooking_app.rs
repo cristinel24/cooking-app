@@ -1,4 +1,4 @@
-use crate::repository::service::{allergen, recipe, tag, user, DATABASE_NAME};
+use crate::repository::service::{allergen, expiring_token, recipe, tag, user, DATABASE_NAME};
 use anyhow::Result;
 use mongodb::options::{ClientOptions, ConnectionString, ReadPreference, ReadPreferenceOptions};
 use mongodb::Client;
@@ -8,10 +8,11 @@ pub struct CookingAppRepository {
     pub recipe_collection: recipe::Service,
     pub tag_collection: tag::Service,
     pub allergen_collection: allergen::Service,
+    pub expiring_token_collection: expiring_token::Service,
 }
 
 impl CookingAppRepository {
-    pub async fn new(url: String) -> Result<Self> {
+    pub async fn new(url: &str) -> Result<Self> {
         let client = Self::new_client(url).await?;
 
         Ok(Self {
@@ -19,10 +20,11 @@ impl CookingAppRepository {
             recipe_collection: recipe::Service::new(&client),
             tag_collection: tag::Service::new(&client),
             allergen_collection: allergen::Service::new(&client),
+            expiring_token_collection: expiring_token::Service::new(&client),
         })
     }
 
-    async fn new_client(url: String) -> Result<Client> {
+    async fn new_client(url: &str) -> Result<Client> {
         let mut connection_string = ConnectionString::parse(url)?;
 
         connection_string.read_preference = Some(ReadPreference::Secondary {

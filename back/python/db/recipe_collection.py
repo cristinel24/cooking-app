@@ -1,7 +1,7 @@
 import os
 import sys
 
-###pentru import de module(nu)
+##to import paths with vscode (pycharm makes this automatly)
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 import pymongo.errors

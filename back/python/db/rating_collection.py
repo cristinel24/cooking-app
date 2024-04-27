@@ -12,13 +12,13 @@ class RatingCollection(MongoCollection):
         super().__init__(connection)
         self._collection = self._connection.cooking_app.rating
 
-    def get_rating_by_author_id(self, author_id: str):
+    def get_ratings_by_author_id(self, author_id: str, limit: int):
         try:
-            item = self._collection.find_one({"authorId": ObjectId(author_id)})
-        # TODO: exception handling
-        except pymongo.errors.Any as e:
-            raise Exception(f"Failed to get rating by author id! - {str(e)}")
-        return item
+            items = self._collection.find({"authorId": ObjectId(author_id)}).limit(limit)
+            ratings = [item for item in items]
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get ratings by author id! - {str(e)}")
+        return ratings
 
     def get_rating_by_name(self, rating_name: str):
         try:
@@ -28,13 +28,13 @@ class RatingCollection(MongoCollection):
             raise Exception(f"Failed to get rating column from Rating table ! - {str(e)}")
         return item
 
-    def get_rating_by_recipe_id(self, recipe_id: str):
+    def get_ratings_by_recipe_id(self, recipe_id: str, limit: int):
         try:
-            item = self._collection.find_one({"recipeId": ObjectId(recipe_id)})
-        # TODO: exception handling
-        except pymongo.errors.Any as e:
-            raise Exception(f"Failed to get rating by recipe! - {str(e)}")
-        return item
+            items = self._collection.find({"recipeId": ObjectId(recipe_id)}).limit(limit)
+            ratings = [item for item in items]
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get ratings by recipe id! - {str(e)}")
+        return ratings
 
     def get_rating_by_id(self, rating_id: str):
         try:
@@ -51,6 +51,24 @@ class RatingCollection(MongoCollection):
         except pymongo.errors.Any as e:
             raise Exception(f"Failed to insert rating! - {str(e)}")
 
+    def insert_rating(self, name: str, updatedAt: datetime, authorId: ObjectId, recipeId: ObjectId, rating: int,
+                      description: str, parentId: ObjectId, children: list[ObjectId]) -> ObjectId:
+        try:
+            rating_data = {
+                "name": name,
+                "updatedAt": updatedAt,
+                "authorId": authorId,
+                "recipeId": recipeId,
+                "rating": rating,
+                "description": description,
+                "parentId": parentId,
+                "children": children
+            }
+            item = self._collection.insert_one(rating_data)
+            return item.inserted_id
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to insert rating! - {str(e)}")
+
     def update_rating(self, rating_id: str, rating_data):
         try:
             item = self._collection.update_one({"_id": ObjectId(rating_id)}, {"$set": rating_data})
@@ -64,31 +82,3 @@ class RatingCollection(MongoCollection):
             return item.deleted_count
         except pymongo.errors.Any as e:
             raise Exception(f"Failed to delete rating! - {str(e)}")
-
-
-#if __name__ == "__main__":
-#coll = RatingCollection()
-    #print(coll.get_rating_by_name("2msuug"))
-    #print(coll.get_rating_by_recipe_id("662b8abbabbd5f853c6652c0"))
-    #print(coll.get_rating_by_author_id("662b8abbabbd5f853c665297"))
-    #print(coll.get_rating_by_id("662b8abbabbd5f853c6652bf"))
-    #coll.delete_rating("662b8abbabbd5f853c6652bf")
-    # rating_data = {
-    #    "updatedAt": datetime.utcnow(),
-    #       "name": "vladop",
-    #      "authorId": bson.ObjectId("111111111111111111111112"),
-    #     "recipeId": bson.ObjectId("111111111111111111111111"),
-    #    "rating": 4,
-    #   "description": "Speak other work their research more this. Wide small sometimes. Fund special by material writer special suggest audience."
-    # }
-    # inserted_id = coll.insert_rating(rating_data)
-    # print("Inserted document ID:", inserted_id)
-    #rating_data1 = {
-    #   "updatedAt": datetime.utcnow(),
-    #   "name": "vladox",
-    #   "authorId": bson.ObjectId("111111111111111111111114"),
-    #    "recipeId": bson.ObjectId("111111111111111111111113"),
-    #    "rating": 4,
-    #    "description": "Speak other work their research more this. Wide small sometimes. Fund special by material writer special suggest audience."
-    #}
-    #coll.update_rating("662bf4a1ef9351e2d0fc8ab8", rating_data1)

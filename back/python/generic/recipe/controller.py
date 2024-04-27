@@ -25,8 +25,8 @@ async def create_recipe(data: dict):
 
 
 @router.patch("/edit_recipe/{recipe_name}")
-async def update_recipe(recipe_name, req:Request):
-    body=await req.json()
+async def update_recipe(recipe_name, req: Request):
+    body = await req.json()
     services.update_recipe(recipe_name,body)
 
 

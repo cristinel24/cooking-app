@@ -10,9 +10,14 @@ class ExpiringTokenCollection(MongoCollection):
         super().__init__()
         self._collection = self._connection.cooking_app.expiring_token
 
-    def get_expiring_token_by_value(self, value: str) -> dict:
+    def get_expiring_token(self, value: str, token_type: str | None = None) -> dict:
         try:
-            item = self._collection.find_one({"value": value})
+            find_query = {
+                "value": value
+            }
+            if token_type is not None:
+                find_query["type"] = token_type
+            item = self._collection.find_one(find_query)
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to get token! - {str(e)}")
         return item

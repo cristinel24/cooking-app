@@ -51,10 +51,13 @@ class RecipeCollection(MongoCollection):
             raise Exception(f"Failed to insert recipe! - {str(e)}")
 
     def get_recipe_id_by_name(self, recipe_name: str) -> ObjectId:
-        return self._collection.find_one(
-            {"name": recipe_name},
-            {"_id": 1}
-        )["_id"]
+        try:
+            return self._collection.find_one(
+                {"name": recipe_name},
+                {"_id": 1}
+            )["_id"]
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get recipe id by name! - {str(e)}")
 
     def delete_recipe_by_id(self, recipe_id: str):
         try:
@@ -94,19 +97,22 @@ class RecipeCollection(MongoCollection):
             raise Exception(f"Failed to add tokens to recipe tags! - {str(e)}")
 
     def get_recipe_card_by_id(self, recipe_id: str) -> dict:
-        return self._collection.find_one(
-            {"_id": ObjectId(recipe_id)},
-            {
-                "_id": 0,
-                "name": 1,
-                "description": 1,
-                "authorId": 1,
-                "title": 1,
-                "prepTime": 1,
-                "allergens": 1,
-                "tags": 1
-            }
-        )
+        try:
+            return self._collection.find_one(
+                {"_id": ObjectId(recipe_id)},
+                {
+                    "_id": 0,
+                    "name": 1,
+                    "description": 1,
+                    "authorId": 1,
+                    "title": 1,
+                    "prepTime": 1,
+                    "allergens": 1,
+                    "tags": 1
+                }
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get recipe card! - {str(e)}")
 
     def add_tokens_by_id(self, recipe_id: str, recipe_tokens: list[str]):
         try:

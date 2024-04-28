@@ -65,86 +65,122 @@ class UserCollection(MongoCollection):
             raise Exception(f"Failed to update user! - {str(e)}")
 
     def get_user_id_by_name(self, user_name: str) -> ObjectId:
-        return self._collection.find_one(
-            {"name": user_name},
-            {"_id": 1}
-        )["_id"]
+        try:
+            return self._collection.find_one(
+                {"name": user_name},
+                {"_id": 1}
+            )["_id"]
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get user id by name! - {str(e)}")
 
     def get_user_name_by_id(self, user_id: ObjectId) -> str:
-        return self._collection.find_one(
-            {"_id": user_id},
-            {
-                "name": 1,
-                "_id": 0
-            }
-        )["name"]
+        try:
+            return self._collection.find_one(
+                {"_id": user_id},
+                {
+                    "name": 1,
+                    "_id": 0
+                }
+            )["name"]
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get user name by id! - {str(e)}")
 
     def get_user_profile_by_name(self, user_name: str) -> dict:
-        return self._collection.find_one(
-            {"name": user_name},
-            {
-                "_id": 0,
-                "username": 1,
-                "displayName": 1,
-                "icon": 1,
-                "description": 1,
-                "allergens": 1,
-                "tags": 1,
-                "ratingSum": 1,
-                "ratingCount": 1,
-            }
-        )
+        try:
+            return self._collection.find_one(
+                {"name": user_name},
+                {
+                    "_id": 0,
+                    "username": 1,
+                    "displayName": 1,
+                    "icon": 1,
+                    "description": 1,
+                    "allergens": 1,
+                    "tags": 1,
+                    "ratingSum": 1,
+                    "ratingCount": 1,
+                }
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get user profile! - {str(e)}")
 
     def update_user_by_name(self, user_name: str, updated_fields: dict) -> None:
-        self._collection.update_one(
-            {"name": user_name},
-            {"$set": updated_fields}
-        )
+        try:
+            self._collection.update_one(
+                {"name": user_name},
+                {"$set": updated_fields}
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to update user by name! - {str(e)}")
 
     def update_saved_recipes_by_name(self, user_name: str, recipe_id: ObjectId) -> None:
-        self._collection.update_one(
-            {"name": user_name},
-            {"$push": {"savedRecipes": recipe_id}}
-        )
+        try:
+            self._collection.update_one(
+                {"name": user_name},
+                {"$push": {"savedRecipes": recipe_id}}
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to update saved recipes! - {str(e)}")
 
     def delete_saved_recipe_by_name(self, user_name: str, recipe_id: ObjectId) -> None:
-        self._collection.update_one(
-            {"name": user_name},
-            {"$pull": {"savedRecipes": recipe_id}}
-        )
+        try:
+            self._collection.update_one(
+                {"name": user_name},
+                {"$pull": {"savedRecipes": recipe_id}}
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to delete saved recipe! - {str(e)}")
 
     def update_search_history_by_name(self, user_name: str, search: str) -> None:
-        self._collection.update_one(
-            {"name": user_name},
-            {"$push": {"searchHistory": search}}
-        )
+        try:
+            self._collection.update_one(
+                {"name": user_name},
+                {"$push": {"searchHistory": search}}
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to update search history! - {str(e)}")
 
     def delete_search_history_by_name(self, user_name: str) -> None:
-        self._collection.update_one(
-            {"name": user_name},
-            {"$set": {"searchHistory": []}}
-        )
+        try:
+            self._collection.update_one(
+                {"name": user_name},
+                {"$set": {"searchHistory": []}}
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to delete search history! - {str(e)}")
 
     def get_search_history_by_name(self, user_name: str) -> list:
-        return self._collection.find_one(
-            {"name": user_name},
-            {"_id": 0, "searchHistory": 1}
-        )["searchHistory"]
+        try:
+            return self._collection.find_one(
+                {"name": user_name},
+                {"_id": 0, "searchHistory": 1}
+            )["searchHistory"]
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get search history! - {str(e)}")
 
     def update_message_history_by_name(self, user_name: str, message: str) -> None:
-        self._collection.update_one(
-            {"name": user_name},
-            {"$push": {"messageHistory": message}}
-        )
+        try:
+            self._collection.update_one(
+                {"name": user_name},
+                {"$push": {"messageHistory": message}}
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to update message history! - {str(e)}")
 
     def get_message_history_by_name(self, user_name: str) -> list:
-        return self._collection.find_one(
-            {"name": user_name},
-            {"_id": 0, "messageHistory": 1}
-        )["messageHistory"]
+        try:
+            return self._collection.find_one(
+                {"name": user_name},
+                {"_id": 0, "messageHistory": 1}
+            )["messageHistory"]
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get message history! - {str(e)}")
 
     def delete_message_history_by_name(self, user_name: str) -> None:
-        self._collection.update_one(
-            {"name": user_name},
-            {"$set": {"messageHistory": []}}
-        )
+        try:
+            self._collection.update_one(
+                {"name": user_name},
+                {"$set": {"messageHistory": []}}
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to delete message history! - {str(e)}")

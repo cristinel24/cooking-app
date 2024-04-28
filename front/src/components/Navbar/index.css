@@ -100,11 +100,6 @@
     background-color: transparent;
 }
 
-.nav-dropdown {
-    display: none;
-    flex-direction: column;
-}
-
 .nav-dropdown-icon {
     display: none;
     color: inherit;
@@ -119,6 +114,7 @@
 
 .nav-dropdown {
     display: none;
+    flex-direction: column;
     position: fixed;
     background-color: var(--navbar);
     top: var(--nav-height);

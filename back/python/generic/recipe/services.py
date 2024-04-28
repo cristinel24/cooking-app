@@ -10,27 +10,6 @@ from db import rating_collection
 rating_coll = rating_collection.RatingCollection()
 recipe_coll = recipe_collection.RecipeCollection()
 
-
-def get_recipe(recipe_name: str) -> dict:
-    pass
-
-
-def add_tokens(recipe_name: str):
-    pass
-
-
-def create_recipe(data: schemas.RecipeData) -> dict:
-    pass
-
-
-def update_recipe(data: schemas.RecipeData):
-    pass
-
-
-def delete_recipe(name: str):
-    pass
-
-
 def get_recipe_ratings(data: schemas.GetRatingsData) -> list[dict]:
     try:
         recipe_id = recipe_coll.get_recipe_by_name(data.parent_name)["_id"]

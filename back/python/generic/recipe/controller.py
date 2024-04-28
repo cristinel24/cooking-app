@@ -7,26 +7,6 @@ router = APIRouter(
 )
 
 
-@router.get("/get_recipe/{recipe_name}")
-async def get_recipe(recipe_name: str):
-    return {}
-
-
-@router.post("/create_recipe")
-async def create_recipe(data: schemas.RecipeData):
-    return {}
-
-
-@router.patch("/edit_recipe")
-async def update_recipe(data: schemas.RecipeData):
-    return {}
-
-
-@router.delete("/delete_recipe/{name}")
-async def delete_recipe(name: str):
-    return {}
-
-
 @router.get("/recipe_ratings/{parent_name}")
 async def get_recipe_ratings(parent_name: str, start: int, offset: int):
     return services.get_recipe_ratings(schemas.GetRatingsData(parent_name=parent_name, start=start, offset=offset))

@@ -1,7 +1,9 @@
 import { ThemeContext, themes } from '../../context'
 import React, { useEffect, useState } from 'react'
-
 import './index.css'
+import { FaRegHeart, FaRegUser, FaRegMoon, FaBars } from 'react-icons/fa6'
+import { IoSettingsOutline, IoSearch } from 'react-icons/io5'
+import { FaTimes } from 'react-icons/fa'
 
 const Navbar = () => {
     const heart = () => {
@@ -70,6 +72,13 @@ const Navbar = () => {
         }
     }
 
+    const [activeDropdown, setActiveDropdown] = useState('nav-dropdown')
+
+    const toggleDropdown = () => {
+        activeDropdown === 'nav-dropdown'
+            ? setActiveDropdown('nav-dropdown nav-active')
+            : setActiveDropdown('nav-dropdown')
+    }
     return (
         <ThemeContext.Provider
             value={{
@@ -79,16 +88,13 @@ const Navbar = () => {
         >
             <nav className="nav" id="nav">
                 <a href="/" className="nav-brand">
-                    <span className='nav-brand-span'>Cooking</span>
-                    <span className='nav-brand-span'>App</span>
-                    <img className='nav-brand-img' src="./logo.png"></img>
+                    <span className="nav-brand-span">Cooking</span>
+                    <span className="nav-brand-span">App</span>
+                    <img className="nav-brand-img" src="./logo.png"></img>
                 </a>
 
                 <div className="nav-search" id="search">
-                    <i
-                        className="fa-solid fa-magnifying-glass nav-search-icon"
-                        onClick={search}
-                    ></i>
+                    <IoSearch className="nav-search-icon" onClick={search} />
                     <input
                         className="nav-search-input"
                         placeholder="Search"
@@ -100,16 +106,44 @@ const Navbar = () => {
 
                 <div className="nav-buttons">
                     <button className="nav-button" onClick={toggleTheme}>
-                        <i className="fa-regular fa-moon"></i>
+                        <FaRegMoon />
                     </button>
                     <button className="nav-button" onClick={settings}>
-                        <i className="fa-solid fa-gear"></i>
+                        <IoSettingsOutline />
                     </button>
                     <button className="nav-button" onClick={profile}>
-                        <i className="fa-regular fa-user"></i>
+                        <FaRegUser />
                     </button>
                     <button className="nav-button" onClick={heart}>
-                        <i className="fa-regular fa-heart"></i>
+                        <FaRegHeart />
+                    </button>
+                </div>
+
+                {/* hamburger menu */}
+                <button className="nav-button-theme" onClick={toggleTheme}>
+                    <FaRegMoon />
+                </button>
+
+                <button className="nav-dropdown-icon" onClick={toggleDropdown}>
+                    {activeDropdown === 'nav-dropdown' ? (
+                        <FaBars />
+                    ) : (
+                        <FaTimes />
+                    )}
+                </button>
+
+                <div className={activeDropdown}>
+                    <button className="nav-button" onClick={settings}>
+                        <IoSettingsOutline />
+                        <p>Setari</p>
+                    </button>
+                    <button className="nav-button" onClick={profile}>
+                        <FaRegUser />
+                        <p>Profilul tau</p>
+                    </button>
+                    <button className="nav-button" onClick={heart}>
+                        <FaRegHeart />
+                        <p>Favorite</p>
                     </button>
                 </div>
             </nav>

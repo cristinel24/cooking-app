@@ -1,7 +1,7 @@
 from datetime import datetime
 from bson import ObjectId
 
-from recipe import schemas
+from generic.recipe import schemas
 from db import recipe_collection, rating_collection
 
 rating_coll = rating_collection.RatingCollection()

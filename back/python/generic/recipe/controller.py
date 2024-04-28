@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from recipe import schemas, services
+from generic.recipe import schemas, services
 
 router = APIRouter(
-    prefix="/api"
+    prefix="/api/recipe"
 )
 
 

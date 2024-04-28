@@ -119,7 +119,7 @@
     position: fixed;
     background-color: var(--navbar);
     top: var(--nav-height);
-    left: calc(100% - 10rem);
+    right: 0;
     width: fit-content;
     padding: 0 1rem;
 }

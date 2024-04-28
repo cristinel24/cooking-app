@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import PageButton from '../PageButton'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import ActionButton from '../ActionButton'
 import './index.css'
+import { LuSend } from "react-icons/lu";
+import { MdOutlineCancel } from "react-icons/md";
 function ReportRecipe() {
     const pathPage = 'https://www.google.ro/'
     localStorage.setItem('theme', 'light')
 
-    // Variantele formularului
     const [formVariants, setFormVariants] = useState([
         { id: 1, text: 'Continut sexual', checked: false },
         { id: 2, text: 'Continut respingator/violent', checked: false },
@@ -17,7 +17,6 @@ function ReportRecipe() {
         { id: 7, text: 'Probleme legale', checked: false },
     ])
 
-    // Funcția pentru actualizarea stării unei variante
     const handleVariantChange = (id) => {
         setFormVariants((prevVariants) =>
             prevVariants.map((variant) =>
@@ -27,16 +26,18 @@ function ReportRecipe() {
             )
         )
     }
+
+    const fuctionForButton = ()=>{}
     return (
         <div>
-            <div className="wrapper1">
-                <div className="titlu1">
+            <div className="report-recipe-wrapper">
+                <div className="report-recipe-wrapper-title">
                     <p>Raporteaza</p>
                 </div>
-                <div className="continut1">
-                    <form>
+                <div className="report-recipe-content">
+                    <form className="report-recipe-form">
                         {formVariants.map((variant) => (
-                            <div className="doamne" key={variant.id}>
+                            <div className="report-recipe-inputs" key={variant.id}>
                                 <input
                                     type="checkbox"
                                     id={`variant-${variant.id}`}
@@ -44,7 +45,6 @@ function ReportRecipe() {
                                     onChange={() =>
                                         handleVariantChange(variant.id)
                                     }
-                                    className="checkbox-style"
                                 />
                                 <label htmlFor={`variant-${variant.id}`}>
                                     {variant.text}
@@ -53,16 +53,20 @@ function ReportRecipe() {
                         ))}
                     </form>
                 </div>
-                <div className="butoane1">
-                    <div className="button1">
-                        <PageButton path={pathPage} className="btn1">
-                            Trimite
-                        </PageButton>
+                <div className="report-recipe-buttons">
+                    <div className="report-recipe-send-button">
+                        <ActionButton
+                            text="Trimite"
+                            Icon={LuSend}
+                            onClick={fuctionForButton}
+                        />
                     </div>
-                    <div className="button2">
-                        <PageButton path={pathPage} className="btn2">
-                            Renunta
-                        </PageButton>
+                    <div className="report-recipe-give-up-button">
+                        <ActionButton
+                            text="Renunta"
+                            Icon={MdOutlineCancel}
+                            onClick={fuctionForButton}
+                        />
                     </div>
                 </div>
             </div>

@@ -67,7 +67,7 @@ def register(data: schemas.RegisterData):
 
 
 def verify(token):
-    expiring_token = expiring_token_db.get_expiring_token_by_value_and_type(token, ExpiringTokenType.EMAIL_CONFIRM.value)
+    expiring_token = expiring_token_db.get_expiring_token(token, ExpiringTokenType.EMAIL_CONFIRM.value)
     if expiring_token is None:
         return {"error": "invalid token"}
     user = user_db.get_user_by_id(expiring_token["userId"])
@@ -130,7 +130,7 @@ def change_password(user_name, password):
 
 def is_authenticated(session_token) -> bool:
     # TODO: exception handling
-    token = expiring_token_db.get_expiring_token_by_value_and_type(session_token, ExpiringTokenType.SESSION.value)
+    token = expiring_token_db.get_expiring_token(session_token, ExpiringTokenType.SESSION.value)
     if token is None:
         return False
 

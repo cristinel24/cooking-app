@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from authentication import schemas, services
 
 router = APIRouter(
-    prefix="/api"
+    prefix="/api/auth"
 )
 
 

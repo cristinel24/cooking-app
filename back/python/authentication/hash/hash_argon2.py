@@ -14,10 +14,3 @@ def hash_password(hashing_password, hashing_salt):
 
 def generate_salt():
     return secrets.token_bytes(32)
-
-
-# if __name__ == "__main__":
-#     password = "password123"
-#     salt = generate_salt()
-#     pw = hash_password(password, salt)
-#     print("Hashed password:", pw)

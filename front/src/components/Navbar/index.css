@@ -1,6 +1,7 @@
 :root {
-    --nav-height: 4.938rem;
+    --nav-height: 80px;
 }
+
 .nav {
     position: sticky;
     top: 0px;

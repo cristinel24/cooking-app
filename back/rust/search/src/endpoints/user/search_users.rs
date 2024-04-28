@@ -1,7 +1,7 @@
 use crate::{
-    get_endpoint_context,
     context::get_global_context,
     endpoints::{EndpointResponse, ErrorResponse},
+    get_endpoint_context,
     repository::{models::user::User, service::user::Repository as UserRepository},
 };
 use salvo::{

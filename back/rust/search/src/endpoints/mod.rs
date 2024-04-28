@@ -10,7 +10,6 @@ pub mod user;
 
 pub const INTERNAL_SERVER_ERROR: &str = "Internal Server Error!";
 
-
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct InputPayload {
     pub data: String,

@@ -1,9 +1,9 @@
 use crate::context::get_global_context;
+use anyhow::Result;
+use reqwest::Client;
 use salvo::{handler, http::StatusCode, Request, Response};
 use std::time::Duration;
-use reqwest::Client;
 use tracing::{error, info};
-use anyhow::Result;
 
 const TIMEOUT_SECS: u64 = 30u64;
 
@@ -21,7 +21,9 @@ pub async fn auth_handler(req: &mut Request, res: &mut Response) {
                 }
             };
             if let Ok(result) = is_valid(key, &context.env.auth_server).await {
-                if result { return; }
+                if result {
+                    return;
+                }
             }
         }
     }
@@ -35,7 +37,8 @@ async fn is_valid(token: &str, server: &str) -> Result<bool> {
         .build()?
         .get(format!("{server}/api/auth/is_authenticated/{token}"))
         .timeout(Duration::from_secs(TIMEOUT_SECS))
-        .send().await?;
+        .send()
+        .await?;
 
     Ok(response.json::<bool>().await?)
 }

@@ -1,8 +1,9 @@
 use crate::endpoints::{ErrorResponse, INTERNAL_SERVER_ERROR};
 use salvo::{
+    handler,
     http::{ResBody, StatusCode},
     prelude::Json,
-    handler, Depot, FlowCtrl, Request, Response
+    Depot, FlowCtrl, Request, Response,
 };
 use tracing::{error, info};
 

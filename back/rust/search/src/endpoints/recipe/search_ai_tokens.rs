@@ -1,14 +1,12 @@
+use crate::endpoints::common::normalize_recipe;
 use crate::{
-    get_endpoint_context,
     context::get_global_context,
     endpoints::{
-        recipe::AiTokensPayload,
-        AggregationResponse, EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR,
+        recipe::AiTokensPayload, AggregationResponse, EndpointResponse, ErrorResponse,
+        INTERNAL_SERVER_ERROR,
     },
-    repository::{
-        models::recipe::Recipe,
-        service::recipe::Repository as RecipeRepository
-    },
+    get_endpoint_context,
+    repository::{models::recipe::Recipe, service::recipe::Repository as RecipeRepository},
 };
 use salvo::{
     http::StatusCode,
@@ -17,7 +15,6 @@ use salvo::{
     Response,
 };
 use tracing::error;
-use crate::endpoints::common::normalize_recipe;
 
 #[endpoint(
     responses(

@@ -1,10 +1,10 @@
 use crate::{
-    get_endpoint_context,
-    endpoints::{
-        common::normalize_recipe,
-        EndpointResponse, ErrorResponse, InputPayload, SearchResponse, INTERNAL_SERVER_ERROR,
-    },
     context::get_global_context,
+    endpoints::{
+        common::normalize_recipe, EndpointResponse, ErrorResponse, InputPayload, SearchResponse,
+        INTERNAL_SERVER_ERROR,
+    },
+    get_endpoint_context,
     repository::{
         models::recipe::Recipe,
         service::{recipe::Repository as RecipeRepository, user::Repository as UserRepository},
@@ -26,7 +26,12 @@ pub async fn search_general(
     let context = get_endpoint_context!(res);
     let payload = payload.into_inner();
 
-    let users = match context.repository.user_collection.find_by_name(&payload.data).await {
+    let users = match context
+        .repository
+        .user_collection
+        .find_by_name(&payload.data)
+        .await
+    {
         Ok(value) => value,
         Err(e) => {
             error!("Error: {e}");

@@ -7,7 +7,10 @@ use anyhow::Result;
 
 pub const TOP: u32 = 10u32;
 
-pub async fn normalize_recipe(recipe: &mut Recipe, repository: &CookingAppRepository) -> Result<()> {
+pub async fn normalize_recipe(
+    recipe: &mut Recipe,
+    repository: &CookingAppRepository,
+) -> Result<()> {
     let top_tags = repository
         .tag_collection
         .filter_top_x_tags(recipe.tags.clone(), TOP)

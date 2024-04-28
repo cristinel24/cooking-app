@@ -3,39 +3,34 @@ mod endpoints;
 mod middlewares;
 mod repository;
 use crate::{
-    middlewares::{
-        auth_handler::auth_handler,
-        error_handler::error_handler
-    },
-    repository::cooking_app::CookingAppRepository,
     context::{
-        CookingAppContext, EnvironmentVariables, AI_SERVER_VAR, CONTEXT, MONGO_URI_VAR, AUTH_SERVER_VAR
+        CookingAppContext, EnvironmentVariables, AI_SERVER_VAR, AUTH_SERVER_VAR, CONTEXT,
+        MONGO_URI_VAR,
     },
     endpoints::{
+        recipe::{search_ai_tokens::search_ai_tokens, search_fuzzy_title::search_fuzz_title},
         search_ai::search_ai,
-        recipe::{
-            search_ai_tokens::search_ai_tokens, search_fuzzy_title::search_fuzz_title,
-        },
         search_general::search_general,
         user::search_users::search_users,
-    }
+    },
+    middlewares::{auth_handler::auth_handler, error_handler::error_handler},
+    repository::cooking_app::CookingAppRepository,
 };
+use anyhow::Result;
+use dotenv::dotenv;
 use salvo::{
+    conn::TcpListener,
     oapi::{
         security::{Http, HttpAuthScheme},
-        SecurityRequirement, SecurityScheme
+        SecurityRequirement, SecurityScheme,
     },
-    conn::TcpListener,
     oapi::{OpenApi, RouterExt},
     prelude::SwaggerUi,
     Listener, Router, Server,
 };
-use anyhow::Result;
-use dotenv::dotenv;
 use tracing::{info, warn};
 
 const DOCS_PATH: &str = "docs";
-
 
 #[tokio::main]
 async fn main() -> Result<()> {

@@ -1,23 +1,23 @@
 use crate::{
-    get_endpoint_context,
     context::get_global_context,
     endpoints::{
         common::normalize_recipe, EndpointResponse, ErrorResponse, InputPayload, SearchResponse,
         INTERNAL_SERVER_ERROR,
     },
+    get_endpoint_context,
     repository::{
         models::recipe::Recipe,
         service::{recipe::Repository as RecipeRepository, user::Repository as UserRepository},
     },
 };
+use anyhow::Result;
+use reqwest::{Client, Url};
 use salvo::{
     oapi::{endpoint, extract::JsonBody},
     prelude::{Json, Response, StatusCode, Writer},
 };
-use std::time::Duration;
 use serde::Deserialize;
-use reqwest::{Client, Url};
-use anyhow::Result;
+use std::time::Duration;
 use tracing::error;
 
 const TIMEOUT_SECS: u64 = 30u64;
@@ -40,8 +40,12 @@ pub async fn search_ai(
         }
     };
 
-
-    let recipes = match context.repository.recipe_collection.find_by_tokens(&tokens).await {
+    let recipes = match context
+        .repository
+        .recipe_collection
+        .find_by_tokens(&tokens)
+        .await
+    {
         Ok(mut value) => {
             for recipe in &mut value.data {
                 if let Err(e) = normalize_recipe(recipe, &context.repository).await {
@@ -63,7 +67,12 @@ pub async fn search_ai(
         }
     };
 
-    let users = match context.repository.user_collection.find_by_name(&payload.data).await {
+    let users = match context
+        .repository
+        .user_collection
+        .find_by_name(&payload.data)
+        .await
+    {
         Ok(value) => value,
         Err(e) => {
             error!("Error: {e}");

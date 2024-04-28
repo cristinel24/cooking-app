@@ -7,6 +7,10 @@ use serde::{Deserialize, Serialize};
 pub struct Recipe {
     pub author: Author,
     pub title: String,
+
+    #[serde(alias = "mainImage")]
+    pub image: String,
+
     pub description: String,
     pub prep_time: u32,
     pub allergens: Vec<String>,

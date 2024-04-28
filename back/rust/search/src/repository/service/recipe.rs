@@ -304,6 +304,7 @@ impl Repository<Recipe> for Service {
                     },
                     "title": 1,
                     "description": { "$substrCP": ["$description", 0, 100] },
+                    "mainImage": 1,
                     "prepTime": 1,
                     "allergens": 1,
                     "tags": 1

@@ -1,0 +1,68 @@
+.form-container {
+    width: 80%;
+    margin: 0px;
+    text-align: center;
+
+}
+
+.form-field {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.form-input-field {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px 20px 15px 20px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+}
+
+.form-submit-button {
+    background-color: var(--bkgcolor);
+    padding: 15px 20px 15px 20px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    color: var(--txtcolor);
+    font-weight: bold;
+    border: none;
+}
+
+
+.form-submit-button:hover {
+    background-color: var(--hoverbkgcolor);
+}
+
+.form-error-message {
+    color: red;
+    font-size: 0.8rem;
+    margin:0.2rem;
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .form-submit-button {
+        padding: 10px 15px 10px 15px;
+        font-size: 0.7rem;
+    }
+    .form-input-field{
+        padding: 10px 15px 10px 15px;
+        font-size: 0.7rem;
+    }
+    .form-error-message {
+        font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .form-submit-button {
+        padding: 8px 10px 8px 10px;
+        font-size: 0.6rem;
+    }
+    .form-input-field{
+        padding: 8px 10px 8px 10px;
+        font-size: 0.6rem;
+    }
+    .form-error-message {
+        font-size: 0.6rem;
+    }
+}

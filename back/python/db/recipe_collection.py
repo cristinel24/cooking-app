@@ -1,77 +1,34 @@
-import os
-import sys
-
-##to import paths with vscode (pycharm makes this automatly)
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
-
-import pymongo.errors
-from pymongo import DeleteOne, MongoClient
-from db import user_collection
-
-from generic.recipe.schemas import RecipeData
-from db.mongo_collection import MongoCollection
-from bson import ObjectId
 from datetime import datetime
+
+import pymongo
+from bson import ObjectId
+from pymongo import MongoClient
+from pymongo import errors
+
+from db.mongo_collection import MongoCollection
 
 
 class RecipeCollection(MongoCollection):
-
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.recipe
+        self._db = self._connection.cooking_app
+        self._collection = self._db.recipe
 
-    def get_recipe_by_name(self, recipe_name: str) -> dict:
+    def get_recipe_by_name(self, recipe_name: str):
         try:
             item = self._collection.find_one({"name": recipe_name})
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get recipe by name! - {str(e)}")
+        return item
 
-            if item is None:
-                # TODO: err code
-                return {"ok": 1, "error": f"Recipe '{recipe_name}' is nonexistent"}
-
-            recipe_data = {
-                "ok": 0,
-                "title": item["title"],
-                "description": item["description"],
-                "prepTime": item["prepTime"],
-                "steps": item["steps"],
-                "ingredients": item["ingredients"],
-                "allergens": item["allergens"],
-                "tags": item["tags"],
-                "no_ratings": item["ratingCount"]
-            }
-            # TODO: exception handling
-        except Exception as e:
-            # TODO: err code
-            return {"ok": 1, "error": f"Failed to get recipe by name: {e}"}
-        return recipe_data
-
-    def get_recipe_card(self, recipe_name: str) -> dict:
+    def get_recipe_by_id(self, recipe_id: str):
         try:
-            item = self._collection.find_one({"name": recipe_name})
+            item = self._collection.find_one({"_id": ObjectId(recipe_id)})
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get recipe by id! - {str(e)}")
+        return item
 
-            if item is None:
-                # TODO: err code
-                return {"ok": 1, "error": f"Recipe '{recipe_name}' is nonexistent"}
-
-            user = user_collection.UserCollection()
-
-            recipe_data = {
-                "ok": 0,
-                # TODO: get_user() instead of get_user_by_id()
-                "author": user.get_user_by_id(str(item["authorId"]))["username"],
-                "title": item["title"],
-                "description": item["description"],
-                "prepTime": item["prepTime"],
-                "allergens": item["allergens"],
-                "tags": item["tags"],
-            }
-            # TODO: exception handling
-        except Exception as e:
-            # TODO: err code
-            return {"ok": 1, "error": f"Failed to get recipe by name: {e}"}
-        return recipe_data
-
-    def insert_recipe(self, params) -> None:
+    def insert_recipe(self, params):
         try:
             item = self._collection.insert_one(
                 {
@@ -79,8 +36,6 @@ class RecipeCollection(MongoCollection):
                     "name": params["name"],
                     "authorId": ObjectId(params["authorId"]),
                     "title": params["title"],
-                    "ratingSum": 0,
-                    "ratingCount": 0,
                     "description": params["description"],
                     "prepTime": params["prepTime"],
                     "steps": params["steps"],
@@ -91,41 +46,79 @@ class RecipeCollection(MongoCollection):
                     "ratings": []
                 }
             )
-        # TODO: exception handling
-        except Exception as e:
-            print(e)
-            # TODO: err code
-            # return {"ok": 1, "error": f"Failed to insert recipe! - {str(e)}"}
+            return item.inserted_id
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to insert recipe! - {str(e)}")
 
-    def delete_recipe_by_name(self, recipe_name: str) -> None:
+    def get_recipe_id_by_name(self, recipe_name: str) -> ObjectId:
+        try:
+            return self._collection.find_one(
+                {"name": recipe_name},
+                {"_id": 1}
+            )["_id"]
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get recipe id by name! - {str(e)}")
+
+    def delete_recipe_by_id(self, recipe_id: str):
+        try:
+            self._collection.delete_one({"_id": ObjectId(recipe_id)})
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to delete recipe! - {str(e)}")
+
+    def delete_recipe_by_name(self, recipe_name: str):
         try:
             self._collection.delete_one({"name": recipe_name})
-        # TODO: exception handling
-        except Exception as e:
-            print(e)
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to delete recipe! - {str(e)}")
 
-    def update_recipe_by_name(self, data: dict) -> None:
+    def update_recipe_by_name(self, recipe_name: str, update_data: dict):
         try:
-            item = self._collection.find_one({"name": data["name"]})
+            update_dict = {"$set": update_data}
+            update_dict["$set"]["updatedAt"] = datetime.utcnow()
+            self._collection.update_one({"name": recipe_name}, update_dict)
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to update recipe by name! - {str(e)}")
 
-            if item is None:
-                return
-                # TODO: err code
-                # return {"ok": 1, "error": f"Recipe '{recipe_name}' is nonexistent"}
-            data["updatedAt"] = datetime.utcnow()
-            data = {key: value for key, value in data.items() if value is not None}
-            self._collection.update_one({"name": data["name"]}, {"$set": data})
-
-            # TODO: exception handling
-        except Exception as e:
-            print(e)
-
-    def add_tokens_by_name(self, recipe_name: str, recipe_tokens: list[str]) -> None:
+    def update_recipe_by_id(self, recipe_id: str, update_data: dict):
         try:
-            update_result = self._collection.update_one(
+            update_dict = {"$set": update_data}
+            update_dict["$set"]["updatedAt"] = datetime.utcnow()
+            self._collection.update_one({"name": ObjectId(recipe_id)}, update_dict)
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to update recipe by id! - {str(e)}")
+
+    def add_tokens_by_name(self, recipe_name: str, recipe_tokens: list[str]):
+        try:
+            self._collection.update_one(
                 {"name": recipe_name},
-                {"$addToSet": {"tags": {"$each": recipe_tokens}}}
+                {"$addToSet": {"tokens": {"$each": recipe_tokens}}}
             )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to add tokens to recipe tags! - {str(e)}")
 
-        except Exception as e:
-            print(e)
+    def get_recipe_card_by_id(self, recipe_id: str) -> dict:
+        try:
+            return self._collection.find_one(
+                {"_id": ObjectId(recipe_id)},
+                {
+                    "_id": 0,
+                    "name": 1,
+                    "description": 1,
+                    "authorId": 1,
+                    "title": 1,
+                    "prepTime": 1,
+                    "allergens": 1,
+                    "tags": 1
+                }
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get recipe card! - {str(e)}")
+
+    def add_tokens_by_id(self, recipe_id: str, recipe_tokens: list[str]):
+        try:
+            self._collection.update_one(
+                {"_id": ObjectId(recipe_id)},
+                {"$addToSet": {"tokens": {"$each": recipe_tokens}}}
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to add tokens to recipe tags! - {str(e)}")

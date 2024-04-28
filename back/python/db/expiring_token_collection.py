@@ -1,6 +1,7 @@
 from datetime import datetime
-from bson import ObjectId
+
 import pymongo.errors
+from bson import ObjectId
 
 from db.mongo_collection import MongoCollection
 

@@ -1,9 +1,8 @@
-
 import pymongo.errors
+from bson import ObjectId
 from pymongo import MongoClient
 
 from db.mongo_collection import MongoCollection
-from bson import ObjectId
 
 
 class RatingCollection(MongoCollection):

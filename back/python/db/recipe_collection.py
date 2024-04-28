@@ -1,19 +1,18 @@
-import os
-import sys
+from datetime import datetime
 
-import pymongo.errors
+import pymongo
+from bson import ObjectId
 from pymongo import MongoClient
+from pymongo import errors
 
 from db.mongo_collection import MongoCollection
-from bson import ObjectId
-from datetime import datetime
 
 
 class RecipeCollection(MongoCollection):
-
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.recipe
+        self._db = self._connection.cooking_app
+        self._collection = self._db.recipe
 
     def get_recipe_by_name(self, recipe_name: str):
         try:
@@ -51,6 +50,15 @@ class RecipeCollection(MongoCollection):
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to insert recipe! - {str(e)}")
 
+    def get_recipe_id_by_name(self, recipe_name: str) -> ObjectId:
+        try:
+            return self._collection.find_one(
+                {"name": recipe_name},
+                {"_id": 1}
+            )["_id"]
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get recipe id by name! - {str(e)}")
+
     def delete_recipe_by_id(self, recipe_id: str):
         try:
             self._collection.delete_one({"_id": ObjectId(recipe_id)})
@@ -87,6 +95,24 @@ class RecipeCollection(MongoCollection):
             )
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to add tokens to recipe tags! - {str(e)}")
+
+    def get_recipe_card_by_id(self, recipe_id: str) -> dict:
+        try:
+            return self._collection.find_one(
+                {"_id": ObjectId(recipe_id)},
+                {
+                    "_id": 0,
+                    "name": 1,
+                    "description": 1,
+                    "authorId": 1,
+                    "title": 1,
+                    "prepTime": 1,
+                    "allergens": 1,
+                    "tags": 1
+                }
+            )
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get recipe card! - {str(e)}")
 
     def add_tokens_by_id(self, recipe_id: str, recipe_tokens: list[str]):
         try:

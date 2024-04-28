@@ -1,7 +1,9 @@
 import { ThemeContext, themes } from '../../context'
 import React, { useEffect, useState } from 'react'
-
 import './index.css'
+import { FaRegHeart, FaRegUser, FaRegMoon, FaBars } from 'react-icons/fa6'
+import { IoSettingsOutline, IoSearch } from 'react-icons/io5'
+import { FaTimes } from 'react-icons/fa'
 
 const Navbar = () => {
     const heart = () => {
@@ -18,12 +20,12 @@ const Navbar = () => {
 
     const search = () => {
         const searchInput = Array.from(
-            document.getElementsByClassName('search')
+            document.getElementsByClassName('nav-search')
         )
             .filter(
                 (element) => window.getComputedStyle(element).display != 'none'
             )[0]
-            .querySelector('.search__input')
+            .querySelector('.nav-search-input')
 
         console.log(searchInput.value)
     }
@@ -70,6 +72,13 @@ const Navbar = () => {
         }
     }
 
+    const [activeDropdown, setActiveDropdown] = useState('nav-dropdown')
+
+    const toggleDropdown = () => {
+        activeDropdown === 'nav-dropdown'
+            ? setActiveDropdown('nav-dropdown nav-active')
+            : setActiveDropdown('nav-dropdown')
+    }
     return (
         <ThemeContext.Provider
             value={{
@@ -78,19 +87,16 @@ const Navbar = () => {
             }}
         >
             <nav className="nav" id="nav">
-                <a href="/" className="nav__brand">
-                    <span>Cooking</span>
-                    <span>App</span>
-                    <img src="./logo.png"></img>
+                <a href="/" className="nav-brand">
+                    <span className="nav-brand-span">Cooking</span>
+                    <span className="nav-brand-span">App</span>
+                    <img className="nav-brand-img" src="./logo.png"></img>
                 </a>
 
-                <div className="search" id="search">
-                    <i
-                        className="fa-solid fa-magnifying-glass search__icon"
-                        onClick={search}
-                    ></i>
+                <div className="nav-search" id="search">
+                    <IoSearch className="nav-search-icon" onClick={search} />
                     <input
-                        className="search__input"
+                        className="nav-search-input"
                         placeholder="Search"
                         type="text"
                         id="searchInput"
@@ -98,18 +104,46 @@ const Navbar = () => {
                     />
                 </div>
 
-                <div className="nav__buttons">
-                    <button className="nav__button" onClick={toggleTheme}>
-                        <i className="fa-regular fa-moon"></i>
+                <div className="nav-buttons">
+                    <button className="nav-button" onClick={toggleTheme}>
+                        <FaRegMoon />
                     </button>
-                    <button className="nav__button" onClick={settings}>
-                        <i className="fa-solid fa-gear"></i>
+                    <button className="nav-button" onClick={settings}>
+                        <IoSettingsOutline />
                     </button>
-                    <button className="nav__button" onClick={profile}>
-                        <i className="fa-regular fa-user"></i>
+                    <button className="nav-button" onClick={profile}>
+                        <FaRegUser />
                     </button>
-                    <button className="nav__button" onClick={heart}>
-                        <i className="fa-regular fa-heart"></i>
+                    <button className="nav-button" onClick={heart}>
+                        <FaRegHeart />
+                    </button>
+                </div>
+
+                {/* hamburger menu */}
+                <button className="nav-button-theme" onClick={toggleTheme}>
+                    <FaRegMoon />
+                </button>
+
+                <button className="nav-dropdown-icon" onClick={toggleDropdown}>
+                    {activeDropdown === 'nav-dropdown' ? (
+                        <FaBars />
+                    ) : (
+                        <FaTimes />
+                    )}
+                </button>
+
+                <div className={activeDropdown}>
+                    <button className="nav-button" onClick={settings}>
+                        <IoSettingsOutline />
+                        <p>Setari</p>
+                    </button>
+                    <button className="nav-button" onClick={profile}>
+                        <FaRegUser />
+                        <p>Profilul tau</p>
+                    </button>
+                    <button className="nav-button" onClick={heart}>
+                        <FaRegHeart />
+                        <p>Favorite</p>
                     </button>
                 </div>
             </nav>

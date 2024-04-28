@@ -16,8 +16,20 @@ expiring_token_db = ExpiringTokenCollection()
 
 
 def register(data: schemas.RegisterData):
+    # TODO: more robust error handling
     password = data.password
     hash_data = hash.hash_password(password)
+
+    # validation checks
+    if "@" not in data.email:
+        return {"error": "invalid email address"}
+
+    # uniqueness checks
+    if user_db.get_user_by_username(data.username) is not None:
+        return {"error": "username already exists"}
+
+    if user_db.get_user_by_mail(data.email) is not None:
+        return {"error": "email already exists"}
 
     user = {
         "name": generate_name(),
@@ -43,12 +55,6 @@ def register(data: schemas.RegisterData):
     }
 
     token = generate_token()
-
-    # TODO: more robust error handling
-    if user_db.get_user_by_username(user["username"]) is not None:
-        return {"error": "username already exists"}
-    if user_db.get_user_by_mail(user["email"]) is not None:
-        return {"error": "email already exists"}
 
     try:
         id_user = user_db.insert_user(user)

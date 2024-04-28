@@ -1,11 +1,10 @@
-import random
 from authentication.utils.base_36_convert import base_36_encode
+from db.counters_collection import CountersCollection
 
-
-# TODO: CHANGE TO DB COUNTER (find_one_and_update)
-count = random.randint(10000000000000, 100000000000000000000)
+counters_db = CountersCollection()
 
 
 def generate_name():
-    name = base_36_encode(count)
+    value = counters_db.get_name_incrementor_value()
+    name = base_36_encode(value)
     return name

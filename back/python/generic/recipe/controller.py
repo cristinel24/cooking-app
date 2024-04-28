@@ -33,8 +33,8 @@ async def get_recipe_ratings(parent_name: str, start: int, offset: int):
 
 
 @router.get("/rating_replies/{parent_name}")
-async def get_rating_replies(data: schemas.GetRatingsData):
-    return services.get_rating_replies(data)
+async def get_rating_replies(parent_name: str, start: int, offset: int):
+    return services.get_rating_replies(schemas.GetRatingsData(parent_name=parent_name, start=start, offset=offset))
 
 
 @router.post("/add_rating")

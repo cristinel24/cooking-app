@@ -52,9 +52,20 @@ def get_recipe_ratings(data: schemas.GetRatingsData) -> list[dict]:
         raise Exception(f"Failed to get recipe ratings: {str(e)}")
 
 
-def get_rating_replies(data: schemas.GetRatingsData) -> list[dict[str, Any]]:
+def get_rating_replies(data: schemas.GetRatingsData) -> list[dict]:
     try:
-        comments = rating_coll.get_comments_by_rating_id(data.parent_name, data.start, data.offset)
+        rating_id = rating_coll.get_rating_by_name(data.parent_name)["_id"]
+        comments_cursor = rating_coll.get_comments_by_rating_id(rating_id, data.start, data.offset)
+
+        def cursor_to_dict(cursor):
+            result = []
+            for doc in cursor:
+                result.append(dict(doc))
+            return result
+
+        comments = cursor_to_dict(comments_cursor)
+        print(comments)
+
         comment_data = []
         for comment in comments:
             comment_data.append(

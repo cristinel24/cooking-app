@@ -1,5 +1,5 @@
 .page-container {
-    min-height: calc(100vh - 79px - 80px);
+    min-height: calc(100vh - var(--nav-height) - 80px);
     display: flex;
     flex-direction: column;
 }

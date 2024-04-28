@@ -12,7 +12,7 @@ class RecipeCollection(MongoCollection):
         super().__init__(connection)
         self._collection = self._connection.cooking_app.recipe
 
-    def get_recipe_by_name(self, recipe_name: str):
+    def get_recipe_by_name(self, recipe_name: str) -> dict:
         try:
             item = self._collection.find_one({"name": recipe_name})
         # TODO: exception handling
@@ -20,7 +20,7 @@ class RecipeCollection(MongoCollection):
             raise Exception(f"Failed to get recipe by name! - {str(e)}")
         return item
 
-    def get_recipe_by_id(self, recipe_id: str):
+    def get_recipe_by_id(self, recipe_id: str) -> dict:
         try:
             item = self._collection.find_one({"_id": ObjectId(recipe_id)})
         # TODO: exception handling

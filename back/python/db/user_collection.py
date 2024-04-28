@@ -23,12 +23,11 @@ class UserCollection(MongoCollection):
         except errors.PyMongoError as e:
             raise Exception(f"Failed to get user by username! - {str(e)}")
 
-
     def get_user_by_name(self, user_name: str) -> dict:
         try:
             item = self._collection.find_one({"name": user_name})
         # TODO: exception handling
-        except errors.PyMongoError  as e:
+        except errors.PyMongoError as e:
             raise Exception(f"Failed to get user by name! - {str(e)}")
         return item
 
@@ -36,7 +35,7 @@ class UserCollection(MongoCollection):
         try:
             item = self._collection.find_one({"_id": ObjectId(user_id)})
         # TODO: exception handling
-        except errors.PyMongoError  as e:
+        except errors.PyMongoError as e:
             raise Exception(f"Failed to get user by id! - {str(e)}")
         return item
 

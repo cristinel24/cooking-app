@@ -30,16 +30,16 @@ class RatingCollection(MongoCollection):
             ratings = self._collection.find({"recipeId": ObjectId(recipe_id)}).skip(start).limit(limit)
             if not ratings:
                 raise Exception("No ratings found for the provided recipe_id!")
-            return ratings
+            return list(ratings)
         except errors.PyMongoError as e:
             raise Exception(f"Failed to get ratings by recipe id! - {str(e)}")
 
-    def get_comments_by_rating_id(self, rating_id: str, start: int, limit: int) -> list[str]:
+    def get_comments_by_rating_id(self, rating_id: str, start: int, limit: int):
         try:
             items = self._collection.find({"parentId": ObjectId(rating_id)}).skip(start).limit(limit)
             if not items:
                 raise Exception("No comments found for the provided rating_id!")
-            return items
+            return list(items)
         except errors.PyMongoError as e:
             raise Exception(f"Failed to get comments by rating id! - {str(e)}")
 

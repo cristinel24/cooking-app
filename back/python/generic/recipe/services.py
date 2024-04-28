@@ -30,25 +30,42 @@ def delete_recipe(name: str):
     pass
 
 
-def get_recipe_ratings(data: schemas.GetRatingsData, limit: int) -> list[str]:
+def get_recipe_ratings(data: schemas.GetRatingsData) -> list[dict]:
     try:
         recipe_id = recipe_coll.get_recipe_by_name(data.parent_name)["_id"]
         if not recipe_id:
             raise Exception("Recipe not found")
 
-        ratings = rating_coll.get_ratings_by_recipe_id(recipe_id, limit=limit)
-
-        rating_ids = [str(rating["_id"]) for rating in ratings]
-
-        return rating_ids
+        ratings = rating_coll.get_ratings_by_recipe_id(recipe_id, data.start, data.offset)
+        rating_data = []
+        for rating in ratings:
+            rating_data.append(
+                {
+                    "parent_name": rating["name"],
+                    "recipe_name": recipe_coll.get_recipe_by_id(rating["recipeId"])["name"],
+                    "rating": rating["rating"],
+                    "description": rating["description"],
+                }
+            )
+        return ratings
     except Exception as e:
         raise Exception(f"Failed to get recipe ratings: {str(e)}")
 
 
-def get_rating_replies(data: schemas.GetRatingsData, limit: int) -> list[str]:
+def get_rating_replies(data: schemas.GetRatingsData) -> list[dict]:
     try:
-        comments = rating_coll.get_comments_by_rating_id(data.parent_name, limit=limit)
-        return comments
+        comments = rating_coll.get_comments_by_rating_id(data.parent_name, data.start, data.offset)
+        comment_data = []
+        for comment in comments:
+            comment_data.append(
+                {
+                    "parent_name": comment["name"],
+                    "recipe_name": recipe_coll.get_recipe_by_id(comment["recipeId"])["name"],
+                    "rating": comment["rating"],
+                    "description": comment["description"],
+                }
+            )
+        return comment_data
     except Exception as e:
         raise Exception(f"Failed to get rating replies: {str(e)}")
 

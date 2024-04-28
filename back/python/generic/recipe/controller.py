@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Path, Query
+from fastapi import APIRouter
 
 from recipe import schemas, services
 
@@ -28,15 +28,15 @@ async def delete_recipe(name: str):
 
 
 @router.get("/recipe_ratings/{parent_name}")
-async def get_recipe_ratings(parent_name: str, start: int = Query(default=0), offset: int = Query(default=10)):
+async def get_recipe_ratings(parent_name: str, start: int, offset: int):
     ratings_data = schemas.GetRatingsData(parent_name=parent_name, start=start, offset=offset)
-    ratings = services.get_recipe_ratings(ratings_data, offset-start)
+    ratings = services.get_recipe_ratings(ratings_data)
     return ratings
 
 
 @router.get("/rating_replies/{parent_name}")
 async def get_rating_replies(data: schemas.GetRatingsData):
-    return services.get_rating_replies(data, data.offset - data.start)
+    return services.get_rating_replies(data)
 
 
 @router.post("/add_rating")
@@ -45,7 +45,7 @@ async def add_rating(data: schemas.RatingData):
 
 
 @router.patch("/edit_rating/{parent_name}")
-async def edit_rating(data: schemas.EditRatingData, parent_name: str = Path(...)):
+async def edit_rating(data: schemas.EditRatingData, parent_name: str):
     return services.edit_rating(data, parent_name)
 
 

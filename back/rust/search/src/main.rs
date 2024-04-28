@@ -9,7 +9,7 @@ use crate::{
     },
     repository::cooking_app::CookingAppRepository,
     context::{
-        CookingAppContext, EnvironmentVariables, AI_SERVER_VAR, CONTEXT, MONGO_URI_VAR,
+        CookingAppContext, EnvironmentVariables, AI_SERVER_VAR, CONTEXT, MONGO_URI_VAR, AUTH_SERVER_VAR
     },
     endpoints::{
         search_ai::search_ai,
@@ -54,8 +54,9 @@ async fn main() -> Result<()> {
         EnvironmentVariables::default()
     } else {
         EnvironmentVariables {
-            mongo_db: std::env::var(MONGO_URI_VAR)?,
+            mongo_server: std::env::var(MONGO_URI_VAR)?,
             ai_server: std::env::var(AI_SERVER_VAR)?,
+            auth_server: std::env::var(AUTH_SERVER_VAR)?,
             port: std::env::var(AI_SERVER_VAR)?.parse::<u32>()?,
         }
     };
@@ -63,7 +64,7 @@ async fn main() -> Result<()> {
 
     CONTEXT
         .set(CookingAppContext {
-            repository: CookingAppRepository::new(&env_variables.mongo_db).await?,
+            repository: CookingAppRepository::new(&env_variables.mongo_server).await?,
             env: env_variables,
         })
         .map_or_else(

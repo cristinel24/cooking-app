@@ -1,5 +1,5 @@
 use crate::{
-    get_context,
+    get_endpoint_context,
     endpoints::{
         common::normalize_recipe,
         EndpointResponse, ErrorResponse, InputPayload, SearchResponse, INTERNAL_SERVER_ERROR,
@@ -23,7 +23,7 @@ pub async fn search_general(
     payload: JsonBody<InputPayload>,
     res: &mut Response,
 ) -> Json<EndpointResponse<Recipe>> {
-    let context = get_context!(res);
+    let context = get_endpoint_context!(res);
     let payload = payload.into_inner();
 
     let users = match context.repository.user_collection.find_by_name(&payload.data).await {

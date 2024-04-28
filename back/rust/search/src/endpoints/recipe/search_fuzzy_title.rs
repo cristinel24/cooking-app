@@ -1,5 +1,5 @@
 use crate::{
-    get_context,
+    get_endpoint_context,
     context::get_global_context,
     endpoints::{EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR},
     repository::{
@@ -25,7 +25,7 @@ pub async fn search_fuzz_title(
     res: &mut Response,
 ) -> Json<EndpointResponse<Recipe>> {
     let title = req.param::<String>("title").unwrap_or_default();
-    let context = get_context!(res);
+    let context = get_endpoint_context!(res);
 
     return match context.repository.recipe_collection.find_by_title(title).await {
         Ok(mut value) => {

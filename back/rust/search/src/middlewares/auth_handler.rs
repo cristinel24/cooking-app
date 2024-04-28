@@ -1,9 +1,11 @@
-use crate::{
-    context::get_global_context,
-    repository::service::expiring_token::Repository
-};
+use crate::context::get_global_context;
 use salvo::{handler, http::StatusCode, Request, Response};
-use tracing::error;
+use std::time::Duration;
+use reqwest::Client;
+use tracing::{error, info};
+use anyhow::Result;
+
+const TIMEOUT_SECS: u64 = 30u64;
 
 #[handler]
 pub async fn auth_handler(req: &mut Request, res: &mut Response) {
@@ -18,22 +20,22 @@ pub async fn auth_handler(req: &mut Request, res: &mut Response) {
                     return;
                 }
             };
-            match context
-                .repository
-                .expiring_token_collection
-                .is_valid(key, "session")
-                .await
-            {
-                Ok(value) => {
-                    if value {
-                        return;
-                    }
-                    error!("Error: Authorization Token Invalid!");
-                }
-                Err(e) => error!("Error: {e}"),
+            if let Ok(result) = is_valid(key, &context.env.auth_server).await {
+                if result { return; }
             }
         }
     }
+    info!("Unauthorized");
     res.status_code(StatusCode::UNAUTHORIZED)
         .render("Unauthorized");
+}
+
+async fn is_valid(token: &str, server: &str) -> Result<bool> {
+    let response = Client::builder()
+        .build()?
+        .get(format!("{server}/api/auth/is_authenticated/{token}"))
+        .timeout(Duration::from_secs(TIMEOUT_SECS))
+        .send().await?;
+
+    Ok(response.json::<bool>().await?)
 }

@@ -1,5 +1,5 @@
 use crate::{
-    get_context,
+    get_endpoint_context,
     context::get_global_context,
     endpoints::{EndpointResponse, ErrorResponse},
     repository::{models::user::User, service::user::Repository as UserRepository},
@@ -19,7 +19,7 @@ use tracing::error;
 )]
 pub async fn search_users(res: &mut Response, req: &mut Request) -> Json<EndpointResponse<User>> {
     let id = req.param::<String>("name").unwrap_or_default();
-    let context = get_context!(res);
+    let context = get_endpoint_context!(res);
 
     return match context.repository.user_collection.find_by_name(&id).await {
         Ok(value) => Json(EndpointResponse::Success(value)),

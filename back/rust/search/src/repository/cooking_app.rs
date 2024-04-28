@@ -1,4 +1,4 @@
-use crate::repository::service::{allergen, expiring_token, recipe, tag, user, DATABASE_NAME};
+use crate::repository::service::{allergen, recipe, tag, user, DATABASE_NAME};
 use anyhow::Result;
 use mongodb::options::{ClientOptions, ConnectionString, ReadPreference, ReadPreferenceOptions};
 use mongodb::Client;
@@ -8,7 +8,6 @@ pub struct CookingAppRepository {
     pub recipe_collection: recipe::Service,
     pub tag_collection: tag::Service,
     pub allergen_collection: allergen::Service,
-    pub expiring_token_collection: expiring_token::Service,
 }
 
 impl CookingAppRepository {
@@ -20,7 +19,6 @@ impl CookingAppRepository {
             recipe_collection: recipe::Service::new(&client),
             tag_collection: tag::Service::new(&client),
             allergen_collection: allergen::Service::new(&client),
-            expiring_token_collection: expiring_token::Service::new(&client),
         })
     }
 

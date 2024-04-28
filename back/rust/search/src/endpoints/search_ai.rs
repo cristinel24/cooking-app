@@ -1,5 +1,5 @@
 use crate::{
-    get_context,
+    get_endpoint_context,
     context::get_global_context,
     endpoints::{
         common::normalize_recipe, EndpointResponse, ErrorResponse, InputPayload, SearchResponse,
@@ -27,7 +27,7 @@ pub async fn search_ai(
     payload: JsonBody<InputPayload>,
     res: &mut Response,
 ) -> Json<EndpointResponse<Recipe>> {
-    let context = get_context!(res);
+    let context = get_endpoint_context!(res);
 
     let tokens = match get_ai_tokens(&payload.data, &context.env.ai_server).await {
         Ok(value) => value,

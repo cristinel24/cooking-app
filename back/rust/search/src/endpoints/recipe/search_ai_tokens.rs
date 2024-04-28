@@ -1,5 +1,5 @@
 use crate::{
-    get_context,
+    get_endpoint_context,
     context::get_global_context,
     endpoints::{
         recipe::AiTokensPayload,
@@ -37,7 +37,7 @@ pub async fn search_ai_tokens(
     ai_tokens: JsonBody<AiTokensPayload>,
     res: &mut Response,
 ) -> Json<EndpointResponse<Recipe>> {
-    let context = get_context!(res);
+    let context = get_endpoint_context!(res);
 
     return match context
         .repository

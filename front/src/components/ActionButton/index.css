@@ -1,4 +1,7 @@
 .action-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     background-color: var(--bkgcolor);
     padding: 15px 20px 15px 20px;
     border-radius: 10px;

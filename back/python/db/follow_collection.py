@@ -1,8 +1,7 @@
 import pymongo
 
 from bson import ObjectId
-from pymongo import MongoClient
-from pymongo import errors
+from pymongo import MongoClient, errors
 
 from db.mongo_collection import MongoCollection
 

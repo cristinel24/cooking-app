@@ -6,7 +6,7 @@
     flex-direction: column;
     color: var(--body);
     background-color: var(--ubody);
-    width: 40vw;
+    width: 400px;
     height: 100vh;
     justify-content: center;
     align-items: center;
@@ -15,14 +15,14 @@
 
 .report-recipe-wrapper-title {
     margin-top: 5rem;
-    margin-bottom: 30px;
+    margin-bottom: 60px;
     font-weight: bolder;
     text-align: center;
     width: 100%;
 }
 
 .report-recipe-wrapper-title p {
-    font-size: 2.75rem;
+    font-size: 2.25rem;
     font-weight: bolder;
     margin: auto;
 }
@@ -35,7 +35,7 @@
 
 .report-recipe-inputs label {
     margin-left: 5px;
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: bold;
     text-align: center;
     text-align: left;
@@ -48,120 +48,44 @@
     align-self: center;
 }
 
-.report-recipe-send-button .actionbutton {
+.report-recipe-give-up-button .action-button-icon,
+.report-recipe-send-button .action-button-icon{
+    display: none;
+}
+
+.report-recipe-send-button .action-button {
     background-color: var(--body);
     margin-bottom: 20px;
-    padding: 20px;
-    width: 10vw;
-    font-size: 1rem;
-    align-items: center;
+    padding: 15px;
+    width: 7rem;
 }
 
-.report-recipe-send-button .actionbutton_icon{
-    margin-bottom: -2px;
+.report-recipe-send-button .action-button-text{
+    font-size: 0.7rem;
+    text-align: center;
+    margin: auto;
 }
 
-.report-recipe-give-up-button .actionbutton {
+.report-recipe-give-up-button .action-button {
     background-color: var(--neutru);
-    padding: 15px 10px 15px 10px;
-    width: 10vw;
-    margin-top: 5px;
+    padding: 15px;
+    width: 7rem;
     margin-left: 50px;
-    font-size: 0.9rem;
     border:none;
 }
 
-.report-recipe-give-up-button .actionbutton_icon{
-    margin-bottom: -2px;
+.report-recipe-give-up-button .action-button-text{
+    font-size: 0.7rem;
+    text-align: center;
+    margin: auto;
 }
 
-.report-recipe-send-button .actionbutton:hover{
+.report-recipe-send-button .action-button:hover{
     background-color: var(--bkgcolor);
 }
 
-.report-recipe-give-up-button .actionbutton:hover{
+.report-recipe-give-up-button .action-button:hover{
     background-color: var(--bkgcolor);
-}
-
-@media screen and (min-width: 769px) and (max-width: 1100px) {
-    .report-recipe-wrapper {
-        width: 50vw;
-    }
-    
-    .report-recipe-wrapper-title{
-        margin-bottom: 60px;
-    }
-
-    .report-recipe-wrapper-title p {
-        font-size: 2rem;
-    }
-
-    .report-recipe-inputs label {
-        font-size: 1rem;
-    }
-
-    .report-recipe-send-button .actionbutton_icon {
-        display: none;
-    }
-
-    .report-recipe-send-button .actionbutton{
-        padding: 15px;
-        width: 15vw;
-        font-size:1rem;
-    }
-
-    .report-recipe-give-up-button .actionbutton{
-        width: 15vw;
-        padding: 12px 10px 12px 10px;
-        font-size: 0.9rem;
-    }
-
-    .report-recipe-give-up-button .actionbutton_icon {
-        display: none;
-    }
-}
-
-@media screen and (max-width: 768px) and (min-width: 601px) {
-    .report-recipe-wrapper {
-        width: 50vw;
-    }
-
-    .report-recipe-wrapper-title{
-        margin-bottom: 60px;
-    }
-
-    .report-recipe-wrapper-title p {
-        font-size: 2rem;
-    }
-
-    .report-recipe-inputs label {
-        font-size: 1rem;
-    }
-
-    .report-recipe-send-button .actionbutton_icon {
-        display: none;
-    }
-
-    .report-recipe-send-button .actionbutton{
-        padding: 15px;
-        width: 15vw;
-    }
-
-    .report-recipe-send-button .actionbutton_text{
-        font-size: 0.8rem;
-    }
-
-    .report-recipe-give-up-button .actionbutton{
-        width: 15vw;
-        padding: 12px 10px 12px 10px;
-    }
-
-    .report-recipe-give-up-button .actionbutton_text{
-        font-size: 0.7rem;
-    }
-    .report-recipe-give-up-button .actionbutton_icon {
-        display: none;
-    }
 }
 
 @media screen and (max-width: 600px) and (min-width: 481px) {
@@ -169,41 +93,8 @@
         width: 100vw;
     }
 
-    .report-recipe-wrapper-title{
-        margin-bottom: 60px;
-    }
-
-    .report-recipe-wrapper-title p {
-        font-size: 2rem;
-    }
-
     .report-recipe-inputs label {
-        font-size: 1rem;
-    }
-
-    .report-recipe-send-button .actionbutton{
-        width:25vw; 
-        padding: 15px;
-    }
-    .report-recipe-give-up-button .actionbutton{
-        width:25vw;
-        padding: 12px 10px 12px 10px;
-    }
-
-    .report-recipe-send-button .actionbutton_icon {
-        display: none;
-    }
-
-    .report-recipe-give-up-button .actionbutton_icon {
-        display: none;
-    }
-
-    .report-recipe-send-button .actionbutton_text{
-        font-size: 0.8rem;
-    }
-
-    .report-recipe-give-up-button .actionbutton_text{
-        font-size: 0.7rem;
+        font-size: 1.15rem;
     }
 }
 
@@ -213,37 +104,10 @@
     }
 
     .report-recipe-wrapper-title p {
-        font-size: 2rem;
-        margin-bottom: 30px;
+        font-size: 1.75rem;
     }
 
     .report-recipe-inputs label {
-        font-size: 0.8rem;
-    }
- 
-    .report-recipe-send-button .actionbutton{
-        width:25vw; 
-        padding: 15px;
-    }
-    .report-recipe-give-up-button .actionbutton{
-        width:25vw;
-        padding: 12px 10px 12px 10px;
-        margin-left: 30px;
-    }
-
-    .report-recipe-send-button .actionbutton_icon {
-        display: none;
-    }
-
-    .report-recipe-give-up-button .actionbutton_icon {
-        display: none;
-    }
-
-    .report-recipe-send-button .actionbutton_text{
-        font-size: 0.7rem;
-    }
-
-    .report-recipe-give-up-button .actionbutton_text{
-        font-size: 0.6rem;
+        font-size:1rem;
     }
 }

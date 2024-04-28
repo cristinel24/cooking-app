@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from generic.common.utils import parse_json, to_lower_camel_case
 from db.follow_collection import FollowCollection
 from db.recipe_collection import RecipeCollection
@@ -24,7 +24,7 @@ async def change_account_data(user_name: str, data: AccountChangeData) -> dict:
     for key, value in data:
         if value is not None:
             updated_fields[to_lower_camel_case(key)] = value
-    updated_fields["updatedAt"] = datetime.utcnow()
+    updated_fields["updatedAt"] = datetime.now(UTC)
     user_collection.update_user_by_name(user_name, updated_fields)
     return {"ok": 1}
 
@@ -38,7 +38,8 @@ async def save_recipe(user_name: str, recipe_name: str) -> dict:
 
 
 async def unsave_recipe(user_name: str, recipe_name: str) -> dict:
-    user_collection.delete_saved_recipe_by_name(user_name, recipe_name)
+    recipe_id = recipe_collection.get_recipe_id_by_name(recipe_name)
+    user_collection.delete_saved_recipe_by_name(user_name, recipe_id)
     return {"ok": 1}
 
 

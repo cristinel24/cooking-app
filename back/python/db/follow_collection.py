@@ -18,20 +18,21 @@ class FollowCollection(MongoCollection):
 
     def get_following_by_user_id(self, user_id: ObjectId, start: int, count: int) -> list:
         followings = list(
-                        self._collection
-                        .find({"userId": user_id}, {"_id": 0, "followsId": 1})
-                        .skip(start)
-                        .limit(count)
-                        )
+            self._collection
+            .find({"userId": user_id}, {"_id": 0, "followsId": 1})
+            .skip(start)
+            .limit(count)
+        )
         followings = map(lambda item: item["followsId"], followings)
         return list(followings)
 
     def get_followers_by_user_id(self, user_id: ObjectId, start: int, count: int) -> list:
-        followers = list(self._collection
-                         .find({"followsId": user_id}, {"_id": 0, "userId": 1})
-                         .skip(start)
-                         .limit(count)
-                         )
+        followers = list(
+            self._collection
+            .find({"followsId": user_id}, {"_id": 0, "userId": 1})
+            .skip(start)
+            .limit(count)
+        )
         followers = map(lambda item: item["userId"], followers)
         return list(followers)
 

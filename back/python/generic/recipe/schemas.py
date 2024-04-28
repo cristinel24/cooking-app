@@ -1,8 +1,6 @@
 from pydantic import BaseModel, conint
 from typing import Optional
 
-import db.mongo_collection
-
 
 class RecipeData(BaseModel):
     name: str

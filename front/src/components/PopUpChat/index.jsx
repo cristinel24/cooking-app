@@ -11,24 +11,24 @@ function PopUpChat() {
     }
 
     return (
-        <div className="popUpChat-Container">
+        <div className="pop-up-chat-container">
             <img
                 src={botLogo}
                 alt="Logo"
-                className="popUpChat-bot-logo"
+                className="pop-up-chat-bot-logo"
                 onClick={toggleModal}
             />
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={toggleModal}
-                contentLabel="Chat Modal"
-                className="popUpChat-modal-content"
-                overlayClassName="popUpChat-modal-overlay"
+                contentLabel="chat-modal"
+                className="pop-up-chat-modal-content"
+                overlayClassName="pop-up-chat-modal-overlay"
             >
-                <div className="popUpChat-title">
+                <div className="pop-up-chat-title">
                     <h2>Chat</h2>
                 </div>
-                <div className="popUpChat-chat-content">
+                <div className="pop-up-chat-conversation">
                     <p>Chatul tău va fi aici...</p>
                 </div>
             </Modal>

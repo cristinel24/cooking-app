@@ -1,10 +1,34 @@
 from fastapi import APIRouter
-
 from recipe import schemas, services
 
 router = APIRouter(
     prefix="/api"
 )
+
+
+@router.get("/get_recipe_card/{recipe_name}")
+async def get_recipe_card(recipe_name: str):
+    return services.get_recipe_card(recipe_name)
+
+
+@router.get("/get_recipe/{recipe_name}")
+async def get_recipe(recipe_name: str):
+    return services.get_recipe(recipe_name)
+
+
+@router.post("/create_recipe")
+async def create_recipe(data: dict):
+    return services.create_recipe(data)
+
+
+@router.patch("/edit_recipe/{recipe_name}")
+async def update_recipe(data: schemas.RecipeData):
+    services.update_recipe(dict(data))
+
+
+@router.delete("/delete_recipe/{name}")
+async def delete_recipe(name: str):
+    services.delete_recipe(name)
 
 
 @router.get("/recipe_ratings/{parent_name}")

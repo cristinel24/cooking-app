@@ -14,5 +14,12 @@ class TokenizeRecipeSchema(BaseModel):
     tags: Optional[list[str]] = []
     allergens: Optional[list[str]] = []
     description: str
-    ingredients: list[  str]
+    ingredients: list[str]
     prepare_steps: list[str]
+
+
+class ReplaceIngredientSchema(BaseModel):
+    ingredient: str
+    user_name: str
+    recipe_name: str
+    

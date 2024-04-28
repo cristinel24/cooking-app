@@ -1,14 +1,33 @@
 from datetime import datetime
-from typing import Any
-
 from bson import ObjectId
 
 from recipe import schemas
-from db import recipe_collection
-from db import rating_collection
+from db import recipe_collection,rating_collection
 
 rating_coll = rating_collection.RatingCollection()
 recipe_coll = recipe_collection.RecipeCollection()
+
+
+def get_recipe(recipe_name: str) -> dict:
+    return recipe_coll.get_recipe_by_name(recipe_name)
+
+
+def get_recipe_card(recipe_name: str) -> dict:
+    return recipe_coll.get_recipe_card(recipe_name)
+
+def add_tokens(recipe_name: str, recipe_tokens: list[str]) -> None:
+    recipe_coll.add_tokens_by_name(recipe_name, recipe_tokens)
+
+def create_recipe(data) -> None:
+    recipe_coll.insert_recipe(data)
+
+
+def update_recipe(data: dict) -> None:
+    recipe_coll.update_recipe_by_name(data)
+
+
+def delete_recipe(name: str):
+    return recipe_coll.delete_recipe_by_name(name)
 
 def get_recipe_ratings(data: schemas.GetRatingsData) -> list[dict]:
     try:

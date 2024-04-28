@@ -20,11 +20,17 @@ def register(data: schemas.RegisterData):
     password = data.password
     hash_data = hash.hash_password(password)
 
+    # validation checks
     if "@" not in data.email:
         return {"error": "invalid email address"}
 
+    # uniqueness checks
     if user_db.get_user_by_username(data.username) is not None:
         return {"error": "username already exists"}
+
+    if user_db.get_user_by_mail(data.email) is not None:
+        # send email along the lines of "someone is trying to register using your email address"
+        return {"message": "an email has been sent to the email address for verification"}
 
     user = {
         "name": generate_name(),
@@ -58,7 +64,7 @@ def register(data: schemas.RegisterData):
         return {"error": "invalid user data"}
 
     expiring_token_db.insert_token(token, ObjectId(id_user), "emailConfirm")
-    return {"message": "user registered successfully"}
+    return {"message": "an email has been sent to the email address for verification"}
 
 
 def verify(token):

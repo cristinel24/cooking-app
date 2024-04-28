@@ -1,5 +1,13 @@
 # Change Log
 
+### 28/04/2024
+
+* added `mainImage` field to `recipe` collection (must be a string of maxLength=2048, is required), removed partial filter expression on authorId and title
+
+* removed tags field from `user`
+
+* made script slower (increased number of users and recipes generated)
+
 ### 27/04/2024
 
 * Added children to ratings as array of objectIds (a child rating must have a value equal to 0)

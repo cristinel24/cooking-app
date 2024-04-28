@@ -4,17 +4,16 @@ from pprint import pprint
 
 import bson
 import pymongo
-from bson import ObjectId
 from faker import Faker
 from faker_food import FoodProvider
 from pymongo import MongoClient, IndexModel, errors
 
-print("Connecting to mongodb...", end="")
+print("Connecting to kitchen db...".ljust(36, '.'), end="")
 client = MongoClient("mongodb://localhost:27017/?directConnection=true")
 db = client["cooking_app"]
 print("Done")
 
-print("Dropping previous collections...", end="")
+print("Cleaning the tables...".ljust(36, '.'), end="")
 db.drop_collection("allergen")
 db.drop_collection("counters")
 db.drop_collection("expiring_token")
@@ -28,7 +27,7 @@ db.drop_collection("tag")
 db.drop_collection("user")
 print("Done")
 
-print("Initializing collections...", end="")
+print("Initializing collections...".ljust(36, '.'), end="")
 # validations
 db.create_collection("allergen")
 db.command(
@@ -334,6 +333,7 @@ db.command(
                 "ingredients",
                 "ratingSum",
                 "ratingCount",
+                "mainImage",
             ],
             "properties": {
                 "_id": {
@@ -437,6 +437,11 @@ db.command(
                         "description": "items must be objectIds to ratings",
                     }
                 },
+                "mainImage": {
+                    "bsonType": "string",
+                    "description": "must be a string and is required",
+                    "maxLength": 2048,
+                },
             },
             "additionalProperties": False,
         },
@@ -449,15 +454,6 @@ recipe_collection.create_indexes([
     IndexModel([("authorId", pymongo.HASHED)]),
     IndexModel(["tokens"]),
     IndexModel(["prepTime"]),
-    IndexModel(
-        ["authorId", "title"],
-        unique=True,
-        partialFilterExpression={
-            "authorId": {
-                "$type": "objectId"
-            },
-        },
-    ),
     IndexModel(["name"], unique=True),
     IndexModel([("viewCount", pymongo.DESCENDING)]),
 ])
@@ -742,14 +738,6 @@ db.command(
                         "description": "items must be strings",
                     }
                 },
-                "tags": {
-                    "bsonType": "array",
-                    "description": "must be an array",
-                    "items": {
-                        "bsonType": ["string"],
-                        "description": "items must be strings",
-                    }
-                },
                 "ratings": {
                     "bsonType": "array",
                     "description": "must be an array",
@@ -867,11 +855,11 @@ def random_from(arr):
     return arr[random.randint(0, len(arr) - 1)]
 
 
-def random_arr(generator, range_max=params["arr"]["max"], range_min=params["arr"]["min"]):
+def random_arr(generator, range_min=params["arr"]["min"], range_max=params["arr"]["max"]):
     return [generator() for _ in range(random.randint(range_min, range_max))]
 
 
-def random_unique_arr(generator, range_max=params["arr"]["max"], range_min=params["arr"]["min"]):
+def random_unique_arr(generator, range_min=params["arr"]["min"], range_max=params["arr"]["max"]):
     return list(set([generator() for _ in range(random.randint(range_min, range_max))]))
 
 
@@ -1016,11 +1004,10 @@ def get_user():
         "ratingCount": 0,
         "description": fake.text(),
         field: data,
-        "messageHistory": random_arr(fake.text, 10, 0),
-        "searchHistory": random_arr(fake.text, 10, 0),
+        "messageHistory": random_arr(fake.text, 0, 10),
+        "searchHistory": random_arr(fake.text, 0, 10),
         "recipes": [],
-        "allergens": random_unique_arr(get_allergen, 5, 0),
-        "tags": random_unique_arr(get_tag, 3, 0),
+        "allergens": random_unique_arr(get_allergen, 0, 5),
         "ratings": [],
         "sessions": [],
         "savedRecipes": [],
@@ -1046,11 +1033,12 @@ def get_recipe():
         "description": description,
         "prepTime": random.randint(5, 10_000) // 5 * 5,
         "steps": [fake.text() for _ in range(random.randint(1, 15))],
-        "ingredients": random_unique_arr(get_ingredient, 100, 1),
-        "allergens": random_unique_arr(get_allergen, 20, 0),
-        "tags": random_unique_arr(get_tag, 20, 0),
-        "tokens": random_unique_arr(get_ingredient, 100),
+        "ingredients": random_unique_arr(get_ingredient, 1, 100),
+        "allergens": random_unique_arr(get_allergen, 0, 20),
+        "tags": random_unique_arr(get_tag, 0, 20),
+        "tokens": random_unique_arr(get_ingredient, 20, 100),
         "ratings": [],
+        "mainImage": "default-img.png",
     }
 
 
@@ -1078,6 +1066,7 @@ def get_report():
     }
 
 
+print("Preparing the counter...".ljust(36, '.'), end="")
 counter = {
     "type": "nameIncrementor",
     "value": bson.Int64(1),
@@ -1085,21 +1074,18 @@ counter = {
 counter["_id"] = counters_collection.insert_one(
     counter
 ).inserted_id
+print("Done")
 
-print("Cooking up users...", end="")
+print("Stirring up some users...".ljust(36, '.'), end="")
 # generate users
-try:
-    users = random_arr(get_user)
-    users[0]["roles"] &= ~available_roles["banned"]
-    users[0]["roles"] |= available_roles["admin"]
-    user_collection.insert_many(users, False)
-except errors.BulkWriteError as e:
-    pprint(e.details)
-    exit(0)
+users = random_arr(get_user, 150, 300)
+users[0]["roles"] &= ~available_roles["banned"]
+users[0]["roles"] |= available_roles["admin"]
+user_collection.insert_many(users, False)
 users = list(user_collection.find())
 print("Done")
 
-print("Cooking up expiring tokens...", end="")
+print("Baking fresh expiring tokens...".ljust(36, '.'), end="")
 for user in users:
 
     no_sessions = random.randint(0, 2)
@@ -1126,9 +1112,10 @@ for user in users:
     if status == "Pending":
         changeType = "emailChange"
     elif status == "Confirmed":
-        if random.random() < params["login_data"]["reset_state_chance"] / 2:
+        reset_chance = random.random()
+        if reset_chance < params["login_data"]["reset_state_chance"] / 2:
             changeType = "passwordChange"
-        elif random.random() < params["login_data"]["reset_state_chance"]:
+        elif reset_chance < params["login_data"]["reset_state_chance"]:
             changingField = "usernameChange"
     elif status == "Transitioning":
         changeType = "emailConfirm"
@@ -1152,28 +1139,21 @@ for user in users:
 
 print("Done")
 
-print("Cooking up recipes...", end="")
-recipes = random_arr(get_recipe, 200)
+print("Cooking up recipes...".ljust(36, '.'), end="")
+recipes = random_arr(get_recipe, 150, 500)
 
 # associate an author to each recipe
 user_recipe_combinations = set()
 for recipe in recipes:
     user = random_from(users)
-    while is_unconfirmed(user) or (user['_id'], recipe['title']) in user_recipe_combinations:
+    while is_unconfirmed(user) or (user['_id'], recipe['name']) in user_recipe_combinations:
         user = random_from(users)
 
-    user_recipe_combinations.add((user["_id"], recipe['title']))
+    user_recipe_combinations.add((user["_id"], recipe['name']))
     recipe["authorId"] = user["_id"]
 
-print("Associated authors to each recipe...", end="")
-
 # generate recipes
-try:
-    recipe_collection.insert_many(recipes, False)
-except errors.BulkWriteError as e:
-    pprint(e.details)
-    exit(0)
-
+recipe_collection.insert_many(recipes, False)
 recipes = list(recipe_collection.find())
 
 for user in users:
@@ -1190,29 +1170,26 @@ for recipe in recipes:
     )
 print("Done")
 
-print("Cooking up allergens...", end="")
+print("Mixing in allergens...".ljust(36, '.'), end="")
 # generate allergens
 allergen_collection.insert_many(
     [{"allergen": k, "counter": v} for k, v in allergens.items()], False
 )
 print("Done")
 
-print("Cooking up tags...", end="")
+print("Seasoning with tags...".ljust(36, '.'), end="")
 # generate tags
-try:
-    tag_collection.insert_many(
-        [{"tag": k, "counter": v} for k, v in tags.items()], False
-    )
-except errors.BulkWriteError as e:
-    pprint(e.details)
+tag_collection.insert_many(
+    [{"tag": k, "counter": v} for k, v in tags.items()], False
+)
 print("Done")
 
-print("Cooking up external providers...", end="")
+print("Checking up on external providers...".ljust(36, '.'), end="")
 # generate external providers
 external_provider_collection.insert_many(providers, False)
 print("Done")
 
-print("Cooking up follow graph...", end="")
+print("Brewing a flavorful follow graph...".ljust(36, '.'), end="")
 # generate follow graph
 for user in users:
     for follows in users:
@@ -1230,9 +1207,9 @@ for user in users:
         )
 print("Done")
 
-print("Cooking up ratings...", end="")
+print("Topping off with ratings...".ljust(36, '.'), end="")
 # generate ratings
-ratings = random_arr(get_rating, 1_000, 500)
+ratings = random_arr(get_rating, 500, 1_000)
 user_recipe_rating_combinations = set()
 for rating in ratings:
     user = random_from(users)
@@ -1272,7 +1249,7 @@ for rating in ratings:
         },
     )
 
-replies = random_arr(get_rating, 1_000, 500)
+replies = random_arr(get_rating, 500, 1_000)
 for reply in replies:
     reply["rating"] = 0
 
@@ -1292,12 +1269,11 @@ for reply in replies:
         {"$push": {"children": reply["_id"]}},
     )
 
-
 print("Done")
 
-print("Cooking up reports...", end="")
+print("Serving with a side of reports...".ljust(36, '.'), end="")
 # generate reports
-reports = random_arr(get_report)
+reports = random_arr(get_report, 100, 200)
 admins = [user for user in users if user["roles"] & available_roles["admin"]]
 
 for report in reports:
@@ -1326,4 +1302,4 @@ for report in reports:
 report_collection.insert_many(reports)
 print("Done")
 
-print("Population script done")
+print("Dish served")

@@ -67,19 +67,14 @@ def register(data: schemas.RegisterData):
 
 
 def verify(token):
-    expiring_token = expiring_token_db.get_expiring_token_by_value(token)
+    expiring_token = expiring_token_db.get_expiring_token_by_value_and_type(token, ExpiringTokenType.EMAIL_CONFIRM.value)
     if expiring_token is None:
         return {"error": "invalid token"}
-    token_type = expiring_token["type"]
-    if token_type == ExpiringTokenType.EMAIL_CONFIRM.value:
-        user = user_db.get_user_by_id(expiring_token["userId"])
-        user["login"]["emailStatus"] = EmailStatus.CONFIRMED.value
-        user_db.update_user(user)
-        expiring_token_db.remove_token(ObjectId(expiring_token["_id"]))
-        return {"message": "email confirmed"}
-    else:
-        # TODO: handle with FastAPI exception handler, for HTTP status code
-        return {"error": "invalid token type"}
+    user = user_db.get_user_by_id(expiring_token["userId"])
+    user["login"]["emailStatus"] = EmailStatus.CONFIRMED.value
+    user_db.update_user(user)
+    expiring_token_db.remove_token(ObjectId(expiring_token["_id"]))
+    return {"message": "email confirmed"}
 
 
 def login(data: schemas.LoginData):
@@ -114,7 +109,7 @@ def login(data: schemas.LoginData):
     })
     user_db.update_user(user)
 
-    return {"token": session_token_value}
+    return {"session": session_token_value}
 
 
 def change_username(user_name, username):
@@ -135,11 +130,8 @@ def change_password(user_name, password):
 
 def is_authenticated(session_token) -> bool:
     # TODO: exception handling
-    token = expiring_token_db.get_expiring_token_by_value(session_token)
+    token = expiring_token_db.get_expiring_token_by_value_and_type(session_token, ExpiringTokenType.SESSION.value)
     if token is None:
-        return False
-
-    if token["type"] != ExpiringTokenType.SESSION.value:
         return False
 
     user = user_db.get_user_by_id(token["userId"])

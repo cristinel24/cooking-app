@@ -12,7 +12,19 @@ class ExpiringTokenCollection(MongoCollection):
 
     def get_expiring_token_by_value(self, value: str) -> dict:
         try:
-            item = self._collection.find_one({"value": value})
+            item = self._collection.find_one({
+                "value": value
+            })
+        except pymongo.errors.PyMongoError as e:
+            raise Exception(f"Failed to get token! - {str(e)}")
+        return item
+
+    def get_expiring_token_by_value_and_type(self, value: str, token_type: str) -> dict:
+        try:
+            item = self._collection.find_one({
+                "value": value,
+                "type": token_type
+            })
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to get token! - {str(e)}")
         return item

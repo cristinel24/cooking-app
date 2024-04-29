@@ -58,6 +58,7 @@
 .form-item {
     position: relative;
     margin: 0 0.5rem;
+    flex: 1;
 }
 
 .form-item--full {

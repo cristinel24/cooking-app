@@ -4,10 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import { ThemeContext, themes } from './context'
 
-import {
-    UserProfile,
-} from './components'
-
 import { Login, Register, Test, Verified } from './pages'
 
 function App() {

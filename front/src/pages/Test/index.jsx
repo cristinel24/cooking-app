@@ -15,7 +15,7 @@ import {
     Report,
     ReportRecipe,
     Categories,
-} from '../components'
+} from '../../components'
 
 import { MdWavingHand } from 'react-icons/md'
 

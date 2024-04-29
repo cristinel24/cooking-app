@@ -6,7 +6,6 @@ import { BsFillGridFill } from 'react-icons/bs'
 import { GoDotFill } from 'react-icons/go'
 import { useEffect, useState } from 'react'
 import PageButton from '../PageButton'
-import Page from '../../pages/Page'
 
 import { MdOutlineManageAccounts } from 'react-icons/md'
 

@@ -6,15 +6,14 @@ router = APIRouter(
 )
 
 
-@router.get("/{recipe_name}/card", tags=["recipe"])
-
-async def get_recipe_card(recipe_name: str):
-    return services.get_recipe_card(recipe_name)
-
-
 @router.get("/{recipe_name}", tags=["recipe"])
 async def get_recipe(recipe_name: str):
     return services.get_recipe(recipe_name)
+
+
+@router.get("/{recipe_name}/card", tags=["recipe"])
+async def get_recipe_card(recipe_name: str):
+    return services.get_recipe_card(recipe_name)
 
 
 @router.put("/", tags=["recipe"])

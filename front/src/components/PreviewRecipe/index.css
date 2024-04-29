@@ -1,7 +1,8 @@
 .preview-recipe-container {
     display: flex;
     padding: 10px;
-    max-width: 350px;
+    /* modificat de george si sebi */
+    /* max-width: 350px; */
 }
 
 .preview-recipe-details-container {

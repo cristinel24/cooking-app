@@ -1,29 +1,14 @@
-use crate::repository::models::recipe::Recipe;
-use crate::repository::models::user::User;
+use crate::repository::models::{recipe::Recipe, user::User};
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 
+pub mod common;
 pub mod recipe;
+pub mod search_ai;
 pub mod search_general;
 pub mod user;
 
 pub const INTERNAL_SERVER_ERROR: &str = "Internal Server Error!";
-
-#[macro_export]
-macro_rules! get_context {
-    ($res:expr) => {
-        match get_repository() {
-            Ok(value) => value,
-            Err(e) => {
-                error!("Error: {e}");
-                $res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                return Json(EndpointResponse::Error(ErrorResponse {
-                    message: e.to_string(),
-                }));
-            }
-        }
-    };
-}
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct InputPayload {

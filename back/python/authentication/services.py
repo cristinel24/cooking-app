@@ -38,7 +38,7 @@ def register(data: schemas.RegisterData):
         "email": data.email,
         "updatedAt": datetime.utcnow(),
         "icon": "",
-        "displayName": data.display_name,
+        "displayName": data.displayName,
         "roles": UserRoles.USER.value,
         "ratingSum": 0,
         "ratingCount": 0,

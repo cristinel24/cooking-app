@@ -4,7 +4,7 @@ from typing import Optional
 
 class RegisterData(BaseModel):
     username: str
-    display_name: Optional[str]
+    displayName: Optional[str]
     email: str
     password: str
 

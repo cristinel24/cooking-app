@@ -1,109 +1,140 @@
-.uspr {
-    width: 400px;
-    height: fit-content;
+.user-profile {
+    width: fit-content;
     margin: 20px;
     border-radius: 4px;
     padding-bottom: 50px;
     padding-top: 150px;
 }
-.liniuta {
+.user-profile-line {
+    font-size: 0.7rem;
+    padding-top: 5px;
     padding-left: 10px;
     padding-right: 10px;
 }
 
-.profile-down {
+.user-profile-down {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: -100px;
+    justify-content: center;
 }
 
-.button_2 {
+.user-profile-follow-button .action-button {
+    padding: 10px 20px;
+}
+
+.user-profile-follow-button .action-button-icon {
+    display: none;
+}
+
+.user-profile-follow-button .action-button {
+    cursor: pointer;
+}
+.user-profile-follow-button .action-button-text {
+    margin: 0;
+}
+
+.user-profile-first-line {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 10px;
 }
 
-.button_2 icon {
-    font-size: 22px;
-}
-
-.button_2 .arrow {
-    font-size: 16px;
-}
-
-.profile-down button {
-    font-size: 24px;
+.user-profile-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     color: var(--txtcolor);
-    padding: 10px 20px;
-    border-radius: 5px;
+    font-size: 1.5rem;
+}
+
+.user-profile-buttons {
+    justify-content: center;
+    /* width: 100%; */
+    margin-top: 30px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.user-profile-buttons .action-button {
+    /* justify-content: center; */
+    font-size: 1.4rem;
+    width: 100%;
+    background-color: transparent;
     border: none;
     cursor: pointer;
 }
 
-.profile-down img {
+.user-profile-buttons .action-button-text {
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.user-profile-buttons .action-button:hover {
+    background-color: var(--transparentbutton);
+    .action-button-text {
+        color: var(--text);
+        font-weight: 700;
+    }
+    .action-button-icon {
+        color: var(--text);
+    }
+}
+
+.user-profile-down img {
     height: 215px;
     max-width: fit-content;
     border-radius: 200px;
     padding: 5px;
 }
 
-.profile-name {
-    color: var(--profname);
-}
-
-.profile-description {
+.user-profile-description {
     color: var(--txtcolor);
-    font-size: 18px;
+    font-size: 1.125rem;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     padding: 10px 0px;
 }
 
-.profile-description a {
+.user-profile-description a {
     color: var(--txtcolor);
 }
 
-.profile-description a:hover {
+.user-profile-description a:hover {
     color: var(--bkgcolor);
 }
-.profile-description dot {
-    margin-top: 6px;
-    margin-bottom: 40px;
-    margin-left: 10px;
-    margin-right: 10px;
-    font-size: 12px;
+
+.user-profile-report .action-button {
+    padding: 0;
+    border: none;
+    background-color: transparent;
 }
 
-.report a {
-    font-size: 14px;
-    position: relative;
+.user-profile-report .action-button-text {
+    font-size: 1rem;
+    /* position: relative; */
+    text-decoration: underline;
     color: var(--txtcolor);
 }
-
-.report a::after {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    left: -3px;
-    width: 110%;
-    height: 2px;
-    border-radius: 5px;
-    background: var(--txtcolor);
+.user-profile-report .action-button-text:hover {
+    color: var(--bkgcolor);
 }
 
-.report a:hover::after {
-    background: var(--bkgcolor);
+.user-profile-report .action-button-icon {
+    color: var(--txtcolor);
 }
-
-.report a:hover {
+.user-profile-report .action-button-icon:hover {
     color: var(--bkgcolor);
 }
 
 @media only screen and (max-width: 767px) and (min-width: 481px) {
-    .uspr {
+    .user-profile {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -112,66 +143,47 @@
         margin: 20px;
         border-radius: 4px;
         padding-bottom: 50px;
-        padding-top: 50px;
+        padding-top: 150px;
     }
 
-    .profile-down img {
+    .user-profile-down img {
         height: 150px;
         border-radius: 200px;
     }
 
-    .button_2 {
+    .user-profile-buttons {
+        font-size: 0.625rem;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 6px;
     }
 
-    .button_2 icon {
-        font-size: 16px;
+    .user-profile-name {
+        font-size: 1rem;
+        color: var(--txtcolor);
     }
 
-    .button_2 .arrow {
-        font-size: 12px;
+    .user-profile-line {
+        font-size: 0.625rem;
     }
 
-    .profile-down button {
-        font-size: 20px;
-        padding: 10px 20px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-    }
-
-    .profile-name {
-        font-size: 14px;
-        color: var(--name);
-    }
-
-    .profile-description {
-        font-size: 16px;
+    .user-profile-description {
+        font-size: 0.8rem;
         padding: 10px 0px;
     }
 
-    .profile-description dot {
-        margin-top: 6px;
-        margin-bottom: 60px;
-        margin-left: 10px;
-        margin-right: 10px;
-        font-size: 10px;
+    .user-profile-report .action-button-icon {
+        height: 90%;
+        width: 90%;
     }
-
-    .report a {
-        font-size: 10px;
-    }
-
-    .report a::after {
-        width: 115%;
+    .user-profile-buttons .action-button-text {
+        font-size: 0.8rem;
     }
 }
 
 @media only screen and (max-width: 480px) and (min-width: 320px) {
-    .uspr {
+    .user-profile {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -180,9 +192,11 @@
         margin: none;
         border-radius: 4px;
         padding-bottom: 5px;
+        padding-top: 40px;
+        padding-left: 20px;
     }
 
-    .profile-down {
+    .user-profile-down {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -191,62 +205,56 @@
         margin-top: 0px;
     }
 
-    .button_2 {
+    .user-profile-buttons {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 5px;
     }
 
-    .button_2 icon {
-        font-size: 14px;
+    .user-profile-buttons .user-profile-buttons-arrow {
+        font-size: 0.625rem;
     }
 
-    .button_2 .arrow {
-        font-size: 10px;
+    .user-profile-down button {
+        font-size: 1rem;
     }
 
-    .profile-down button {
-        font-size: 16px;
-    }
-
-    .profile-down img {
+    .user-profile-down img {
         align-self: center;
         margin-bottom: 8px;
         height: 150px;
     }
 
-    .profile-name {
+    .user-profile-name {
+        color: var(--txtcolor);
         align-self: center;
-        margin-top: -5px;
-        font-size: 16px;
+        font-size: 1rem;
     }
 
-    .profile-description {
-        font-size: 16px;
+    .user-profile-report .action-button-icon {
+        height: 70%;
+        width: 70%;
+    }
+
+    .user-profile-line {
+        font-size: 0.5rem;
+    }
+
+    .user-profile-description {
+        font-size: 0.7rem;
         display: flex;
         align-items: flex-start;
         justify-content: center;
         padding: 10px 0px;
     }
 
-    .profile-description dot {
-        margin-top: 6px;
-        margin-bottom: 60px;
-        margin-left: 10px;
-        margin-right: 10px;
-        font-size: 10px;
-    }
-
-    .report {
+    .user-profile-report {
         align-self: center;
-        justify-self: flex-end;
-    }
-    .report a {
-        font-size: 10px;
+        justify-self: center;
     }
 
-    .report a::after {
-        width: 115%;
+    .user-profile-buttons .action-button-text {
+        font-size: 0.8rem;
     }
 }

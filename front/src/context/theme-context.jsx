@@ -21,7 +21,8 @@ export const themes = {
         ubody: '#FFFFFF',
         filterbkcolor: '#303233',
         neutru: '#828282',
-        recipetext: "#0c1821",
+        transparentbutton: '#FFE7E2',
+        text: '0C1821',
     },
     light: {
         bkgcolor: '#FF5348',
@@ -33,7 +34,7 @@ export const themes = {
         corpcaseta: '#FFE7E2',
         border: '#000000',
         compreteta: '#FFD4D4',
-        body: '#E9E9E9',
+        body: '#FFFFFF',
         hover: '#0000000a',
         profname: '#808080',
         navbar: '#ff5348',
@@ -43,7 +44,8 @@ export const themes = {
         ubody: '#1C1C1C',
         filterbkcolor: '#F3F3F3',
         neutru: '#828282',
-        recipetext: "#0c1821",
+        transparentbutton: '#FFE7E2',
+        text: '0C1821',
     },
 }
 

@@ -118,7 +118,13 @@ function Page() {
 
             {/* <Navbar /> */}
 
-            {/* <UserProfile /> */}
+            <UserProfile
+                first_name="Popescu"
+                last_name="Ion"
+                followers="70"
+                following="6"
+                img="../../public/ProfileImage.avif"
+            />
 
             {/* <Footer /> */}
 
@@ -136,7 +142,7 @@ function Page() {
                 Buna
             </PageButton>
 
-            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} />
+            {/* <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
         </>
     )
 }

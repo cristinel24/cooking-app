@@ -64,7 +64,6 @@ function App() {
             localStorage.setItem('theme', 'light')
         }
     }
-
     return (
         <ThemeContext.Provider
             value={{

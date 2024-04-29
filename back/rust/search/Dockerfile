@@ -5,9 +5,7 @@ WORKDIR /search-service
 COPY ./ ./
 
 RUN apt update --quiet --assume-yes \
-    && apt upgrade --quiet --assume-yes \
-    && apt install pkg-config libssl-dev --quiet --assume-yes \ 
+    && apt upgrade --quiet --assume-yes \ 
     && cargo build --release
-
 
 CMD ["./target/release/search_cooking_app"]

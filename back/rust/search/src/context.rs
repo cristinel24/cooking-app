@@ -5,11 +5,14 @@ use once_cell::sync::OnceCell;
 pub const MONGO_URI_VAR: &str = "MONGO_SERVER";
 pub const AI_SERVER_VAR: &str = "AI_SERVER";
 pub const AUTH_SERVER_VAR: &str = "AUTH_SERVER";
+pub const SERVER: &str = "SERVER";
+pub const PORT: &str = "PORT";
 
 pub struct EnvironmentVariables {
     pub mongo_server: String,
     pub ai_server: String,
     pub auth_server: String,
+    pub server: String,
     pub port: u32,
 }
 
@@ -19,6 +22,7 @@ impl Default for EnvironmentVariables {
             mongo_server: "mongodb://localhost:27017".to_owned(),
             ai_server: "http://127.0.0.1:8000".to_owned(),
             auth_server: "http://localhost:8082".to_owned(),
+            server: "0.0.0.0".to_owned(),
             port: 3000,
         }
     }

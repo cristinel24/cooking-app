@@ -5,7 +5,7 @@ mod repository;
 use crate::{
     context::{
         CookingAppContext, EnvironmentVariables, AI_SERVER_VAR, AUTH_SERVER_VAR, CONTEXT,
-        MONGO_URI_VAR,
+        MONGO_URI_VAR, PORT, SERVER
     },
     endpoints::{
         recipe::{search_ai_tokens::search_ai_tokens, search_fuzzy_title::search_fuzz_title},
@@ -52,10 +52,11 @@ async fn main() -> Result<()> {
             mongo_server: std::env::var(MONGO_URI_VAR)?,
             ai_server: std::env::var(AI_SERVER_VAR)?,
             auth_server: std::env::var(AUTH_SERVER_VAR)?,
-            port: std::env::var(AI_SERVER_VAR)?.parse::<u32>()?,
+            server: std::env::var(SERVER)?,
+            port: std::env::var(PORT)?.parse::<u32>()?,
         }
     };
-    let port = env_variables.port;
+    let (server, port) = (env_variables.server.clone(), env_variables.port);
 
     CONTEXT
         .set(CookingAppContext {
@@ -90,18 +91,16 @@ async fn main() -> Result<()> {
             ])),
     );
 
-    let acceptor = TcpListener::new(format!("127.0.0.1:{port}")).bind().await;
+    let acceptor = TcpListener::new(format!("{server}:{port}")).bind().await;
     let doc = OpenApi::new(name, version)
         .add_security_scheme("Bearer", auth_scheme)
         .merge_router(&raw_router);
 
     let router = raw_router
-        .unshift(doc.into_router(format!("/{}.json", DOCS_PATH)))
-        .unshift(
-            SwaggerUi::new(format!("/{}.json", DOCS_PATH)).into_router(format!("/{}", DOCS_PATH)),
-        );
+        .unshift(doc.into_router(format!("/{DOCS_PATH}.json")))
+        .unshift(SwaggerUi::new(format!("/{DOCS_PATH}.json")).into_router(format!("/{DOCS_PATH}")));
 
-    info!("Docs on 127.0.0.1:{port}/{DOCS_PATH}");
+    info!("Docs on {server}:{port}/{DOCS_PATH}");
     Server::new(acceptor).serve(router).await;
 
     Ok(())

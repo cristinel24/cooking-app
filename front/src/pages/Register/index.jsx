@@ -4,8 +4,9 @@ import photo from '/register.png'
 import eyeIcon from '/eye.svg'
 import { Page } from '../../components'
 import { Link } from 'react-router-dom'
+import { register } from '../../services/auth'
 
-const RegisterPage = () => {
+const Register = () => {
     const [data, setData] = useState({
         username: '',
         displayName: '',
@@ -16,15 +17,17 @@ const RegisterPage = () => {
     const [passwordVisible, setPasswordVisible] = useState(false)
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-
-        console.log(data)
 
         // Validate input fields
         if (data.password !== data.confirmPassword) {
             alert('Parola si Confirmare parola nu se potrivesc.')
+            return
         }
+
+        data.confirmPassword = undefined
+        await register(data)
     }
 
     const handleChange = (event) => {
@@ -192,4 +195,4 @@ const RegisterPage = () => {
     )
 }
 
-export default RegisterPage
+export default Register

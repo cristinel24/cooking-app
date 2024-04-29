@@ -20,7 +20,7 @@ import {
 import { MdWavingHand } from 'react-icons/md'
 
 //pagina noua
-function Page() {
+function Test() {
     let userName = 'Utilizator'
     let userNumber = '#1'
     let content =
@@ -141,4 +141,4 @@ function Page() {
     )
 }
 
-export default Page
+export default Test

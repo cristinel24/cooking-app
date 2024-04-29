@@ -12,7 +12,7 @@ import useResizeWindow from '../../hooks/useResizeWindow'
 import usePopup from './usePopup'
 import Popup from './Popup'
 
-const UnloggedUsersPage = () => {
+const UnloggedUsers = () => {
     const width = useResizeWindow()
     const [selectedRecipe, setSelectedRecipe] = useState(null)
     const [isOpen, setIsOpen] = usePopup()
@@ -79,4 +79,4 @@ const UnloggedUsersPage = () => {
     )
 }
 
-export default UnloggedUsersPage
+export default UnloggedUsers

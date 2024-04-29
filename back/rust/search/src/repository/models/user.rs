@@ -1,3 +1,4 @@
+use crate::repository::service::CollectionName;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
@@ -27,9 +28,8 @@ pub struct UserAggregation {
     pub count: u32,
 }
 
-impl User {
-    #[must_use]
-    pub const fn get_collection_name() -> &'static str {
+impl CollectionName for User {
+    fn get_collection_name() -> &'static str {
         "user"
     }
 }

@@ -21,7 +21,7 @@ const Verified = () => {
 
     return (
         <Page>
-            Your email is confirmed. You may close this page now.
+            Contul tău a fost înregistrat cu succes. Te poți întoarce la pagina principală.
         </Page>
     )
 }

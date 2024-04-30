@@ -1,12 +1,12 @@
 import datetime
 import random
-from pprint import pprint
 
 import bson
 import pymongo
+from bson import utc
 from faker import Faker
 from faker_food import FoodProvider
-from pymongo import MongoClient, IndexModel, errors
+from pymongo import MongoClient, IndexModel
 
 print("Connecting to kitchen db...".ljust(36, '.'), end="")
 client = MongoClient("mongodb://localhost:27017/?directConnection=true")
@@ -70,13 +70,13 @@ db.command(
     validator={
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["_id", "type", "value"],
+            "required": ["_id", "name", "value"],
             "properties": {
                 "_id": {
                     "bsonType": "objectId",
                 },
                 "_class": {},
-                "type": {
+                "name": {
                     "bsonType": "string",
                     "description": "must be a string representing the name of the counter and is required",
                 },
@@ -90,7 +90,7 @@ db.command(
 )
 counters_collection = db["counters"]
 counters_collection.create_indexes([
-    IndexModel(["type"], unique=True)
+    IndexModel(["name"], unique=True)
 ])
 
 db.create_collection("expiring_token")
@@ -100,7 +100,7 @@ db.command(
     validator={
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["_id", "createdAt", "userId", "value", "type"],
+            "required": ["_id", "createdAt", "userId", "value", "tokenType"],
             "properties": {
                 "_id": {
                     "bsonType": "objectId",
@@ -111,14 +111,14 @@ db.command(
                     "description": "must be a date representing the creation time"
                 },
                 "userId": {
-                    "bsonType": "objectId",
-                    "description": "must be the objectId of the owning user",
+                    "bsonType": "string",
+                    "description": "must be the id of the owning user",
                 },
                 "value": {
                     "bsonType": "string",
                     "description": "must be a unique temporary token",
                 },
-                "type": {
+                "tokenType": {
                     "bsonType": "string",
                     "enum": ["session", "usernameChange", "emailChange", "passwordChange", "emailConfirm"],
                     "description": "must be a valid type from the enum: [session, usernameChange, "
@@ -136,7 +136,7 @@ expiring_token_collection.create_indexes([
         ["createdAt"],
         name="expiring_index_credential_change",
         partialFilterExpression={
-            "type": "credentialChange",
+            "tokenType": "credentialChange",
         },
         expireAfterSeconds=60 * 60 * 24,
     ),
@@ -144,7 +144,7 @@ expiring_token_collection.create_indexes([
         ["createdAt"],
         name="expiring_index_session",
         partialFilterExpression={
-            "type": "session",
+            "tokenType": "session",
         },
         expireAfterSeconds=60 * 60 * 24 * 30,
     )
@@ -196,12 +196,12 @@ db.command(
                 },
                 "_class": {},
                 "userId": {
-                    "bsonType": "objectId",
-                    "description": "must be the object id of an user and is required, must not be equal to followsId",
+                    "bsonType": "string",
+                    "description": "must be the id of an user and is required, must not be equal to followsId",
                 },
                 "followsId": {
-                    "bsonType": "objectId",
-                    "description": "must be the object id of an user and is required, must not be equal to userId",
+                    "bsonType": "string",
+                    "description": "must be the id of an user and is required, must not be equal to userId",
                 },
             },
             "additionalProperties": False,
@@ -247,13 +247,13 @@ db.command(
     validator={
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["_id", "name", "updatedAt", "authorId", "rating"],
+            "required": ["_id", "id", "updatedAt", "authorId", "rating", "parentType"],
             "properties": {
                 "_id": {
                     "bsonType": "objectId",
                 },
                 "_class": {},
-                "name": {
+                "id": {
                     "bsonType": "string",
                     "minLength": 1,
                     "maxLength": 14,
@@ -264,34 +264,35 @@ db.command(
                     "description": "must be a date and must be modified when any other field is modified",
                 },
                 "authorId": {
-                    "bsonType": "objectId",
-                    "description": "must be the object id of an user and is required",
+                    "bsonType": "string",
+                    "description": "must be the id of an user and is required",
                 },
-                "recipeId": {
-                    "bsonType": ["objectId", "null"],
-                    "description": "must be the object id of a recipe and is required",
+                "parentType": {
+                    "bsonType": "string",
+                    "enum": ["recipe", "rating"],
+                    "description": "must be a string from the enum [\"recipe\", \"rating\"] and is required",
+                },
+                "parentId": {
+                    "bsonType": "string",
+                    "description": "must be the id of a rating or recipe and is required",
                 },
                 "rating": {
                     "bsonType": "int",
                     "minimum": 0,
                     "maximum": 5,
-                    "description": "must be an integer between 1 and 5 and is required",
+                    "description": "must be an integer between 0 and 5 and is required",
                 },
                 "description": {
                     "bsonType": ["string", "null"],
                     "maxLength": 10_000,
                     "description": "must be a string of maximum 10_000 characters and is required",
                 },
-                "parentId": {
-                    "bsonType": ["objectId", "null"],
-                    "description": "must be the objectId of a rating",
-                },
                 "children": {
                     "bsonType": ["array", "null"],
                     "description": "must be null or an array",
                     "items": {
-                        "bsonType": ["objectId"],
-                        "description": "items must be the objectIds of the child comments",
+                        "bsonType": ["string"],
+                        "description": "items must be the ids of the child comments",
                     }
                 }
             },
@@ -302,18 +303,16 @@ db.command(
 rating_collection = db["rating"]
 rating_collection.create_indexes([
     IndexModel([("authorId", pymongo.HASHED)]),
-    IndexModel([("recipeId", pymongo.HASHED)]),
+    IndexModel([("parentId", pymongo.HASHED)]),
     IndexModel([("rating", pymongo.DESCENDING)]),
     IndexModel(
-        ["authorId", "recipeId"],
+        ["authorId", "parentId"],
         unique=True,
         partialFilterExpression={
-            "recipeId": {
-                "$type": "objectId"
-            },
+            "parentType": "recipe",
         },
     ),
-    IndexModel(["name"], unique=True),
+    IndexModel(["id"], unique=True),
 ])
 
 db.create_collection("recipe")
@@ -325,7 +324,7 @@ db.command(
             "bsonType": "object",
             "required": [
                 "_id",
-                "name",
+                "id",
                 "updatedAt",
                 "title",
                 "prepTime",
@@ -333,14 +332,14 @@ db.command(
                 "ingredients",
                 "ratingSum",
                 "ratingCount",
-                "mainImage",
+                "thumbnail",
             ],
             "properties": {
                 "_id": {
                     "bsonType": "objectId",
                 },
                 "_class": {},
-                "name": {
+                "id": {
                     "bsonType": "string",
                     "minLength": 1,
                     "maxLength": 14,
@@ -351,8 +350,8 @@ db.command(
                     "description": "must be a date and must be modified when any other field is modified",
                 },
                 "authorId": {
-                    "bsonType": "objectId",
-                    "description": "must be the object id of an user",
+                    "bsonType": "string",
+                    "description": "must be the id of an user",
                 },
                 "title": {
                     "bsonType": "string",
@@ -431,13 +430,13 @@ db.command(
                 },
                 "ratings": {
                     "bsonType": "array",
-                    "description": "must be an array of objectIds to ratings",
+                    "description": "must be an array of ids to ratings",
                     "items": {
-                        "bsonType": ["objectId"],
-                        "description": "items must be objectIds to ratings",
+                        "bsonType": ["string"],
+                        "description": "items must be id to ratings",
                     }
                 },
-                "mainImage": {
+                "thumbnail": {
                     "bsonType": "string",
                     "description": "must be a string and is required",
                     "maxLength": 2048,
@@ -454,7 +453,7 @@ recipe_collection.create_indexes([
     IndexModel([("authorId", pymongo.HASHED)]),
     IndexModel(["tokens"]),
     IndexModel(["prepTime"]),
-    IndexModel(["name"], unique=True),
+    IndexModel(["id"], unique=True),
     IndexModel([("viewCount", pymongo.DESCENDING)]),
 ])
 
@@ -465,39 +464,39 @@ db.command(
     validator={
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["_id", "name", "authorId", "reportedId", "content", "type"],
+            "required": ["_id", "id", "authorId", "reportedId", "content", "reportedType"],
             "properties": {
                 "_id": {
                     "bsonType": "objectId",
                 },
                 "_class": {},
-                "name": {
+                "id": {
                     "bsonType": "string",
                     "minLength": 1,
                     "maxLength": 14,
                     "description": "must be a string representing the incrementor value in base 36",
                 },
                 "authorId": {
-                    "bsonType": "objectId",
-                    "description": "must be the object id of an user",
+                    "bsonType": "string",
+                    "description": "must be the id of an user",
                 },
                 "reportedId": {
-                    "bsonType": "objectId",
-                    "description": "must be the object id of an user, a rating or a recipe",
+                    "bsonType": "string",
+                    "description": "must be the id of an user, a rating or a recipe",
+                },
+                "reportedType": {
+                    "bsonType": "string",
+                    "enum": ["user", "rating", "recipe"],
+                    "description": "must be one of: [\"user\", \"rating\", \"recipe\"]",
                 },
                 "content": {
                     "bsonType": "string",
                     "maxLength": 10_000,
                     "description": "must be a string of minimum 10 and maximum 10_000 characters and is required",
                 },
-                "type": {
-                    "bsonType": "string",
-                    "enum": ["user", "rating", "recipe"],
-                    "description": "must be one of: user, rating or recipe",
-                },
                 "solver": {
-                    "bsonType": "objectId",
-                    "description": "must be the objectId of the solver",
+                    "bsonType": "string",
+                    "description": "must be the id of the solver",
                 },
             },
             "additionalProperties": False,
@@ -508,8 +507,8 @@ report_collection = db["report"]
 report_collection.create_indexes([
     IndexModel([("authorId", pymongo.HASHED)]),
     IndexModel([("reportedId", pymongo.HASHED)]),
-    IndexModel([("type", pymongo.HASHED)]),
-    IndexModel(["name"], unique=True)
+    IndexModel([("reportedType", pymongo.HASHED)]),
+    IndexModel(["id"], unique=True)
 ])
 
 db.create_collection("tag")
@@ -549,7 +548,7 @@ user_change_token_embed_object = {
     "bsonType": ["object", "null"],
     "description": "must be the objectId of an expiring token",
     "additionalProperties": False,
-    "required": ["_id", "value", "type"],
+    "required": ["_id", "value", "tokenType"],
     "properties": {
         "_id": {
             "bsonType": "objectId",
@@ -559,7 +558,7 @@ user_change_token_embed_object = {
             "bsonType": "string",
             "description": "must be the value of a valid expiring token"
         },
-        "type": {
+        "tokenType": {
             "bsonType": "string",
             "enum": [
                 "session",
@@ -583,10 +582,9 @@ db.command(
             "bsonType": "object",
             "required": [
                 "_id",
-                "name",
+                "id",
                 "updatedAt",
                 "username",
-                "email",
                 "displayName",
                 "roles",
                 "savedRecipes",
@@ -597,7 +595,7 @@ db.command(
                     "bsonType": "objectId",
                 },
                 "_class": {},
-                "name": {
+                "id": {
                     "bsonType": "string",
                     "minLength": 1,
                     "maxLength": 14,
@@ -615,7 +613,7 @@ db.command(
                     "description": "must be a string",
                 },
                 "email": {
-                    "bsonType": "string",
+                    "bsonType": ["string", "null"],
                     "maxLength": 256,
                     "description": "must be a string",
                 },
@@ -726,8 +724,8 @@ db.command(
                     "bsonType": "array",
                     "description": "must be an array",
                     "items": {
-                        "bsonType": ["objectId"],
-                        "description": "items must be the objectIds of recipes",
+                        "bsonType": ["string"],
+                        "description": "items must be the ids of recipes",
                     }
                 },
                 "allergens": {
@@ -742,16 +740,16 @@ db.command(
                     "bsonType": "array",
                     "description": "must be an array",
                     "items": {
-                        "bsonType": ["objectId"],
-                        "description": "items must be the objectIds of ratings",
+                        "bsonType": ["string"],
+                        "description": "items must be the ids of ratings",
                     }
                 },
                 "savedRecipes": {
                     "bsonType": "array",
-                    "description": "must be an array containing objectIds to recipes",
+                    "description": "must be an array containing ids to recipes",
                     "items": {
-                        "bsonType": ["objectId"],
-                        "description": "items must be the objectIds of recipes",
+                        "bsonType": ["string"],
+                        "description": "items must be the ids of recipes",
                     },
                 },
                 "sessions": {
@@ -773,7 +771,7 @@ db.command(
                 {
                     "$and": [
                         {"$not": {"$ifNull": ["$login", False]}},  # A is not null
-                        {"$ifNull": ["$externalLogin", False]}  # B is not null
+                        {"$ifNull": ["$externalLogin", False]}  # B is null
                     ]
                 }
             ]
@@ -785,7 +783,7 @@ user_collection.create_indexes([
     IndexModel(["username"], unique=True),
     IndexModel(["email"], unique=True),
     IndexModel(["displayName"]),
-    IndexModel(["name"], unique=True)
+    IndexModel(["id"], unique=True)
 ])
 
 print("Done")
@@ -842,9 +840,9 @@ def base36encode(number: int):
     return base36 or alphabet[0]
 
 
-def generate_name():
+def generate_id():
     num = counters_collection.find_one_and_update(
-        {"type": "nameIncrementor"},
+        {"name": "nameIncrementor"},
         {"$inc": {"value": 1}}
     )["value"]
 
@@ -920,9 +918,9 @@ def get_tag():
 def get_expiring_token(user_id, token_type):
     return {
         "value": fake.sha256(),
-        "createdAt": datetime.datetime.utcnow(),
+        "createdAt": datetime.datetime.now(utc),
         "userId": user_id,
-        "type": token_type,
+        "tokenType": token_type,
     }
 
 
@@ -993,8 +991,8 @@ def get_user():
     get_user.emails.add(email)
 
     return {
-        "updatedAt": fake.date_time(),
-        "name": generate_name(),
+        "updatedAt": datetime.datetime.now(utc),
+        "id": generate_id(),
         "username": username,
         "email": email,
         "icon": fake.url(),
@@ -1024,8 +1022,8 @@ def get_recipe():
         description += '\n' + fake.text()
 
     return {
-        "updatedAt": fake.date_time(),
-        "name": generate_name(),
+        "updatedAt": datetime.datetime.now(utc),
+        "id": generate_id(),
         "authorId": None,
         "title": title,
         "ratingSum": 0,
@@ -1038,16 +1036,15 @@ def get_recipe():
         "tags": random_unique_arr(get_tag, 0, 20),
         "tokens": random_unique_arr(get_ingredient, 20, 100),
         "ratings": [],
-        "mainImage": "default-img.png",
+        "thumbnail": "default-img.png",
     }
 
 
 def get_rating():
     return {
-        "updatedAt": fake.date_time(),
-        "name": generate_name(),
+        "updatedAt": datetime.datetime.now(utc),
+        "id": generate_id(),
         "authorId": None,
-        "recipeId": None,
         "rating": random.randint(1, 5),
         "description": fake.text()[:1_000],
         "children": [],
@@ -1059,16 +1056,16 @@ def get_report():
 
     return {
         "authorId": None,
-        "name": generate_name(),
+        "id": generate_id(),
         "reportedId": None,
         "content": fake.text(),
-        "type": random_from(report_type),
+        "reportedType": random_from(report_type),
     }
 
 
 print("Preparing the counter...".ljust(36, '.'), end="")
 counter = {
-    "type": "nameIncrementor",
+    "name": "nameIncrementor",
     "value": bson.Int64(1),
 }
 counter["_id"] = counters_collection.insert_one(
@@ -1089,7 +1086,7 @@ print("Baking fresh expiring tokens...".ljust(36, '.'), end="")
 for user in users:
 
     no_sessions = random.randint(0, 2)
-    user["sessions"] = [get_expiring_token(user["_id"], "session") for _ in range(no_sessions)]
+    user["sessions"] = [get_expiring_token(user["id"], "session") for _ in range(no_sessions)]
     for session in user["sessions"]:
         session["_id"] = expiring_token_collection.insert_one(
             session
@@ -1099,7 +1096,7 @@ for user in users:
         session.pop("userId")
 
     user_collection.update_one(
-        {"_id": user["_id"]},
+        {"id": user["id"]},
         {"$set": {"sessions": user["sessions"]}}
     )
 
@@ -1121,7 +1118,7 @@ for user in users:
         changeType = "emailConfirm"
 
     if changeType is not None:
-        expiring_token = get_expiring_token(user["_id"], changeType)
+        expiring_token = get_expiring_token(user["id"], changeType)
         expiring_token["_id"] = expiring_token_collection.insert_one(
             expiring_token
         ).inserted_id
@@ -1130,7 +1127,7 @@ for user in users:
 
         user["login"]["changeToken"] = expiring_token
         user_collection.update_one(
-            {"_id": user["_id"]},
+            {"id": user["id"]},
             {"$set": {"login.changeToken": expiring_token}}
         )
 
@@ -1143,30 +1140,28 @@ print("Cooking up recipes...".ljust(36, '.'), end="")
 recipes = random_arr(get_recipe, 150, 500)
 
 # associate an author to each recipe
-user_recipe_combinations = set()
 for recipe in recipes:
     user = random_from(users)
-    while is_unconfirmed(user) or (user['_id'], recipe['name']) in user_recipe_combinations:
+    while is_unconfirmed(user):
         user = random_from(users)
 
-    user_recipe_combinations.add((user["_id"], recipe['name']))
-    recipe["authorId"] = user["_id"]
+    recipe["authorId"] = user["id"]
 
 # generate recipes
 recipe_collection.insert_many(recipes, False)
 recipes = list(recipe_collection.find())
 
 for user in users:
-    user["savedRecipes"] = [recipe["_id"] for recipe in random.sample(recipes, k=random.randint(0, 3))]
+    user["savedRecipes"] = [recipe["id"] for recipe in random.sample(recipes, k=random.randint(0, 3))]
     user_collection.update_one(
-        {"_id": user["_id"]},
+        {"id": user["id"]},
         {"$set": {"savedRecipes": user["savedRecipes"]}}
     )
 
 for recipe in recipes:
     user_collection.update_one(
-        {"_id": recipe["authorId"]},
-        {"$push": {"recipes": recipe["_id"]}},
+        {"id": recipe["authorId"]},
+        {"$push": {"recipes": recipe["id"]}},
     )
 print("Done")
 
@@ -1199,11 +1194,11 @@ for user in users:
         if is_unconfirmed(user) or is_unconfirmed(follows):
             continue
 
-        if user["_id"] == follows["_id"]:
+        if user["id"] == follows["id"]:
             continue
 
         follow_collection.insert_one(
-            {"userId": user["_id"], "followsId": follows["_id"]}
+            {"userId": user["id"], "followsId": follows["id"]}
         )
 print("Done")
 
@@ -1214,14 +1209,15 @@ user_recipe_rating_combinations = set()
 for rating in ratings:
     user = random_from(users)
     recipe = random_from(recipes)
-    while recipe["authorId"] == user["_id"] or (user["_id"], recipe["_id"]) in user_recipe_rating_combinations:
+    while recipe["authorId"] == user["id"] or (user["id"], recipe["id"]) in user_recipe_rating_combinations:
         recipe = random_from(recipes)
         user = random_from(users)
 
-    user_recipe_rating_combinations.add((user["_id"], recipe["_id"]))
+    user_recipe_rating_combinations.add((user["id"], recipe["id"]))
 
-    rating["authorId"] = user["_id"]
-    rating["recipeId"] = recipe["_id"]
+    rating["authorId"] = user["id"]
+    rating["parentId"] = recipe["id"]
+    rating["parentType"] = "recipe"
 
 rating_collection.insert_many(ratings)
 ratings = list(rating_collection.find())
@@ -1234,29 +1230,30 @@ for rating in ratings:
     recipe = random_from(recipes)
 
     user_collection.update_one(
-        {"_id": rating["authorId"]},
+        {"id": rating["authorId"]},
         {
             "$inc": {"ratingSum": rating["rating"], "ratingCount": 1},
-            "$push": {"ratings": rating["_id"]},
+            "$push": {"ratings": rating["id"]},
         },
     )
 
     recipe_collection.update_one(
-        {"_id": rating["recipeId"]},
+        {"id": rating["parentId"]},
         {
             "$inc": {"ratingSum": rating["rating"], "ratingCount": 1},
-            "$push": {"ratings": rating["_id"]},
+            "$push": {"ratings": rating["id"]},
         },
     )
 
 replies = random_arr(get_rating, 500, 1_000)
 for reply in replies:
     reply["rating"] = 0
+    reply["parentType"] = "rating"
 
-    reply["authorId"] = random_from(users)["_id"]
+    reply["authorId"] = random_from(users)["id"]
 
     parent = random_from(ratings)
-    reply["parentId"] = parent["_id"]
+    reply["parentId"] = parent["id"]
 
     reply["_id"] = rating_collection.insert_one(
         reply
@@ -1265,8 +1262,8 @@ for reply in replies:
     parent["children"].append(reply)
 
     rating_collection.update_one(
-        {"_id": parent["_id"]},
-        {"$push": {"children": reply["_id"]}},
+        {"id": parent["id"]},
+        {"$push": {"children": reply["id"]}},
     )
 
 print("Done")
@@ -1281,21 +1278,21 @@ for report in reports:
     while is_unconfirmed(user):
         user = random_from(users)
 
-    report["authorId"] = user["_id"]
+    report["authorId"] = user["id"]
 
-    if report["type"] == "user":
+    if report["reportedType"] == "user":
         reported = random_from(users)
         while is_unconfirmed(reported):
             reported = random_from(users)
 
-        reported_id = reported["_id"]
-    elif report["type"] == "rating":
-        reported_id = random_from(ratings)["_id"]
+        reported_id = reported["id"]
+    elif report["reportedType"] == "rating":
+        reported_id = random_from(ratings)["id"]
     else:  # recipe
-        reported_id = random_from(recipes)["_id"]
+        reported_id = random_from(recipes)["id"]
 
     if random.random() < params["report_solved_chance"]:
-        report["solver"] = random_from(admins)["_id"]
+        report["solver"] = random_from(admins)["id"]
 
     report["reportedId"] = reported_id
 

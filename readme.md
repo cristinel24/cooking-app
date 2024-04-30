@@ -1,5 +1,23 @@
 # Change Log
 
+### 30/04/2024
+
+* renamed `name` to `id` for all collections. Removed all objectIds from all collections. For example, the `Follow` collection now holds two `id`-s, 
+but not two `_id`-s. 
+
+* renamed all `type`s. 
+  * For the counter collection, it is now named `name`, 
+  * For the token collection, they are now called `tokenType`,
+  * For the reported collection, they are now called `reportedType`
+
+* renamed `mainImage` to `thumbnail`
+
+* changed `rating` collection:
+  * `recipeId` no longer exists, now only `parentId` is usable
+  * instead, now a `parentType` field was added, with values ["rating", "recipe"]
+
+* from now on, the `email` field may be null
+
 ### 28/04/2024
 
 * added `mainImage` field to `recipe` collection (must be a string of maxLength=2048, is required), removed partial filter expression on authorId and title
@@ -10,9 +28,9 @@
 
 ### 27/04/2024
 
-* Added children to ratings as array of objectIds (a child rating must have a value equal to 0)
+* Added `children` to ratings as array of objectIds (a child rating must have a value equal to 0)
 
-* Added counter collection and a counter for `name` generation, of `type="nameIncrementor"`
+* Added `counter` collection and a counter for `name` generation, of `type="nameIncrementor"`
 To get the value of this counter, please use the function `find_one_and_update`, like in the following code:
 
 ```python

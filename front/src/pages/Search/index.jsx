@@ -1,15 +1,15 @@
 import React from 'react'
 import './index.css'
 import { useState } from 'react'
-import { Page } from '../../components'
 import { MdFoodBank } from 'react-icons/md'
 import { FaRegUser } from 'react-icons/fa'
+import { Page } from '../../components'
 import ActionButton from '../../components/ActionButton'
 import SearchFilter from '../../components/SearchFilter'
 import User from '../../components/User'
 import Recipe from '../../components/Recipe'
 
-const SearchPage = () => {
+const Search = () => {
     const [showUsers, setShowUsers] = useState(false)
     const [allData, setData] = useState({
         users: [
@@ -100,8 +100,8 @@ const SearchPage = () => {
 
     return (
         <Page>
-            <div className="search-page">
-                <div className="search-page-filter-box">
+            <div className="search">
+                <div className="search-filter-box">
                     <strong>Filtre</strong>
                     <SearchFilter
                         onIngredientsFilter={handleFilterIngredients}
@@ -111,15 +111,15 @@ const SearchPage = () => {
                     />
                 </div>
                 {allData.users.length === 0 && allData.recipes.length === 0 && (
-                    <div className="search-page-results">
-                        <div className="search-page-results-no-found">
+                    <div className="search-results">
+                        <div className="search-results-no-found">
                             No users or recipes found.
                         </div>
                     </div>
                 )}
                 {allData.users.length !== 0 && allData.recipes.length !== 0 && (
-                    <div className="search-page-results">
-                        <div className="search-page-results-buttons">
+                    <div className="search-results">
+                        <div className="search-results-buttons">
                             <ActionButton
                                 onClick={handleClickRecipes}
                                 text="Retete"
@@ -131,9 +131,9 @@ const SearchPage = () => {
                                 Icon={FaRegUser}
                             />
                         </div>
-                        <div className="search-page-results-content">
+                        <div className="search-results-content">
                             <div
-                                className="search-page-results-content-users"
+                                className="search-results-content-users"
                                 style={{
                                     display: showUsers ? 'flex' : 'none',
                                 }}
@@ -149,7 +149,7 @@ const SearchPage = () => {
                                 ))}
                             </div>
                             <div
-                                className="search-page-results-content-recipes"
+                                className="search-results-content-recipes"
                                 style={{
                                     display: showUsers ? 'none' : 'flex',
                                 }}
@@ -168,9 +168,9 @@ const SearchPage = () => {
                     </div>
                 )}
                 {allData.recipes.length !== 0 && allData.users.length === 0 && (
-                    <div className="search-page-results">
-                        <div className="search-page-results-content">
-                            <div className="search-page-results-content-recipes">
+                    <div className="search-results">
+                        <div className="search-results-content">
+                            <div className="search-results-content-recipes">
                                 {allData.recipes.map((recipe, index) => (
                                     <Recipe
                                         key={index}
@@ -185,9 +185,9 @@ const SearchPage = () => {
                     </div>
                 )}
                 {allData.users.length !== 0 && allData.recipes.length === 0 && (
-                    <div className="search-page-results">
-                        <div className="search-page-results-content">
-                            <div className="search-page-results-content-users">
+                    <div className="search-results">
+                        <div className="search-results-content">
+                            <div className="search-results-content-users">
                                 {allData.users.map((user, index) => (
                                     <User
                                         key={index}
@@ -206,4 +206,4 @@ const SearchPage = () => {
     )
 }
 
-export default SearchPage
+export default Search

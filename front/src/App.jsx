@@ -1,34 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom' //necesara pt redirectionarea de la o pag la alta
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import { ThemeContext, themes } from './context'
 
-import {
-    ActionButton,
-    PageButton,
-    PopUpChat,
-    Recipe,
-    Footer,
-    UserProfile,
-    Navbar,
-    AdminBox,
-    PreviewRecipe,
-    Filters,
-    ShowMenu,
-    Report,
-    ReportRecipe,
-    Categories,
-} from './components'
-
-import Page from './pages/Page'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import SearchPage from './pages/SearchPage'
+import { Login, Register, Test, Verified } from './pages'
 
 function App() {
-    const titlu = 'Buton'
-
     localStorage.setItem('theme', 'dark')
 
     const [theme, setTheme] = useState(
@@ -47,8 +25,7 @@ function App() {
         }
     }, [])
 
-    useEffect(() => {
-        for (const color in theme) {
+    useEffect(() => { for (const color in theme) {
             document.documentElement.style.setProperty(
                 `--${color}`,
                 `${theme[color]}`
@@ -75,11 +52,11 @@ function App() {
         >
             <Router>
                 <Routes>
-                    <Route path="/Page" element={<Page />} />
-                    <Route path="/LoginPage" element={<LoginPage />} />
-                    <Route path="/UserProfile" element={<UserProfile />} />
-                    <Route path="/RegisterPage" element={<RegisterPage />} />
-                    <Route path="/SearchPage" element={<SearchPage />} />
+                    <Route path="/test" element={<Test />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/verify" element={<Verified />} />
+                    <Route path="/search" element={<Search />} />
                 </Routes>
             </Router>
         </ThemeContext.Provider>

@@ -27,4 +27,4 @@ jobs:
     - name: Clippy
       run: |
         cd back/rust/search
-        cargo clippy
+        cargo clippy -- -D warnings

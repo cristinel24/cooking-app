@@ -1,10 +1,10 @@
-.search-page {
+.search {
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
 }
 
-.search-page-filter-box {
+.search-filter-box {
     position: fixed;
     display: flex;
     align-items: center;
@@ -23,7 +23,7 @@
     border-style: groove;
 }
 
-.search-page-results {
+.search-results {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -32,7 +32,7 @@
     flex: 1;
 }
 
-.search-page-results-buttons {
+.search-results-buttons {
     margin-top: 20px;
     display: flex;
     gap: 1rem;
@@ -40,7 +40,7 @@
     justify-content: center;
 }
 
-.search-page-results-content {
+.search-results-content {
     margin-bottom: 2rem;
     margin-top: 3rem;
     margin-right: 2rem;
@@ -50,7 +50,7 @@
     cursor: auto;
 }
 
-.search-page-results-content-recipes {
+.search-results-content-recipes {
     display: flex;
     flex-direction: column;
     align-self: center;
@@ -58,7 +58,7 @@
     gap: 3rem;
 }
 
-.search-page-results-content-users {
+.search-results-content-users {
     display: flex;
     flex-direction: column;
     align-self: center;
@@ -66,7 +66,7 @@
     gap: 3rem;
 }
 
-.search-page-results-no-found {
+.search-results-no-found {
     color: var(--txtcolor);
     margin-top: 5rem;
     font-size: 1.5rem;
@@ -75,22 +75,22 @@
 }
 
 @media (min-width: 481px) and (max-width: 1100px) {
-    .search-page-filter-box {
+    .search-filter-box {
         font-size: 1rem;
         margin-left: 5px;
     }
 
-    .search-page-results {
+    .search-results {
         margin-left: 18rem;
     }
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
-    .search-page {
+    .search {
         flex-direction: column;
     }
 
-    .search-page-filter-box {
+    .search-filter-box {
         position: unset;
         font-size: 1.5rem;
         margin-left: 6rem;
@@ -99,11 +99,11 @@
         border-right-width: 0;
     }
 
-    .search-page-results {
+    .search-results {
         margin-left: 5rem;
     }
 
-    .search-page-results-no-found {
+    .search-results-no-found {
         font-size: 1.4rem;
     }
 }

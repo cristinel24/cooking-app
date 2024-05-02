@@ -4,18 +4,19 @@ import photo from '/autentificare.png'
 import eyeIcon from '/eye.svg'
 import { Page } from '../../components'
 import { Link } from 'react-router-dom'
+import { login } from '../../services/auth'
 
-const LoginPage = () => {
+const Login = () => {
     const [data, setData] = useState({
         identifier: '',
         password: '',
     })
     const [showPassword, setShowPassword] = useState(false)
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
-        console.log(data)
+        await login(data)
     }
 
     const handleChange = (event) => {
@@ -118,4 +119,4 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage
+export default Login

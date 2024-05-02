@@ -1,22 +1,22 @@
-.search-page-filter-lbox {
+.search-filter-lbox {
     margin-top: 1rem;
 }
 
-.search-page-filter-box-input {
+.search-filter-box-input {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.search-page-filter-box-input label {
+.search-filter-box-input label {
     font-size: 1rem;
     margin: none;
     margin-top: 10px;
     color: var(--txtcolor);
 }
 
-.search-page-filter-box-input .form-control {
+.search-filter-box-input .form-control {
     border: none;
     border-radius: 20px;
     font-size: 1rem;
@@ -25,7 +25,7 @@
     text-align: center;
 }
 
-.search-page-filter-box-prep-time {
+.search-filter-box-prep-time {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -34,17 +34,17 @@
     margin-top: 15px;
 }
 
-.search-page-filter-box-prep-time-spinner {
+.search-filter-box-prep-time-spinner {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.search-page-filter-box-prep-time-spinner-data {
+.search-filter-box-prep-time-spinner-data {
     font-size: 0.8rem;
 }
 
-.search-page-filter-box-prep-time-spinner-icons {
+.search-filter-box-prep-time-spinner-icons {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -54,7 +54,7 @@
     cursor: pointer;
 }
 
-.search-page-filter-box-rating {
+.search-filter-box-rating {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -63,13 +63,13 @@
     margin-top: 10px;
 }
 
-.search-page-filter-box-rating-stars {
+.search-filter-box-rating-stars {
     cursor: pointer;
     color: var(--stars);
     font-size: 1.3rem;
 }
 
-.search-page-filter-box-creation-date {
+.search-filter-box-creation-date {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -78,18 +78,18 @@
     margin-top: 10px;
 }
 
-.search-page-filter-box-creation-date-select {
+.search-filter-box-creation-date-select {
     border-radius: 20px;
 }
 
 @media (min-width: 481px) and (max-width: 1100px) {
-    .search-page-filter-box-input label {
+    .search-filter-box-input label {
         margin-top: 0.2rem;
     }
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
-    .search-page-filter-box-input label {
+    .search-filter-box-input label {
         margin-top: 0.1rem;
     }
 }

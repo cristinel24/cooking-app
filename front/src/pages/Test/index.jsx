@@ -15,12 +15,12 @@ import {
     Report,
     ReportRecipe,
     Categories,
-} from '../components'
+} from '../../components'
 
 import { MdWavingHand } from 'react-icons/md'
 
 //pagina noua
-function Page() {
+function Test() {
     let userName = 'Utilizator'
     let userNumber = '#1'
     let content =
@@ -132,11 +132,13 @@ function Page() {
 
             {/* <PopUpChat /> */}
 
-            {/* <PageButton children="Buna" path={pathPage} className="da" /> */}
+            <PageButton path={pathPage} className="da">
+                Buna
+            </PageButton>
 
             <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} />
         </>
     )
 }
 
-export default Page
+export default Test

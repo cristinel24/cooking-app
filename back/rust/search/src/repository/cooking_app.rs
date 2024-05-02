@@ -11,7 +11,7 @@ pub struct CookingAppRepository {
 }
 
 impl CookingAppRepository {
-    pub async fn new(url: String) -> Result<Self> {
+    pub async fn new(url: &str) -> Result<Self> {
         let client = Self::new_client(url).await?;
 
         Ok(Self {
@@ -22,7 +22,7 @@ impl CookingAppRepository {
         })
     }
 
-    async fn new_client(url: String) -> Result<Client> {
+    async fn new_client(url: &str) -> Result<Client> {
         let mut connection_string = ConnectionString::parse(url)?;
 
         connection_string.read_preference = Some(ReadPreference::Secondary {

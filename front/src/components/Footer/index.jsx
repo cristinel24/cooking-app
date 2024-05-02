@@ -4,10 +4,10 @@ import './index.css'
 function Footer() {
     return (
         <footer className="footer">
-            <div className="brand">
+            <div className="footer-brand">
                 <a href="/">COOKING APP. 2024 ALL RIGHTS ARE RESERVED</a>
             </div>
-            <div className="bug">
+            <div className="footer-bug">
                 <a href="/Page">Raporteaza un bug</a>
             </div>
         </footer>

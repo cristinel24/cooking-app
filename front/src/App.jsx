@@ -12,7 +12,7 @@ import {
     Footer,
     UserProfile,
     Navbar,
-    AdminBox,
+    ReportCard,
     PreviewRecipe,
     Filters,
     ShowMenu,

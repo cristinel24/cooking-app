@@ -6,7 +6,7 @@ import { FaCheck } from 'react-icons/fa'
 import { PiArrowSquareOutBold } from 'react-icons/pi'
 import { BsExclamationCircle } from 'react-icons/bs'
 
-function Admin(props) {
+function ReportCard(props) {
     let read = 'Citit'
 
     return (
@@ -62,4 +62,4 @@ function Admin(props) {
     )
 }
 
-export default Admin
+export default ReportCard

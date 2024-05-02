@@ -8,7 +8,7 @@ import {
     Footer,
     UserProfile,
     Navbar,
-    AdminBox,
+    ReportCard,
     PreviewRecipe,
     Filters,
     ShowMenu,
@@ -106,7 +106,7 @@ function Page() {
                 allergens={['apa', 'gluten', 'porumb', 'alergen4', 'alergen5']}
                 description="Descrierea Rețetei"
             /> */}
-            {/* <AdminBox
+            <ReportCard
                 userName={userName}
                 userNumber={userNumber}
                 content={content}
@@ -114,7 +114,7 @@ function Page() {
                 view={view}
                 pathPage={pathPage}
                 handleClick={handleClick}
-            /> */}
+            />
             {/* <Navbar /> */}
 
             {/* <UserProfile /> */}

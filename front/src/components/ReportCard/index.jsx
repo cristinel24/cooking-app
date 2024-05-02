@@ -10,34 +10,36 @@ function ReportCard(props) {
     let read = 'Citit'
 
     return (
-        <div className="admin-box">
-            <div className="admin-header">
-                <div className="admin-header-left">
-                    <BsExclamationCircle className="admin-header-left-img" />
-                    <h3 className="admin-header-left-title">
+        <div className="report-card-box">
+            <div className="report-card-header">
+                <div className="report-card-header-left">
+                    <BsExclamationCircle className="report-card-header-left-img" />
+                    <h3 className="report-card-header-left-title">
                         {props.userName}
                     </h3>
                 </div>
-                <div className="admin-header-right">
+                <div className="report-card-header-right">
                     <p>{props.userNumber}</p>
                 </div>
             </div>
-            <div className="admin-content">
-                <p className="admin-content-description">{props.content}</p>
+            <div className="report-card-content">
+                <p className="report-card-content-description">
+                    {props.content}
+                </p>
             </div>
-            <div className="admin-footer">
-                <div className="admin-footer-left">
-                    <p className="admin-footer-left-description">
+            <div className="report-card-footer">
+                <div className="report-card-footer-left">
+                    <p className="report-card-footer-left-description">
                         {props.date}
                     </p>
                 </div>
-                <div className="admin-footer-right">
-                    <div className="admin-footer-right-custom-buttons-view">
+                <div className="report-card-footer-right">
+                    <div className="report-card-footer-right-custom-buttons-view">
                         <PageButton
                             children={
                                 <>
                                     <span>
-                                        <PiArrowSquareOutBold className="admin-footer-right-custom-buttons-img" />
+                                        <PiArrowSquareOutBold className="report-card-footer-right-custom-buttons-img" />
                                     </span>
                                     <span>{props.view}</span>
                                 </>
@@ -45,7 +47,7 @@ function ReportCard(props) {
                             path={props.pathPage}
                         />
                     </div>
-                    <div className="admin-footer-right-custom-buttons-read">
+                    <div className="report-card-footer-right-custom-buttons-read">
                         <ActionButton
                             onClick={props.handleClick}
                             text={

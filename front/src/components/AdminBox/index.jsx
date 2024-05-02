@@ -6,15 +6,7 @@ import { FaCheck } from 'react-icons/fa'
 import { PiArrowSquareOutBold } from 'react-icons/pi'
 import { BsExclamationCircle } from 'react-icons/bs'
 
-function Admin({
-    userName,
-    userNumber,
-    content,
-    date,
-    view,
-    pathPage,
-    handleClick,
-}) {
+function Admin(props) {
     let read = 'Citit'
 
     return (
@@ -22,18 +14,22 @@ function Admin({
             <div className="admin-header">
                 <div className="admin-header-left">
                     <BsExclamationCircle className="admin-header-left-img" />
-                    <h3 className="admin-header-left-title">{userName}</h3>
+                    <h3 className="admin-header-left-title">
+                        {props.userName}
+                    </h3>
                 </div>
                 <div className="admin-header-right">
-                    <p>{userNumber}</p>
+                    <p>{props.userNumber}</p>
                 </div>
             </div>
             <div className="admin-content">
-                <p className="admin-content-description">{content}</p>
+                <p className="admin-content-description">{props.content}</p>
             </div>
             <div className="admin-footer">
                 <div className="admin-footer-left">
-                    <p className="admin-footer-left-description">{date}</p>
+                    <p className="admin-footer-left-description">
+                        {props.date}
+                    </p>
                 </div>
                 <div className="admin-footer-right">
                     <div className="admin-footer-right-custom-buttons-view">
@@ -43,15 +39,15 @@ function Admin({
                                     <span>
                                         <PiArrowSquareOutBold className="admin-footer-right-custom-buttons-img" />
                                     </span>
-                                    <span>{view}</span>
+                                    <span>{props.view}</span>
                                 </>
                             }
-                            path={pathPage}
+                            path={props.pathPage}
                         />
                     </div>
                     <div className="admin-footer-right-custom-buttons-read">
                         <ActionButton
-                            onClick={handleClick}
+                            onClick={props.handleClick}
                             text={
                                 <>
                                     <span>{read}</span>{' '}

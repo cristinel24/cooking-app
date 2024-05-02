@@ -1,4 +1,4 @@
-.report-card-footer-right a {
+.report-card-footer a {
     text-decoration: none;
 }
 
@@ -50,38 +50,34 @@
 
 .report-card-content .report-card-content-description {
     padding: 0.5rem 1.5rem 0.3rem 1.5rem;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 600;
+}
+
+.report-card-content-date {
+    font-weight: 650;
+    padding-left: 1.5rem;
+    padding-bottom: 0.3rem;
+    font-size: 0.7rem;
 }
 
 .report-card-footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 0.4rem;
-}
-
-.report-card-footer-left .report-card-footer-left-description {
-    font-weight: 700;
-    padding-left: 1.5rem;
-    font-size: 0.7rem;
-}
-
-.report-card-footer-right {
-    display: flex;
     flex-direction: row;
     gap: 0.4rem;
     padding-right: 1.5rem;
+    padding-left: 1.5rem;
     justify-content: center;
     align-items: center;
+    padding-bottom: 0.5rem;
 }
 
-.report-card-footer-right .report-card-footer-right-custom-buttons-img {
+.report-card-footer .report-card-footer-custom-buttons-img {
     width: 1rem;
     height: 1rem;
 }
 
-.report-card-footer-right-custom-buttons-view .link {
+.report-card-footer-custom-buttons-view .link {
     margin: 0;
     border: 0;
     display: flex;
@@ -89,11 +85,11 @@
     align-items: center;
     padding: 0.25rem;
     font-size: 0.7rem;
-    padding-right: 0.4rem;
-    padding-left: 0.4rem;
+    padding-right: 0.8rem;
+    padding-left: 0.8rem;
 }
 
-.report-card-footer-right-custom-buttons-read .actionbutton {
+.report-card-footer-custom-buttons-read .actionbutton {
     margin: 0;
     border: 0;
     display: flex;
@@ -101,14 +97,31 @@
     align-items: center;
     font-size: 0.7rem;
     padding: 0.4rem;
-    padding-right: 0.4rem;
-    padding-left: 0.4rem;
+    padding-right: 0.8rem;
+    padding-left: 0.8rem;
 }
 
-.report-card-footer-right-custom-buttons-read .actionbutton_text {
+.report-card-footer-custom-buttons-read .actionbutton_text {
+    padding-left: 0.2rem;
     font-size: 0.7rem;
 }
 
+.report-card-footer-custom-buttons-specific-action .actionbutton {
+    margin: 0;
+    border: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7rem;
+    padding: 0.4rem;
+    padding-right: 0.8rem;
+    padding-left: 0.8rem;
+}
+
+.report-card-footer-custom-buttons-specific-action .actionbutton_text {
+    padding-left: 0.2rem;
+    font-size: 0.7rem;
+}
 
 /* Tablets */
 @media (min-width: 481px) and (max-width: 967px) {
@@ -132,44 +145,54 @@
     .report-card-content .report-card-content-description {
         font-weight: 580;
         padding: 0.8rem 2rem 0.5rem 2rem;
-        font-size: 0.7rem;
-    }
-
-    .report-card-footer {
-        padding-bottom: 0.4rem;
-    }
-
-    .report-card-footer-left .report-card-footer-left-description {
-        font-weight: 600;
-        padding-left: 2rem;
         font-size: 0.8rem;
     }
 
-    .report-card-footer-right {
-        gap: 0.5rem;
-        padding-right: 2rem;
+    .report-card-content-date {
+        font-weight: 600;
+        padding-left: 2rem;
+        font-size: 0.8rem;
+        padding-bottom: 0.5rem;
     }
 
-    .report-card-footer-right .report-card-footer-right-custom-buttons-img {
+    .report-card-footer {
+        padding-bottom: 0.5rem;
+        gap: 0.5rem;
+        padding-right: 2rem;
+        padding-left: 2rem;
+    }
+
+    .report-card-footer .report-card-footer-custom-buttons-img {
         width: 1rem;
         height: 1rem;
     }
 
-    .report-card-footer-right-custom-buttons-view .link {
+    .report-card-footer-custom-buttons-view .link {
         padding: 0.4rem;
         font-size: 0.85rem;
-        padding-right: 0.5rem;
-        padding-left: 0.5rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
     }
 
-    .report-card-footer-right-custom-buttons-read .actionbutton {
+    .report-card-footer-custom-buttons-read .actionbutton {
         font-size: 0.85rem;
         padding: 0.45rem;
-        padding-right: 0.5rem;
-        padding-left: 0.5rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
     }
 
-    .report-card-footer-right-custom-buttons-read .actionbutton_text {
+    .report-card-footer-custom-buttons-read .actionbutton_text {
+        font-size: 0.9rem;
+    }
+
+    .report-card-footer-custom-buttons-specific-action .actionbutton {
+        font-size: 0.85rem;
+        padding: 0.45rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .report-card-footer-custom-buttons-specific-action .actionbutton_text {
         font-size: 0.9rem;
     }
 }
@@ -196,43 +219,52 @@
     .report-card-content .report-card-content-description {
         font-weight: 580;
         padding: 0.6rem 1rem 0.4rem 1rem;
-        font-size: 0.45rem;
+        font-size: 0.5rem;
     }
 
-    .report-card-footer {
-        padding-bottom: 0.5rem;
-    }
-
-    .report-card-footer-left .report-card-footer-left-description {
+    .report-card-content-date {
         font-weight: 600;
         padding-left: 1rem;
         font-size: 0.5rem;
     }
 
-    .report-card-footer-right {
+    .report-card-footer {
+        padding-bottom: 0.5rem;
         padding-right: 1rem;
+        padding-left: 1rem;
     }
 
-    .report-card-footer-right .report-card-footer-right-custom-buttons-img {
+    .report-card-footer .report-card-footer-custom-buttons-img {
         width: 0.7rem;
         height: 0.7rem;
     }
 
-    .report-card-footer-right-custom-buttons-view .link {
+    .report-card-footer-custom-buttons-view .link {
         padding: 0.2rem;
         font-size: 0.5rem;
-        padding-right: 0.5rem;
-        padding-left: 0.5rem;
+        padding-right: 0.9rem;
+        padding-left: 0.9rem;
     }
 
-    .report-card-footer-right-custom-buttons-read .actionbutton {
+    .report-card-footer-custom-buttons-read .actionbutton {
         font-size: 0.5rem;
         padding: 0.3rem;
-        padding-right: 0.5rem;
-        padding-left: 0.5rem;
+        padding-right: 0.9rem;
+        padding-left: 0.9rem;
     }
 
-    .report-card-footer-right-custom-buttons-read .actionbutton_text {
+    .report-card-footer-custom-buttons-read .actionbutton_text {
+        font-size: 0.5rem;
+    }
+
+    .report-card-footer-custom-buttons-specific-action .actionbutton {
+        font-size: 0.5rem;
+        padding: 0.3rem;
+        padding-right: 0.9rem;
+        padding-left: 0.9rem;
+    }
+
+    .report-card-footer-custom-buttons-specific-action .actionbutton_text {
         font-size: 0.5rem;
     }
 }

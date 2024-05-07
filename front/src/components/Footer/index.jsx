@@ -8,7 +8,7 @@ function Footer() {
                 <a href="/">COOKING APP. 2024 ALL RIGHTS ARE RESERVED</a>
             </div>
             <div className="footer-bug">
-                <a href="/Page">Raporteaza un bug</a>
+                <a href="/Page">Raportează un bug</a>
             </div>
         </footer>
     )

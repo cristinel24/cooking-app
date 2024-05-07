@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import { ThemeContext, defaultTheme, themes } from './context'
+import { ThemeContext, themes } from './context'
 
 import { Login, Register, Test, Verified } from './pages'
 
@@ -33,8 +33,6 @@ function App() {
                 localStorage.setItem('theme', 'light')
             }
         }
-
-        setColorsFromTheme(defaultTheme)
     }, [])
 
     useEffect(() => {

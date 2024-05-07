@@ -1,6 +1,21 @@
 import React from 'react'
 
-const defaultTheme = {
+/*
+    ThemeContext defining the color theme of the project.
+
+    If the color you are about to add is the same for both light and dark
+    color themes, add it in defaultTheme instead. Otherwise, define it
+    in both the dark and light themes.
+
+    The theming will be converted from camelCase to kebab-case;
+    if you define a variable like this:
+    exampleVariable: "#ABCDEF"
+    you will be able to use it in CSS by writing
+    var(--example-variable)
+    which should help prevent weird abbreviations and respect CSS conventions.
+*/
+
+export const defaultTheme = {
     bkgcolor: '#FF5348',
     caseta: '#FF8878',
     corpcaseta: '#FFE7E2',
@@ -16,7 +31,6 @@ const defaultTheme = {
 
 export const themes = {
     dark: {
-        ...defaultTheme,
         txtcolor: '#FFFFFF',
         hoverbkgcolor: '#02080D',
         footercolor: '#FFFFFF',
@@ -28,7 +42,6 @@ export const themes = {
         filterbkcolor: '#303233',
     },
     light: {
-        ...defaultTheme,
         txtcolor: '#0c1821',
         hoverbkgcolor: '#ee3326',
         footercolor: '#0C1821',
@@ -43,5 +56,6 @@ export const themes = {
 
 export const ThemeContext = React.createContext({
     theme: themes.light,
+    defaultTheme: defaultTheme,
     toggleTheme: () => {},
 })

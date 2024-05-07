@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import { ThemeContext, themes } from './context'
+import { ThemeContext, defaultTheme, themes } from './context'
 
 import { Login, Register, Test, Verified } from './pages'
 
@@ -10,8 +10,18 @@ function App() {
     localStorage.setItem('theme', 'dark')
 
     const [theme, setTheme] = useState(
-        themes[localStorage.getItem('theme')] || ''
+        themes[localStorage.getItem('theme')] || {}
     )
+
+    const setColorsFromTheme = (theme) => {
+        for (const color in theme) {
+            const kebabColor = color.replace(/[A-Z]/g, match => '-' + match.toLowerCase())
+            document.documentElement.style.setProperty(
+                `--${kebabColor}`,
+                `${theme[color]}`
+            )
+        }
+    }
 
     useEffect(() => {
         if (theme === '') {
@@ -23,14 +33,12 @@ function App() {
                 localStorage.setItem('theme', 'light')
             }
         }
+
+        setColorsFromTheme(defaultTheme)
     }, [])
 
-    useEffect(() => { for (const color in theme) {
-            document.documentElement.style.setProperty(
-                `--${color}`,
-                `${theme[color]}`
-            )
-        }
+    useEffect(() => {
+        setColorsFromTheme(theme)
     }, [theme])
 
     const toggleTheme = () => {

@@ -1,1 +1,1 @@
-export { themes, ThemeContext } from "./theme-context";
+export { themes, defaultTheme, ThemeContext } from "./theme-context";

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
     ActionButton,
@@ -15,12 +15,15 @@ import {
     Report,
     ReportRecipe,
     Categories,
+    Tag,
+    TagSelector,
 } from '../../components'
 
 import { MdWavingHand } from 'react-icons/md'
 
 //pagina noua
 function Test() {
+    const [tags, setTags] = useState([])
     let userName = 'Utilizator'
     let userNumber = '#1'
     let content =
@@ -86,6 +89,22 @@ function Test() {
         ],
     ]
 
+    // Function to add a tag to the tags array
+    const addTag = (tag) => {
+        if (!tags.includes(tag)) {
+            setTags([...tags, tag])
+        }
+    }
+
+    // Function to remove a tag from the tags array
+    const removeTag = (tagToRemove) => {
+        setTags(tags.filter((tag) => tag !== tagToRemove))
+    }
+
+    // Function to search for similar tags
+    const searchTags = (searchTag) => {
+        return ['suggestionA', 'suggestionB', 'suggestionC']
+    }
     const func1 = () => {}
     return (
         <>
@@ -132,11 +151,17 @@ function Test() {
 
             {/* <PopUpChat /> */}
 
-            <PageButton path={pathPage} className="da">
+            {/* <PageButton path={pathPage} className="da">
                 Buna
             </PageButton>
 
-            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} />
+            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
+            <TagSelector
+                tags={tags}
+                addTag={addTag}
+                removeTag={removeTag}
+                searchTags={searchTags}
+            />
         </>
     )
 }

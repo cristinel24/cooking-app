@@ -5,7 +5,7 @@ function Footer() {
     return (
         <footer className="footer">
             <div className="footer-brand">
-                <a href="/">COOKING APP. 2024 ALL RIGHTS ARE RESERVED</a>
+                <a href="/">COOKING APP. 2024 TOATE DREPTURILE REZERVATE</a>
             </div>
             <div className="footer-bug">
                 <a href="/Page">Raportează un bug</a>

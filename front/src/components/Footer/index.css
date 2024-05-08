@@ -1,10 +1,13 @@
+:root{
+    --footer-height:3rem;
+}
 .footer {
     display: flex;
     align-items: center;
     background-color: var(--footercolor);
     width: 100%;
     box-sizing: border-box;
-    height: 60px;
+    height: var(--footer-height);
 }
 
 .footer-brand,.footer-bug {
@@ -23,19 +26,17 @@
 
 .footer-brand a {
     font-weight: bolder;
-    font-size: 0.875rem;
     color: var(--body);
     text-decoration: none;
 }
 
 .footer-bug {
-    font-size: 0.625rem;
+    font-size: 0.75rem;
     font-weight: bold;
     text-decoration: underline;
 }
 
 .footer-bug a {
-    font-size: 0.625rem;
     color: var(--body);
     text-decoration: none;
 }

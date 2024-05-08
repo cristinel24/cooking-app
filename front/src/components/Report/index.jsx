@@ -1,81 +1,77 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
+import ActionButton from '../ActionButton'
 import './index.css'
-import PageButton from '../PageButton/index.jsx'
-
-export default function Report() {
-    //Rutele pentru butoane
-    const title1 = 'Trimite'
-    const title2 = 'Renunta'
+import { LuSend } from "react-icons/lu";
+import { MdOutlineCancel } from "react-icons/md";
+function Report() {
     const pathPage = 'https://www.google.ro/'
+    localStorage.setItem('theme', 'light')
 
-    //FileUploader
-    const [selectedFile, setSelectedFile] = useState(null)
-    const fileInputRef = useRef(null)
+    const [formVariants, setFormVariants] = useState([
+        { id: 1, text: 'Conținut sexual', checked: false },
+        { id: 2, text: 'Conținut respingător/violent', checked: false },
+        { id: 3, text: 'Conținut instigator la ură/abuziv', checked: false },
+        { id: 4, text: 'Hărțuire sau intimidare', checked: false },
+        { id: 5, text: 'Dezinformare', checked: false },
+        { id: 6, text: 'Conținut fals', checked: false },
+        { id: 7, text: 'Probleme legale', checked: false },
+    ])
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0]
-        setSelectedFile(file)
+    const handleVariantChange = (id) => {
+        setFormVariants((prevVariants) =>
+            prevVariants.map((variant) =>
+                variant.id === id
+                    ? { ...variant, checked: !variant.checked }
+                    : variant
+            )
+        )
     }
 
-    const handleButtonClick = () => {
-        fileInputRef.current.click()
-    }
-    //TextBox
-    const [text, setText] = useState('')
-
-    const handleChange = (event) => {
-        setText(event.target.value)
-    }
-
+    const fuctionForButton = ()=>{}
     return (
         <div>
             <div className="report-wrapper">
                 <div className="report-wrapper-title">
-                    <p>Raporteaza o problema!</p>
+                    <p>Raportează</p>
                 </div>
-                <p>Descrie problema</p>
-                <div className="report-textbox-container">
-                    <textarea
-                        value={text}
-                        onChange={handleChange}
-                        placeholder="Atunci când utilizam aplicația, am întâlnit eroarea..."
-                    />
-                </div>
-                <p>O captura de ecran ne-ar ajuta sa intelegem mai bine</p>
-                <div className="report-image-container">
-                    <div className="report-upload-file">
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            onChange={handleFileChange}
-                            className="report-hide-initial-msg"
-                        />
-                        <div
-                            className="report-upload-button"
-                            onClick={handleButtonClick}
-                        >
-                            {/* <FontAwesomeIcon icon={faPaperclip} /> */}
-                            <span>
-                                {selectedFile
-                                    ? selectedFile.name
-                                    : 'Incarca o captura de ecran'}
-                            </span>
-                        </div>
-                    </div>
+                <div className="report-content">
+                    <form className="report-form">
+                        {formVariants.map((variant) => (
+                            <div className="report-inputs" key={variant.id}>
+                                <input
+                                    type="checkbox"
+                                    id={`variant-${variant.id}`}
+                                    checked={variant.checked}
+                                    onChange={() =>
+                                        handleVariantChange(variant.id)
+                                    }
+                                />
+                                <label htmlFor={`variant-${variant.id}`}>
+                                    {variant.text}
+                                </label>
+                            </div>
+                        ))}
+                    </form>
                 </div>
                 <div className="report-buttons">
                     <div className="report-send-button">
-                        <PageButton path={pathPage} className="report-button1">
-                            Trimite
-                        </PageButton>
+                        <ActionButton
+                            text="Trimite"
+                            Icon={LuSend}
+                            onClick={fuctionForButton}
+                        />
                     </div>
                     <div className="report-give-up-button">
-                        <PageButton path={pathPage} className="report-button2">
-                            Renunta
-                        </PageButton>
+                        <ActionButton
+                            text="Renunță"
+                            Icon={MdOutlineCancel}
+                            onClick={fuctionForButton}
+                        />
                     </div>
                 </div>
             </div>
         </div>
     )
 }
+
+export default Report

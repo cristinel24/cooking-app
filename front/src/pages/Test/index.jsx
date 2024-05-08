@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { useState } from 'react';
 
 import {
     ActionButton,
@@ -12,8 +13,8 @@ import {
     PreviewRecipe,
     Filters,
     ShowMenu,
+    ReportBug,
     Report,
-    ReportRecipe,
     Categories,
 } from '../../components'
 
@@ -87,6 +88,20 @@ function Test() {
     ]
 
     const func1 = () => {}
+
+    const [isReportVisible, setIsReportVisible] = useState(false);
+
+    const toggleReportVisibility = () => {
+        setIsReportVisible(!isReportVisible);
+    };
+
+    const [isReportBugVisible,setIsReportBugVisible]=useState(false);
+
+    const toggleReportBugVisibility = () =>{
+        setIsReportBugVisible(!isReportBugVisible);
+    }
+
+
     return (
         <>
             {/* <Categories
@@ -95,8 +110,17 @@ function Test() {
                 id="recipe-view-1"
             /> */}
 
-            {/* <ReportRecipe /> */}
-            {/* <Report /> */}
+            {isReportVisible && <Report />}
+            
+            {isReportBugVisible && <ReportBug />}
+
+            <button onClick={toggleReportVisibility}>
+                {isReportVisible ? 'Ascunde Report' : 'Arată Report'}
+            </button>
+
+            <button onClick={toggleReportBugVisibility}>
+                {isReportBugVisible ? 'Ascunde ReportBug' : 'Arată ReportBug'}
+            </button>
             {/* <ShowMenu /> */}
 
             {/* <PreviewRecipe

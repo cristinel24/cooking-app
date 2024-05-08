@@ -15,6 +15,8 @@ import {
     Report,
     ReportRecipe,
     Categories,
+    RecipeCard,
+    UserCard,
 } from '../../components'
 
 import { MdWavingHand } from 'react-icons/md'
@@ -87,8 +89,48 @@ function Test() {
     ]
 
     const func1 = () => {}
+    const handleFavorite = () => {
+        console.log('Favorite')
+    }
+    const handleRemove = () => {
+        console.log('Remove')
+    }
+    const handleEdit = () => {
+        console.log('Edit')
+    }
     return (
         <>
+            {/* <RecipeCard
+                title="Reteta cu sushi"
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Ioana"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={3.8}
+                prepTime={30}
+                onFavorite={handleFavorite}
+                onRemove={handleRemove}
+                onEdit={handleEdit}
+            />
+
+            <RecipeCard
+                title="Chec pufos"
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Sabina"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={2.1}
+                prepTime={73}
+            />
+
+            <UserCard
+                displayName="Ana"
+                username="username"
+                rating={3.6}
+                link="./Register"
+                profilePicture="https://images.unsplash.com/photo-1501869150797-9bbb64f782fd?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            /> */}
+
             {/* <Categories
                 name="Cele mai vizualizate"
                 recipes={mostViewedRecipes}
@@ -132,11 +174,11 @@ function Test() {
 
             {/* <PopUpChat /> */}
 
-            <PageButton path={pathPage} className="da">
+            {/* <PageButton path={pathPage} className="da">
                 Buna
             </PageButton>
 
-            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} />
+            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
         </>
     )
 }

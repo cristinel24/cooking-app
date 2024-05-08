@@ -1,0 +1,86 @@
+.user-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #f9e5e5;
+    border-radius: 20px;
+    width: 100%;
+    padding: 20px;
+}
+
+.user-card-link {
+    display: flex;
+    width: 100%;
+}
+
+.user-card-details {
+    margin: 0%;
+    font-size: 0.9rem;
+    padding: 20px;
+}
+
+.user-card-details-display-name {
+    color: #000000;
+    font-weight: bold;
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.user-card-details-user-name {
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    color: var(--bkgcolor);
+}
+
+.user-card-image {
+    width: 10rem;
+    margin-left: 30px;
+    margin-right: 30px;
+    aspect-ratio: 1;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+    object-fit: cover;
+    border-radius: 100%;
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .user-card-details-display-name {
+        font-size: 1rem;
+    }
+
+    .user-card-details-user-name {
+        font-size: 0.7rem;
+    }
+    .user-card-details {
+        font-size: 0.7rem;
+    }
+
+    .user-card-image {
+        width: 6rem;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .user-card {
+        padding: 10px;
+        padding-left: 20px;
+    }
+    .user-card-details-display-name {
+        font-size: 0.8rem;
+    }
+
+    .user-card-details-user-name {
+        font-size: 0.5rem;
+    }
+    .user-card-details {
+        font-size: 0.5rem;
+    }
+
+    .user-card-image {
+        width: 4rem;
+        margin: 0;
+    }
+}

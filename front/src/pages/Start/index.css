@@ -1,5 +1,10 @@
+.start-page-message {
+    color: var(--txtcolor);
+}
+
 .start-page-container {
     display: flex;
+    flex-direction: column;
     /* grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
     column-gap: 2%; */
     width: calc(100% - 8rem);
@@ -17,11 +22,11 @@
     display: none;
 } */
 
-.start-page-container-component:first-child {
+/* .start-page-container-component:first-child {
     display: block;
     margin-right: 4rem;
     width: calc(30% - 4rem);
-}
+} */
 
 /* .start-page-container-component {
     min-width: 250px;

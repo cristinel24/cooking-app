@@ -24,7 +24,7 @@ import {
 import Page from './pages/Page'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
-import StartPage from './pages/StartPage'
+import Start from './pages/Start'
 
 function App() {
     const titlu = 'Buton'
@@ -79,7 +79,7 @@ function App() {
                     <Route path="/LoginPage" element={<LoginPage />} />
                     <Route path="/UserProfile" element={<UserProfile />} />
                     <Route path="/RegisterPage" element={<RegisterPage />} />
-                    <Route path="/StartPage" element={<StartPage/>} />
+                    <Route path="/Start" element={<Start/>} />
                 </Routes>
             </Router>
         </ThemeContext.Provider>

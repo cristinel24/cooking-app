@@ -1,13 +1,54 @@
+import { useState, useEffect } from 'react'
 import './index.css'
 import { Page } from '../../components'
-import { Feed, Filters, PopUpChat, PreviewRecipe } from '../../components'
-import ReactPaginate from 'react-paginate'
+import { Feed, Dropdown, PopUpChat } from '../../components'
 
-const StartPage = () => {
+const Start = () => {
     const isLogged = true
     const loggedUserRoutes = ['route1', 'route2', 'route3']
+    const dropdownCategories = [
+        'Cele mai vizualizate',
+        'Cel mai mare rating',
+        'Cele mai noi',
+        'Favorite',
+        'Retele prietenilor',
+        'Recomandari',
+    ]
 
-    // const categoriesData = [
+    let feedIds = []
+    dropdownCategories.map(
+        (category, index) => (feedIds[category] = 'feed' + index)
+    )
+
+    const [selectedCategoryId, setSelectedCategoryId] = useState(
+        feedIds[dropdownCategories[0]]
+    )
+
+    const manageScrollListener = (action, handleScroll) => {
+        if (action === 'add') {
+            window.addEventListener('scroll', handleScroll)
+        } else if (action === 'remove') {
+            window.removeEventListener('scroll', handleScroll)
+        }
+    }
+
+    const handleCategoryChange = (category) => {
+        // if (feedIds[category] == selectedCategoryId) return
+
+        setSelectedCategoryId(feedIds[category])
+
+        let feeds = Array.from(document.getElementsByClassName('feed'))
+        // console.log(category)
+
+        for (let i = 0; i < feeds.length; i++)
+            if (feeds[i].id == selectedCategoryId) {
+                feeds[i].style.display = 'flex'
+            } else {
+                feeds[i].style.display = 'none'
+            }
+    }
+
+    // const feedData = [
     //     {
     //         name: 'cele mai vizualizate',
     //         id: 'id1',
@@ -202,63 +243,73 @@ const StartPage = () => {
     //     },
     // ]
 
-    // let categories = []
-    // for (let i = 0; i < categoriesData.length; i++) {
-    //     categories.push(
+    // let feed = []
+    // for (let i = 0; i < feedData.length; i++) {
+    //     feed.push(
     //         <Categories
     //             key={i}
-    //             name={categoriesData[i].name}
-    //             id={categoriesData[i].id}
-    //             recipes={categoriesData[i].recipes}
+    //             name={feedData[i].name}
+    //             id={feedData[i].id}
+    //             recipes={feedData[i].recipes}
     //         ></Categories>
     //     )
     // }
 
-    const categories = (name, id, route) => {
+    const feed = (name, id, route, isSelected, index) => {
         if (loggedUserRoutes.indexOf(route) == -1 && !isLogged) return null
 
-        return <Feed name={name} id={id} route={route}></Feed>
+        return (
+            <Feed
+                name={name}
+                id={id}
+                route={route}
+                isSelected={isSelected}
+                key = {selectedCategoryId + ' ' + index}
+            ></Feed>
+        )
     }
 
-    // useEffect(() => {
-    //     //for each set() there should be an async call to obtain data from backend
-    //     let newRecipes = getRecipes(2, 0, 'most viewed')
-    //     setMostViewed((mostViewed) => [...mostViewed, ...newRecipes])
-    //     newRecipes = getRecipes(2, 0, 'highest rating')
-    //     setHighestRating((highestRating) => [...highestRating, ...newRecipes])
-    //     newRecipes = getRecipes(2, 0, 'newest')
-    //     setNewest((newest) => [...newest, ...newRecipes])
-    //     if (isLogged) {
-    //         newRecipes = getRecipes(2, 0, 'favourites')
-    //         setFavourites((favourites) => [...favourites, ...newRecipes])
-    //         newRecipes = getRecipes(2, 0, 'friends recipes')
-    //         setFriendsRecipes((friendsRecipes) => [
-    //             ...friendsRecipes,
-    //             ...newRecipes,
-    //         ])
-    //         newRecipes = getRecipes(2, 0, 'recommended')
-    //         setRecommended((recommended) => [...recommended, ...newRecipes])
-    //     }
-    // }, [])
+    useEffect (() => {
+        let feeds = Array.from(document.getElementsByClassName('feed'))
+
+        for (let i = 0; i < feeds.length; i++)
+            if (feeds[i].id == selectedCategoryId) {
+                feeds[i].style.display = 'flex'
+            } else {
+                feeds[i].style.display = 'none'
+            }
+    }, [selectedCategoryId])
+
+    useEffect(() => {
+        handleCategoryChange(dropdownCategories[0])
+    }, [])
 
     return (
         <Page>
+            <h1 className="start-page-message start-page-container-component">
+                Explorează rețetele...
+            </h1>
+            <Dropdown
+                feed={dropdownCategories}
+                selectedCategoryId={selectedCategoryId}
+                onSelectCategory={handleCategoryChange}
+            ></Dropdown>
             <div className="start-page-container">
                 <div className="start-page-container-component">
-                    <Filters className="start-page-container-component"></Filters>
-                </div>
-                <div className="start-page-container-component">
-                    {/* {categories} */}
-                    {categories('Cele mai vizualizate', 'id1', 'route1')}
-                    {categories('Cel mai mare rating', 'id2', 'route2')}
-                    {categories('Cele mai noi', 'id3', 'route3')}
-                    {categories('Favorite', 'id4', 'route4')}
-                    {categories('Retetele prietenilor', 'id5', 'route5')}
-                    {categories('Recomandari', 'id6', 'route6')}
+                    {/* {feed} */}
+                    {dropdownCategories.map((category, index) =>
+                        feed(category, feedIds[category], 'route', feedIds[category] == selectedCategoryId, index)
+                    )}
+                    {/* {feed('Cele mai vizualizate', 'id1', 'route1')}
+                    {feed('Cel mai mare rating', 'id2', 'route2')}
+                    {feed('Cele mai noi', 'id3', 'route3')}
+                    {feed('Favorite', 'id4', 'route4')}
+                    {feed('Retetele prietenilor', 'id5', 'route5')}
+                    {feed('Recomandari', 'id6', 'route6')} */}
                 </div>
             </div>
         </Page>
     )
 }
 
-export default StartPage
+export default Start

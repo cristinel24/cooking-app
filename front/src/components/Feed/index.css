@@ -1,4 +1,4 @@
-.categories {
+.feed {
     margin-bottom: 4rem;
     display: flex;
     flex-direction: column;
@@ -7,14 +7,14 @@
     width: 100%;
 }
 
-.categories > * {
+.feed > * {
     margin-bottom: 20px;
 }
 
-.categories .recipe:last-child {
+.feed .recipe:last-child {
     margin-bottom: 0;
 }
-/* .categories-button {
+/* .feed-button {
     border-radius: 20px;
     font-size: 1.2rem;
     background-color: var(--compreteta);
@@ -22,6 +22,6 @@
     cursor: pointer;
 }
 
-.categories-button:hover {
+.feed-button:hover {
     background-color: var(--caseta);
 } */

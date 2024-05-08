@@ -5,9 +5,9 @@ import { PageButton, Recipe, ActionButton } from '../index'
 
 const Feed = (props) => {
     const [recipeList, setRecipeList] = useState([])
-    const [isScrollable, setIsScrollable] = useState(false)
+    // const [isScrollable, setIsScrollable] = useState(false)
 
-    const getRecipes = (nr, offset, route) => {
+    const fetchRecipes = (nr, offset, route) => {
         //recipeData will be replaced with an async call to backend
         const recipeData = [
             {
@@ -105,89 +105,104 @@ const Feed = (props) => {
     }
 
     const handleScroll = () => {
+        // console.log(props.name)
         const { scrollTop, clientHeight, scrollHeight } =
             document.documentElement
-        if (scrollTop + clientHeight >= scrollHeight - 0) {
-            let newRecipes = getRecipes(10, recipeList.length, props.route)
+        if (scrollTop + clientHeight >= scrollHeight - 20) {
+            let newRecipes = fetchRecipes(10, 0, props.route)
             setRecipeList((recipeList) => [...recipeList, ...newRecipes])
         }
     }
 
-    const toogleRecipe = () => {
-        //get current feed element
-        const recipes = Array.from(
-            document.getElementsByClassName('recipe')
-        ).filter((recipe) => {
-            return recipe.parentElement.id == props.id
-        })
+    // const toogleRecipe = () => {
+    //     //get current feed element
+    //     const recipes = Array.from(
+    //         document.getElementsByClassName('recipe')
+    //     ).filter((recipe) => {
+    //         return recipe.parentElement.id == props.id
+    //     })
 
-        //show/hide feed recipes
-        const displays = ['flex', 'none']
-        let isDisplayed = 0
-        if (recipes[recipes.length - 1].style.display != 'none') {
-            isDisplayed = 1
+    //     //show/hide feed recipes
+    //     const displays = ['flex', 'none']
+    //     let isDisplayed = 0
+    //     if (recipes[recipes.length - 1].style.display != 'none') {
+    //         isDisplayed = 1
+    //     }
+    //     for (let i = 2; i < recipes.length; i++) {
+    //         recipes[i].style.display = displays[isDisplayed]
+    //     }
+
+    //     //set display: none for the other feeds
+    //     const otherCategories = Array.from(
+    //         document.getElementsByClassName('categories')
+    //     ).filter((category) => {
+    //         return category.id != props.id
+    //     })
+
+    //     for (let i = 0; i < otherCategories.length; i++)
+    //         otherCategories[i].style.display = displays[1 - isDisplayed]
+
+    //     //set isScrollable for feed
+    //     if (isDisplayed) {
+    //         setIsScrollable(false)
+    //         // window.removeEventListener('scroll', handleScroll)
+    //         console.log('1')
+    //     } else {
+    //         setIsScrollable(true)
+    //         // window.addEventListener('scroll', handleScroll)
+    //         console.log('2')
+    //     }
+    // }
+
+    const recpiesToCards = (recipeList) => {
+        // console.log(recipeList)
+        let recipes = []
+        for (let i = 0; i < recipeList.length; i++) {
+            recipes.push(
+                <Recipe
+                    key={i}
+                    title={recipeList[i].title}
+                    author={recipeList[i].author}
+                    image={recipeList[i].image}
+                    description={recipeList[i].description}
+                ></Recipe>
+            )
         }
-        for (let i = 2; i < recipes.length; i++) {
-            recipes[i].style.display = displays[isDisplayed]
-        }
-
-        //set display: none for the other feeds
-        const otherCategories = Array.from(
-            document.getElementsByClassName('categories')
-        ).filter((category) => {
-            return category.id != props.id
-        })
-
-        for (let i = 0; i < otherCategories.length; i++)
-            otherCategories[i].style.display = displays[1 - isDisplayed]
-
-        //set isScrollable for feed
-        if (isDisplayed) {
-            setIsScrollable(false)
-            window.removeEventListener('scroll', handleScroll)
-        } else {
-            setIsScrollable(true)
-            window.addEventListener('scroll', handleScroll)
-        }
+        return recipes
     }
 
-    let recipes = []
-    for (let i = 0; i < recipeList.length; i++) {
-        recipes.push(
-            <Recipe
-                key={i}
-                title={recipeList[i].title}
-                author={recipeList[i].author}
-                image={recipeList[i].image}
-                description={recipeList[i].description}
-            ></Recipe>
-        )
-    }
+    // useEffect(() => {
+    //     for (let i = recipes.length; i < recipeList.length; i++) {
+    //         recipes.push(
+    //             <Recipe
+    //             key={i}
+    //             title={recipeList[i].title}
+    //             author={recipeList[i].author}
+    //             image={recipeList[i].image}
+    //             description={recipeList[i].description}
+    //             ></Recipe>
+    //             )
+    //         }
+    //     console.log(recipes)
+    // }, [recipeList])
 
     useEffect(() => {
-        let newRecipes = getRecipes(10, 0, props.route)
+        let newRecipes = fetchRecipes(5, 0, props.route)
         setRecipeList((recipeList) => [...recipeList, ...newRecipes])
+
+        // console.log(props.isSelected + ' ' + props.id)
+        if (!props.isSelected) return
+
+        window.addEventListener('scroll', handleScroll)
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll)
+        }
     }, [])
 
-    useEffect(() => {
-        if (isScrollable) 
-            return
-
-        const recipes = Array.from(
-            document.getElementsByClassName('recipe')
-        ).filter((recipe) => {
-            return recipe.parentElement.id == props.id
-        })
-
-        for (let i = 2; i < recipes.length; i++)
-            recipes[i].style.display = 'none'
-        
-    }, [recipeList])
-
     return (
-        <div className="categories" id={props.id}>
-            <ActionButton onClick={toogleRecipe} text={props.name} />
-            {recipes}
+        <div className="feed" id={props.id}>
+            {recpiesToCards(recipeList)}
         </div>
     )
 }

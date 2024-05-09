@@ -22,6 +22,7 @@ export const themes = {
         filterbkcolor: '#303233',
         neutru: '#828282',
         recipetext: "#0c1821",
+        bkgdropdown:"#FFCEC3",
     },
     light: {
         bkgcolor: '#FF5348',
@@ -44,6 +45,7 @@ export const themes = {
         filterbkcolor: '#F3F3F3',
         neutru: '#828282',
         recipetext: "#0c1821",
+        bkgdropdown:"#FFCEC3",
     },
 }
 

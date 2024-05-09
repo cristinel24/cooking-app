@@ -1,27 +1,15 @@
 .feed {
     margin-bottom: 4rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /* padding: 5% 0; */
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px; 
     width: 100%;
 }
 
 .feed > * {
-    margin-bottom: 20px;
+    margin-bottom: 0; /* Elimină margin-bottom-ul pentru elementul final din fiecare coloană */
 }
 
 .feed .recipe:last-child {
-    margin-bottom: 0;
+    margin-bottom: 20px; /* Restabilește margin-bottom-ul pentru elementul final */
 }
-/* .feed-button {
-    border-radius: 20px;
-    font-size: 1.2rem;
-    background-color: var(--compreteta);
-    color: var(--text);
-    cursor: pointer;
-}
-
-.feed-button:hover {
-    background-color: var(--caseta);
-} */

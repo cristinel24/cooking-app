@@ -7,12 +7,12 @@ const Start = () => {
     const isLogged = true
     const loggedUserRoutes = ['route1', 'route2', 'route3']
     const dropdownCategories = [
-        'Cele mai vizualizate',
-        'Cel mai mare rating',
-        'Cele mai noi',
-        'Favorite',
-        'Retele prietenilor',
-        'Recomandari',
+        'cele mai vizualizate',
+        'cu cel mai mare rating',
+        'cele mai noi',
+        'favorite',
+        'de la autorii urmăriți',
+        'recomandate',
     ]
 
     let feedIds = []
@@ -42,7 +42,7 @@ const Start = () => {
 
         for (let i = 0; i < feeds.length; i++)
             if (feeds[i].id == selectedCategoryId) {
-                feeds[i].style.display = 'flex'
+                feeds[i].style.display = 'grid' //pt ecran <690 aici trebuie flex
             } else {
                 feeds[i].style.display = 'none'
             }
@@ -274,7 +274,7 @@ const Start = () => {
 
         for (let i = 0; i < feeds.length; i++)
             if (feeds[i].id == selectedCategoryId) {
-                feeds[i].style.display = 'flex'
+                feeds[i].style.display = 'grid' //pt ecran <690 aici trebuie flex
             } else {
                 feeds[i].style.display = 'none'
             }
@@ -289,11 +289,13 @@ const Start = () => {
             <h1 className="start-page-message start-page-container-component">
                 Explorează rețetele...
             </h1>
-            <Dropdown
+            <div  className="start-page-dropdown">
+            <Dropdown 
                 feed={dropdownCategories}
                 selectedCategoryId={selectedCategoryId}
                 onSelectCategory={handleCategoryChange}
             ></Dropdown>
+            </div>
             <div className="start-page-container">
                 <div className="start-page-container-component">
                     {/* {feed} */}

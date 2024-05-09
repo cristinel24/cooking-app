@@ -2,14 +2,10 @@ import './index.css'
 import '../index'
 
 const Dropdown = (props) => {
-  // const handleCategoryChange = (e) => {
-  //   props.onSelectCategory(e.target.value)
-  // }
-
   return (
-    <select value={props.selectedCategory} onChange={(event) => props.onSelectCategory(event.target.value)}>
+    <select className="dropdown-item" value={props.selectedCategory} onChange={(event) => props.onSelectCategory(event.target.value)}>
       {props.feed.map((category, index) => (
-        <option key={index} value={category}>
+        <option key={index} value={category} className="dropdown-option">
           {category}
         </option>
       ))}

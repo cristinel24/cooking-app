@@ -101,7 +101,6 @@
 }
 
 .recipe-card-details-favorite {
-    margin-top: var(--recipe-card-inner-gap);
     display: flex;
     align-items: center;
     gap: 0.4rem;

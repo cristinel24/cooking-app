@@ -1,9 +1,7 @@
 .recipe-card {
     --recipe-card-image-height: 13rem;
-    --recipe-card-inner-gap: 1rem;
     --recipe-card-padding: 20px;
 
-    align-items: flex-start;
     display: flex;
     align-items: center;
     margin: 0;
@@ -33,6 +31,13 @@
 .recipe-card-details {
     position: relative;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-height: calc(var(--recipe-card-image-height) * 0.8);
+    max-height: var(--recipe-card-image-height) * 0.8;
+
     padding: var(--recipe-card-padding);
     padding-left: calc(
         var(--recipe-card-image-height) / 2 + var(--recipe-card-padding)
@@ -41,11 +46,8 @@
 
     background-color: #f9e5e5;
     border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    flex: 0 1 auto;
+
     width: 100%;
-    gap: 0.9rem;
     p {
         margin: 0;
     }
@@ -53,9 +55,9 @@
 
 .recipe-card-details-title-and-options {
     display: flex;
-    flex: 1;
     justify-content: space-between;
     font-size: 1.25rem;
+    height: fit-content;
 }
 
 .recipe-card-details-options {
@@ -69,6 +71,12 @@
     }
 }
 
+.recipe-card-details-author-time-rating {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
 .recipe-card-details-time {
     display: flex;
     align-items: center;
@@ -79,7 +87,6 @@
     display: flex;
     align-items: center;
     gap: 1.2rem;
-    margin-bottom: var(--recipe-card-inner-gap);
 }
 
 .recipe-card-details-author {
@@ -94,6 +101,7 @@
 }
 
 .recipe-card-details-favorite {
+    margin-top: var(--recipe-card-inner-gap);
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -110,7 +118,6 @@
 @media (min-width: 481px) and (max-width: 767px) {
     .recipe-card {
         --recipe-card-image-height: 10.5rem;
-        --recipe-card-inner-gap: 0.5rem;
     }
 
     .recipe-card-details-title-and-options {
@@ -129,12 +136,17 @@
 @media (min-width: 320px) and (max-width: 480px) {
     .recipe-card {
         --recipe-card-image-height: 8rem;
-        --recipe-card-inner-gap: 0rem;
     }
 
     .recipe-card-details {
+        padding-top: 0.7rem;
+        padding-bottom: 0.7rem;
         font-weight: 500;
-        gap: 0.5rem;
+        gap: 0.3rem;
+    }
+
+    .recipe-card-details-author-time-rating {
+        gap: 0.2rem;
     }
 
     .recipe-card-details-title-and-options {

@@ -10,6 +10,7 @@ export default function RecipeCard({
     recipeLink,
     rating,
     prepTime,
+    favorite,
     onFavorite,
     onRemove,
     onEdit,
@@ -58,22 +59,30 @@ export default function RecipeCard({
                         )}
                     </div>
                 </div>
-                <p className="recipe-card-details-author">
-                    Autor: <a href={authorLink}>{authorName}</a>
-                </p>
-                <div className="recipe-card-details-time-and-rating">
-                    <p className="recipe-card-details-time">
-                        <IoIosTime /> {prepTimeDisplayText}
+                <div className="recipe-card-details-author-time-rating">
+                    <p className="recipe-card-details-author">
+                        Autor: <a href={authorLink}>{authorName}</a>
                     </p>
-                    <Rating ratingValue={rating} />
+                    <div className="recipe-card-details-time-and-rating">
+                        <p className="recipe-card-details-time">
+                            <IoIosTime /> {prepTimeDisplayText}
+                        </p>
+                        <Rating ratingValue={rating} />
+                    </div>
                 </div>
-                <div
-                    className="recipe-card-details-favorite"
-                    onClick={onFavorite}
-                >
-                    <FaHeart className="recipe-card-heart-icon" />
-                    <p>Adaugă la favorite</p>
-                </div>
+                {(favorite === true || favorite === false) && onFavorite && (
+                    <div
+                        className="recipe-card-details-favorite"
+                        onClick={onFavorite}
+                    >
+                        <FaHeart className="recipe-card-heart-icon" />
+                        <p>
+                            {favorite === true
+                                ? 'Adaugă la favorite'
+                                : 'Elimină din favorite'}
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     )

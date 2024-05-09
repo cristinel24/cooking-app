@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
     ActionButton,
@@ -22,6 +22,8 @@ import { MdWavingHand } from 'react-icons/md'
 
 //pagina noua
 function Test() {
+    const [favorite, setFavorite] = useState(false)
+
     let userName = 'Utilizator'
     let userNumber = '#1'
     let content =
@@ -89,7 +91,7 @@ function Test() {
 
     const func1 = () => {}
     const handleFavorite = () => {
-        console.log('Favorite')
+        setFavorite(!favorite)
     }
     const handleRemove = () => {
         console.log('Remove')
@@ -100,13 +102,28 @@ function Test() {
     return (
         <>
             {/* <RecipeCard
-                title="Reteta cu sushi"
+                title="Reteta cu sushi sushi sushi sushisushi sushisushi sushi"
                 recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
                 authorName="Ioana"
                 authorLink="./Login"
                 recipeLink="./Login"
                 rating={3.8}
                 prepTime={30}
+                favorite={favorite}
+                onFavorite={handleFavorite}
+                onRemove={handleRemove}
+                onEdit={handleEdit}
+            />
+
+            <RecipeCard
+                title="Reteta cu sushi sushi "
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Ioana"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={3.8}
+                prepTime={30}
+                favorite={favorite}
                 onFavorite={handleFavorite}
                 onRemove={handleRemove}
                 onEdit={handleEdit}

@@ -1,11 +1,26 @@
 .user-card {
+    --user-card-image-height: 13rem;
+    --user-card-padding: 20px;
+
+    position: relative;
+
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: #f9e5e5;
-    border-radius: 20px;
+    margin: 0;
     width: 100%;
-    padding: 20px;
+}
+
+.user-card-image {
+    box-shadow: 0px 0px 8px #00000080;
+    position: relative;
+    width: var(--user-card-image-height);
+    aspect-ratio: 1;
+    background-size: cover;
+    background-position: center;
+    z-index: 10;
+    object-fit: cover;
+    border-radius: 100%;
 }
 
 .user-card-link {
@@ -14,9 +29,25 @@
 }
 
 .user-card-details {
+    flex-grow: 1;
+    position: relative;
+    box-sizing: border-box;
     margin: 0%;
     font-size: 0.9rem;
     padding: 20px;
+    border-radius: 20px;
+    min-height: calc(var(--user-card-image-height) * 0.8);
+    background-color: #f9e5e5;
+
+    padding: var(--user-card-padding);
+    padding-left: calc(
+        var(--user-card-image-height) / 2 + var(--user-card-padding)
+    );
+    margin-left: calc(var(--user-card-image-height) * (-1) / 2);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .user-card-details-display-name {
@@ -34,19 +65,10 @@
     color: var(--bkgcolor);
 }
 
-.user-card-image {
-    width: 10rem;
-    margin-left: 30px;
-    margin-right: 30px;
-    aspect-ratio: 1;
-    background-size: cover;
-    background-position: center;
-    z-index: 1;
-    object-fit: cover;
-    border-radius: 100%;
-}
-
 @media (min-width: 481px) and (max-width: 767px) {
+    .user-card {
+        --user-card-image-height: 10.5rem;
+    }
     .user-card-details-display-name {
         font-size: 1rem;
     }
@@ -57,16 +79,11 @@
     .user-card-details {
         font-size: 0.7rem;
     }
-
-    .user-card-image {
-        width: 6rem;
-    }
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
     .user-card {
-        padding: 10px;
-        padding-left: 20px;
+        --user-card-image-height: 8rem;
     }
     .user-card-details-display-name {
         font-size: 0.8rem;
@@ -77,10 +94,5 @@
     }
     .user-card-details {
         font-size: 0.5rem;
-    }
-
-    .user-card-image {
-        width: 4rem;
-        margin: 0;
     }
 }

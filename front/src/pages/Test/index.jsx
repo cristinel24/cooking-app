@@ -16,7 +16,6 @@ import {
     ReportRecipe,
     Categories,
     RecipeCard,
-    UserCard,
 } from '../../components'
 
 import { MdWavingHand } from 'react-icons/md'
@@ -121,7 +120,9 @@ function Test() {
                 recipeLink="./Login"
                 rating={2.1}
                 prepTime={73}
-            />
+            /> */}
+
+            {/*
 
             <UserCard
                 displayName="Ana"

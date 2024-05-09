@@ -20,12 +20,12 @@ export default function RecipeCard({
         switch (true) {
             case prepTimeHours > 0 && prepTimeMinutes > 0:
                 return `${prepTimeHours} ${
-                    prepTimeHours === 1 ? 'ora' : 'ore'
+                    prepTimeHours === 1 ? 'oră' : 'ore'
                 } ${prepTimeMinutes} ${
                     prepTimeMinutes === 1 ? 'minut' : 'minute'
                 }`
             case prepTimeHours > 0:
-                return `${prepTimeHours} ${prepTimeHours === 1 ? 'ora' : 'ore'}`
+                return `${prepTimeHours} ${prepTimeHours === 1 ? 'oră' : 'ore'}`
             default:
                 return `${prepTimeMinutes} ${
                     prepTimeMinutes === 1 ? 'minut' : 'minute'

@@ -101,6 +101,7 @@
 }
 
 .recipe-card-details-favorite {
+    width: fit-content;
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -109,8 +110,11 @@
         margin: 0;
     }
 
-    .recipe-card-heart-icon {
+    .recipe-card-heart-icon-favorite {
         color: #ff0000;
+    }
+    .recipe-card-heart-icon-not-favorite {
+        color: #000000;
     }
 }
 

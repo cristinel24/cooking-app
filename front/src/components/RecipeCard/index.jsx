@@ -75,11 +75,17 @@ export default function RecipeCard({
                         className="recipe-card-details-favorite"
                         onClick={onFavorite}
                     >
-                        <FaHeart className="recipe-card-heart-icon" />
+                        <FaHeart
+                            className={
+                                favorite === true
+                                    ? 'recipe-card-heart-icon-favorite'
+                                    : 'recipe-card-heart-icon-not-favorite'
+                            }
+                        />
                         <p>
                             {favorite === true
-                                ? 'Adaugă la favorite'
-                                : 'Elimină din favorite'}
+                                ? 'Elimină din favorite'
+                                : 'Adaugă la favorite'}
                         </p>
                     </div>
                 )}

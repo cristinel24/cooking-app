@@ -19,6 +19,7 @@ db.drop_collection("counters")
 db.drop_collection("expiring_token")
 db.drop_collection("external_provider")
 db.drop_collection("follow")
+db.drop_collection("hash_algorithm")
 db.drop_collection("log")
 db.drop_collection("rating")
 db.drop_collection("recipe")
@@ -218,6 +219,34 @@ follow_collection = db["follow"]
 follow_collection.create_indexes([
     IndexModel([("userId", pymongo.HASHED)]),
     IndexModel([("followsId", pymongo.HASHED)]),
+])
+
+db.create_collection("hash_algorithm")
+db.command(
+    "collMod",
+    "hash_algorithm",
+    validator={
+        "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["_id", "name"],
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId",
+                },
+                "_class": {},
+                "name": {
+                    "bsonType": "string",
+                    "description": "must be the name of the hash algorithm",
+                },
+                "primary": {},
+            },
+            "additionalProperties": False,
+        },
+    }
+)
+hash_algorithm_collection = db["hash_algorithm"]
+hash_algorithm_collection.create_indexes([
+    IndexModel(["name"], unique=True)
 ])
 
 db.create_collection("log")
@@ -842,7 +871,7 @@ def base36encode(number: int):
 
 def generate_id():
     num = counters_collection.find_one_and_update(
-        {"name": "nameIncrementor"},
+        {"name": "id"},
         {"$inc": {"value": 1}}
     )["value"]
 
@@ -867,6 +896,8 @@ available_roles = {
     "premium": 0b100,
     "banned": 0b1000
 }
+
+hash_algos = ["argon2", "bcrypt", "random_sha256"]
 
 
 def get_role():
@@ -936,8 +967,6 @@ def get_login_data():
         }
     else:
         email_status = ["Pending", "Confirmed", "Transitioning"]
-        hash_algos = ["argon2", "bcrypt"]
-
         status_chance = random.random()
 
         if status_chance < params["login_data"]["pending_max_chance"]:
@@ -949,7 +978,7 @@ def get_login_data():
 
         login_data = {
             "emailStatus": user_email_status,
-            "hashAlgName": random_from(hash_algos),
+            "hashAlgName": "random_sha256",
             "hash": fake.sha256(),
             "salt": fake.sha256(),
             "changeToken": None,
@@ -1065,13 +1094,23 @@ def get_report():
 
 print("Preparing the counter...".ljust(36, '.'), end="")
 counter = {
-    "name": "nameIncrementor",
+    "name": "id",
     "value": bson.Int64(1),
 }
 counter["_id"] = counters_collection.insert_one(
     counter
 ).inserted_id
 print("Done")
+
+hash_algo_dicts = list()
+for hash_algo in hash_algos:
+    hash_algo_dicts.append({
+        "name": hash_algo
+    })
+    if hash_algo == "argon2":
+        hash_algo_dicts[len(hash_algo_dicts) - 1]["primary"] = True
+
+hash_algorithm_collection.insert_many(hash_algo_dicts, False)
 
 print("Stirring up some users...".ljust(36, '.'), end="")
 # generate users

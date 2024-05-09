@@ -1,5 +1,17 @@
 # Change Log
 
+### 09/05/2024
+
+* renamed `nameIncrementor` from the `counters` collection to `id`
+* added `hash_algorithm` collection. Contains a required `name` and a boolean field `primary` that may be present
+only if that hashing algorithm is the currently used one. Use this to identify the primary hashing algorithm
+```python
+hash_algorithm_collection.find_one({"primary": {"$exists": True}})
+```
+* current valid hash algorithm names are: `argon2`, `bcrypt`, `random_sha256`
+  * `random_sha256` should do no hashing.
+  * all generated passwords from `populate.py` will be of type `random_sha256`
+
 ### 30/04/2024
 
 * renamed `name` to `id` for all collections. Removed all objectIds from all collections. For example, the `Follow` collection now holds two `id`-s, 

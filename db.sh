@@ -16,5 +16,3 @@ docker exec -it mongo1 mongosh --eval "rs.initiate({
             {_id: 2, host: \"mongo3:27019\", priority: 1}
         ]
     })"
-
-echo "Done"

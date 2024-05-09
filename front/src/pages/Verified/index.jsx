@@ -25,7 +25,7 @@ const Verified = () => {
         <Page>
             <div className="verified-wrapper">
                 <p>Contul tău a fost înregistrat cu succes. Te poți întoarce la pagina principală.</p>
-            <div className="verified-home-button">
+            <div className="verified-button-wrapper">
                 <PageButton path={'https://www.google.ro/'} className="verified-button">
                      Acasă
                 </PageButton>

@@ -6,7 +6,6 @@
     width: 40rem;
     margin: auto;
     justify-content: center;
-    font-family: 'Montserrat', sans-serif;
     border-radius: 20px;
 }
 
@@ -17,7 +16,7 @@
     font-weight: bold;
 }
 
-.verified-home-button {
+.verified-button-wrapper {
     display: flex;
     flex-direction: row;
     align-self: center;

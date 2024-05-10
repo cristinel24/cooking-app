@@ -2,6 +2,6 @@ from pydantic import BaseModel
 
 
 class AuthFollowData(BaseModel):
-    user_id: str
-    user_roles: int
-    follow_id: str
+    user_id: str | None = None
+    user_roles: int | None = None
+    follow_id: str | None = None

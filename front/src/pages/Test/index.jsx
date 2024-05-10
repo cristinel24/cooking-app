@@ -101,7 +101,20 @@ function Test() {
         setIsReportBugVisible(!isReportBugVisible);
     }
 
+    const onSend = (selectedVariants) => {
+        alert('Mesajul a fost trimis!');
+        setIsReportVisible(false);
+    };
 
+    const onGiveUp = () => {
+        setIsReportVisible(false);
+        setIsReportBugVisible(false);
+    };
+
+    const onSendBug = (data) => {
+        alert('Mesajul a fost trimis!');
+        setIsReportBugVisible(false);
+    };
     return (
         <>
             {/* <Categories
@@ -110,9 +123,9 @@ function Test() {
                 id="recipe-view-1"
             /> */}
 
-            {isReportVisible && <Report />}
+            {isReportVisible && <Report onSend={onSend} onGiveUp={onGiveUp} />}
             
-            {isReportBugVisible && <ReportBug />}
+            {isReportBugVisible && <ReportBug  onSend={onSendBug} onGiveUp={onGiveUp} />}
 
             <button onClick={toggleReportVisibility}>
                 {isReportVisible ? 'Ascunde Report' : 'Arată Report'}

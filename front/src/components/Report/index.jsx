@@ -3,7 +3,7 @@ import ActionButton from '../ActionButton'
 import './index.css'
 import { LuSend } from "react-icons/lu";
 import { MdOutlineCancel } from "react-icons/md";
-function Report() {
+function Report(props) {
     const pathPage = 'https://www.google.ro/'
     localStorage.setItem('theme', 'light')
 
@@ -58,14 +58,20 @@ function Report() {
                         <ActionButton
                             text="Trimite"
                             Icon={LuSend}
-                            onClick={fuctionForButton}
+                            onClick={() => {
+                                props.onSend(
+                                    formVariants.filter(
+                                        (variant) => variant.checked == true
+                                    )
+                                )
+                            }}
                         />
                     </div>
                     <div className="report-give-up-button">
                         <ActionButton
                             text="Renunță"
                             Icon={MdOutlineCancel}
-                            onClick={fuctionForButton}
+                            onClick={props.onGiveUp}
                         />
                     </div>
                 </div>

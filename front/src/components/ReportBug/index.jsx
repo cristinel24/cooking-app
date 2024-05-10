@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './index.css'
-import PageButton from '../PageButton/index.jsx'
+import ActionButton from '../ActionButton';
 
-export default function ReportBug() {
+export default function ReportBug(props) {
     //Rutele pentru butoane
     const title1 = 'Trimite'
     const title2 = 'Renunta'
@@ -65,14 +65,23 @@ export default function ReportBug() {
                 </div>
                 <div className="report-bug-buttons">
                     <div className="report-bug-send-button">
-                        <PageButton path={pathPage} className="report-bug-button1">
-                            Trimite
-                        </PageButton>
+                        <ActionButton
+                            className="report-bug-button1"
+                            text="Trimite"
+                            onClick={() => {
+                                props.onSend({
+                                    text: text,
+                                    file: selectedFile,
+                                })
+                            }}
+                        ></ActionButton>
                     </div>
                     <div className="report-bug-give-up-button">
-                        <PageButton path={pathPage} className="report-bug-button2">
-                            Renunță
-                        </PageButton>
+                        <ActionButton
+                            className="report-bug-button2"
+                            text="Renunță"
+                            onClick={props.onGiveUp}
+                        ></ActionButton>
                     </div>
                 </div>
             </div>

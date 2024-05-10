@@ -65,18 +65,14 @@ export default function Report() {
                 </div>
                 <div className="report-buttons">
                     <div className="report-send-button">
-                        <PageButton
-                            children="Trimite"
-                            path={pathPage}
-                            className="report-button1"
-                        />
+                        <PageButton path={pathPage} className="report-button1">
+                            Trimite
+                        </PageButton>
                     </div>
                     <div className="report-give-up-button">
-                        <PageButton
-                            children="Renunta"
-                            path={pathPage}
-                            className="report-button2"
-                        />
+                        <PageButton path={pathPage} className="report-button2">
+                            Renunta
+                        </PageButton>
                     </div>
                 </div>
             </div>

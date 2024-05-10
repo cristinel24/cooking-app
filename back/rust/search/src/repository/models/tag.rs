@@ -1,3 +1,4 @@
+use crate::repository::service::CollectionName;
 use salvo::prelude::ToSchema;
 use serde::{Deserialize, Serialize};
 
@@ -8,9 +9,8 @@ pub struct Tag {
     pub counter: u32,
 }
 
-impl Tag {
-    #[must_use]
-    pub const fn get_collection_name() -> &'static str {
+impl CollectionName for Tag {
+    fn get_collection_name() -> &'static str {
         "tag"
     }
 }

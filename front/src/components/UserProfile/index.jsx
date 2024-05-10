@@ -6,7 +6,6 @@ import { BsFillGridFill } from 'react-icons/bs'
 import { GoDotFill } from 'react-icons/go'
 import { useEffect, useState } from 'react'
 import PageButton from '../PageButton'
-import Page from '../../pages/Page'
 
 import { MdOutlineManageAccounts } from 'react-icons/md'
 
@@ -31,48 +30,35 @@ function UserProfile() {
                 </div>
                 <div>
                     <div className="button_2">
-                        <PageButton
-                            children={
-                                <>
-                                    <icon>
-                                        <FaUserAlt />
-                                    </icon>{' '}
-                                    Descriere{' '}
-                                    <span className="arrow">
-                                        <FaAngleRight />
-                                    </span>
-                                </>
-                            }
-                            path={pathPage}
-                        />
-                        <PageButton
-                            children={
-                                <>
-                                    <icon>
-                                        <FaHeart />
-                                    </icon>{' '}
-                                    Favorite{' '}
-                                    <span className="arrow">
-                                        <FaAngleRight />
-                                    </span>
-                                </>
-                            }
-                            path={pathPage}
-                        />
-                        <PageButton
-                            children={
-                                <>
-                                    <icon>
-                                        <BsFillGridFill />
-                                    </icon>{' '}
-                                    Postari{' '}
-                                    <span className="arrow">
-                                        <FaAngleRight />
-                                    </span>
-                                </>
-                            }
-                            path={pathPage}
-                        />
+                        <PageButton path={pathPage}>
+                            <icon>
+                                <FaUserAlt />
+                            </icon>{' '}
+                            Descriere{' '}
+                            <span className="arrow">
+                                <FaAngleRight />
+                            </span>
+                        </PageButton>
+
+                        <PageButton path={pathPage}>
+                            <icon>
+                                <FaHeart />
+                            </icon>{' '}
+                            Favorite{' '}
+                            <span className="arrow">
+                                <FaAngleRight />
+                            </span>
+                        </PageButton>
+
+                        <PageButton path={pathPage}>
+                            <icon>
+                                <BsFillGridFill />
+                            </icon>{' '}
+                            Postari{' '}
+                            <span className="arrow">
+                                <FaAngleRight />
+                            </span>
+                        </PageButton>
                     </div>
                 </div>
                 <div className="report">

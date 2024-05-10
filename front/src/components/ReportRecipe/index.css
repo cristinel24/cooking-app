@@ -1,4 +1,4 @@
-.wrapper1 {
+.report-recipe-wrapper {
     position: fixed;
     top: 0;
     right: 0;
@@ -6,197 +6,108 @@
     flex-direction: column;
     color: var(--body);
     background-color: var(--ubody);
-    width: 40vw;
+    width: 400px;
     height: 100vh;
     justify-content: center;
     align-items: center;
     font-family: 'Montserrat', sans-serif;
 }
 
-.titlu1 {
-    margin-top: 5vh;
-    margin-bottom: 10vh;
+.report-recipe-wrapper-title {
+    margin-top: 5rem;
+    margin-bottom: 60px;
     font-weight: bolder;
     text-align: center;
     width: 100%;
 }
 
-.titlu1 p {
-    font-size: 45px;
+.report-recipe-wrapper-title p {
+    font-size: 2.25rem;
     font-weight: bolder;
     margin: auto;
 }
 
-form .doamne {
+.report-recipe-form .report-recipe-inputs {
     display: flex;
     align-items: center;
     padding: 10px;
 }
-label {
+
+.report-recipe-inputs label {
     margin-left: 5px;
-    font-size: 24px;
+    font-size: 1rem;
     font-weight: bold;
+    text-align: center;
+    text-align: left;
 }
-.butoane1 {
+
+.report-recipe-buttons {
     display: flex;
     flex-direction: row;
     margin: auto;
     align-self: center;
 }
 
-.button1 .link {
-    background-color: var(--body);
-    margin-bottom: 2vh;
-    padding: 20px;
-    width: 40vw;
-    font-size: 16px;
+.report-recipe-give-up-button .action-button-icon,
+.report-recipe-send-button .action-button-icon {
+    display: none;
 }
 
-.titlu1 p {
-    font-size: 32px;
-    font-weight: bolder;
+.report-recipe-send-button .action-button {
+    background-color: var(--body);
+    margin-bottom: 20px;
+    padding: 15px;
+    width: 7rem;
+}
+
+.report-recipe-send-button .action-button-text {
+    font-size: 0.7rem;
+    text-align: center;
     margin: auto;
 }
-form label {
-    color: var(--hovercolor);
-    font-size: 18px;
-}
 
-.button2 .link {
+.report-recipe-give-up-button .action-button {
     background-color: var(--neutru);
-    padding: 20px;
-    width: 30vw;
-    margin-left: 5vw;
-    font-size: 12px;
+    padding: 15px;
+    width: 7rem;
+    margin-left: 50px;
+    border: none;
 }
 
-.wrapper1 p {
-    padding-top: 50px;
-    padding-left: 20px;
-    padding-right: 20px;
+.report-recipe-give-up-button .action-button-text {
+    font-size: 0.7rem;
+    text-align: center;
+    margin: auto;
 }
 
-@media screen and (min-width: 601px) and (max-width: 1100px) {
-    .wrapper1 {
-        position: fixed;
-        top: 0;
-        right: 0;
-        display: flex;
-        flex-direction: column;
-        color: var(--body);
-        background-color: var(--ubody);
-        width: 50vw;
-        height: 100vh;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Montserrat', sans-serif;
-    }
-
-    .butoane1 {
-        display: flex;
-        flex-direction: row;
-        margin: auto;
-        align-self: center;
-    }
-    .button1 .link {
-        background-color: var(--body);
-        margin-bottom: 2vh;
-        padding: 20px;
-        width: 40vw;
-        font-size: 16px;
-    }
-
-    .titlu1 p {
-        font-size: 32px;
-        font-weight: bolder;
-        margin: auto;
-    }
-    form label {
-        color: var(--hovercolor);
-        font-size: 16px;
-    }
-
-    label {
-        margin-left: 5px;
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 1vh;
-        text-align: center;
-        color: var(--hovercolor);
-    }
-
-    .button2 .link {
-        background-color: var(--neutru);
-        padding: 20px;
-        width: 30vw;
-        margin-left: 5vw;
-        font-size: 12px;
-    }
-  
-    .wrapper1 p {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
+.report-recipe-send-button .action-button:hover {
+    background-color: var(--bkgcolor);
 }
 
-@media screen and (max-width: 600px) {
-    .wrapper1 {
-        position: fixed;
-        top: 0;
-        right: 0;
-        display: flex;
-        flex-direction: column;
-        color: var(--body);
-        background-color: var(--ubody);
+.report-recipe-give-up-button .action-button:hover {
+    background-color: var(--bkgcolor);
+}
+
+@media screen and (max-width: 600px) and (min-width: 481px) {
+    .report-recipe-wrapper {
         width: 100vw;
-        height: 100vh;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Montserrat', sans-serif;
-        padding-top: 70px;
     }
 
-    form label {
-        color: var(--hovercolor);
-        font-size: 13px;
+    .report-recipe-inputs label {
+        font-size: 1.15rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .report-recipe-wrapper {
+        width: 100vw;
     }
 
-    .butoane1 {
-        display: flex;
-        flex-direction: row;
-        margin: auto;
-        align-self: center;
-    }
-    .button1 .link {
-        background-color: var(--body);
-        margin-bottom: 2vh;
-        padding: 20px;
-        width: 40vw;
-        font-size: 16px;
+    .report-recipe-wrapper-title p {
+        font-size: 1.75rem;
     }
 
-    .titlu1 p {
-        font-size: 32px;
-        font-weight: bolder;
-        margin: auto;
-    }
-    label {
-        margin-left: 5px;
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 1vh;
-        text-align: center;
-    }
-    .button2 .link {
-        background-color: var(--neutru);
-        padding: 20px;
-        width: 30vw;
-        margin-left: 5vw;
-        font-size: 12px;
-    }
-  
-    .wrapper1 p {
-        padding-left: 20px;
-        padding-right: 20px;
+    .report-recipe-inputs label {
+        font-size: 1rem;
     }
 }

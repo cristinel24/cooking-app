@@ -25,7 +25,11 @@ function Test() {
     let title = 'Utilizator: ' + user
     let nr = 1
     let number = '#' + nr
-    let reason = 'Conținut instigător la ură sau abuziv'
+    let reasons = [
+        'Conținut instigător la ură sau abuziv',
+        'Diferite probleme',
+        'Alte motive',
+    ]
     let date = '23.07.2023 18:00 AM'
     let view = 'Vizualizare profil'
     const pathPageView = '/'
@@ -111,7 +115,7 @@ function Test() {
             {/* <ReportCard
                 title={title}
                 number={number}
-                reason={reason}
+                reasons={reasons}
                 date={date}
                 view={view}
                 pathPageView={pathPageView}
@@ -135,11 +139,11 @@ function Test() {
 
             {/* <PopUpChat /> */}
 
-            <PageButton path={pathPage} className="da">
+            {/* <PageButton path={pathPage} className="da">
                 Buna
             </PageButton>
 
-            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} />
+            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
         </>
     )
 }

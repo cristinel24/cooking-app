@@ -23,28 +23,27 @@ function ReportCard(props) {
                 </div>
             </div>
             <div className="report-card-content">
-                <p className="report-card-content-description">
+                <div className="report-card-content-description">
                     Motive:
                     <br />
-                    {props.reason}
-                </p>
+                    <ul>
+                        {props.reasons.map((reason, index) => (
+                            <li key={index}>{reason}</li>
+                        ))}
+                    </ul>
+                </div>
                 <p className="report-card-content-date">Data: {props.date}</p>
             </div>
             <div className="report-card-footer">
-                <div className="report-card-footer-custom-buttons-view">
-                    <PageButton
-                        children={
-                            <>
-                                <span>
-                                    <PiArrowSquareOutBold className="report-card-footer-custom-buttons-img" />
-                                </span>
-                                <span>{props.view}</span>
-                            </>
-                        }
-                        path={props.pathPageView}
-                    />
+                <div className="report-card-footer-page-button">
+                    <PageButton path={props.pathPageView}>
+                        <span>
+                            <PiArrowSquareOutBold className="report-card-footer-button-img" />
+                        </span>
+                        <span>{props.view}</span>
+                    </PageButton>
                 </div>
-                <div className="report-card-footer-custom-buttons-read">
+                <div className="report-card-footer-action-button">
                     <ActionButton
                         onClick={props.handleClickRead}
                         text={
@@ -55,7 +54,7 @@ function ReportCard(props) {
                         Icon={FaCheck}
                     />
                 </div>
-                <div className="report-card-footer-custom-buttons-specific-action">
+                <div className="report-card-footer-action-button">
                     <ActionButton
                         onClick={props.handleClickSpecificAction}
                         text={

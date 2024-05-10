@@ -68,32 +68,3 @@
     position: relative;
     margin-top: 2.2rem;
 }
-/* 
-
-.tag-selector-suggestion-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: inherit;
-    font-size: inherit;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    padding: 0.3rem;
-}
-
-.tag-selector-suggestions {
-    position: absolute;
-    width: fit-content;
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
-}
-
-.tag-selector-tags {
-    display: flex;
-    width: 50%;
-    overflow-x: auto;
-    gap: 0.2rem;
-    z-index: 2;
-} */

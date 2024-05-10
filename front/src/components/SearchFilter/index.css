@@ -1,0 +1,95 @@
+.search-filter-lbox {
+    margin-top: 1rem;
+}
+
+.search-filter-box-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-filter-box-input label {
+    font-size: 1rem;
+    margin: none;
+    margin-top: 10px;
+    color: var(--txtcolor);
+}
+
+.search-filter-box-input .form-control {
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    margin-top: 5px;
+    padding: 5px 0 5px;
+    text-align: center;
+}
+
+.search-filter-box-prep-time {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 1rem;
+    margin-top: 15px;
+}
+
+.search-filter-box-prep-time-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-filter-box-prep-time-spinner-data {
+    font-size: 0.8rem;
+}
+
+.search-filter-box-prep-time-spinner-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.search-filter-box-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.search-filter-box-rating-stars {
+    cursor: pointer;
+    color: var(--stars);
+    font-size: 1.3rem;
+}
+
+.search-filter-box-creation-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.search-filter-box-creation-date-select {
+    border-radius: 20px;
+}
+
+@media (min-width: 481px) and (max-width: 1100px) {
+    .search-filter-box-input label {
+        margin-top: 0.2rem;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .search-filter-box-input label {
+        margin-top: 0.1rem;
+    }
+}

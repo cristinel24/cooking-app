@@ -1,0 +1,109 @@
+.search {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.search-filter-box {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 1.3rem;
+    color: var(--txtcolor);
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 15px;
+    padding: 10px;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-right-width: 4px;
+    border-style: groove;
+}
+
+.search-results {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    margin-left: 25rem;
+    flex: 1;
+}
+
+.search-results-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-results-content {
+    margin-bottom: 2rem;
+    margin-top: 3rem;
+    margin-right: 2rem;
+}
+
+.search-results-content .recipe {
+    cursor: auto;
+}
+
+.search-results-content-recipes {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+    gap: 3rem;
+}
+
+.search-results-content-users {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+    gap: 3rem;
+}
+
+.search-results-no-found {
+    color: var(--txtcolor);
+    margin-top: 5rem;
+    font-size: 1.5rem;
+    margin-bottom: 5rem;
+    margin-right: 1rem;
+}
+
+@media (min-width: 481px) and (max-width: 1100px) {
+    .search-filter-box {
+        font-size: 1rem;
+        margin-left: 5px;
+    }
+
+    .search-results {
+        margin-left: 18rem;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .search {
+        flex-direction: column;
+    }
+
+    .search-filter-box {
+        position: unset;
+        font-size: 1.5rem;
+        margin-left: 6rem;
+        margin-right: 5rem;
+        border-bottom-width: 4px;
+        border-right-width: 0;
+    }
+
+    .search-results {
+        margin-left: 5rem;
+    }
+
+    .search-results-no-found {
+        font-size: 1.4rem;
+    }
+}

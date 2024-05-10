@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import { ThemeContext, themes } from './context'
 
-import { Login, Register, Test, Verified } from './pages'
+import { Login, Register, Test, Verified, Search } from './pages'
 
 function App() {
     localStorage.setItem('theme', 'dark')
@@ -56,6 +56,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/verify" element={<Verified />} />
+                    <Route path="/search" element={<Search />} />
                 </Routes>
             </Router>
         </ThemeContext.Provider>

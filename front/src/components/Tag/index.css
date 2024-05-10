@@ -10,6 +10,10 @@
     color: var(--txtcolordimmed);
 }
 
+.tag span {
+    width: max-content;
+}
+
 .tag-button {
     display: flex;
     align-items: center;

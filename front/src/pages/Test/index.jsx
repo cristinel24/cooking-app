@@ -156,12 +156,12 @@ function Test() {
             </PageButton>
 
             <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
-            <TagSelector
+            {/* <TagSelector
                 tags={tags}
                 addTag={addTag}
                 removeTag={removeTag}
                 searchTags={searchTags}
-            />
+            /> */}
         </>
     )
 }

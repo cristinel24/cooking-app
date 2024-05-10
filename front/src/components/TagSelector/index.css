@@ -8,7 +8,7 @@
     flex-direction: column;
     background-color: var(--bkgcolordimmed);
     border-radius: 10px;
-    z-index: 2000;
+    z-index: 2;
     position: absolute;
     top: 0;
 }
@@ -45,20 +45,22 @@
     display: flex;
     flex-direction: column;
     border-radius: 10px;
+    overflow: hidden;
 }
 
 .tag-selector-drop-down-suggestion-button {
     display: flex;
     align-items: center;
     color: var(--txtcolordimmed);
-    justify-content: center;
     font-size: inherit;
     border: none;
     background-color: transparent;
     cursor: pointer;
     padding: 0.3rem;
 }
-
+.tag-selector-drop-down-suggestion-button:hover {
+    background-color: color-mix(in srgb, var(--bkgcolordimmed), #808080 10%);
+}
 .tag-selector-tags {
     display: flex;
     width: 50%;

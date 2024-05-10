@@ -3,7 +3,6 @@ import { RxCross2 } from 'react-icons/rx'
 import './index.css'
 
 function Tag(props) {
-    console.log(props.text)
     return (
         <div className="tag">
             <span>{props.text}</span>

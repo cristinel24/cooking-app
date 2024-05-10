@@ -25,10 +25,22 @@ class FollowCollection(MongoCollection):
             return list(map(lambda following: following["followsId"],
                             self._collection.find({"userId": user_id}, FOLLOWING_PROJECTION)))
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to get followers! - {str(e)}")
+            raise Exception(f"Failed to get following! - {str(e)}")
 
     def add_follow(self, user_id: str, follows_id: str):
-        pass
+        try:
+            self._collection.insert_one({
+                "userId": user_id,
+                "followsId": follows_id
+            })
+        except errors.PyMongoError as e:
+            raise Exception(f"Failed to insert follow relationship! - {str(e)}")
 
     def delete_follow(self, user_id: str, follows_id: str):
-        pass
+        try:
+            self._collection.delete_one({
+                "userId": user_id,
+                "followsId": follows_id
+            })
+        except errors.PyMongoError as e:
+            raise Exception(f"Failed to delete follow relationship! - {str(e)}")

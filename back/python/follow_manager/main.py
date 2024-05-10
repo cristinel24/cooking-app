@@ -2,39 +2,39 @@ from fastapi import FastAPI
 
 import services
 from constants import HOST_URL, PORT
-from schemas import AuthFollowData
+from schemas import *
 
 
 app = FastAPI()
 
 
-@app.get("/user/{userId}/followers/count", tags=["followers"])
-async def get_followers_count(user_id: str) -> dict:
-    return await services.get_follower_count(user_id)
+@app.get("/user/{user_id}/followers/count", tags=["followers"])
+async def get_followers_count(user_id: str) -> FollowersCountData:
+    return await services.get_followers_count(user_id)
 
 
-@app.get("/user/{userId}/followers", tags=["followers"])
-async def get_followers(user_id: str, start: int, count: int) -> dict:
-    pass
+@app.get("/user/{user_id}/followers", tags=["followers"])
+async def get_followers(user_id: str, start: int, count: int) -> FollowersCardsData:
+    return await services.get_followers(user_id, start, count)
 
 
-@app.get("/user/{userId}/following/count", tags=["following"])
-async def get_following_count(user_id: str) -> dict:
+@app.get("/user/{user_id}/following/count", tags=["following"])
+async def get_following_count(user_id: str) -> FollowingCountData:
     return await services.get_following_count(user_id)
 
 
-@app.get("/user/{userId}/following", tags=["following"])
-async def get_following(user_id: str, start: int, count: int) -> dict:
+@app.get("/user/{user_id}/following", tags=["following"])
+async def get_following(user_id: str, start: int, count: int) -> FollowingCardsData:
     pass
 
 
-@app.put("/user/{userId}/following", tags=["auth", "following"])
-async def add_follow(auth_follow_data: AuthFollowData) -> dict:
+@app.put("/user/{user_id}/following", tags=["auth", "following"])
+async def add_follow(user_id: str, auth_follow_data: AuthFollowData) -> dict:
     pass
 
 
-@app.delete("/user/{userId}/following", tags=["auth", "following"])
-async def delete_follow(auth_follow_data: AuthFollowData) -> dict:
+@app.delete("/user/{user_id}/following", tags=["auth", "following"])
+async def delete_follow(user_id: str, auth_follow_data: AuthFollowData) -> dict:
     pass
 
 if __name__ == "__main__":

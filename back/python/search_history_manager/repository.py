@@ -16,10 +16,11 @@ class SearchHistoryCollection(MongoCollection):
 
     def get_search_history(self, user_id: str, start: int, count: int) -> list[str]:
         try:
-            result = self._collection.find_one(
-                {"id": user_id},
-                {"searchHistory": {"$slice": [start, count]}}
-            )
+            with pymongo.timeout(constants.MAX_TIMEOUT_TIME_SECONDS):
+                result = self._collection.find_one(
+                    {"id": user_id},
+                    {"searchHistory": {"$slice": [start, count]}}
+                )
             search_history = result["searchHistory"] if result and "searchHistory" in result else []
             if not search_history:
                 raise ValueError("Search history is empty.")

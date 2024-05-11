@@ -6,7 +6,7 @@ class UserData(BaseModel):
     displayName: str | None = None
     icon: str | None = None
     roles: int | None = None
-    ratingAvg: int | None = None
+    ratingAvg: float | None = None
     description: str | None = None
     recipes: list[str] | None = None
     ratings: list[str] | None = None
@@ -17,7 +17,7 @@ class UserCardData(BaseModel):
     displayName: str | None = None
     icon: str | None = None
     roles: int | None = None
-    ratingAvg: int | None = None
+    ratingAvg: float | None = None
 
 
 class UserFullData(BaseModel):
@@ -25,15 +25,22 @@ class UserFullData(BaseModel):
     displayName: str | None = None
     icon: str | None = None
     roles: int | None = None
-    ratingAvg: int | None = None
+    ratingAvg: float | None = None
     description: str | None = None
     recipes: list[str] | None = None
     ratings: list[str] | None = None
     email: str | None = None
-    messageHistory: list[str] | None = None
-    searchHistory: list[str] | None = None
+    followsCount: int | None = None
+    followersCount: int | None = None
     allergens: list[str] | None = None
+    searchHistory: list[str] | None = None
+    messageHistory: list[str] | None = None
     savedRecipes: list[str] | None = None
-    ratingAvg: int | None = None
-    followers: list[str] | None = None
-    follows: list[str] | None = None
+
+
+class UserCardsRequestData(BaseModel):
+    ids: list[str] | None = None
+
+
+class ErrorCode(BaseModel):
+    error_code: int

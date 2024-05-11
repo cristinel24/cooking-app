@@ -1,5 +1,5 @@
 from pymongo import MongoClient, errors
-from constants import MONGO_URL, DB_NAME
+from constants import MONGO_URL, DB_NAME, ErrorCodes
 
 
 class MongoCollection:
@@ -15,12 +15,18 @@ class UserCollection(MongoCollection):
 
     def get_user_by_id(self, user_id: str, projection_arg: dict) -> dict:
         try:
-            return self._collection.find_one({"id": user_id}, projection=projection_arg)
-        except errors.PyMongoError as e:
-            raise Exception(f"Failed to get user from database! - {str(e)}")
+            user = self._collection.find_one({"id": user_id}, projection=projection_arg)
+            if user is None:
+                raise Exception(ErrorCodes.USER_NOT_FOUND.value)
+            return user
+        except errors.PyMongoError:
+            raise Exception(ErrorCodes.USER_NOT_FOUND.value)
 
     def get_users_by_id(self, user_ids: list[str], projection_arg: dict) -> list[dict]:
         try:
-            return list(self._collection.find_one({"id": {"$in": user_ids}}, projection=projection_arg))
-        except errors.PyMongoError as e:
-            raise Exception(f"Failed to get users from database! - {str(e)}")
+            users_list = list(self._collection.find({"id": {"$in": user_ids}}, projection=projection_arg))
+            if not users_list:
+                raise Exception(ErrorCodes.USERS_NOT_FOUND.value)
+            return users_list
+        except errors.PyMongoError:
+            raise Exception(ErrorCodes.USERS_NOT_FOUND.value)

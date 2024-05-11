@@ -1,0 +1,40 @@
+import os
+from pymongo import MongoClient
+import constants
+
+
+class MongoCollection:
+    def __init__(self, connection: MongoClient | None = None):
+        self._connection = connection if connection is not None else MongoClient(
+            os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
+
+
+class AllergenCollection(MongoCollection):
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.cooking_app.allergen
+
+    def get_first_allergens_starting_with(self, starting_with: str) -> list[str]:
+        result = self._collection.find({"allergen": {"$regex": f"^{starting_with}"}},
+                                       limit=constants.NO_OF_RETURNED_ITEMS).sort('counter', -1)
+
+        return [item["allergen"] for item in result]
+
+    def add_allergen_by_name(self, name: str) -> None:
+        result = self._collection.find_one({"allergen": name})
+
+        if result:
+            self._collection.update_one(result, {"$inc": {"counter": 1}})
+        else:
+            self._collection.insert_one({"allergen": name, "counter": 1})
+
+    def remove_allergen_by_name(self, name: str) -> None:
+        result = self._collection.find_one({"allergen": name})
+
+        if not result:
+            raise Exception(constants.ErrorCodes.NONEXISTENT_ALLERGEN.value)
+
+        if result["counter"] == 1:
+            self._collection.delete_one(result)
+        else:
+            self._collection.update_one(result, {"$inc": {"counter": -1}})

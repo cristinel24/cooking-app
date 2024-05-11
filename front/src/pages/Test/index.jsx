@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
     ActionButton,
@@ -15,6 +15,7 @@ import {
     Report,
     ReportRecipe,
     Categories,
+    RecipeCard,
     UserCard,
 } from '../../components'
 
@@ -22,6 +23,8 @@ import { MdWavingHand } from 'react-icons/md'
 
 //pagina noua
 function Test() {
+    const [favorite, setFavorite] = useState(false)
+
     let userName = 'Utilizator'
     let userNumber = '#1'
     let content =
@@ -89,6 +92,7 @@ function Test() {
 
     const func1 = () => {}
     const handleFavorite = () => {
+        setFavorite(!favorite)
         console.log('Favorite')
     }
     const handleRemove = () => {
@@ -100,13 +104,28 @@ function Test() {
     return (
         <>
             {/* <RecipeCard
-                title="Reteta cu sushi"
+                title="Reteta cu sushi sushi sushi sushisushi sushisushi sushi"
                 recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
                 authorName="Ioana"
                 authorLink="./Login"
                 recipeLink="./Login"
                 rating={3.8}
                 prepTime={30}
+                favorite={favorite}
+                onFavorite={handleFavorite}
+                onRemove={handleRemove}
+                onEdit={handleEdit}
+            />
+
+            <RecipeCard
+                title="Reteta cu sushi sushi "
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Ioana"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={3.8}
+                prepTime={30}
+                favorite={favorite}
                 onFavorite={handleFavorite}
                 onRemove={handleRemove}
                 onEdit={handleEdit}
@@ -120,7 +139,9 @@ function Test() {
                 recipeLink="./Login"
                 rating={2.1}
                 prepTime={73}
-            />
+            /> */}
+
+            {/*
 
             <UserCard
                 displayName="Ana"

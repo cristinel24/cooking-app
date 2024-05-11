@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from api import request_user_cards
 from repository import FollowCollection
 from schemas import *
@@ -14,11 +16,12 @@ async def get_followers_count(user_id: str) -> FollowersCountData:
 async def get_followers(user_id: str, start: int, count: int) -> FollowersCardsData:
     followers_cards_data = FollowersCardsData()
     request = UserCardRequestData()
-    request.ids = follow_collection.get_followers(user_id)
+    request.ids = follow_collection.get_followers(user_id)[start:start + count]
+    pprint(request.ids)
     response = await request_user_cards(request)
-    user_cards = list(response.cards)[start:start + count]
+    user_cards = list(response.cards)
     followers_cards_data.followers = list(
-        map(lambda card: UserCardData(**card), user_cards)
+        map(lambda card: UserCardData(**card), reversed(user_cards))
     )
     return followers_cards_data
 
@@ -32,10 +35,10 @@ async def get_following_count(user_id: str) -> FollowingCountData:
 async def get_following(user_id: str, start: int, count: int) -> FollowingCardsData:
     following_cards_data = FollowingCardsData()
     request = UserCardRequestData()
-    request.ids = follow_collection.get_following(user_id)
+    request.ids = follow_collection.get_following(user_id)[start:start + count]
     response = await request_user_cards(request)
-    user_cards = list(response.cards)[start:start + count]
+    user_cards = list(response.cards)
     following_cards_data.following = list(
-        map(lambda card: UserCardData(**card), user_cards)
+        map(lambda card: UserCardData(**card), reversed(user_cards))
     )
     return following_cards_data

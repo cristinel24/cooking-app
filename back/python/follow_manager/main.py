@@ -28,12 +28,12 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
 
 
 @app.put("/user/{user_id}/following", tags=["auth", "following"])
-async def add_follow(user_id: str, auth_follow_data: AuthFollowData) -> dict:
+async def add_follow(user_id: str, auth_follow_data: AuthFollowData):
     pass
 
 
 @app.delete("/user/{user_id}/following", tags=["auth", "following"])
-async def delete_follow(user_id: str, auth_follow_data: AuthFollowData) -> dict:
+async def delete_follow(user_id: str, auth_follow_data: AuthFollowData):
     pass
 
 

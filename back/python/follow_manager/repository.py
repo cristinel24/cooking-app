@@ -1,6 +1,6 @@
 from pymongo import MongoClient, errors
 
-from constants import MONGO_URL, FOLLOWERS_PROJECTION, FOLLOWING_PROJECTION
+from constants import MONGO_URL
 
 
 class MongoCollection:
@@ -15,15 +15,27 @@ class FollowCollection(MongoCollection):
 
     def get_followers(self, user_id: str) -> list[str]:
         try:
-            return list(map(lambda follower: follower["userId"],
-                            self._collection.find({"followsId": user_id}, FOLLOWERS_PROJECTION)))
+            return list(
+                map(
+                    lambda following: following["userId"],
+                    self._collection
+                    .find({"followsId": user_id})
+                    .sort({"_id": -1})
+                )
+            )
         except errors.PyMongoError as e:
             raise Exception(f"Failed to get followers! - {str(e)}")
 
     def get_following(self, user_id: str) -> list[str]:
         try:
-            return list(map(lambda following: following["followsId"],
-                            self._collection.find({"userId": user_id}, FOLLOWING_PROJECTION)))
+            return list(
+                map(
+                    lambda following: following["followsId"],
+                    self._collection
+                    .find({"userId": user_id})
+                    .sort({"_id": -1})
+                )
+            )
         except errors.PyMongoError as e:
             raise Exception(f"Failed to get following! - {str(e)}")
 

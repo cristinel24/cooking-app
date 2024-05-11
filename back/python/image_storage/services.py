@@ -22,4 +22,5 @@ async def add_image(image_bytes: BytesIO):
         image.save(IMAGE_DIRECTORY_PATH + image_id + IMAGE_EXTENSION)
     except httpx.ConnectError:
         raise Exception(ErrorCodes.NOT_RESPONSIVE_API.value)
-
+    except OSError:
+        raise Exception(ErrorCodes.DUPLICATE_ID.value)

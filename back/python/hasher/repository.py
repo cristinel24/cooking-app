@@ -1,5 +1,6 @@
 import os
 from pymongo import MongoClient
+from constants import ErrorCodes
 
 
 def singleton(cls):
@@ -15,12 +16,21 @@ def singleton(cls):
 @singleton
 class DBWrapper:
     def __init__(self):
-        self.connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
+        try:
+            self.connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
+        except Exception:
+            raise Exception(ErrorCodes.DB_CONNECTION_FAILURE.value)
 
     def get_primary_hash_algorithm_name(self) -> str:
-        query_result = self.connection.cooking_app.hash_algorithm.find_one({"primary": {"$exists": True}}, {"name": 1})
+        try:
+            query_result = self.connection.cooking_app.hash_algorithm.find_one({"primary": {"$exists": True}}, {"name": 1})
+        except Exception:
+            raise Exception(ErrorCodes.FAILED_TO_GET_PRIMARY_HASH_ALGO.value)
         return query_result["name"]
 
     def check_exists_hash_algorithm_name(self, name: str) -> bool:
-        query_result = self.connection.cooking_app.hash_algorithm.find_one({"name": name}, {"_id": 1})
+        try:
+            query_result = self.connection.cooking_app.hash_algorithm.find_one({"name": name}, {"_id": 1})
+        except Exception:
+            raise Exception(ErrorCodes.FAILED_TO_CHECK_HASH_ALGO_EXISTANCE.value)
         return query_result is not None

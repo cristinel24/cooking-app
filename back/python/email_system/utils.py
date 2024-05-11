@@ -2,6 +2,7 @@ import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from constants import ErrorCodes
 
 
 def send_email(recipient: str, subject: str, html_content: str) -> None:
@@ -13,13 +14,23 @@ def send_email(recipient: str, subject: str, html_content: str) -> None:
     body = MIMEText(html_content, 'html')
     message.attach(body)
 
-    server = smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT")))
-
     try:
-        server.starttls()
-        server.login(os.getenv("SMTP_USERNAME"), os.getenv("SMTP_PASSWORD"))
-        server.send_message(message)
+        server = smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT")))
+    except Exception:
+        raise Exception(ErrorCodes.SMTP_CONNECTION_FAILED.value)
+    try:
+        try:
+            server.starttls()
+        except Exception:
+            raise Exception(ErrorCodes.SMTP_TTLS_FAILED.value)
+        try:
+            server.login(os.getenv("SMTP_USERNAME"), os.getenv("SMTP_PASSWORD"))
+        except Exception:
+            raise Exception(ErrorCodes.SMTP_LOGIN_FAILED.value)
+        try:
+            server.send_message(message)
+        except Exception:
+            raise Exception(ErrorCodes.SMTP_SEND_EMAIL_FAILED.value)
     except Exception as e:
-        raise Exception(f"Failed sending email: {str(e)}")
-    finally:
         server.close()
+        raise e

@@ -4,17 +4,29 @@ from utils import send_email
 
 
 def handle_account_verification(request_data: AccountVerification):
-    with open(os.path.join(TEMPLATES_DIR_PATH, ACCOUNT_VERIFICATION_FILE_NAME), "rt", encoding="utf8") as fp:
-        email_template = fp.read()
-    verification_link = f"{COOKING_APP_DOMAIN}/{ACCOUNT_VERIFICATION_ROUTE}/{request_data.token}"
-    email_body = email_template.format(email_address=request_data.email, verification_link=verification_link)
+    try:
+        with open(os.path.join(TEMPLATES_DIR_PATH, ACCOUNT_VERIFICATION_FILE_NAME), "rt", encoding="utf8") as fp:
+            email_template = fp.read()
+    except Exception as e:
+        raise Exception(ErrorCodes.ACCOUNT_VERIFICATION_TEMPLATE_READING_FAILED.value)
+    verification_link = f"{os.getenv('COOKING_APP_DOMAIN', 'https://cooking.app')}/{ACCOUNT_VERIFICATION_ROUTE}/{request_data.token}"
+    try:
+        email_body = email_template.format(email_address=request_data.email, verification_link=verification_link)
+    except Exception as e:
+        raise Exception(ErrorCodes.ACCOUNT_VERIFICATION_TEMPLATE_FORMATTING_FAILED.value)
     send_email(request_data.email, ACCOUNT_VERIFICATION_SUBJECT, email_body)
 
 
 def handle_change_request(request_data: ChangeRequest):
-    with open(os.path.join(TEMPLATES_DIR_PATH, CHANGE_REQUEST_FILE_NAME), "rt", encoding="utf8") as fp:
-        email_template = fp.read()
-    verification_link = f"{COOKING_APP_DOMAIN}/{CHANGE_REQUEST_ROUTE}/{request_data.token}"
-    email_body = email_template.format(email_address=request_data.email, change_resource=request_data.changeType,
-                                       verification_link=verification_link)
+    try:
+        with open(os.path.join(TEMPLATES_DIR_PATH, CHANGE_REQUEST_FILE_NAME), "rt", encoding="utf8") as fp:
+            email_template = fp.read()
+    except Exception as e:
+        raise Exception(ErrorCodes.REQUEST_CHANGE_TEMPLATE_READING_FAILED.value)
+    verification_link = f"{os.getenv('COOKING_APP_DOMAIN', 'https://cooking.app')}/{CHANGE_REQUEST_ROUTE}/{request_data.token}"
+    try:
+        email_body = email_template.format(email_address=request_data.email, change_resource=request_data.changeType,
+                                           verification_link=verification_link)
+    except Exception as e:
+        raise Exception(ErrorCodes.REQUEST_CHANGE_TEMPLATE_FORMATTING_FAILED.value)
     send_email(request_data.email, CHANGE_REQUEST_SUBJECT, email_body)

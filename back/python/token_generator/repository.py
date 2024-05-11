@@ -29,4 +29,7 @@ class TokenCollection:
         except pymongo.errors.PyMongoError as e:
             raise Exception(f"Failed to insert token! - {str(e)}")
 
+    def exists_token(self, value: str) -> bool:
+        return self._collection.find_one({"value": value}) is not None
+
 

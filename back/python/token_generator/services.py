@@ -13,6 +13,8 @@ def get_user_token(user_id: str, token_type: str) -> dict:
         return {"error_code": Errors.USER_NOT_FOUND}
     try:
         value = generate_token()
+        while token_db.exists_token(value):
+            value = generate_token()
         token = token_db.insert_token(value, user_id, token_type)
         return token
     # Eroare cu Mongo, returnam internal server error

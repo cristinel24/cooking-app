@@ -9,10 +9,10 @@ class AuthFollowData(BaseModel):
 
 class UserCardData(BaseModel):
     username: str | None = None
-    display_name: str | None = None
+    displayName: str | None = None
     icon: str | None = None
     roles: int | None = None
-    rating_avg: float | None = None
+    ratingAvg: float | None = None
 
 
 class FollowersCountData(BaseModel):
@@ -24,8 +24,16 @@ class FollowingCountData(BaseModel):
 
 
 class FollowersCardsData(BaseModel):
-    followers: list[UserCardData]
+    followers: list[UserCardData] | None = None
 
 
 class FollowingCardsData(BaseModel):
-    following: list[UserCardData]
+    following: list[UserCardData] | None = None
+
+
+class UserCardRequestData(BaseModel):
+    ids: list[str] | None = None
+
+
+class UserCardResponseData(BaseModel):
+    cards: list[UserCardData] | None = None

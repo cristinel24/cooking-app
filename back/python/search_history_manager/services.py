@@ -1,11 +1,18 @@
 from repository import SearchHistoryCollection
+from exceptions import SearchHistoryException
 
 search_history_collection = SearchHistoryCollection()
 
 
 # todo Auth needs to be done
 async def get_search_history(user_id: str, start: int, count: int) -> list[str]:
-    return search_history_collection.get_search_history(user_id, start, count)
+    try:
+        history = search_history_collection.get_search_history(user_id, start, count)
+        if not history:
+            raise SearchHistoryException(error_code=404, message="No search history available")
+        return history
+    except Exception as e:
+        raise SearchHistoryException(error_code=20800, message=str(e))
 
 
 async def add_search_history(user_id: str, search_query: str) -> bool:

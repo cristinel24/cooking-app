@@ -40,7 +40,3 @@ class UserFullData(BaseModel):
 
 class UserCardsRequestData(BaseModel):
     ids: list[str] | None = None
-
-
-class ErrorCode(BaseModel):
-    error_code: int

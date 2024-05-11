@@ -1,6 +1,5 @@
 import httpx
-from constants import FOLLOW_MANAGER_API_URL, FOLLOWERS_COUNT_ROUTE, FOLLOWING_COUNT_ROUTE
-from constants import ErrorCodes
+from constants import FOLLOW_MANAGER_API_URL, FOLLOWERS_COUNT_ROUTE, FOLLOWING_COUNT_ROUTE, ErrorCodes
 
 
 async def request_user_followers_count(user_id: str) -> int:

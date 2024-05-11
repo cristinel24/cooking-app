@@ -1,12 +1,10 @@
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Response, status
 
 import services
 import uvicorn
 from constants import HOST_URL, PORT
-from schemas import *
-from schemas import UserData
-from utils import verify_auth
+from schemas import UserData, UserCardData, UserCardsRequestData, UserFullData
 
 app = FastAPI()
 
@@ -14,36 +12,39 @@ load_dotenv()
 
 
 @app.get("/user/{user_id}", tags=["user_data"])
-async def get_user_data(user_id: str) -> UserData | ErrorCode:
+async def get_user_data(user_id: str, response: Response) -> UserData | dict[str, int]:
     try:
         return await services.get_user_data(user_id)
     except Exception as e:
-        return ErrorCode(error_code=int(str(e)))
+        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return {"errorCode": int(str(e))}
 
 
 @app.get("/user/{user_id}/card", tags=["user_card_data"])
-async def get_user_card(user_id: str) -> UserCardData | ErrorCode:
+async def get_user_card(user_id: str, response: Response) -> UserCardData | dict[str, int]:
     try:
         return await services.get_user_card_data(user_id)
     except Exception as e:
-        return ErrorCode(error_code=int(str(e)))
+        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return {"errorCode": int(str(e))}
 
 
 @app.post("/user-cards", tags=["user_cards_data"])
-async def get_user_cards(user_ids: UserCardsRequestData) -> list[UserCardData] | ErrorCode:
+async def get_user_cards(user_ids: UserCardsRequestData, response: Response) -> list[UserCardData] | dict[str, int]:
     try:
         return await services.get_user_cards_data(user_ids.ids)
     except Exception as e:
-        return ErrorCode(error_code=int(str(e)))
+        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return {"errorCode": int(str(e))}
 
 
 @app.get("/user/{user_id}/profile", tags=["user_full_data, auth"])
-async def get_user_full_data(user_id: str, user_roles: int) -> UserFullData | ErrorCode:
+async def get_user_full_data(user_id: str, user_roles: int, response: Response) -> UserFullData | dict[str, int]:
     try:
-        verify_auth(user_roles)
         return await services.get_user_full_data(user_id)
     except Exception as e:
-        return ErrorCode(error_code=int(str(e)))
+        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return {"errorCode": int(str(e))}
 
 
 if __name__ == "__main__":

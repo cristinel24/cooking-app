@@ -1,34 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom' //necesara pt redirectionarea de la o pag la alta
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import { ThemeContext, themes } from './context'
 
-import {
-    ActionButton,
-    PageButton,
-    PopUpChat,
-    Recipe,
-    Footer,
-    UserProfile,
-    Navbar,
-    AdminBox,
-    PreviewRecipe,
-    Filters,
-    ShowMenu,
-    Report,
-    ReportRecipe,
-    Feed,
-} from './components'
-
-import Page from './pages/Page'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import Start from './pages/Start'
+import { Login, Register, Test, Verified, Start } from './pages'
 
 function App() {
-    const titlu = 'Buton'
-
     localStorage.setItem('theme', 'dark')
 
     const [theme, setTheme] = useState(
@@ -75,11 +53,11 @@ function App() {
         >
             <Router>
                 <Routes>
-                    <Route path="/Page" element={<Page />} />
-                    <Route path="/LoginPage" element={<LoginPage />} />
-                    <Route path="/UserProfile" element={<UserProfile />} />
-                    <Route path="/RegisterPage" element={<RegisterPage />} />
-                    <Route path="/Start" element={<Start/>} />
+                    <Route path="/" element={<Start />} />
+                    <Route path="/test" element={<Test />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/verify" element={<Verified />} />
                 </Routes>
             </Router>
         </ThemeContext.Provider>

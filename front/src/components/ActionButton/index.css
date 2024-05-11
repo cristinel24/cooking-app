@@ -1,45 +1,49 @@
-.actionbutton {
+.action-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     background-color: var(--bkgcolor);
     padding: 15px 20px 15px 20px;
     border-radius: 10px;
+    border: none;
 }
 
-.actionbutton:hover {
+.action-button:hover {
     background-color: var(--hoverbkgcolor);
 }
 
-.actionbutton_icon {
+.action-button-icon {
     color: var(--txtcolor);
 }
 
-.actionbutton_text {
-    font-size: 12px;
+.action-button-text {
+    font-size: 0.8rem;
     color: var(--txtcolor);
     font-weight: bold;
 }
 
 @media (min-width: 481px) and (max-width: 767px) {
-    .actionbutton {
+    .action-button {
         padding: 10px 15px 10px 15px;
         border-radius: 10px;
     }
-    .actionbutton:hover {
+    .action-button:hover {
         background-color: var(--hoverbkgcolor);
     }
-    .actionbutton_text {
-        font-size: 10px;
+    .action-button-text {
+        font-size: 0.7rem;
     }
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
-    .actionbutton {
+    .action-button {
         padding: 8px 10px 8px 10px;
         border-radius: 10px;
     }
-    .actionbutton:hover {
+    .action-button:hover {
         background-color: var(--hoverbkgcolor);
     }
-    .actionbutton_text {
-        font-size: 8px;
+    .action-button-text {
+        font-size: 0.6rem;
     }
 }

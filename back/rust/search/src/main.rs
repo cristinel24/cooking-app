@@ -1,58 +1,36 @@
+mod context;
 mod endpoints;
+mod middlewares;
 mod repository;
-use crate::endpoints::recipe::{
-    search_ai_tokens::search_ai_tokens, search_fuzzy_title::search_fuzz_title,
+use crate::{
+    context::{
+        CookingAppContext, EnvironmentVariables, AI_SERVER_VAR, AUTH_SERVER_VAR, CONTEXT,
+        MONGO_URI_VAR, PORT, SERVER
+    },
+    endpoints::{
+        recipe::{search_ai_tokens::search_ai_tokens, search_fuzzy_title::search_fuzz_title},
+        search_ai::search_ai,
+        search_general::search_general,
+        user::search_users::search_users,
+    },
+    middlewares::{auth_handler::auth_handler, error_handler::error_handler},
+    repository::cooking_app::CookingAppRepository,
 };
-use crate::endpoints::{
-    search_general::search_general, user::search_users::search_users, ErrorResponse,
-    INTERNAL_SERVER_ERROR,
-};
-use crate::repository::cooking_app::CookingAppRepository;
 use anyhow::Result;
 use dotenv::dotenv;
-use once_cell::sync::OnceCell;
-use salvo::http::{ResBody, StatusCode};
-use salvo::prelude::Json;
 use salvo::{
     conn::TcpListener,
-    handler,
+    oapi::{
+        security::{Http, HttpAuthScheme},
+        SecurityRequirement, SecurityScheme,
+    },
     oapi::{OpenApi, RouterExt},
     prelude::SwaggerUi,
-    Depot, FlowCtrl, Listener, Request, Response, Router, Server,
+    Listener, Router, Server,
 };
-use tracing::{error, info};
+use tracing::{info, warn};
 
-const MONGO_KEY: &str = "MONGO_URI";
-const PORT: u32 = 7777u32;
 const DOCS_PATH: &str = "docs";
-
-pub static CONTEXT: OnceCell<CookingAppRepository> = OnceCell::new();
-  
-#[handler]
-async fn error_handler(
-    req: &mut Request,
-    res: &mut Response,
-    depot: &mut Depot,
-    ctrl: &mut FlowCtrl,
-) {
-    info!("{} {}", req.method(), req.uri());
-
-    if ctrl.call_next(req, depot, res).await {
-        if let ResBody::Error(error) = &res.body {
-            let error = ErrorResponse {
-                message: error.brief.clone(),
-            };
-            error!("{error:?}");
-            res.status_code(StatusCode::BAD_REQUEST);
-            res.render(Json(error));
-        }
-    } else {
-        let error = ErrorResponse {
-            message: INTERNAL_SERVER_ERROR.to_string(),
-        };
-        error!("{error:?}");
-    }
-}
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -66,14 +44,25 @@ async fn main() -> Result<()> {
     info!("Version: {}", version);
     info!("Authors: {}", authors);
 
-    if let Err(e) = dotenv() {
-        error!("Environment file '.env' not found! Full error: {e}");
+    let env_variables = if let Err(e) = dotenv() {
+        warn!("Environment file '.env' not found! Full error: {e}");
+        EnvironmentVariables::default()
+    } else {
+        EnvironmentVariables {
+            mongo_server: std::env::var(MONGO_URI_VAR)?,
+            ai_server: std::env::var(AI_SERVER_VAR)?,
+            auth_server: std::env::var(AUTH_SERVER_VAR)?,
+            server: std::env::var(SERVER)?,
+            port: std::env::var(PORT)?.parse::<u32>()?,
+        }
     };
-
-    let mongo_uri = std::env::var(MONGO_KEY).unwrap_or("mongodb://localhost:27017".to_owned());
+    let (server, port) = (env_variables.server.clone(), env_variables.port);
 
     CONTEXT
-        .set(CookingAppRepository::new(mongo_uri).await?)
+        .set(CookingAppContext {
+            repository: CookingAppRepository::new(&env_variables.mongo_server).await?,
+            env: env_variables,
+        })
         .map_or_else(
             |_| {
                 Err(anyhow::Error::msg(
@@ -83,14 +72,18 @@ async fn main() -> Result<()> {
             Ok,
         )?;
 
+    let auth_scheme = SecurityScheme::Http(Http::new(HttpAuthScheme::Bearer).bearer_format("JWT"));
+    let security_requirement = SecurityRequirement::new("Bearer".to_string(), Vec::<String>::new());
+
     let raw_router = Router::new().push(
         Router::with_path("/api")
             .hoop(error_handler)
-            .push(
-                Router::new()
-                    .oapi_tag("Search")
-                    .append(&mut vec![Router::with_path("/search").post(search_general)]),
-            )
+            .push(Router::new().oapi_tag("Search").append(&mut vec![
+                        Router::with_path("/search").post(search_general),
+                        Router::with_path("/search-ai").hoop(auth_handler)
+                            .oapi_security(security_requirement)
+                            .post(search_ai)
+                    ]))
             .push(Router::new().oapi_tag("Testing").append(&mut vec![
                 Router::with_path("/tokens").post(search_ai_tokens),
                 Router::with_path("/title/<title>").get(search_fuzz_title),
@@ -98,16 +91,16 @@ async fn main() -> Result<()> {
             ])),
     );
 
-    let acceptor = TcpListener::new(format!("127.0.0.1:{}", PORT)).bind().await;
-    let doc = OpenApi::new(name, version).merge_router(&raw_router);
+    let acceptor = TcpListener::new(format!("{server}:{port}")).bind().await;
+    let doc = OpenApi::new(name, version)
+        .add_security_scheme("Bearer", auth_scheme)
+        .merge_router(&raw_router);
 
     let router = raw_router
-        .unshift(doc.into_router(format!("/{}.json", DOCS_PATH)))
-        .unshift(
-            SwaggerUi::new(format!("/{}.json", DOCS_PATH)).into_router(format!("/{}", DOCS_PATH)),
-        );
+        .unshift(doc.into_router(format!("/{DOCS_PATH}.json")))
+        .unshift(SwaggerUi::new(format!("/{DOCS_PATH}.json")).into_router(format!("/{DOCS_PATH}")));
 
-    info!("Docs on 127.0.0.1:{PORT}/{DOCS_PATH}");
+    info!("Docs on {server}:{port}/{DOCS_PATH}");
     Server::new(acceptor).serve(router).await;
 
     Ok(())

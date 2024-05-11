@@ -1,4 +1,4 @@
-use crate::repository::models::user::Author;
+use crate::repository::{models::user::Author, service::CollectionName};
 use salvo::prelude::ToSchema;
 use serde::{Deserialize, Serialize};
 
@@ -7,15 +7,18 @@ use serde::{Deserialize, Serialize};
 pub struct Recipe {
     pub author: Author,
     pub title: String,
+
+    #[serde(alias = "mainImage")]
+    pub image: String,
+
     pub description: String,
     pub prep_time: u32,
     pub allergens: Vec<String>,
     pub tags: Vec<String>,
 }
 
-impl Recipe {
-    #[must_use]
-    pub const fn get_collection_name() -> &'static str {
+impl CollectionName for Recipe {
+    fn get_collection_name() -> &'static str {
         "recipe"
     }
 }

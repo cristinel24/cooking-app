@@ -9,7 +9,7 @@ async def get_search_history(user_id: str, start: int, count: int) -> list[str]:
     try:
         history = search_history_collection.get_search_history(user_id, start, count)
         if not history:
-            raise SearchHistoryException(error_code=404)
+            raise SearchHistoryException(error_code=20801)
         return history
     except Exception as e:
         raise SearchHistoryException(error_code=20800)

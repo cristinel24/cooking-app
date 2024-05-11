@@ -15,11 +15,11 @@ async def get_search_history(user_id: str, start: int, count: int, response: Res
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No search history found")
         return history
     except exceptions.SearchHistoryException as e:
-        response.status_code = status.HTTP_404_NOT_FOUND
-        return {"errorCode": e.error_code, "message": e.message}
-    except Exception as e:
+        e.error_code = constants.ErrorCodes.SEARCH_HISTORY_NOT_FOUND.value
+        return {"errorCode": e.error_code}
+    except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value, "message": str(e)}
+        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
 
 
 @app.put("/user/{user_id}/search-history")
@@ -31,7 +31,7 @@ async def add_search_history(user_id: str, search_query: str, response: Response
         return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
 
 
-@app.delete("/user/{user_id}/search-history")  # retuns false if no search history is found
+@app.delete("/user/{user_id}/search-history")  # returns false if no search history is found
 async def clear_search_history(user_id: str, response: Response):
     try:
         return await services.clear_search_history(user_id)

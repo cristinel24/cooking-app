@@ -1,5 +1,9 @@
 .tag-selector {
     font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow: hidden;
 }
 .tag-selector-drop-down {
     color: var(--txtcolordimmed);
@@ -9,8 +13,7 @@
     background-color: var(--bkgcolordimmed);
     border-radius: 10px;
     z-index: 2;
-    position: absolute;
-    top: 0;
+    position: relative;
 }
 
 .tag-selector-drop-down-search {
@@ -44,7 +47,7 @@
 .tag-selector-drop-down-suggestions {
     display: flex;
     flex-direction: column;
-    border-radius: 10px;
+    border-radius: 0 0 10px 10px;
     overflow: hidden;
 }
 
@@ -63,10 +66,9 @@
 }
 .tag-selector-tags {
     display: flex;
-    width: 50%;
+    width: 100%;
     overflow-x: auto;
     gap: 0.2rem;
     z-index: 1;
     position: relative;
-    margin-top: 2.2rem;
 }

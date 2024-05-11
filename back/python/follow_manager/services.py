@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from api import request_user_cards
 from repository import FollowCollection
 from schemas import *
@@ -17,7 +15,6 @@ async def get_followers(user_id: str, start: int, count: int) -> FollowersCardsD
     followers_cards_data = FollowersCardsData()
     request = UserCardRequestData()
     request.ids = follow_collection.get_followers(user_id)[start:start + count]
-    pprint(request.ids)
     response = await request_user_cards(request)
     user_cards = list(response.cards)
     followers_cards_data.followers = list(

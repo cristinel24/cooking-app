@@ -24,7 +24,7 @@ async def remove_allergen(name: str, response: Response):
     try:
         services.remove_allergen_by_name(name)
     except Exception as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
         return {"errorCode": int(str(e))}
 
 

@@ -10,7 +10,6 @@ router = APIRouter(
     prefix="/api"
 )
 
-service_errors = (DatabaseError, ExternalError, InternalError)
 rating_service = RatingService()
 
 
@@ -23,7 +22,7 @@ async def normalize_error(request: Request, call_next):
                 status_code=400,
                 content={"errorCode": InvalidDataError().value}
             )
-    except service_errors as e:
+    except (DatabaseError, ExternalError, InternalError) as e:
         response = JSONResponse(
             status_code=500,
             content={"errorCode": e.value}

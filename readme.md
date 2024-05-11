@@ -1,5 +1,9 @@
 # Change Log
 
+### 10/05/2024
+
+* made `tags`, `allergens` and `ingredients` lowercase.
+
 ### 09/05/2024
 
 * renamed `nameIncrementor` from the `counters` collection to `id`

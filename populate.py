@@ -923,7 +923,7 @@ def get_role():
 def get_ingredient():
     ingredients = ["fruit", "ingredient", "spice", "vegetable"]
 
-    return getattr(fake, random_from(ingredients))()
+    return getattr(fake, random_from(ingredients))().lower()
 
 
 def get_allergen():

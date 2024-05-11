@@ -5,16 +5,20 @@ token_db = TokenCollection()
 
 
 def token_is_valid(token_value: str, token_type: str) -> dict:
-    token = token_db.get_expiring_token(token_value, token_type)
+    response = token_db.get_expiring_token(token_value, token_type)
+    if "error_code" in response:
+        return response
     return {
-        "isValid": token is not None
+        "isValid": response is not None
     }
 
 
 def get_token(token_value: str) -> dict:
-    token = token_db.get_expiring_token(token_value)
+    response = token_db.get_expiring_token(token_value)
+    if "error_code" in response:
+        return response
     return {
-        "isValid": token is not None,
-        "type": token["tokenType"] if token is not None else ''
+        "isValid": response is not None,
+        "type": response["tokenType"] if response is not None else ''
     }
 

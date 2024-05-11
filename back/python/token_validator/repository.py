@@ -1,11 +1,8 @@
 import os
 
 import pymongo
-from dotenv import load_dotenv
+from constants import Errors
 from pymongo import MongoClient, errors
-
-
-load_dotenv()
 
 
 class TokenCollection:
@@ -21,7 +18,9 @@ class TokenCollection:
             if token_type is not None:
                 find_query["tokenType"] = token_type
             item = self._collection.find_one(find_query)
-        except pymongo.errors.PyMongoError as e:
-            raise Exception(f"Failed to get token! - {str(e)}")
-        return item
+            return item
+        except pymongo.errors.ExecutionTimeout:
+            return {"error_code": Errors.DB_TIMEOUT}
+        except pymongo.errors.PyMongoError:
+            return {"error_code": Errors.DB_ERROR}
 

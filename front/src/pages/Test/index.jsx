@@ -14,7 +14,6 @@ import {
     ShowMenu,
     Report,
     ReportRecipe,
-    Categories,
     Tag,
     TagSelector,
     RecipeCard,

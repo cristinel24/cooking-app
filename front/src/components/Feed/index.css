@@ -1,0 +1,15 @@
+.feed {
+    margin-bottom: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px; 
+    width: 100%;
+}
+
+.feed > * {
+    margin-bottom: 0; /* Elimină margin-bottom-ul pentru elementul final din fiecare coloană */
+}
+
+.feed .recipe:last-child {
+    margin-bottom: 20px; /* Restabilește margin-bottom-ul pentru elementul final */
+}

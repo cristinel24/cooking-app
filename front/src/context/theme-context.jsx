@@ -21,10 +21,11 @@ export const themes = {
         ubody: '#FFFFFF',
         filterbkcolor: '#303233',
         neutru: '#828282',
-        verifyBox: "#FFCDCD",
+        verifyBox: '#FFCDCD',
         recipetext: '#0c1821',
         bkgcolordimmed: '#303233',
         txtcolordimmed: '#B4B4B4',
+        bkgdropdown: '#FFCEC3',
     },
     light: {
         bkgcolor: '#FF5348',
@@ -46,10 +47,11 @@ export const themes = {
         ubody: '#1C1C1C',
         filterbkcolor: '#F3F3F3',
         neutru: '#828282',
-        verifyBox: "#FFCDCD",
+        verifyBox: '#FFCDCD',
         recipetext: '#0c1821',
         bkgcolordimmed: '#F3F3F3',
         txtcolordimmed: '#B4B4B4',
+        bkgdropdown: '#FFCEC3',
     },
 }
 

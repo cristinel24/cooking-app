@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import { ThemeContext, themes } from './context'
 
-import { Login, Register, Test, Verified } from './pages'
+import { Login, Register, Test, Verified, Start } from './pages'
 
 function App() {
     localStorage.setItem('theme', 'dark')
@@ -25,7 +25,8 @@ function App() {
         }
     }, [])
 
-    useEffect(() => { for (const color in theme) {
+    useEffect(() => {
+        for (const color in theme) {
             document.documentElement.style.setProperty(
                 `--${color}`,
                 `${theme[color]}`
@@ -52,6 +53,7 @@ function App() {
         >
             <Router>
                 <Routes>
+                    <Route path="/" element={<Start />} />
                     <Route path="/test" element={<Test />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />

@@ -7,8 +7,8 @@ def retry(exceptions: tuple, max_attempts: int = 5, raise_exc: bool = False, del
     def decorator_retry(func):
         @wraps(func)
         def inner(self, *args, **kwargs):
-            tries_ = max_attempts
-            while tries_:
+            tries = max_attempts
+            while tries:
                 try:
                     return func(self, *args, **kwargs)
                 except exceptions as e:
@@ -16,8 +16,8 @@ def retry(exceptions: tuple, max_attempts: int = 5, raise_exc: bool = False, del
                     if show:
                         self.logger.warning(e) if self is not None else print(f"Attempt failed: {str(e)}")
 
-                    tries_ -= 1
-                    if raise_exc and not tries_:
+                    tries -= 1
+                    if raise_exc and not tries:
                         raise
 
                 except Exception as e:

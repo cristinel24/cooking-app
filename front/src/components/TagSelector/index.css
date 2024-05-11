@@ -2,21 +2,21 @@
     font-size: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    overflow: hidden;
+    gap: 0.2rem;
 }
 .tag-selector-drop-down {
+    height: 2rem;
     color: var(--txtcolordimmed);
     width: fit-content;
     display: flex;
     flex-direction: column;
-    background-color: var(--bkgcolordimmed);
-    border-radius: 10px;
-    z-index: 2;
     position: relative;
 }
 
 .tag-selector-drop-down-search {
+    position: relative;
+    z-index: 3;
+    height: 1.8rem;
     display: flex;
     background-color: var(--txtcolordimmed);
     color: var(--bkgcolordimmed);
@@ -25,6 +25,8 @@
 
 .tag-selector-drop-down-search-input {
     border: none;
+    box-sizing: border-box;
+    height: 1.8rem;
     font-size: inherit;
     background-color: var(--txtcolordimmed);
     color: var(--bkgcolordimmed);
@@ -46,9 +48,13 @@
 
 .tag-selector-drop-down-suggestions {
     display: flex;
+    background-color: var(--bkgcolordimmed);
     flex-direction: column;
     border-radius: 0 0 10px 10px;
-    overflow: hidden;
+    padding-top: 1rem;
+    margin-top: -1rem;
+    position: relative;
+    z-index: 2;
 }
 
 .tag-selector-drop-down-suggestion-button {
@@ -60,14 +66,21 @@
     background-color: transparent;
     cursor: pointer;
     padding: 0.3rem;
+    position: relative;
+    z-index: 2;
 }
+
 .tag-selector-drop-down-suggestion-button:hover {
     background-color: color-mix(in srgb, var(--bkgcolordimmed), #808080 10%);
 }
+.tag-selector-drop-down-suggestion-button:last-child:hover {
+    background-color: color-mix(in srgb, var(--bkgcolordimmed), #808080 10%);
+    border-radius: 0 0 10px 10px;
+}
 .tag-selector-tags {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
-    overflow-x: auto;
     gap: 0.2rem;
     z-index: 1;
     position: relative;

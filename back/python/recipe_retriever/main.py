@@ -1,7 +1,7 @@
 from bson import ObjectId
 from fastapi import FastAPI, status
 from pymongo import response
-import recipe_retriever.exceptions as exceptions
+from recipe_retriever import exceptions
 import services
 import uvicorn
 from constants import *

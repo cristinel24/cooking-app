@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from constants import ERROR_20301
-from services import get_next_id
+from services import get_next_id_services
 from dotenv import load_dotenv
 import uvicorn
 import os
@@ -14,8 +14,8 @@ print("Port:", PORT)
 @app.get("/")
 async def get_id():
     try:
-        new_id = get_next_id()
-        return {"id": new_id}
+        new_id = get_next_id_services()
+        return new_id
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e), headers={ERROR_20301: str(e)})
 

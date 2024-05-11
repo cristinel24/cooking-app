@@ -1,11 +1,11 @@
 import os
 from io import BytesIO
 
+import httpx
 from PIL import Image
 
+import api
 from constants import IMAGE_DIRECTORY_PATH, IMAGE_EXTENSION, ErrorCodes
-
-counter = 0
 
 
 async def add_image(image_bytes: BytesIO):
@@ -16,5 +16,10 @@ async def add_image(image_bytes: BytesIO):
             image.verify()
     except (IOError, SyntaxError):
         raise Exception(ErrorCodes.INVALID_IMAGE.value)
-    image = Image.open(image_bytes)
-    image.save(IMAGE_DIRECTORY_PATH + str(counter + 1) + IMAGE_EXTENSION)
+    try:
+        image_id = await api.get_id()
+        image = Image.open(image_bytes)
+        image.save(IMAGE_DIRECTORY_PATH + image_id + IMAGE_EXTENSION)
+    except httpx.ConnectError:
+        raise Exception(ErrorCodes.NOT_RESPONSIVE_API.value)
+

@@ -51,24 +51,22 @@ class RatingRepository:
     async def update_rating(self, rating_id: str, update: RatingUpdate):
         try:
             query = {"id": rating_id}
-            rating = await self.collection.find_one_and_update(query, {"$set": {"description": update.description}})
-            if rating and rating.get("parentType") == 'recipe':
-                await self.collection.update_one(query, {"$set": {"rating": update.rating}})
-            elif rating is None:
-                self.logger.warning(f"Rating '{rating_id}' not found!")
-                raise DatabaseNotFoundDataError()
+            with pymongo.timeout(OPERATION_TIMEOUT):
+                rating = await self.collection.find_one_and_update(query, {"$set": {"description": update.description}})
+                if rating and rating.get("parentType") == 'recipe':
+                    await self.collection.update_one(query, {"$set": {"rating": update.rating}})
 
         except pymongo.errors.PyMongoError as e:
             self.logger.error(e)
             raise DatabaseError()
 
-        except DatabaseNotFoundDataError:
-            self.logger.warning(f"Not found! Rating {rating_id}")
-            raise DatabaseNotFoundDataError()
-
         except Exception as e:
             self.logger.error(e)
             raise InternalError()
+
+        if rating is None:
+            self.logger.warning(f"Rating '{rating_id}' not found!")
+            raise DatabaseNotFoundDataError()
 
     async def add_rating(self, parent_id: str, rating: Rating):
         try:
@@ -95,20 +93,17 @@ class RatingRepository:
             }
             with pymongo.timeout(OPERATION_TIMEOUT):
                 rating = await self.collection.find_one_and_update(query, update_query)
-            if rating and (not rating.get("children") or len(rating.get("children")) == 0):
-                with pymongo.timeout(OPERATION_TIMEOUT):
+                if rating and (not rating.get("children") or len(rating.get("children")) == 0):
                     await self.collection.delete_one(query)
-            elif rating is None:
-                raise DatabaseNotFoundDataError()
 
         except pymongo.errors.PyMongoError as e:
             self.logger.error(e)
             raise DatabaseError()
 
-        except DatabaseNotFoundDataError:
-            self.logger.warning(f"Rating '{rating_id}' not found!")
-            raise DatabaseNotFoundDataError()
-
         except Exception as e:
             self.logger.error(e)
             raise InternalError()
+
+        if rating is None:
+            self.logger.warning(f"Rating '{rating_id}' not found!")
+            raise DatabaseNotFoundDataError()

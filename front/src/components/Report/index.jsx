@@ -4,7 +4,6 @@ import './index.css'
 import { LuSend } from "react-icons/lu";
 import { MdOutlineCancel } from "react-icons/md";
 function Report(props) {
-    const pathPage = 'https://www.google.ro/'
     localStorage.setItem('theme', 'light')
 
     const [formVariants, setFormVariants] = useState([

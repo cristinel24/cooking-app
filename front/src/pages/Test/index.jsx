@@ -122,7 +122,7 @@ function Test() {
                 recipes={mostViewedRecipes}
                 id="recipe-view-1"
             /> */}
-
+            { /*
             {isReportVisible && <Report onSend={onSend} onGiveUp={onGiveUp} />}
             
             {isReportBugVisible && <ReportBug  onSend={onSendBug} onGiveUp={onGiveUp} />}
@@ -134,6 +134,7 @@ function Test() {
             <button onClick={toggleReportBugVisibility}>
                 {isReportBugVisible ? 'Ascunde ReportBug' : 'Arată ReportBug'}
             </button>
+            */}
             {/* <ShowMenu /> */}
 
             {/* <PreviewRecipe

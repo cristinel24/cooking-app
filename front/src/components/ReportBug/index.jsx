@@ -3,12 +3,7 @@ import './index.css'
 import ActionButton from '../ActionButton';
 
 export default function ReportBug(props) {
-    //Rutele pentru butoane
-    const title1 = 'Trimite'
-    const title2 = 'Renunta'
-    const pathPage = 'https://www.google.ro/'
 
-    //FileUploader
     const [selectedFile, setSelectedFile] = useState(null)
     const fileInputRef = useRef(null)
 
@@ -20,7 +15,7 @@ export default function ReportBug(props) {
     const handleButtonClick = () => {
         fileInputRef.current.click()
     }
-    //TextBox
+
     const [text, setText] = useState('')
 
     const handleChange = (event) => {
@@ -38,7 +33,7 @@ export default function ReportBug(props) {
                     <textarea
                         value={text}
                         onChange={handleChange}
-                        placeholder="Atunci când utilizăm aplicația, am întâlnit eroarea..."
+                        placeholder="Atunci când utilizam aplicația, am întâlnit eroarea..."
                     />
                 </div>
                 <p>O captură de ecran ne-ar ajuta să înțelegem mai bine</p>

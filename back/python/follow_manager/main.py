@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 
 import services
 from constants import HOST_URL, PORT
@@ -28,13 +28,15 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
 
 
 @app.put("/user/{user_id}/following", tags=["auth", "following"])
-async def add_follow(user_id: str, auth_follow_data: AuthFollowData):
-    pass
+async def add_follow(user_id: str, body: FollowData):
+    if not await services.add_follow(user_id, body.followsId):
+        return Response(status_code=406)
 
 
 @app.delete("/user/{user_id}/following", tags=["auth", "following"])
-async def delete_follow(user_id: str, auth_follow_data: AuthFollowData):
-    pass
+async def delete_follow(user_id: str, body: FollowData):
+    if not await services.delete_follow(user_id, body.followsId):
+        return Response(status_code=406)
 
 
 if __name__ == "__main__":

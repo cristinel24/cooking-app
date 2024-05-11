@@ -39,6 +39,15 @@ class FollowCollection(MongoCollection):
         except errors.PyMongoError as e:
             raise Exception(f"Failed to get following! - {str(e)}")
 
+    def get_follow(self, user_id: str, follows_id: str):
+        try:
+            return self._collection.find_one({
+                "userId": user_id,
+                "followsId": follows_id
+            })
+        except errors.PyMongoError as e:
+            raise Exception(f"Failed to get follow relationship! - {str(e)}")
+
     def add_follow(self, user_id: str, follows_id: str):
         try:
             self._collection.insert_one({

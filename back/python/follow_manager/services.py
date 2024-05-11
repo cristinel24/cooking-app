@@ -39,3 +39,21 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
         map(lambda card: UserCardData(**card), reversed(user_cards))
     )
     return following_cards_data
+
+
+async def add_follow(user_id: str, follows_id: str) -> bool:
+    follow = follow_collection.get_follow(user_id, follows_id)
+    if follow is None:
+        follow_collection.add_follow(user_id, follows_id)
+        return True
+    else:
+        return False
+
+
+async def delete_follow(user_id: str, follows_id: str) -> bool:
+    follow = follow_collection.get_follow(user_id, follows_id)
+    if follow is not None:
+        follow_collection.delete_follow(user_id, follows_id)
+        return True
+    else:
+        return False

@@ -1,10 +1,8 @@
 from pydantic import BaseModel
 
 
-class AuthFollowData(BaseModel):
-    user_id: str | None = None
-    user_roles: int | None = None
-    follow_id: str | None = None
+class FollowData(BaseModel):
+    followsId: str | None = None
 
 
 class UserCardData(BaseModel):

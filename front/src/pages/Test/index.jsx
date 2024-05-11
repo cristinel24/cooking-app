@@ -16,6 +16,7 @@ import {
     ReportRecipe,
     Categories,
     RecipeCard,
+    UserCard,
 } from '../../components'
 
 import { MdWavingHand } from 'react-icons/md'
@@ -92,6 +93,7 @@ function Test() {
     const func1 = () => {}
     const handleFavorite = () => {
         setFavorite(!favorite)
+        console.log('Favorite')
     }
     const handleRemove = () => {
         console.log('Remove')

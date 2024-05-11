@@ -6,6 +6,7 @@ from PIL import Image
 
 import api
 from constants import IMAGE_DIRECTORY_PATH, IMAGE_EXTENSION, ErrorCodes
+from exception import ImageStorageException
 
 
 async def add_image(image_bytes: BytesIO):
@@ -15,12 +16,12 @@ async def add_image(image_bytes: BytesIO):
         with Image.open(image_bytes) as image:
             image.verify()
     except (IOError, SyntaxError):
-        raise Exception(ErrorCodes.INVALID_IMAGE.value)
+        raise ImageStorageException(ErrorCodes.INVALID_IMAGE)
     try:
         image_id = await api.get_id()
         image = Image.open(image_bytes)
         image.save(IMAGE_DIRECTORY_PATH + image_id + IMAGE_EXTENSION)
     except httpx.ConnectError:
-        raise Exception(ErrorCodes.NOT_RESPONSIVE_API.value)
+        raise ImageStorageException(ErrorCodes.NOT_RESPONSIVE_API)
     except OSError:
-        raise Exception(ErrorCodes.DUPLICATE_ID.value)
+        raise ImageStorageException(ErrorCodes.DUPLICATE_ID)

@@ -2,14 +2,16 @@ from fastapi import FastAPI, Response, status
 from constants import HOST_URL, PORT
 import services
 import uvicorn
-
 from schemas import UserProfileData
+from dotenv import load_dotenv
 
 app = FastAPI()
 
+load_dotenv()
+
 
 @app.patch("/{user_id}")
-async def patch_user(user_id: int, user_roles: int, data: UserProfileData, response: Response) -> None | dict:
+async def patch_user(user_id: str, user_roles: int, data: UserProfileData, response: Response) -> None | dict:
     try:
         return await services.patch_user(user_id, data)
     except Exception as e:

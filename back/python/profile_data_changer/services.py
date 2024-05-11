@@ -4,7 +4,7 @@ from schemas import UserProfileData
 user_collection = UserCollection()
 
 
-async def patch_user(user_id: int, data: UserProfileData):
+async def patch_user(user_id: str, data: UserProfileData):
     changes = data.dict()
     changes.pop("allergens")
     allergens_to_add = []

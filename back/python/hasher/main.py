@@ -10,15 +10,15 @@ app = FastAPI()
 
 
 @app.get("/{target}")
-def hash_with_primary_algo(target: str):
-    hash_algorithm_name, hashed_target = handle_hash_with_primary_algo(target)
-    return {"hashAlgorithmName": hash_algorithm_name, "hash": hashed_target}
+def hash_with_primary_algo(target: str, salt: str | None = None):
+    hash_algorithm_name, hashed_target, generated_salt = handle_hash_with_primary_algo(target, salt)
+    return {"hashAlgorithmName": hash_algorithm_name, "hash": hashed_target, "salt": generated_salt}
 
 
 @app.get("/{hash_algorithm_name}/{target}")
-def hash_with_specific_algo(hash_algorithm_name: str, target: str):
-    hashed_target = handle_hash_with_specific_algo(hash_algorithm_name, target)
-    return {"hash": hashed_target}
+def hash_with_specific_algo(hash_algorithm_name: str, target: str, salt: str | None = None):
+    hashed_target, generated_salt = handle_hash_with_specific_algo(hash_algorithm_name, target, salt)
+    return {"hash": hashed_target, "salt": generated_salt}
 
 
 if __name__ == "__main__":

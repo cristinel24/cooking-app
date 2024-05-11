@@ -1,5 +1,6 @@
+import pymongo
 from pymongo import MongoClient, errors
-from constants import MONGO_URL, DB_NAME, ErrorCodes
+from constants import MONGO_URL, DB_NAME, ErrorCodes, MONGO_TIMEOUT
 
 
 class MongoCollection:
@@ -15,18 +16,20 @@ class UserCollection(MongoCollection):
 
     def get_user_by_id(self, user_id: str, projection_arg: dict) -> dict:
         try:
-            user = self._collection.find_one({"id": user_id}, projection=projection_arg)
-            if user is None:
-                raise Exception(ErrorCodes.USER_NOT_FOUND.value)
-            return user
+            with pymongo.timeout(MONGO_TIMEOUT):
+                user = self._collection.find_one({"id": user_id}, projection=projection_arg)
+                if user is None:
+                    raise Exception(ErrorCodes.USER_NOT_FOUND.value)
+                return user
         except errors.PyMongoError:
-            raise Exception(ErrorCodes.USER_NOT_FOUND.value)
+            raise Exception(ErrorCodes.DATABASE_ERROR.value)
 
     def get_users_by_id(self, user_ids: list[str], projection_arg: dict) -> list[dict]:
         try:
-            users_list = list(self._collection.find({"id": {"$in": user_ids}}, projection=projection_arg))
-            if not users_list:
-                raise Exception(ErrorCodes.USERS_NOT_FOUND.value)
-            return users_list
+            with pymongo.timeout(MONGO_TIMEOUT):
+                users_list = list(self._collection.find({"id": {"$in": user_ids}}, projection=projection_arg))
+                if not users_list:
+                    raise Exception(ErrorCodes.USERS_NOT_FOUND.value)
+                return users_list
         except errors.PyMongoError:
-            raise Exception(ErrorCodes.USERS_NOT_FOUND.value)
+            raise Exception(ErrorCodes.DATABASE_ERROR.value)

@@ -1,23 +1,22 @@
 import os
 
 import pymongo
-from pymongo import MongoClient
 import constants
 import exceptions
 
 
 class MongoCollection:
-    def __init__(self, connection: MongoClient | None = None):
-        self._connection = connection if connection is not None else MongoClient(
+    def __init__(self, connection: pymongo.MongoClient | None = None):
+        self._connection = connection if connection is not None else pymongo.MongoClient(
             os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
 
 
 class AllergenCollection(MongoCollection):
-    def __init__(self, connection: MongoClient | None = None):
+    def __init__(self, connection: pymongo.MongoClient | None = None):
         super().__init__(connection)
         self._collection = self._connection.cooking_app.allergen
 
-    def get_first_allergens_starting_with(self, starting_with: str) -> list[str]:
+    async def get_first_allergens_starting_with(self, starting_with: str) -> list[str]:
         with pymongo.timeout(constants.MAX_TIMEOUT_TIME_SECONDS):
             result = self._collection.find(
                 {"allergen": {"$regex": f"^{starting_with}"}},
@@ -26,7 +25,7 @@ class AllergenCollection(MongoCollection):
 
             return [item["allergen"] for item in result]
 
-    def add_allergen_by_name(self, name: str) -> None:
+    async def add_allergen_by_name(self, name: str) -> None:
         with pymongo.timeout(constants.MAX_TIMEOUT_TIME_SECONDS):
             result = self._collection.find_one({"allergen": name})
 
@@ -35,7 +34,7 @@ class AllergenCollection(MongoCollection):
             else:
                 self._collection.insert_one({"allergen": name, "counter": 1})
 
-    def remove_allergen_by_name(self, name: str) -> None:
+    async def remove_allergen_by_name(self, name: str) -> None:
         with pymongo.timeout(constants.MAX_TIMEOUT_TIME_SECONDS):
             result = self._collection.find_one({"allergen": name})
 

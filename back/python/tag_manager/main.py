@@ -11,29 +11,29 @@ load_dotenv()
 app = FastAPI()
 
 
-@app.get("/allergen")
-async def get_allergens(starting_with: str, response: Response):
+@app.get("/tag")
+async def get_tags(starting_with: str, response: Response):
     try:
-        return await services.get_allergens_by_starting_string(starting_with)
+        return await services.get_tags_by_starting_string(starting_with)
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
 
 
-@app.post("/allergen/{name}")
-async def add_allergen(name: str, response: Response):
+@app.post("/tag/{name}")
+async def add_tag(name: str, response: Response):
     try:
-        await services.add_allergen_by_name(name)
+        await services.add_tag_by_name(name)
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
 
 
-@app.delete("/allergen/{name}")
-async def remove_allergen(name: str, response: Response):
+@app.delete("/tag/{name}")
+async def remove_tag(name: str, response: Response):
     try:
-        await services.remove_allergen_by_name(name)
-    except exceptions.AllergenException as e:
+        await services.remove_tag_by_name(name)
+    except exceptions.TagException as e:
         response.status_code = status.HTTP_406_NOT_ACCEPTABLE
         return {"errorCode": e.error_code}
     except (Exception,) as e:

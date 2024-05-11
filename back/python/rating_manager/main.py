@@ -21,17 +21,17 @@ async def normalize_error(request: Request, call_next):
         if response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY:
             response = JSONResponse(
                 status_code=400,
-                content={"error_code": InvalidDataError().value}
+                content={"errorCode": InvalidDataError().value}
             )
     except service_errors as e:
         response = JSONResponse(
             status_code=500,
-            content={"error_code": e.value}
+            content={"errorCode": e.value}
         )
     except DatabaseNotFoundDataError as e:
         response = JSONResponse(
             status_code=404,
-            content={"error_code": e.value}
+            content={"errorCode": e.value}
         )
     return response
 

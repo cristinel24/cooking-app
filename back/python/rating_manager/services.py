@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from constants import ExternalError, InternalError
+from exceptions import ExternalError, InternalError
 from repository import RatingRepository
 from api import ExternalDataProvider
 from schemas import RatingList, RatingUpdate, RatingCreate, Rating, RatingDataCard

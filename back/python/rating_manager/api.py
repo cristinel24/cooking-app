@@ -1,6 +1,7 @@
 import requests
 from utils import singleton, init_logger, retry
-from constants import ID_GENERATOR_API_URL, USER_RETRIEVER_API_URL, ExternalError, InternalError
+from constants import ID_GENERATOR_API_URL, USER_RETRIEVER_API_URL
+from exceptions import InternalError
 
 REQUEST_TIMEOUT: int = 5
 request_errors = (requests.exceptions.RequestException, requests.exceptions.ConnectionError)

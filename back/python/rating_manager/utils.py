@@ -18,13 +18,13 @@ def retry(exceptions: tuple, max_attempts: int = 5, raise_exc: bool = False, del
 
                     tries -= 1
                     if raise_exc and not tries:
-                        raise
+                        raise e
 
                 except Exception as e:
                     if show:
                         self.logger.exception(str(e)) if self is not None else print(f"Attempt failed: {str(e)}")
                     if raise_exc:
-                        raise
+                        raise e
                     break
             return None
 

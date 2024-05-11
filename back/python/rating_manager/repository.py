@@ -2,10 +2,8 @@ import pymongo.errors
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from schemas import Rating, RatingUpdate
-from constants import (
-    MONGO_URI, MONGO_DATABASE, MONGO_COLLECTION, RATING_PROJECTION, DELETED_FIELD, DatabaseError, InternalError,
-    DatabaseNotFoundDataError
-)
+from constants import MONGO_URI, MONGO_DATABASE, MONGO_COLLECTION, RATING_PROJECTION, DELETED_FIELD
+from exceptions import DatabaseError, InternalError, DatabaseNotFoundDataError
 from utils import singleton, init_logger
 
 OPERATION_TIMEOUT: int = 10

@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Query, APIRouter, Request
+from fastapi import FastAPI, Query, APIRouter, Request, status
 from fastapi.responses import JSONResponse
 
 from schemas import RatingList, RatingCreate, RatingUpdate
 from services import RatingService
-from constants import DatabaseError, ExternalError, InternalError, InvalidDataError, DatabaseNotFoundDataError
+from exceptions import DatabaseError, ExternalError, InternalError, InvalidDataError, DatabaseNotFoundDataError
 
 app = FastAPI()
 router = APIRouter(
@@ -18,7 +18,7 @@ rating_service = RatingService()
 async def normalize_error(request: Request, call_next):
     try:
         response = await call_next(request)
-        if response.status_code == 422:  # If the framework rejects the request due to invalid data types or ranges
+        if response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY:
             response = JSONResponse(
                 status_code=400,
                 content={"error_code": InvalidDataError().value}
@@ -30,7 +30,7 @@ async def normalize_error(request: Request, call_next):
         )
     except DatabaseNotFoundDataError as e:
         response = JSONResponse(
-            status_code=400,
+            status_code=404,
             content={"error_code": e.value}
         )
     return response

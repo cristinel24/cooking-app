@@ -17,6 +17,8 @@ import {
     Categories,
     Tag,
     TagSelector,
+    RecipeCard,
+    UserCard,
 } from '../../components'
 
 import { MdWavingHand } from 'react-icons/md'
@@ -24,6 +26,8 @@ import { MdWavingHand } from 'react-icons/md'
 //pagina noua
 function Test() {
     const [tags, setTags] = useState([])
+    const [favorite, setFavorite] = useState(false)
+
     let userName = 'Utilizator'
     let userNumber = '#1'
     let content =
@@ -106,8 +110,66 @@ function Test() {
         return ['suggestionA', 'suggestionB', 'suggestionC']
     }
     const func1 = () => {}
+    const handleFavorite = () => {
+        setFavorite(!favorite)
+        console.log('Favorite')
+    }
+    const handleRemove = () => {
+        console.log('Remove')
+    }
+    const handleEdit = () => {
+        console.log('Edit')
+    }
     return (
         <>
+            {/* <RecipeCard
+                title="Reteta cu sushi sushi sushi sushisushi sushisushi sushi"
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Ioana"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={3.8}
+                prepTime={30}
+                favorite={favorite}
+                onFavorite={handleFavorite}
+                onRemove={handleRemove}
+                onEdit={handleEdit}
+            />
+
+            <RecipeCard
+                title="Reteta cu sushi sushi "
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Ioana"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={3.8}
+                prepTime={30}
+                favorite={favorite}
+                onFavorite={handleFavorite}
+                onRemove={handleRemove}
+                onEdit={handleEdit}
+            />
+
+            <RecipeCard
+                title="Chec pufos"
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Sabina"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={2.1}
+                prepTime={73}
+            /> */}
+
+            {/*
+
+            <UserCard
+                displayName="Ana"
+                username="username"
+                rating={3.6}
+                link="./Register"
+                profilePicture="https://images.unsplash.com/photo-1501869150797-9bbb64f782fd?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            /> */}
+
             {/* <Categories
                 name="Cele mai vizualizate"
                 recipes={mostViewedRecipes}

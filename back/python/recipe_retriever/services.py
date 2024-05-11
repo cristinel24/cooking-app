@@ -4,12 +4,7 @@ from repository import *
 import requests
 from constants import USER_MICROSERVICE_URL
 
-follow_collection = FollowCollection()
-user_collection = UserCollection()
 recipe_collection = RecipeCollection()
-rating_collection = RatingCollection()
-report_collection = ReportCollection()
-expiring_token_collection = ExpiringTokenCollection()
 
 
 def get_recipe_by_id(recipe_id: ObjectId) -> Any | None:
@@ -23,13 +18,13 @@ def get_recipe_by_id(recipe_id: ObjectId) -> Any | None:
     if not author_id:
         return None
 
-    user_card_data = get_user_card_data(author_id)
+    #user_card_data = get_user_card_data(author_id)
 
-    if not user_card_data:
-        return None
+    #if not user_card_data:
+        #return None
 
     recipe = {
-        "author": user_card_data,
+        #"author": user_card_data,
         "title": recipe_data.get("title"),
         "description": recipe_data.get("description"),
         "prepTime": recipe_data.get("prepTime"),
@@ -37,7 +32,7 @@ def get_recipe_by_id(recipe_id: ObjectId) -> Any | None:
         "ingredients": recipe_data.get("ingredients"),
         "allergens": recipe_data.get("allergens"),
         "tags": recipe_data.get("tags"),
-        #"thumbnail": recipe_data.get("thumbnail"),
+        "thumbnail": recipe_data.get("thumbnail"),
         # "viewCount": view_count
     }
 
@@ -70,20 +65,20 @@ def get_recipe_card_by_id(recipe_id):
     if not author_id:
         return None
 
-    user_card_data = get_user_card_data(author_id)
+    #user_card_data = get_user_card_data(author_id)
 
-    if not user_card_data:
-        return None
+    #if not user_card_data:
+        #return None
 
     recipe_card = {
-        "author": user_card_data,
+        #"author": user_card_data,
         "title": recipe_data.get("title"),
         "description": recipe_data.get("description"),
         "prepTime": recipe_data.get("prepTime"),
         "tags": recipe_data.get("tags"),
         "allergens": recipe_data.get("allergens"),
         "thumbnail": recipe_data.get("thumbnail"),
-        "viewCount": recipe_data.get("viewCount")
+        #"viewCount": recipe_data.get("viewCount")
     }
 
     return recipe_card

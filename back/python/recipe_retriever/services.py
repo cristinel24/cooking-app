@@ -26,7 +26,7 @@ def get_recipe_by_id(recipe_id: ObjectId) -> RecipeData:
         "ingredients": recipe_data.get("ingredients"),
         "allergens": recipe_data.get("allergens"),
         "tags": recipe_data.get("tags"),
-        #"thumbnail": recipe_data.get("thumbnail"),
+        "thumbnail": recipe_data.get("thumbnail"),
         # "viewCount": view_count
     }
     return recipe
@@ -63,7 +63,7 @@ def get_recipe_card_by_id(recipe_id):
         "prepTime": recipe_data.get("prepTime"),
         "tags": recipe_data.get("tags"),
         "allergens": recipe_data.get("allergens"),
-        #"thumbnail": recipe_data.get("thumbnail"),
+        "thumbnail": recipe_data.get("thumbnail"),
         #"viewCount": recipe_data.get("viewCount")
     }
     return recipe_card

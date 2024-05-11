@@ -1,0 +1,27 @@
+.tag {
+    background-color: var(--bkgcolordimmed);
+    width: fit-content;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    padding: 0.2rem;
+    color: var(--txtcolordimmed);
+}
+
+.tag span {
+    width: max-content;
+}
+
+.tag-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    font-size: inherit;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    cursor: pointer;
+}

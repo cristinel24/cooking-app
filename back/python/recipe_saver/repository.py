@@ -16,7 +16,7 @@ class RecipeCollection(MongoCollection):
 
     def get_recipe_by_id(self, recipe_id: ObjectId) -> dict:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
-            item = self._collection.find_one({"_id": recipe_id})
+            item = self._collection.find_one({"id": recipe_id})
             return item
 
 
@@ -27,14 +27,14 @@ class UserCollection(MongoCollection):
 
     def get_user_by_id(self, user_id: ObjectId) -> dict:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
-            item = self._collection.find_one({"_id": user_id})
-            del item['_id']
+            item = self._collection.find_one({"id": user_id})
+            del item['id']
             return item
 
     def add_recipe_to_user(self, user_id: ObjectId, recipe_id: ObjectId):
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
-            self._collection.update_one({"_id": user_id}, {"$push": {"savedRecipes": recipe_id}})
+            self._collection.update_one({"id": user_id}, {"$push": {"savedRecipes": recipe_id}})
 
     def remove_recipe_from_user(self, user_id: ObjectId, recipe_id: ObjectId):
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
-            self._collection.update_one({"_id": user_id}, {"$pull": {"savedRecipes": recipe_id}})
+            self._collection.update_one({"id": user_id}, {"$pull": {"savedRecipes": recipe_id}})

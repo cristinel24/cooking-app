@@ -1,4 +1,5 @@
 import os
+from enum import Enum
 
 from dotenv import load_dotenv
 
@@ -10,10 +11,10 @@ MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017/?directConnection=
 USER_RETRIEVER_API_URL = os.getenv("USER_RETRIEVER_API_URL", "http://0.0.0.0:8000")
 USER_CARDS_ROUTE = os.getenv("USER_CARDS_ROUTE", "/user-cards")
 
-DUPLICATE_FOLLOW_ERROR = {
-    "code": 21000
-}
+MAX_TIMEOUT_TIME_SECONDS = 3
 
-NONEXISTENT_FOLLOW_ERROR = {
-    "code": 21001
-}
+
+class ErrorCodes(Enum):
+    DB_CONNECTION_FAILURE = 21000
+    DUPLICATE_FOLLOW = 21001
+    NONEXISTENT_FOLLOW = 21002

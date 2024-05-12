@@ -11,7 +11,7 @@ expiring_token_collection = ExpiringTokenCollection()
 
 async def delete_user(user_id: str):
     if user_collection.ping_user(user_id) is None:
-        raise UserDestroyerException(ErrorCodes.NONEXISTENT_USER, 400)
+        raise UserDestroyerException(ErrorCodes.NONEXISTENT_USER, 404)
     user_collection.delete_user_by_user_id(user_id)
     follow_collection.delete_follows_by_user_id(user_id)
     expiring_token_collection.delete_expiring_tokens_by_user_id(user_id)

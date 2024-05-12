@@ -11,10 +11,6 @@ load_dotenv()
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
         self._connection = connection if connection is not None else MongoClient(MONGO_URL)
-        try:
-            self._connection.admin.command('ping')
-        except ConnectionError:
-            raise UserRetrieverException(500, ErrorCodes.DATABASE_ERROR)
 
 
 class UserCollection(MongoCollection):

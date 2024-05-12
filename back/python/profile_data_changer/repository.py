@@ -14,39 +14,31 @@ class UserCollection(MongoCollection):
         db = self._collection.get_database(DB_NAME)
         self._collection = db.user
 
-    def get_user_by_id(self, user_id: str) -> dict:
-        try:
-            with pymongo.timeout(MONGO_TIMEOUT):
-                user = self._collection.find({"id": user_id})
-                if user is None:
-                    raise Exception(ErrorCodes.USER_NOT_FOUND.value)
-                return user
-        except errors.PyMongoError:
-            raise Exception(ErrorCodes.DATABASE_ERROR.value)
-
     def patch_user(self, user_id: str, changes: dict) -> None:
         try:
-            if not self.get_user_by_id(user_id):
-                raise Exception(ErrorCodes.USER_NOT_FOUND.value)
             with pymongo.timeout(MONGO_TIMEOUT):
-                self._collection.update_one({"id": user_id}, {"$set": changes})
+                updated = self._collection.update_one({"id": user_id}, {"$set": changes})
+            if updated.modified_count == 0:
+                raise Exception(ErrorCodes.USER_NOT_FOUND.value)
         except errors.PyMongoError:
             raise Exception(ErrorCodes.DATABASE_ERROR.value)
 
     def add_allergens(self, user_id: str, allergens_to_add: list[str]) -> None:
         try:
-            if not self.get_user_by_id(user_id):
-                raise Exception(ErrorCodes.USER_NOT_FOUND.value)
             with pymongo.timeout(MONGO_TIMEOUT):
-                self._collection.update_one({"id": user_id}, {"$push": {"allergens": {"$each": allergens_to_add}}})
+                updated = self._collection.update_one({"id": user_id},
+                                                      {"$push": {"allergens": {"$each": allergens_to_add}}})
+                if updated.modified_count == 0:
+                    raise Exception(ErrorCodes.INVALID_DATA.value)
         except errors.PyMongoError:
             raise Exception(ErrorCodes.DATABASE_ERROR.value)
 
     def remove_allergens(self, user_id: str, allergens_to_remove: list[str]) -> None:
         try:
-            if not self.get_user_by_id(user_id):
-                raise Exception(ErrorCodes.USER_NOT_FOUND.value)
             with pymongo.timeout(MONGO_TIMEOUT):
-                self._collection.update_one({"id": user_id}, {"$pull": {"allergens": {"$in": allergens_to_remove}}})
+                updated = self._collection.update_one({"id": user_id},
+                                                      {"$pull": {"allergens": {"$in": allergens_to_remove}}})
+                if updated.modified_count == 0:
+                    raise Exception(ErrorCodes.INVALID_DATA.value)
         except errors.PyMongoError:
             raise Exception(ErrorCodes.DATABASE_ERROR.value)

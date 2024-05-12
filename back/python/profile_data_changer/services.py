@@ -13,7 +13,7 @@ async def patch_user(user_id: str, data: UserProfileData):
         if key == 1:
             allergens_to_add.append(value)
         else:
-            allergens_to_remove.remove(value)
+            allergens_to_remove.append(value)
     user_collection.patch_user(user_id, changes)
     if allergens_to_add:
         user_collection.add_allergens(user_id, allergens_to_add)

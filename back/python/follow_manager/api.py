@@ -1,7 +1,7 @@
 import httpx
 from fastapi import status
 
-from constants import USER_RETRIEVER_API_URL, USER_CARDS_ROUTE, ErrorCodes
+from constants import USER_RETRIEVER_API_URL, USER_CARDS_ROUTE
 from exception import FollowManagerException
 from schemas import *
 

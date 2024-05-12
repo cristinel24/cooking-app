@@ -4,13 +4,16 @@ from fastapi import status
 from api import request_user_cards
 from constants import ErrorCodes
 from exception import FollowManagerException
-from repository import FollowCollection
+from repository import FollowCollection, UserCollection
 from schemas import *
 
 follow_collection = FollowCollection()
+user_collection = UserCollection()
 
 
 async def get_followers_count(user_id: str) -> FollowersCountData:
+    if user_collection.ping_user(user_id) is None:
+        raise FollowManagerException(ErrorCodes.INVALID_USER.value, status.HTTP_404_NOT_FOUND)
     follower_count_data = FollowersCountData()
     follower_count_data.followers_count = len(follow_collection.get_followers(user_id))
     return follower_count_data
@@ -32,6 +35,8 @@ async def get_followers(user_id: str, start: int, count: int) -> FollowersCardsD
 
 
 async def get_following_count(user_id: str) -> FollowingCountData:
+    if user_collection.ping_user(user_id) is None:
+        raise FollowManagerException(ErrorCodes.INVALID_USER.value, status.HTTP_404_NOT_FOUND)
     following_count_data = FollowingCountData()
     following_count_data.following_count = len(follow_collection.get_followers(user_id))
     return following_count_data
@@ -53,6 +58,8 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
 
 
 async def add_follow(user_id: str, follows_id: str):
+    if user_collection.ping_user(follows_id) is None:
+        raise FollowManagerException(ErrorCodes.INVALID_USER.value, status.HTTP_404_NOT_FOUND)
     follow = follow_collection.get_follow(user_id, follows_id)
     if follow is None:
         follow_collection.add_follow(user_id, follows_id)
@@ -61,6 +68,8 @@ async def add_follow(user_id: str, follows_id: str):
 
 
 async def delete_follow(user_id: str, follows_id: str):
+    if user_collection.ping_user(follows_id) is None:
+        raise FollowManagerException(ErrorCodes.INVALID_USER.value, status.HTTP_404_NOT_FOUND)
     follow = follow_collection.get_follow(user_id, follows_id)
     if follow is not None:
         follow_collection.delete_follow(user_id, follows_id)

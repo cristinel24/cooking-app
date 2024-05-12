@@ -15,9 +15,23 @@ class MongoCollection:
             try:
                 self._connection.admin.command('ping')
             except ConnectionError:
-                raise FollowManagerException(ErrorCodes.DB_CONNECTION_FAILURE, status.HTTP_500_INTERNAL_SERVER_ERROR)
+                raise FollowManagerException(ErrorCodes.DB_CONNECTION_FAILURE.value,
+                                             status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             self._connection = connection
+
+
+class UserCollection(MongoCollection):
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.cooking_app.user
+
+    def ping_user(self, user_id: str):
+        try:
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                return self._collection.find_one({"id": user_id}, {"_id": 0, "id": 1})
+        except errors.PyMongoError as e:
+            raise match_collection_error(e)
 
 
 class FollowCollection(MongoCollection):

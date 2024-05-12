@@ -34,7 +34,7 @@ class ExternalDataProvider:
             raise InternalError()
 
         async with ClientSession(timeout=self.timeout) as session:
-            url = f'{USER_RETRIEVER_API_URL}/{user_id}'
+            url = f'{USER_RETRIEVER_API_URL}/user/{user_id}'
             async with session.get(url) as response:
                 self.logger.info(f'Request {url}')
                 response = await response.json()

@@ -31,9 +31,9 @@ async def get_user_card(user_id: str, response: Response) -> UserCardData | dict
 
 
 @app.post("/user-cards", tags=["user_cards_data"])
-async def get_user_cards(user_ids: UserCardsRequestData, response: Response) -> list[UserCardData] | dict[str, int]:
+async def get_user_cards(user_ids: UserCardsRequestData, response: Response) -> dict[str, list[UserCardData]] | dict[str, int]:
     try:
-        return await services.get_user_cards_data(user_ids.ids)
+        return {"cards": await services.get_user_cards_data(user_ids.ids)}
     except UserRetrieverException as e:
         response.status_code = e.status_code
         return {"errorCode": e.error_code.value}

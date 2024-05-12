@@ -1,16 +1,15 @@
-from dotenv import load_dotenv
 from pymongo import MongoClient
 from pymongo.errors import OperationFailure, ExecutionTimeout, PyMongoError
 
-from constants import ID_PROJECTION
-from constants import ERROR_20301
+from constants import ErrorCode, ID_PROJECTION
 from exceptions import CustomException
 import os
 
-load_dotenv()
-
 MONGO_URI = os.getenv("MONGO_URI")
 DATABASE_NAME = os.getenv("DATABASE_NAME")
+
+max_timeout_seconds = ErrorCode.MAX_TIMEOUT_TIME_SECONDS.value
+max_time_ms = max_timeout_seconds * 1000
 
 
 def get_next_id() -> str:
@@ -27,14 +26,16 @@ def get_next_id() -> str:
                     projection=ID_PROJECTION,
                     return_document=True,
                     session=session,
-                    maxTimeMS=10000  # 10 seconds timeout
+                    maxTimeMS=max_time_ms
                 )
 
                 if result:
                     return str(result["value"])
                 else:
-                    raise CustomException(status_code=500, detail=ERROR_20301, headers={ERROR_20301: ERROR_20301})
+                    raise CustomException(status_code=500, detail=ErrorCode.ERROR_20301,
+                                          headers={ErrorCode.ERROR_20301: ErrorCode.ERROR_20301})
+
     except (OperationFailure, ExecutionTimeout) as exc:
-        raise CustomException(status_code=500, detail=str(exc), headers={ERROR_20301: str(exc)})
+        raise CustomException(status_code=500, detail=str(exc), headers={ErrorCode.ERROR_20301: str(exc)})
     except PyMongoError as exc:
-        raise CustomException(status_code=500, detail=str(exc), headers={ERROR_20301: str(exc)})
+        raise CustomException(status_code=500, detail=str(exc), headers={ErrorCode.ERROR_20301: str(exc)})

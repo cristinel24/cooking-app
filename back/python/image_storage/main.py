@@ -2,7 +2,7 @@ import json
 import os.path
 from io import BytesIO
 
-from fastapi import FastAPI, UploadFile, Response
+from fastapi import FastAPI, UploadFile, Response, status
 from fastapi.responses import FileResponse
 
 import services
@@ -17,7 +17,7 @@ async def add_image(file: UploadFile):
     try:
         return await services.add_image(BytesIO(await file.read()))
     except ImageStorageException as e:
-        return Response(status_code=e.status_code, content=json.dumps({"errorCode": e.error_code.value}))
+        return Response(status_code=e.status_code, content=json.dumps({"errorCode": e.error_code}))
 
 
 @app.get("/{image_id}", response_class=FileResponse)
@@ -26,7 +26,8 @@ async def get_image(image_id: str):
     if os.path.exists(image_path):
         return image_path
     else:
-        return Response(status_code=404, content=json.dumps({"errorCode": ErrorCodes.NONEXISTENT_IMAGE.value}))
+        return Response(status_code=status.HTTP_404_NOT_FOUND,
+                        content=json.dumps({"errorCode": ErrorCodes.NONEXISTENT_IMAGE}))
 
 
 if __name__ == "__main__":

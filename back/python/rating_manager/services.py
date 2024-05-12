@@ -18,7 +18,7 @@ class RatingService:
         async def fetch_user_rating(rating):
             user_id = rating.get("authorId", None)
             try:
-                user = self.provider.get_user(user_id)
+                user = await self.provider.get_user(user_id)
                 if isinstance(user, dict):
                     return RatingDataCard(
                         parentId=parent_id,
@@ -36,7 +36,7 @@ class RatingService:
         return RatingList(ratings=[r for r in ratings if r is not None], total=total)
 
     async def create_rating(self, parent_id: str, rating_data: RatingCreate):
-        rating_id = self.provider.generate_id()
+        rating_id = await self.provider.generate_id()
         if isinstance(rating_id, str) is False:
             raise ExternalError()
 

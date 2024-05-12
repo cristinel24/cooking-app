@@ -3,14 +3,14 @@ from functools import wraps
 import time
 
 
-def retry(exceptions: tuple, max_attempts: int = 5, raise_exc: bool = False, delay: int = 1, show=True):
+def async_retry(exceptions: tuple, max_attempts: int = 3, raise_exc: bool = False, delay: int = 1, show=True):
     def decorator_retry(func):
         @wraps(func)
-        def inner(self, *args, **kwargs):
+        async def inner(self, *args, **kwargs):
             tries = max_attempts
             while tries:
                 try:
-                    return func(self, *args, **kwargs)
+                    return await func(self, *args, **kwargs)
                 except exceptions as e:
                     time.sleep(delay)
                     if show:

@@ -1,10 +1,12 @@
-import requests
-from utils import singleton, init_logger, retry
+from aiohttp import ClientSession, ClientTimeout, ClientError, ClientResponseError
+
+from utils import singleton, init_logger, async_retry
 from constants import ID_GENERATOR_API_URL, USER_RETRIEVER_API_URL
-from exceptions import InternalError
+from exceptions import InternalError, ExternalError
 
 REQUEST_TIMEOUT: int = 5
-request_errors = (requests.exceptions.RequestException, requests.exceptions.ConnectionError)
+ERROR_FIELD: str = 'errorCode'
+request_errors = (ClientError, ClientResponseError, TimeoutError)
 
 
 @singleton
@@ -12,13 +14,32 @@ class ExternalDataProvider:
 
     def __init__(self):
         self.logger = init_logger("[ExternalDataProvider]")
+        self.timeout = ClientTimeout(total=REQUEST_TIMEOUT)
 
-    @retry(request_errors)
-    def generate_id(self) -> str:
-        return requests.get(ID_GENERATOR_API_URL, timeout=REQUEST_TIMEOUT).json()
+    @async_retry(request_errors)
+    async def generate_id(self) -> str:
+        async with ClientSession(timeout=self.timeout) as session:
+            async with session.get(ID_GENERATOR_API_URL) as response:
+                self.logger.info(f'Request {ID_GENERATOR_API_URL}')
+                response = await response.json()
 
-    @retry(request_errors)
-    def get_user(self, user_id: str | None) -> str:
+        if isinstance(response, dict) and response.get(ERROR_FIELD):
+            raise ExternalError()
+
+        return response
+
+    @async_retry(request_errors)
+    async def get_user(self, user_id: str | None) -> str:
         if user_id is None:
             raise InternalError()
-        return requests.get(f'{USER_RETRIEVER_API_URL}/{user_id}', timeout=REQUEST_TIMEOUT).json()
+
+        async with ClientSession(timeout=self.timeout) as session:
+            url = f'{USER_RETRIEVER_API_URL}/{user_id}'
+            async with session.get(url) as response:
+                self.logger.info(f'Request {url}')
+                response = await response.json()
+
+        if isinstance(response, dict) and response.get(ERROR_FIELD):
+            raise ExternalError()
+
+        return response

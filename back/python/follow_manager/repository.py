@@ -1,4 +1,5 @@
 from pymongo import MongoClient, errors, timeout
+from fastapi import status
 
 from constants import MONGO_URL, ErrorCodes, MAX_TIMEOUT_TIME_SECONDS
 from exception import FollowManagerException
@@ -14,7 +15,7 @@ class MongoCollection:
             try:
                 self._connection.admin.command('ping')
             except ConnectionError:
-                raise FollowManagerException(ErrorCodes.DB_CONNECTION_FAILURE, 500)
+                raise FollowManagerException(ErrorCodes.DB_CONNECTION_FAILURE, status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             self._connection = connection
 

@@ -2,11 +2,11 @@ from pydantic import BaseModel
 
 
 class FollowData(BaseModel):
-    followsId: str | None = None
+    followsId: str
 
 
 class UserCardData(BaseModel):
-    username: str | None = None
+    username: str
     displayName: str | None = None
     icon: str | None = None
     roles: int | None = None

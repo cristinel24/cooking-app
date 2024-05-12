@@ -1,4 +1,5 @@
 import httpx
+from fastapi import status
 
 from api import request_user_cards
 from constants import ErrorCodes
@@ -22,7 +23,7 @@ async def get_followers(user_id: str, start: int, count: int) -> FollowersCardsD
     try:
         response = await request_user_cards(request)
     except httpx.ConnectError:
-        raise FollowManagerException(ErrorCodes.NOT_RESPONSIVE_API, 503)
+        raise FollowManagerException(ErrorCodes.NOT_RESPONSIVE_API, status.HTTP_503_SERVICE_UNAVAILABLE)
     user_cards = list(response.cards)
     followers_cards_data.followers = list(
         map(lambda card: UserCardData(**card), reversed(user_cards))
@@ -43,7 +44,7 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
     try:
         response = await request_user_cards(request)
     except httpx.ConnectError:
-        raise FollowManagerException(ErrorCodes.NOT_RESPONSIVE_API, 503)
+        raise FollowManagerException(ErrorCodes.NOT_RESPONSIVE_API, status.HTTP_503_SERVICE_UNAVAILABLE)
     user_cards = list(response.cards)
     following_cards_data.following = list(
         map(lambda card: UserCardData(**card), reversed(user_cards))
@@ -56,7 +57,7 @@ async def add_follow(user_id: str, follows_id: str):
     if follow is None:
         follow_collection.add_follow(user_id, follows_id)
     else:
-        raise FollowManagerException(ErrorCodes.DUPLICATE_FOLLOW, 400)
+        raise FollowManagerException(ErrorCodes.DUPLICATE_FOLLOW, status.HTTP_400_BAD_REQUEST)
 
 
 async def delete_follow(user_id: str, follows_id: str):
@@ -64,4 +65,4 @@ async def delete_follow(user_id: str, follows_id: str):
     if follow is not None:
         follow_collection.delete_follow(user_id, follows_id)
     else:
-        raise FollowManagerException(ErrorCodes.NONEXISTENT_FOLLOW, 400)
+        raise FollowManagerException(ErrorCodes.NONEXISTENT_FOLLOW, status.HTTP_404_NOT_FOUND)

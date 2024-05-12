@@ -2,15 +2,12 @@ import pymongo
 from pymongo import MongoClient, errors
 from constants import MONGO_URL, DB_NAME, ErrorCodes, MONGO_TIMEOUT
 from exception import ProfileDataChangerException
+from fastapi import status
 
 
 class MongoCollection:
     def __init__(self, connection: MongoClient = None):
         self.connection = connection if connection is not None else MongoClient(MONGO_URL)
-        try:
-            self.connection.admin.command('ping')
-        except ConnectionError:
-            raise ProfileDataChangerException(500, ErrorCodes.DATABASE_ERROR.value)
 
 
 class UserCollection(MongoCollection):
@@ -26,7 +23,7 @@ class UserCollection(MongoCollection):
             if updated.modified_count == 0:
                 raise ProfileDataChangerException(404, ErrorCodes.USER_NOT_FOUND.value)
         except errors.PyMongoError:
-            raise ProfileDataChangerException(500, ErrorCodes.DATABASE_ERROR.value)
+            raise ProfileDataChangerException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)
 
     def add_allergens(self, user_id: str, allergens_to_add: list[str]) -> None:
         try:
@@ -34,9 +31,9 @@ class UserCollection(MongoCollection):
                 updated = self._collection.update_one({"id": user_id},
                                                       {"$push": {"allergens": {"$each": allergens_to_add}}})
                 if updated.modified_count == 0:
-                    raise ProfileDataChangerException(406, ErrorCodes.INVALID_DATA.value)
+                    raise ProfileDataChangerException(status.HTTP_404_NOT_FOUND, ErrorCodes.INVALID_DATA.value)
         except errors.PyMongoError:
-            raise ProfileDataChangerException(500, ErrorCodes.DATABASE_ERROR.value)
+            raise ProfileDataChangerException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)
 
     def remove_allergens(self, user_id: str, allergens_to_remove: list[str]) -> None:
         try:
@@ -44,6 +41,6 @@ class UserCollection(MongoCollection):
                 updated = self._collection.update_one({"id": user_id},
                                                       {"$pull": {"allergens": {"$in": allergens_to_remove}}})
                 if updated.modified_count == 0:
-                    raise ProfileDataChangerException(406, ErrorCodes.INVALID_DATA.value)
+                    raise ProfileDataChangerException(status.HTTP_404_NOT_FOUND, ErrorCodes.INVALID_DATA.value)
         except errors.PyMongoError:
-            raise ProfileDataChangerException(500, ErrorCodes.DATABASE_ERROR.value)
+            raise ProfileDataChangerException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)

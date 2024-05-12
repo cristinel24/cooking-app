@@ -1,10 +1,9 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pymongo
 from bson import ObjectId
 from pymongo import MongoClient, errors
-from schemas import expiring_token_projection
 from exceptions import TokenException, UserException
 from constants import Errors, MAX_TIMEOUT_SECONDS
 
@@ -22,15 +21,13 @@ class UserCollection(MongoCollection):
     def insert_token_to_user(self, user_id: str, token_id: str, token_data: dict):
         with pymongo.timeout(MAX_TIMEOUT_SECONDS):
             try:
-                user = self._collection.find_one({"_id": user_id})
-                if user is None:
-                    raise UserException(Errors.USER_NOT_FOUND)
-                user["sessions"].append({
+                user = self._collection.update_one({"id": user_id}, {"$push": {"sessions": {
                     "value": token_data["value"],
                     "tokenType": token_data["tokenType"],
                     "_id": ObjectId(token_id)
-                })
-                self._collection.update_one({"_id": user_id}, {"$set": user})
+                }}})
+                if user.matched_count == 0:
+                    raise UserException(Errors.USER_NOT_FOUND)
             except UserException as e:
                 raise e
             except pymongo.errors.PyMongoError as e:
@@ -48,9 +45,10 @@ class TokenCollection(MongoCollection):
     def insert_token(self, value: str, user_id: str, type_token: str) -> dict:
         with pymongo.timeout(MAX_TIMEOUT_SECONDS):
             try:
+                time = datetime.now(timezone.utc)
                 item = self._collection.insert_one({
                     "value": value,
-                    "createdAt": datetime.utcnow(),
+                    "createdAt": time,
                     "userId": user_id,
                     "tokenType": type_token
                 })
@@ -59,8 +57,12 @@ class TokenCollection(MongoCollection):
                     "value": value,
                     "tokenType": type_token
                 })
-                item = self._collection.find_one({"_id": item.inserted_id}, projection=expiring_token_projection)
-                return item
+                return {
+                    "value": value,
+                    "createdAt": time,
+                    "userId": user_id,
+                    "tokenType": type_token
+                }
             except UserException as e:
                 raise TokenException(e.error_code)
             except pymongo.errors.PyMongoError as e:

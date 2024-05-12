@@ -1,7 +1,7 @@
 from repository import *
 import requests
 from constants import *
-from schemas import RecipeData, RecipeCardData
+from schemas import *
 import exceptions
 
 recipe_collection = RecipeCollection()
@@ -27,12 +27,12 @@ def get_recipe_by_id(recipe_id: ObjectId) -> RecipeData:
         "allergens": recipe_data.get("allergens"),
         "tags": recipe_data.get("tags"),
         "thumbnail": recipe_data.get("thumbnail"),
-        # "viewCount": view_count
+        "viewCount": recipe_data.get("view_count")
     }
     return recipe
 
 
-def get_user_card_data(user_id: ObjectId) -> RecipeCardData:
+def get_user_card_data(user_id: ObjectId) -> UserCardData:
     url = f"{USER_MICROSERVICE_URL}/user/{user_id}/card"
     response = requests.get(url)
     if response.status_code == 200:
@@ -41,7 +41,7 @@ def get_user_card_data(user_id: ObjectId) -> RecipeCardData:
         raise exceptions.RecipeException(ErrorCodes.SERVER_ERROR.value)
 
 
-def get_recipe_card_by_id(recipe_id):
+def get_recipe_card_by_id(recipe_id) -> RecipeCardData:
     recipe_data = recipe_collection.get_recipe_by_id(recipe_id)
     if not recipe_data:
         raise exceptions.RecipeException(ErrorCodes.NONEXISTENT_RECIPE.value)
@@ -57,6 +57,6 @@ def get_recipe_card_by_id(recipe_id):
         "tags": recipe_data.get("tags"),
         "allergens": recipe_data.get("allergens"),
         "thumbnail": recipe_data.get("thumbnail"),
-        # "viewCount": recipe_data.get("viewCount")
+        "viewCount": recipe_data.get("viewCount")
     }
     return recipe_card

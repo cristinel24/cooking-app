@@ -1,5 +1,4 @@
-import pymongo
-from pymongo import MongoClient, errors
+from pymongo import MongoClient, errors, timeout
 
 from constants import MONGO_URL, ErrorCodes, MAX_TIMEOUT_TIME_SECONDS
 from exception import FollowManagerException
@@ -27,7 +26,7 @@ class FollowCollection(MongoCollection):
 
     def get_followers(self, user_id: str) -> list[str]:
         try:
-            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 return list(
                     map(
                         lambda following: following["userId"],
@@ -41,7 +40,7 @@ class FollowCollection(MongoCollection):
 
     def get_following(self, user_id: str) -> list[str]:
         try:
-            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 return list(
                     map(
                         lambda following: following["followsId"],
@@ -55,7 +54,7 @@ class FollowCollection(MongoCollection):
 
     def get_follow(self, user_id: str, follows_id: str):
         try:
-            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 return self._collection.find_one({
                     "userId": user_id,
                     "followsId": follows_id
@@ -65,7 +64,7 @@ class FollowCollection(MongoCollection):
 
     def add_follow(self, user_id: str, follows_id: str):
         try:
-            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 self._collection.insert_one({
                     "userId": user_id,
                     "followsId": follows_id
@@ -75,7 +74,7 @@ class FollowCollection(MongoCollection):
 
     def delete_follow(self, user_id: str, follows_id: str):
         try:
-            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 self._collection.delete_one({
                     "userId": user_id,
                     "followsId": follows_id

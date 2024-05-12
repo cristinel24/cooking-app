@@ -1,7 +1,9 @@
 import pymongo
 from pymongo import MongoClient, errors
+from pymongo.errors import NetworkTimeout
 
 import constants
+import exceptions
 
 
 class MongoCollection:
@@ -17,20 +19,26 @@ class SearchHistoryCollection(MongoCollection):
     def get_search_history(self, user_id: str, start: int, count: int) -> list[str]:
         try:
             with pymongo.timeout(constants.MAX_TIMEOUT_TIME_SECONDS):
+                user = self._collection.find_one({"id": user_id})
+                if user is None:
+                    raise exceptions.SearchHistoryException(constants.ErrorCodes.USER_NOT_FOUND, 404)
                 result = self._collection.find_one(
                     {"id": user_id},
                     {"searchHistory": {"$slice": [start, count]}}
                 )
             search_history = result["searchHistory"] if result and "searchHistory" in result else []
-            if not search_history:
-                raise ValueError("Search history is empty.")
             return search_history
-        except errors.PyMongoError as e:
-            raise Exception(f"Error while getting search history: {e}")
+        except errors.PyMongoError:
+            raise exceptions.SearchHistoryException(constants.ErrorCodes.DB_CONNECTION_FAILURE, 500)
+        except NetworkTimeout:
+            raise exceptions.SearchHistoryException(constants.ErrorCodes.DB_CONNECTION_TIMEOUT, 504)
 
     def add_search_history(self, user_id: str, search_query: str):
         try:
             with pymongo.timeout(constants.MAX_TIMEOUT_TIME_SECONDS):
+                user = self._collection.find_one({"id": user_id})
+                if user is None:
+                    raise exceptions.SearchHistoryException(constants.ErrorCodes.USER_NOT_FOUND, 404)
                 update_result = self._collection.update_one(
                     {"id": user_id},
                     {"$push": {
@@ -40,17 +48,24 @@ class SearchHistoryCollection(MongoCollection):
                         }
                     }}
                 )
-            return "Search history updated successfully" if update_result.modified_count > 0 else []
-        except errors.PyMongoError as e:
-            raise Exception(f"Error while adding search history: {str(e)}")
+            return True if update_result.modified_count > 0 else False
+        except errors.PyMongoError:
+            raise exceptions.SearchHistoryException(constants.ErrorCodes.DB_CONNECTION_FAILURE, 500)
+        except NetworkTimeout:
+            raise exceptions.SearchHistoryException(constants.ErrorCodes.DB_CONNECTION_TIMEOUT, 504)
 
     def clear_search_history(self, user_id: str):
         try:
             with pymongo.timeout(constants.MAX_TIMEOUT_TIME_SECONDS):
+                user = self._collection.find_one({"id": user_id})
+                if user is None:
+                    raise exceptions.SearchHistoryException(constants.ErrorCodes.USER_NOT_FOUND, 404)
                 update_result = self._collection.update_one(
                     {"id": user_id},
                     {"$set": {"searchHistory": []}}
                 )
-            return "Search history cleared successfully" if update_result.modified_count > 0 else []
-        except errors.PyMongoError as e:
-            raise Exception(f"Error while clearing search history: {str(e)}")
+            return True if update_result.modified_count > 0 else False
+        except errors.PyMongoError:
+            raise exceptions.SearchHistoryException(constants.ErrorCodes.DB_CONNECTION_FAILURE, 500)
+        except NetworkTimeout:
+            raise exceptions.SearchHistoryException(constants.ErrorCodes.DB_CONNECTION_TIMEOUT, 504)

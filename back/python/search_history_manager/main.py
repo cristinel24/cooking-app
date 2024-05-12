@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Response, status, HTTPException
+from fastapi import FastAPI, Response
 
+import json
 import services
 import constants
 import exceptions
@@ -8,36 +9,30 @@ app = FastAPI()
 
 
 @app.get("/user/{user_id}/search-history")
-async def get_search_history(user_id: str, start: int, count: int, response: Response):
+async def get_search_history(user_id: str, start: int, count: int): # returns empty list if no search history is found
     try:
-        history = await services.get_search_history(user_id, start, count)
-        if not history:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No search history found")
-        return history
+        return await services.get_search_history(user_id, start, count)
     except exceptions.SearchHistoryException as e:
-        e.error_code = constants.ErrorCodes.SEARCH_HISTORY_NOT_FOUND.value
-        return {"errorCode": e.error_code}
-    except (Exception,) as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        return Response(status_code=e.status_code,
+                        content=json.dumps({"errorCode": e.error_code.value}))
 
 
 @app.put("/user/{user_id}/search-history")
-async def add_search_history(user_id: str, search_query: str, response: Response):
+async def add_search_history(user_id: str, search_query: str): # returns false if search query is not added
     try:
         return await services.add_search_history(user_id, search_query)
-    except (Exception,) as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+    except exceptions.SearchHistoryException as e:
+        return Response(status_code=e.status_code,
+                        content=json.dumps({"errorCode": e.error_code.value}))
 
 
-@app.delete("/user/{user_id}/search-history")  # returns false if no search history is found
-async def clear_search_history(user_id: str, response: Response):
+@app.delete("/user/{user_id}/search-history")  # returns false if no search history is cleared
+async def clear_search_history(user_id: str):
     try:
         return await services.clear_search_history(user_id)
-    except (Exception,) as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+    except exceptions.SearchHistoryException as e:
+        return Response(status_code=e.status_code,
+                        content=json.dumps({"errorCode": e.error_code.value}))
 
 
 if __name__ == "__main__":

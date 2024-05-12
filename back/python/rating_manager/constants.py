@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URI = getenv("MONGO_URL",  "mongodb://localhost:27017")
+MONGO_URI = getenv("MONGO_URL",  "mongodb://localhost:27017?readPreference=secondary")
 
 ID_GENERATOR_API_URL = getenv("ID_GENERATOR_API_URL")
 if ID_GENERATOR_API_URL is None:

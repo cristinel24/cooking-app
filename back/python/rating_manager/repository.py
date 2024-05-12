@@ -1,12 +1,12 @@
-import pymongo.errors
+import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
-
 from schemas import Rating, RatingUpdate
 from constants import MONGO_URI, MONGO_DATABASE, MONGO_COLLECTION, RATING_PROJECTION, DELETED_FIELD
 from exceptions import DatabaseError, InternalError, DatabaseNotFoundDataError
 from utils import singleton, init_logger
 
 OPERATION_TIMEOUT: int = 10
+OPERATION_TIMEOUT_MESSAGE: str = "Database operation timed out"
 
 
 @singleton
@@ -29,18 +29,22 @@ class RatingRepository:
                 {"$project": RATING_PROJECTION}
             ]
 
-            with pymongo.timeout(OPERATION_TIMEOUT):
-                cursor = self.collection.aggregate(pipeline, allowDiskUse=True)
-            ratings = await cursor.to_list(length=count)
+            cursor = self.collection.aggregate(pipeline, allowDiskUse=True)
+            ratings = await asyncio.wait_for(cursor.to_list(length=count), timeout=OPERATION_TIMEOUT)
+
+            if not ratings:
+                return ratings, 0
 
             total_pipeline = [{"$match": {"parentId": parent_id}}, {"$count": "total"}]
-            with pymongo.timeout(OPERATION_TIMEOUT):
-                total_result = await self.collection.aggregate(total_pipeline).next()
+            total_result = await asyncio.wait_for(self.collection.aggregate(total_pipeline).next(),
+                                                  timeout=OPERATION_TIMEOUT)
+
             total = total_result.get("total", 0)
 
             return ratings, total
-        except pymongo.errors.PyMongoError as e:
-            self.logger.error(e)
+
+        except asyncio.TimeoutError:
+            self.logger.error(OPERATION_TIMEOUT_MESSAGE)
             raise DatabaseError()
         except Exception as e:
             self.logger.error(e)
@@ -49,15 +53,17 @@ class RatingRepository:
     async def update_rating(self, rating_id: str, update: RatingUpdate):
         try:
             query = {"id": rating_id}
-            with pymongo.timeout(OPERATION_TIMEOUT):
-                rating = await self.collection.find_one_and_update(query, {"$set": {"description": update.description}})
-                if rating and rating.get("parentType") == 'recipe':
-                    await self.collection.update_one(query, {"$set": {"rating": update.rating}})
+            rating = await asyncio.wait_for(
+                self.collection.find_one_and_update(query, {"$set": {"description": update.description}}),
+                timeout=OPERATION_TIMEOUT
+            )
+            if rating and rating.get("parentType") == 'recipe':
+                await asyncio.wait_for(self.collection.update_one(query, {"$set": {"rating": update.rating}}),
+                                       timeout=OPERATION_TIMEOUT)
 
-        except pymongo.errors.PyMongoError as e:
-            self.logger.error(e)
+        except asyncio.TimeoutError:
+            self.logger.error(OPERATION_TIMEOUT_MESSAGE)
             raise DatabaseError()
-
         except Exception as e:
             self.logger.error(e)
             raise InternalError()
@@ -69,13 +75,11 @@ class RatingRepository:
     async def add_rating(self, parent_id: str, rating: Rating):
         try:
             doc = {"parentId": parent_id, **rating.dict()}
-            with pymongo.timeout(OPERATION_TIMEOUT):
-                await self.collection.insert_one(doc)
+            await asyncio.wait_for(self.collection.insert_one(doc), timeout=OPERATION_TIMEOUT)
 
-        except pymongo.errors.PyMongoError as e:
-            self.logger.error(e)
+        except asyncio.TimeoutError:
+            self.logger.error(OPERATION_TIMEOUT_MESSAGE)
             raise DatabaseError()
-
         except Exception as e:
             self.logger.error(e)
             raise InternalError()
@@ -89,15 +93,14 @@ class RatingRepository:
                     "authorId": DELETED_FIELD
                 }
             }
-            with pymongo.timeout(OPERATION_TIMEOUT):
-                rating = await self.collection.find_one_and_update(query, update_query)
-                if rating and (not rating.get("children") or len(rating.get("children")) == 0):
-                    await self.collection.delete_one(query)
+            rating = await asyncio.wait_for(self.collection.find_one_and_update(query, update_query),
+                                            timeout=OPERATION_TIMEOUT)
+            if rating and (not rating.get("children") or len(rating.get("children")) == 0):
+                await asyncio.wait_for(self.collection.delete_one(query), timeout=OPERATION_TIMEOUT)
 
-        except pymongo.errors.PyMongoError as e:
-            self.logger.error(e)
+        except asyncio.TimeoutError:
+            self.logger.error(OPERATION_TIMEOUT_MESSAGE)
             raise DatabaseError()
-
         except Exception as e:
             self.logger.error(e)
             raise InternalError()

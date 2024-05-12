@@ -1,29 +1,27 @@
 from repository import MessageHistoryCollection
 from exceptions import MessageHistoryException
+from constants import ErrorCodes
 
-search_history_collection = MessageHistoryCollection()
+message_history_collection = MessageHistoryCollection()
 
 
-# todo Auth needs to be done
 async def get_message_history(user_id: str, start: int, count: int) -> list[str]:
     try:
-        history = search_history_collection.get_message_history(user_id, start, count)
-        if not history:
-            raise MessageHistoryException(error_code=404)
+        history = message_history_collection.get_message_history(user_id, start, count)
         return history
-    except Exception as e:
-        raise MessageHistoryException(error_code=20800)
+    except MessageHistoryException as e:
+        raise MessageHistoryException(e.error_code, e.status_code)
 
 
 async def add_message_history(user_id: str, message: str) -> bool:
-    response = search_history_collection.add_message_history(user_id, message)
+    response = message_history_collection.add_message_history(user_id, message)
     if response:
         return True
     return False
 
 
 async def clear_message_history(user_id: str) -> bool:
-    response = search_history_collection.clear_message_history(user_id)
+    response = message_history_collection.clear_message_history(user_id)
     if response:
         return True
     return False

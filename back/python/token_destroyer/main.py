@@ -1,9 +1,10 @@
 import os
 
-from fastapi import FastAPI
 from dotenv import load_dotenv
+from fastapi import FastAPI, status, Response
+
 from services import delete_token
-from constants import ErrorCodes
+
 load_dotenv()
 
 PORT = os.getenv("PORT", 8000)
@@ -16,8 +17,9 @@ app = FastAPI()
 async def delete_token_route(token: str):
     try:
         return await delete_token(token)
-    except Exception:
-        raise Exception(ErrorCodes.FAILED_TO_RETURN_A_STATUS)
+    except Exception as e:
+        Response.status_code = status.HTTP_417_EXPECTATION_FAILED
+        return {"errorCode": int(str(e))}
 
 if __name__ == "__main__":
     import uvicorn

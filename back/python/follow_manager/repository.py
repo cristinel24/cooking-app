@@ -1,11 +1,23 @@
+import pymongo
 from pymongo import MongoClient, errors
 
-from constants import MONGO_URL
+from constants import MONGO_URL, ErrorCodes, MAX_TIMEOUT_TIME_SECONDS
+from exception import FollowManagerException
+from utils import match_collection_error
 
 
 class MongoCollection:
+    _connection = None
+
     def __init__(self, connection: MongoClient | None = None):
-        self._connection = connection if connection is not None else MongoClient(MONGO_URL)
+        if self._connection is None:
+            self._connection = MongoClient(MONGO_URL)
+            try:
+                self._connection.admin.command('ping')
+            except ConnectionError:
+                raise FollowManagerException(ErrorCodes.DB_CONNECTION_FAILURE, 500)
+        else:
+            self._connection = connection
 
 
 class FollowCollection(MongoCollection):
@@ -15,53 +27,58 @@ class FollowCollection(MongoCollection):
 
     def get_followers(self, user_id: str) -> list[str]:
         try:
-            return list(
-                map(
-                    lambda following: following["userId"],
-                    self._collection
-                    .find({"followsId": user_id})
-                    .sort({"_id": -1})
+            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+                return list(
+                    map(
+                        lambda following: following["userId"],
+                        self._collection
+                        .find({"followsId": user_id})
+                        .sort({"_id": -1})
+                    )
                 )
-            )
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to get followers! - {str(e)}")
+            raise match_collection_error(e)
 
     def get_following(self, user_id: str) -> list[str]:
         try:
-            return list(
-                map(
-                    lambda following: following["followsId"],
-                    self._collection
-                    .find({"userId": user_id})
-                    .sort({"_id": -1})
+            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+                return list(
+                    map(
+                        lambda following: following["followsId"],
+                        self._collection
+                        .find({"userId": user_id})
+                        .sort({"_id": -1})
+                    )
                 )
-            )
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to get following! - {str(e)}")
+            raise match_collection_error(e)
 
     def get_follow(self, user_id: str, follows_id: str):
         try:
-            return self._collection.find_one({
-                "userId": user_id,
-                "followsId": follows_id
-            })
+            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+                return self._collection.find_one({
+                    "userId": user_id,
+                    "followsId": follows_id
+                })
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to get follow relationship! - {str(e)}")
+            raise match_collection_error(e)
 
     def add_follow(self, user_id: str, follows_id: str):
         try:
-            self._collection.insert_one({
-                "userId": user_id,
-                "followsId": follows_id
-            })
+            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+                self._collection.insert_one({
+                    "userId": user_id,
+                    "followsId": follows_id
+                })
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to insert follow relationship! - {str(e)}")
+            raise match_collection_error(e)
 
     def delete_follow(self, user_id: str, follows_id: str):
         try:
-            self._collection.delete_one({
-                "userId": user_id,
-                "followsId": follows_id
-            })
+            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+                self._collection.delete_one({
+                    "userId": user_id,
+                    "followsId": follows_id
+                })
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to delete follow relationship! - {str(e)}")
+            raise match_collection_error(e)

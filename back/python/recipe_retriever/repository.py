@@ -16,6 +16,6 @@ class RecipeCollection(MongoCollection):
 
     def get_recipe_by_id(self, recipe_id: ObjectId) -> dict:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
-            item = self._collection.find_one({"_id": recipe_id})
-            del item['_id']
+            item = self._collection.find_one({"id": recipe_id})
+            del item['id']
             return item

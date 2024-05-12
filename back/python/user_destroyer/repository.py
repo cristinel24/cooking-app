@@ -1,11 +1,23 @@
-from pymongo import MongoClient, errors
+from pymongo import MongoClient, errors, timeout
 
+from constants import ErrorCodes, MAX_TIMEOUT_TIME_SECONDS
 from constants import MONGO_URL
+from exception import UserDestroyerException
+from utils import match_collection_error
 
 
 class MongoCollection:
+    _connection = None
+
     def __init__(self, connection: MongoClient | None = None):
-        self._connection = connection if connection is not None else MongoClient(MONGO_URL)
+        if self._connection is None:
+            self._connection = MongoClient(MONGO_URL)
+            try:
+                self._connection.admin.command('ping')
+            except ConnectionError:
+                raise UserDestroyerException(ErrorCodes.DB_CONNECTION_FAILURE, 500)
+        else:
+            self._connection = connection
 
 
 class FollowCollection(MongoCollection):
@@ -15,10 +27,11 @@ class FollowCollection(MongoCollection):
 
     def delete_follows_by_user_id(self, user_id: str):
         try:
-            self._collection.delete_many({"userId": user_id})
-            self._collection.delete_many({"followsId": user_id})
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                self._collection.delete_many({"userId": user_id})
+                self._collection.delete_many({"followsId": user_id})
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to delete follow relationships! - {str(e)}")
+            raise match_collection_error(e)
 
 
 class UserCollection(MongoCollection):
@@ -28,9 +41,17 @@ class UserCollection(MongoCollection):
 
     def delete_user_by_user_id(self, user_id: str):
         try:
-            self._collection.delete_one({"id": user_id})
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                self._collection.delete_one({"id": user_id})
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to delete user! - {str(e)}")
+            raise match_collection_error(e)
+
+    def ping_user(self, user_id: str):
+        try:
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                return self._collection.find_one({"id": user_id}, {"_id": 0, "id": 1})
+        except errors.PyMongoError as e:
+            raise match_collection_error(e)
 
 
 class RecipeCollection(MongoCollection):
@@ -40,12 +61,13 @@ class RecipeCollection(MongoCollection):
 
     def update_author_id_by_user_id(self, user_id: str, new_user_id: str):
         try:
-            self._collection.update_many(
-                {"authorId": user_id},
-                {"$set": {"authorId": new_user_id}}
-            )
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                self._collection.update_many(
+                    {"authorId": user_id},
+                    {"$set": {"authorId": new_user_id}}
+                )
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to update recipes for deleted user! - {str(e)}")
+            raise match_collection_error(e)
 
 
 class RatingCollection(MongoCollection):
@@ -55,12 +77,13 @@ class RatingCollection(MongoCollection):
 
     def update_author_id_by_user_id(self, user_id: str, new_user_id: str):
         try:
-            self._collection.update_many(
-                {"authorId": user_id},
-                {"$set": {"authorId": new_user_id}}
-            )
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                self._collection.update_many(
+                    {"authorId": user_id},
+                    {"$set": {"authorId": new_user_id}}
+                )
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to update ratings for deleted user! - {str(e)}")
+            raise match_collection_error(e)
 
 
 class ReportCollection(MongoCollection):
@@ -70,20 +93,22 @@ class ReportCollection(MongoCollection):
 
     def update_author_id_by_user_id(self, user_id: str, new_user_id: str):
         try:
-            self._collection.update_many(
-                {"authorId": user_id},
-                {"$set": {"authorId": new_user_id}}
-            )
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                self._collection.update_many(
+                    {"authorId": user_id},
+                    {"$set": {"authorId": new_user_id}}
+                )
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to update deleted user authorId! - {str(e)}")
+            raise match_collection_error(e)
 
     def delete_reported_id_by_user_id(self, user_id: str):
         try:
-            self._collection.delete_many(
-                {"reportedId": user_id}
-            )
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                self._collection.delete_many(
+                    {"reportedId": user_id}
+                )
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to delete reportedId! - {str(e)}")
+            raise match_collection_error(e)
 
 
 class ExpiringTokenCollection(MongoCollection):
@@ -93,6 +118,7 @@ class ExpiringTokenCollection(MongoCollection):
 
     def delete_expiring_tokens_by_user_id(self, user_id: str):
         try:
-            self._collection.delete_many({"userId": user_id})
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                self._collection.delete_many({"userId": user_id})
         except errors.PyMongoError as e:
-            raise Exception(f"Failed to delete expiring tokens! - {str(e)}")
+            raise match_collection_error(e)

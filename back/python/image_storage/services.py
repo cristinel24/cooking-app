@@ -16,12 +16,12 @@ async def add_image(image_bytes: BytesIO):
         with Image.open(image_bytes) as image:
             image.verify()
     except (IOError, SyntaxError):
-        raise ImageStorageException(ErrorCodes.INVALID_IMAGE)
+        raise ImageStorageException(ErrorCodes.INVALID_IMAGE, 400)
     try:
         image_id = await api.get_id()
         image = Image.open(image_bytes)
         image.save(IMAGE_DIRECTORY_PATH + image_id + IMAGE_EXTENSION)
     except httpx.ConnectError:
-        raise ImageStorageException(ErrorCodes.NOT_RESPONSIVE_API)
+        raise ImageStorageException(ErrorCodes.NOT_RESPONSIVE_API, 404)
     except OSError:
-        raise ImageStorageException(ErrorCodes.DUPLICATE_ID)
+        raise ImageStorageException(ErrorCodes.DUPLICATE_ID, 400)

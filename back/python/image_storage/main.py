@@ -8,7 +8,6 @@ from fastapi.responses import FileResponse
 import services
 from constants import HOST_URL, PORT, IMAGE_DIRECTORY_PATH, IMAGE_EXTENSION, ErrorCodes
 from exception import ImageStorageException
-from utils import match_exception
 
 app = FastAPI()
 
@@ -18,7 +17,7 @@ async def add_image(file: UploadFile):
     try:
         return await services.add_image(BytesIO(await file.read()))
     except ImageStorageException as e:
-        return Response(status_code=match_exception(e), content=json.dumps({"errorCode": e.error_code.value}))
+        return Response(status_code=e.status_code, content=json.dumps({"errorCode": e.error_code.value}))
 
 
 @app.get("/{image_id}", response_class=FileResponse)

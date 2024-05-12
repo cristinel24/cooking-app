@@ -2,7 +2,7 @@ import pymongo
 from pymongo import MongoClient, errors
 from constants import MONGO_URL, DB_NAME, ErrorCodes, MONGO_TIMEOUT
 from exception import UserRetrieverException
-
+from fastapi import status
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,17 +24,17 @@ class UserCollection(MongoCollection):
             with pymongo.timeout(MONGO_TIMEOUT):
                 user = self._collection.find_one({"id": user_id}, projection=projection_arg)
                 if user is None:
-                    raise UserRetrieverException(404, ErrorCodes.USER_NOT_FOUND)
+                    raise UserRetrieverException(status.HTTP_status.HTTP_404_NOT_FOUND_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
                 return user
         except errors.PyMongoError:
-            raise UserRetrieverException(500, ErrorCodes.DATABASE_ERROR)
+            raise UserRetrieverException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR)
 
     def get_users_by_id(self, user_ids: list[str], projection_arg: dict) -> list[dict]:
         try:
             with pymongo.timeout(MONGO_TIMEOUT):
                 users_list = list(self._collection.find({"id": {"$in": user_ids}}, projection=projection_arg))
                 if not users_list:
-                    raise UserRetrieverException(404, ErrorCodes.USER_NOT_FOUND)
+                    raise UserRetrieverException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
                 return users_list
         except errors.PyMongoError:
-            raise UserRetrieverException(500, ErrorCodes.DATABASE_ERROR)
+            raise UserRetrieverException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR)

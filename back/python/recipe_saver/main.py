@@ -1,5 +1,4 @@
 import uvicorn
-from bson import ObjectId
 from dotenv import load_dotenv
 from fastapi import status, FastAPI
 from pymongo import response

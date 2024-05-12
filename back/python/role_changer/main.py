@@ -14,8 +14,12 @@ async def update_user_roles(user_id: str, user_roles: RoleData,  response: Respo
     try:
         res = update_user_roles_logic(user_id, user_roles)
         if res != 0:
-            response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+            if res.value == ErrorCodes.NONEXISTENT_ROLES.value:
+                response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+            if res.value == ErrorCodes.NONEXISTENT_USER.value:
+                response.status_code = status.HTTP_404_NOT_FOUND
             return { "errorCode" : res }
+        
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return { "errorCode": ErrorCodes.SERVER_ERROR.value }

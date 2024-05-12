@@ -2,6 +2,8 @@ from enum import Enum
 from fastapi import status
 from utils import *
 
+TIMEOUT_LIMIT = 5
+
 hash_algo_mapping: dict = {
     "argon2": hash_via_argon2,
     "bcrypt": hash_via_bcrypt,

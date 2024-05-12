@@ -33,9 +33,9 @@ def get_next_id() -> str:
                     return str(result["value"])
                 else:
                     raise CustomException(status_code=500, detail=ErrorCode.ERROR_20301,
-                                          headers={ErrorCode.ERROR_20301: ErrorCode.ERROR_20301})
+                                          headers={ErrorCode.DB_ERROR_ID_GENERATOR: ErrorCode.DB_ERROR_ID_GENERATOR})
 
     except (OperationFailure, ExecutionTimeout) as exc:
-        raise CustomException(status_code=500, detail=str(exc), headers={ErrorCode.ERROR_20301: str(exc)})
+        raise CustomException(status_code=500, detail=str(exc), headers={ErrorCode.DB_ERROR_ID_GENERATOR: str(exc)})
     except PyMongoError as exc:
-        raise CustomException(status_code=500, detail=str(exc), headers={ErrorCode.ERROR_20301: str(exc)})
+        raise CustomException(status_code=500, detail=str(exc), headers={ErrorCode.DB_ERROR_ID_GENERATOR: str(exc)})

@@ -17,7 +17,7 @@ async def get_id():
         new_id = get_next_id_services()
         return new_id
     except Exception as e:
-        error_code = ErrorCode.ERROR_20301.value
+        error_code = ErrorCode.DB_ERROR_ID_GENERATOR.value
         error_message = {"errorCode": error_code}
 
         if error_code == ErrorCode.ERROR_20301.value:

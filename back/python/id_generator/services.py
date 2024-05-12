@@ -6,5 +6,5 @@ def get_next_id_services() -> str:
     try:
         return get_next_id()
     except Exception as e:
-        error_code = str(ErrorCode.ERROR_20301.value)
+        error_code = str(ErrorCode.DB_ERROR_ID_GENERATOR.value)
         raise HTTPException(status_code=500, detail=str(e), headers={error_code: str(e)})

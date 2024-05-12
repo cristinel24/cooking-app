@@ -33,7 +33,7 @@ async def get_user_card(user_id: str, response: Response) -> UserCardData | dict
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": ErrorCodes.DATABASE_ERROR.value}
     except Exception as e:
-        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        response.status_code = status.HTTP_404_NOT_FOUND
         return {"errorCode": int(str(e))}
 
 
@@ -45,7 +45,7 @@ async def get_user_cards(user_ids: UserCardsRequestData, response: Response) -> 
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": ErrorCodes.DATABASE_ERROR.value}
     except Exception as e:
-        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        response.status_code = status.HTTP_404_NOT_FOUND
         return {"errorCode": int(str(e))}
 
 
@@ -57,7 +57,7 @@ async def get_user_full_data(user_id: str, user_roles: int, response: Response) 
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": ErrorCodes.DATABASE_ERROR.value}
     except Exception as e:
-        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        response.status_code = status.HTTP_404_NOT_FOUND
         return {"errorCode": int(str(e))}
 
 

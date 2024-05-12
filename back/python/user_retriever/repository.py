@@ -2,6 +2,10 @@ import pymongo
 from pymongo import MongoClient, errors
 from constants import MONGO_URL, DB_NAME, ErrorCodes, MONGO_TIMEOUT
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
@@ -22,7 +26,7 @@ class UserCollection(MongoCollection):
                     raise Exception(ErrorCodes.USER_NOT_FOUND.value)
                 return user
         except errors.PyMongoError:
-            raise Exception(ErrorCodes.DATABASE_ERROR.value)
+            raise errors.PyMongoError(ErrorCodes.DATABASE_ERROR.value)
 
     def get_users_by_id(self, user_ids: list[str], projection_arg: dict) -> list[dict]:
         try:
@@ -32,4 +36,4 @@ class UserCollection(MongoCollection):
                     raise Exception(ErrorCodes.USERS_NOT_FOUND.value)
                 return users_list
         except errors.PyMongoError:
-            raise Exception(ErrorCodes.DATABASE_ERROR.value)
+            raise errors.PyMongoError(ErrorCodes.DATABASE_ERROR.value)

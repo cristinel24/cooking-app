@@ -13,7 +13,7 @@ app = FastAPI()
 @app.put("/user/{user_id}/saved-recipes", tags=["user-actions"])
 async def save_recipe(user_id: str, recipe_id: str):
     try:
-        services.save_recipe(ObjectId(user_id), ObjectId(recipe_id))
+        services.save_recipe(user_id, recipe_id)
     except exceptions.RecipeSaverException as e:
         response.status_code = status.HTTP_406_NOT_ACCEPTABLE
         return {"errorCode": e.error_code}
@@ -25,7 +25,7 @@ async def save_recipe(user_id: str, recipe_id: str):
 @app.delete("/user/{user_id}/saved-recipes", tags=["user-actions"])
 async def remove_recipe_from_saved(user_id: str, recipe_id: str):
     try:
-        services.remove_recipe_from_saved(ObjectId(user_id), ObjectId(recipe_id))
+        services.remove_recipe_from_saved(user_id, recipe_id)
     except exceptions.RecipeSaverException as e:
         response.status_code = status.HTTP_406_NOT_ACCEPTABLE
         return {"errorCode": e.error_code}

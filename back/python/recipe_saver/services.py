@@ -6,7 +6,7 @@ recipe_collection = RecipeCollection()
 user_collection = UserCollection()
 
 
-def save_recipe(user_id : ObjectId, recipe_id : ObjectId):
+def save_recipe(user_id : str, recipe_id : str):
     user = user_collection.get_user_by_id(user_id)
     if user is None:
         raise exceptions.RecipeSaverException(ErrorCodes.NONEXISTENT_USER.value)

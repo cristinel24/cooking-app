@@ -7,7 +7,6 @@ def update_roles_in_db(user_id: str, roles: int):
 
 
 def update_user_roles_logic(user_id: str, role_data: RoleData):
-    new_roles = role_data.roles 
-    return update_roles_in_db(user_id, new_roles)
+    return update_roles_in_db(user_id, role_data.roles)
     
      

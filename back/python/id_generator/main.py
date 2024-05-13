@@ -8,8 +8,7 @@ import os
 app = FastAPI()
 
 load_dotenv()
-PORT = os.getenv("PORT")
-print("Port:", PORT)
+PORT = os.getenv("PORT", 12345)
 
 @app.get("/")
 async def get_id():

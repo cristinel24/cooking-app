@@ -8,7 +8,7 @@ import os
 app = FastAPI()
 
 load_dotenv()
-PORT = os.getenv("PORT", 12345)
+PORT = int(os.getenv("PORT", 12345))
 
 @app.get("/")
 async def get_id():
@@ -27,4 +27,4 @@ async def get_id():
         raise HTTPException(status_code=status_code, detail=str(e), headers=error_message)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=int(PORT), reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=PORT, reload=True)

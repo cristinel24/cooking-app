@@ -1,0 +1,230 @@
+.report-card-footer a {
+    text-decoration: none;
+}
+
+.report-card-box {
+    border: none;
+    border-radius: 10px;
+    margin: 0;
+    background-color: var(--corpcaseta);
+    width: 100%;
+    height: auto;
+}
+
+.report-card-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: var(--txtcolor);
+    background-color: var(--bkgcolor);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem 0 1.5rem;
+    margin: 0;
+}
+
+.report-card-header-left {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.report-card-header .report-card-header-left-title {
+    margin: 0;
+    margin-left: 0.5rem;
+    font-size: 1rem;
+}
+
+.report-card-header-left .report-card-header-left-img {
+    margin: 0;
+    width: 1rem;
+    height: 1rem;
+}
+
+.report-card-header-right {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.report-card-content .report-card-content-description {
+    padding: 0.9rem 1.5rem 0.3rem 1.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.report-card-content-date {
+    font-weight: 650;
+    padding-left: 1.5rem;
+    padding-bottom: 0.3rem;
+    font-size: 0.7rem;
+}
+
+.report-card-footer {
+    display: flex;
+    flex-direction: row;
+    gap: 0.4rem;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 0.5rem;
+}
+
+.report-card-footer .report-card-footer-button-img {
+    width: 1rem;
+    height: 1rem;
+}
+
+.report-card-footer-page-button .link {
+    margin: 0;
+    border: 0;
+    display: flex;
+    gap: 0.2rem;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25rem;
+    font-size: 0.7rem;
+    padding-right: 0.8rem;
+    padding-left: 0.8rem;
+}
+
+.report-card-footer-action-button .action-button {
+    margin: 0;
+    border: 0;
+    display: flex;
+    gap: 0.2rem;
+    justify-content: center;
+    align-items: center;
+    padding: 0.4rem;
+    padding-right: 0.8rem;
+    padding-left: 0.8rem;
+}
+
+.report-card-footer-action-button .action-button-text {
+    padding-left: 0.2rem;
+    font-size: 0.7rem;
+}
+
+/* Tablets */
+@media (min-width: 481px) and (max-width: 967px) {
+    .report-card-header {
+        padding: 0 2rem 0 2rem;
+    }
+
+    .report-card-header .report-card-header-left-title {
+        font-size: 1.2rem;
+    }
+
+    .report-card-header-left .report-card-header-left-img {
+        width: 1.2rem;
+        height: 1.2rem;
+    }
+
+    .report-card-header-right {
+        font-size: 1rem;
+    }
+
+    .report-card-content .report-card-content-description {
+        font-weight: 580;
+        padding: 0.8rem 2rem 0.5rem 2rem;
+        font-size: 0.8rem;
+    }
+
+    .report-card-content-date {
+        font-weight: 600;
+        padding-left: 2rem;
+        font-size: 0.8rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .report-card-footer {
+        padding-bottom: 0.5rem;
+        gap: 0.5rem;
+        padding-right: 2rem;
+        padding-left: 2rem;
+    }
+
+    .report-card-footer .report-card-footer-button-img {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .report-card-footer-page-button .link {
+        padding: 0.4rem;
+        font-size: 0.85rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .report-card-footer-action-button .action-button {
+        padding: 0.45rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .report-card-footer-action-button .action-button-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Smartphones */
+@media (min-width: 320px) and (max-width: 480px) {
+    .report-card-header {
+        padding: 0 1rem 0 1rem;
+    }
+
+    .report-card-header .report-card-header-left-title {
+        font-size: 0.8rem;
+    }
+
+    .report-card-header-left .report-card-header-left-img {
+        width: 0.7rem;
+        height: 0.7rem;
+    }
+
+    .report-card-header-right {
+        font-size: 0.65rem;
+    }
+
+    .report-card-content .report-card-content-description {
+        font-weight: 580;
+        padding: 0.6rem 1rem 0.4rem 1rem;
+        font-size: 0.5rem;
+    }
+
+    .report-card-content-date {
+        font-weight: 600;
+        padding-left: 1rem;
+        font-size: 0.5rem;
+    }
+
+    .report-card-footer {
+        padding-bottom: 0.5rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .report-card-footer .report-card-footer-button-img {
+        width: 0.7rem;
+        height: 0.7rem;
+    }
+
+    .report-card-footer-page-button .link {
+        padding: 0.2rem;
+        font-size: 0.5rem;
+        padding-right: 0.9rem;
+        padding-left: 0.9rem;
+    }
+
+    .report-card-footer-action-button .action-button {
+        padding: 0.3rem;
+        padding-right: 0.9rem;
+        padding-left: 0.9rem;
+    }
+
+    .report-card-footer-action-button .action-button-text {
+        font-size: 0.5rem;
+    }
+}

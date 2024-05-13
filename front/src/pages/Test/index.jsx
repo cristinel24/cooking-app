@@ -8,7 +8,7 @@ import {
     Footer,
     UserProfile,
     Navbar,
-    AdminBox,
+    ReportCard,
     PreviewRecipe,
     Filters,
     ShowMenu,
@@ -25,6 +25,16 @@ import { MdWavingHand } from 'react-icons/md'
 
 //pagina noua
 function Test() {
+    let user = 'Tania'
+    let title = 'Utilizator: ' + user
+    let nr = 1
+    let number = '#' + nr
+    let reasons = [
+        'Conținut instigător la ură sau abuziv',
+        'Diferite probleme',
+        'Alte motive',
+    ]
+
     const [tags, setTags] = useState([])
     const [favorite, setFavorite] = useState(false)
 
@@ -32,10 +42,13 @@ function Test() {
     let userNumber = '#1'
     let content =
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. '
+
     let date = '23.07.2023 18:00 AM'
     let view = 'Vizualizare profil'
-    const pathPage = '/'
-    const handleClick = () => {}
+    const pathPageView = '/'
+    const handleClickRead = () => {}
+    let specificAction = 'Restricționare'
+    const handleClickSpecificAction = () => {}
     const mostViewedRecipes = [
         [
             'Title1',
@@ -223,17 +236,17 @@ function Test() {
                 allergens={['apa', 'gluten', 'porumb', 'alergen4', 'alergen5']}
                 description="Descrierea Rețetei"
             /> */}
-
-            {/* <AdminBox
-                userName={userName}
-                userNumber={userNumber}
-                content={content}
+            {/* <ReportCard
+                title={title}
+                number={number}
+                reasons={reasons}
                 date={date}
                 view={view}
-                pathPage={pathPage}
-                handleClick={handleClick}
+                pathPageView={pathPageView}
+                handleClickRead={handleClickRead}
+                specificAction={specificAction}
+                handleClickSpecificAction={handleClickSpecificAction}
             /> */}
-
             {/* <Navbar /> */}
 
             {/* <UserProfile /> */}

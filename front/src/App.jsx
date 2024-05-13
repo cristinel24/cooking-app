@@ -25,7 +25,8 @@ function App() {
         }
     }, [])
 
-    useEffect(() => { for (const color in theme) {
+    useEffect(() => {
+        for (const color in theme) {
             document.documentElement.style.setProperty(
                 `--${color}`,
                 `${theme[color]}`

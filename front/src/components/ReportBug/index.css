@@ -1,4 +1,5 @@
 .report-bug-wrapper {
+    z-index: 1000;
     position: fixed;
     top: 0;
     right: 0;
@@ -41,7 +42,7 @@
     margin-bottom: 30px;
 }
 
-.report-bug-hide-initial-msg{
+.report-bug-hide-initial-msg {
     display: none;
 }
 
@@ -73,7 +74,7 @@
     width: 7rem;
 }
 
-.report-bug-send-button .action-button-text{
+.report-bug-send-button .action-button-text {
     font-size: 0.7rem;
     text-align: center;
     margin: auto;
@@ -84,20 +85,20 @@
     padding: 15px;
     width: 7rem;
     margin-left: 50px;
-    border:none;
+    border: none;
 }
 
-.report-bug-give-up-button .action-button-text{
+.report-bug-give-up-button .action-button-text {
     font-size: 0.7rem;
     text-align: center;
     margin: auto;
 }
 
-.report-bug-send-button .action-button:hover{
+.report-bug-send-button .action-button:hover {
     background-color: var(--bkgcolor);
 }
 
-.report-bug-give-up-button .action-button:hover{
+.report-bug-give-up-button .action-button:hover {
     background-color: var(--bkgcolor);
 }
 
@@ -122,7 +123,7 @@
     .report-bug-wrapper {
         width: 100vw;
     }
-    
+
     .report-bug-wrapper-title p {
         font-size: 1.75rem;
     }

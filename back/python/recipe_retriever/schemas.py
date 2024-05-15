@@ -14,6 +14,8 @@ RecipeData = {
     "ingredients": list[str],
     "allergens": list[str],
     "tags": list[str],
+    "thumbnail": str,
+    "viewCount": int,
 }
 
 RecipeCardData = {
@@ -22,4 +24,6 @@ RecipeCardData = {
     "prepTime": str,
     "tags": list[str],
     "allergens": list[str],
+    "thumbnail": str,
+    "viewCount": int,
 }

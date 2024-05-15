@@ -3,6 +3,7 @@ import './index.css'
 
 import ListItem from '@tiptap/extension-list-item'
 import TextStyle from '@tiptap/extension-text-style'
+import Image from '@tiptap/extension-image'
 import { EditorProvider, useCurrentEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { FiBold } from 'react-icons/fi'
@@ -18,11 +19,43 @@ import { LuRedo } from 'react-icons/lu'
 import { RxCross2 } from 'react-icons/rx'
 import { MdFormatClear } from 'react-icons/md'
 
-const MenuBar = ({ onRemove }) => {
+const MenuBar = ({ setData, onRemove }) => {
     const { editor } = useCurrentEditor()
+    const timeoutRef = useRef(null)
+
+    const handleContentChange = (editor) => {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = setTimeout(() => {
+            if (setData) {
+                setData(editor.getHTML())
+            }
+        }, 500)
+    }
+
+    editor.on('update', ({ editor }) => {
+        handleContentChange(editor)
+    })
+    const fileInputRef = useRef(null)
 
     if (!editor) {
         return null
+    }
+
+    const handleImageUpload = (event) => {
+        console.log('CHANGED')
+        const file = event.target.files[0]
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = () => {
+            const base64String = reader.result.split(',')[1]
+            editor
+                .chain()
+                .focus()
+                .setImage({ src: 'data:image/png;base64, ' + base64String })
+                .run()
+        }
+        reader.readAsDataURL(file)
     }
 
     return (
@@ -62,6 +95,9 @@ const MenuBar = ({ onRemove }) => {
                 >
                     <MdFormatClear />
                 </button>
+
+                <hr className="rich-text-editor-menu-bar-divider" />
+
                 <button
                     title="Paragraf"
                     onClick={() => editor.chain().focus().setParagraph().run()}
@@ -99,12 +135,31 @@ const MenuBar = ({ onRemove }) => {
                 >
                     <GoListOrdered />
                 </button>
+
                 <button
                     title="Rând nou"
                     onClick={() => editor.chain().focus().setHardBreak().run()}
                 >
                     <IoIosReturnLeft />
                 </button>
+
+                <hr className="rich-text-editor-menu-bar-divider" />
+
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                    ref={fileInputRef}
+                />
+                <button
+                    onClick={() => {
+                        fileInputRef.current.click()
+                    }}
+                >
+                    <FiImage />
+                </button>
+
                 <button
                     title="Înapoi"
                     onClick={() => editor.chain().focus().undo().run()}
@@ -132,11 +187,11 @@ const extensions = [
     StarterKit.configure({
         bulletList: {
             keepMarks: true,
-            keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+            keepAttributes: false,
         },
         orderedList: {
             keepMarks: true,
-            keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+            keepAttributes: false,
         },
     }),
     Image.configure({
@@ -146,16 +201,15 @@ const extensions = [
 
 const content = `
 <p>
-  this is a <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the images :D
+  this is a <em>basic</em> example of <strong>tiptap</strong>.
 </p>
-
 `
 
-function RichTextEditor({ onRemove }) {
+function RichTextEditor({ setData, onRemove }) {
     return (
         <div className="rich-text-editor">
             <EditorProvider
-                slotBefore={<MenuBar onRemove={onRemove} />}
+                slotBefore={<MenuBar onRemove={onRemove} setData={setData} />}
                 extensions={extensions}
                 content={content}
             ></EditorProvider>

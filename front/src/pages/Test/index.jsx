@@ -26,19 +26,19 @@ import { MdWavingHand } from 'react-icons/md'
 
 //pagina noua
 function Test() {
+    const [richTextData, setRichTextData] = useState([null, null])
+
     return (
         <>
-            <Navbar />
             <RichTextEditor
+                setData={setRichTextData}
                 onRemove={() => {
                     console.log('clicked remove on first')
                 }}
             />
-            <RichTextEditor
-                onRemove={() => {
-                    console.log('clicked remove on second')
-                }}
-            />
+            <span style={{ backgroundColor: '#ffffff' }}>
+                Preview: {richTextData}
+            </span>
         </>
     )
 }

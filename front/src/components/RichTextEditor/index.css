@@ -48,11 +48,27 @@
     }
 }
 
+.rich-text-editor-menu-bar-buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.rich-text-editor-menu-bar-divider {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.5);
+    border: unset;
+    width: 0.1rem;
+    margin: 0.5rem;
+    border-radius: 10px;
+    display: inline-flex;
+}
+
 .tiptap {
+    overflow-x: auto;
     padding: 0.5rem;
     background-color: var(--corpcaseta);
 
-    p {
-        margin: unset;
+    img {
+        max-width: 100%;
     }
 }

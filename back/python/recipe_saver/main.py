@@ -14,7 +14,7 @@ async def save_recipe(user_id: str, recipe_id: str):
     try:
         services.save_recipe(user_id, recipe_id)
     except exceptions.RecipeSaverException as e:
-        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        response.status_code = status.HTTP_404_NOT_FOUND
         return {"errorCode": e.error_code}
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -26,7 +26,7 @@ async def remove_recipe_from_saved(user_id: str, recipe_id: str):
     try:
         services.remove_recipe_from_saved(user_id, recipe_id)
     except exceptions.RecipeSaverException as e:
-        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        response.status_code = status.HTTP_400_BAD_REQUEST
         return {"errorCode": e.error_code}
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR

@@ -26,4 +26,6 @@ class UserCollection(MongoCollection):
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             result = self._collection.update_one({"id": user_id}, {"$pull": {"savedRecipes": recipe_id}})
             if result.matched_count == 0:
+                raise exceptions.RecipeSaverException(ErrorCodes.NONEXISTENT_USER.value)
+            if result.updated_count == 0:
                 raise exceptions.RecipeSaverException(ErrorCodes.RECIPE_NOT_SAVED.value)

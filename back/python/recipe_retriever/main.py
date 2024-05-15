@@ -1,4 +1,3 @@
-from bson import ObjectId
 from fastapi import FastAPI, status
 from pymongo import response
 from recipe_retriever import exceptions

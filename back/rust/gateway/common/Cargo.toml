@@ -1,0 +1,16 @@
+[package]
+name = "common"
+version.workspace = true
+edition.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lints]
+workspace = true
+
+[dependencies]
+models = { path = "../models" }
+clap = { workspace = true}
+
+figment = { workspace = true}
+anyhow = { workspace = true}

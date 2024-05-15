@@ -4,8 +4,6 @@ from recipe_retriever import exceptions
 import services
 import uvicorn
 from constants import *
-from dotenv import load_dotenv
-load_dotenv()
 
 app = FastAPI()
 

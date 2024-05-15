@@ -1,5 +1,4 @@
 import pymongo
-from bson import ObjectId
 
 from constants import MONGO_URL, MAX_TIMEOUT_TIME_SECONDS
 

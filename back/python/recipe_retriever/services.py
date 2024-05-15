@@ -9,7 +9,7 @@ recipe_collection = RecipeCollection()
 
 # commented code is for user card data
 
-def get_recipe_by_id(recipe_id: ObjectId) -> RecipeData:
+def get_recipe_by_id(recipe_id: str) -> RecipeData:
     recipe_data = recipe_collection.get_recipe_by_id(recipe_id)
     if not recipe_data:
         raise exceptions.RecipeException(ErrorCodes.NONEXISTENT_RECIPE.value)
@@ -32,7 +32,7 @@ def get_recipe_by_id(recipe_id: ObjectId) -> RecipeData:
     return recipe
 
 
-def get_user_card_data(user_id: ObjectId) -> UserCardData:
+def get_user_card_data(user_id: str) -> UserCardData:
     url = f"{USER_MICROSERVICE_URL}/user/{user_id}/card"
     response = requests.get(url)
     if response.status_code == 200:

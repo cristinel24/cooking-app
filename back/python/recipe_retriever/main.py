@@ -14,7 +14,7 @@ app = FastAPI()
 @app.get("/recipe/{recipe_id}", tags=["recipe-retriever"])
 async def get_recipe_by_id(recipe_id: str):
     try:
-        return services.get_recipe_by_id(ObjectId(recipe_id))
+        return services.get_recipe_by_id(recipe_id)
     except exceptions.RecipeException as e:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {"errorCode": e.error_code}
@@ -25,7 +25,7 @@ async def get_recipe_by_id(recipe_id: str):
 @app.get("/recipe/{recipe_id}/card", tags=["recipe-retriever"])
 async def get_recipe_card_by_id(recipe_id: str):
     try:
-        return services.get_recipe_card_by_id(ObjectId(recipe_id))
+        return services.get_recipe_card_by_id(recipe_id)
     except exceptions.RecipeException as e:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {"errorCode": e.error_code}

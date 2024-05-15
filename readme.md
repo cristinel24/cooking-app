@@ -1,5 +1,9 @@
 # Change Log
 
+### 15/05/2024
+
+* added unique constraint on follow collection over [`user_id`, `follows_id`]
+
 ### 10/05/2024
 
 * made `tags`, `allergens` and `ingredients` lowercase.

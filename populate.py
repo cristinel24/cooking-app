@@ -219,6 +219,7 @@ follow_collection = db["follow"]
 follow_collection.create_indexes([
     IndexModel([("userId", pymongo.HASHED)]),
     IndexModel([("followsId", pymongo.HASHED)]),
+    IndexModel(["userId", "followsId"], unique=True),
 ])
 
 db.create_collection("hash_algorithm")

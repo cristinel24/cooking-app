@@ -1,9 +1,11 @@
 from constants import *
 from schemas import AccountVerification, ChangeRequest
-from utils import send_email
+from utils import send_email, validate_email
 
 
 def handle_account_verification(request_data: AccountVerification):
+    if not validate_email(request_data.email):
+        raise Exception(ErrorCodes.INVALID_EMAIL_PROVIDED.value)
     try:
         with open(os.path.join(TEMPLATES_DIR_PATH, ACCOUNT_VERIFICATION_FILE_NAME), "rt", encoding="utf8") as fp:
             email_template = fp.read()
@@ -18,6 +20,8 @@ def handle_account_verification(request_data: AccountVerification):
 
 
 def handle_change_request(request_data: ChangeRequest):
+    if not validate_email(request_data.email):
+        raise Exception(ErrorCodes.INVALID_EMAIL_PROVIDED.value)
     try:
         with open(os.path.join(TEMPLATES_DIR_PATH, CHANGE_REQUEST_FILE_NAME), "rt", encoding="utf8") as fp:
             email_template = fp.read()

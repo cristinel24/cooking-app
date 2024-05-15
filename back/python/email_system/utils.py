@@ -1,8 +1,9 @@
 import os
+import re
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from constants import ErrorCodes
+from constants import ErrorCodes, COMPILED_EMAIL_VALIDATION_REGEX
 
 
 def send_email(recipient: str, subject: str, html_content: str) -> None:
@@ -34,3 +35,7 @@ def send_email(recipient: str, subject: str, html_content: str) -> None:
     except Exception as e:
         server.close()
         raise e
+
+
+def validate_email(email: str) -> bool:
+    return re.match(COMPILED_EMAIL_VALIDATION_REGEX, email) is not None

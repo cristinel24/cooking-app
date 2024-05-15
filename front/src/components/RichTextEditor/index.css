@@ -1,0 +1,58 @@
+.rich-text-editor,
+.rich-text-editor * {
+    box-sizing: border-box;
+}
+
+.rich-text-editor {
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.rich-text-editor-menu-bar {
+    padding: 0;
+    margin: 0;
+    background-color: var(--caseta);
+
+    display: flex;
+    justify-content: space-between;
+
+    button {
+        padding: 0.5rem;
+        margin: 0;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+    svg {
+        font-size: 1.2rem;
+        padding: 0;
+        margin: 0;
+        color: var(--txtcolor);
+    }
+
+    button:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    button:disabled,
+    button[disabled] {
+        svg {
+            opacity: 0.5;
+        }
+        cursor: unset;
+    }
+    button:disabled:hover,
+    button[disabled]:hover {
+        background: transparent;
+    }
+}
+
+.tiptap {
+    padding: 0.5rem;
+    background-color: var(--corpcaseta);
+
+    p {
+        margin: unset;
+    }
+}

@@ -12,7 +12,7 @@ app = FastAPI()
 
 
 @app.get("/tag")
-async def get_tags(starting_with: str, response: Response):
+async def get_tags(response: Response, starting_with: str = ''):
     try:
         return await services.get_tags_by_starting_string(starting_with)
     except (Exception,) as e:

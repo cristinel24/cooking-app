@@ -41,7 +41,7 @@ def get_user_card_data(user_id: str) -> UserCardData:
         raise exceptions.RecipeException(ErrorCodes.SERVER_ERROR.value)
 
 
-def get_recipe_card_by_id(recipe_id) -> RecipeCardData:
+def get_recipe_card_by_id(recipe_id: str) -> RecipeCardData:
     recipe_data = recipe_collection.get_recipe_by_id(recipe_id)
     if not recipe_data:
         raise exceptions.RecipeException(ErrorCodes.NONEXISTENT_RECIPE.value)

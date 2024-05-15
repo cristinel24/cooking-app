@@ -21,5 +21,6 @@ class ErrorCodes(Enum):
 
 
 ErrorCodesToHTTPCodesMapping: dict[int, int] = {
-    ErrorCodes.HASH_ALGO_NOT_IN_DB.value: status.HTTP_405_METHOD_NOT_ALLOWED
+    ErrorCodes.HASH_ALGO_NOT_IN_DB.value: status.HTTP_404_NOT_FOUND,
+    ErrorCodes.HASH_ALGO_NOT_SUPPORTED.value: status.HTTP_405_METHOD_NOT_ALLOWED
 }

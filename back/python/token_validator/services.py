@@ -11,8 +11,10 @@ def token_is_valid(token_value: str, token_type: str) -> dict:
         if token_type not in TOKEN_TYPES:
             raise TokenException(Errors.INVALID_TYPE)
         response = token_db.get_expiring_token(token_value, token_type)
+        if response is None:
+            raise TokenException(Errors.NOT_FOUND)
         return {
-            "isValid": response is not None
+            "userId": response["userId"],
         }
     except (Exception,) as e:
         raise e
@@ -21,9 +23,11 @@ def token_is_valid(token_value: str, token_type: str) -> dict:
 def get_token(token_value: str) -> dict:
     try:
         response = token_db.get_expiring_token(token_value)
+        if response is None:
+            raise TokenException(Errors.NOT_FOUND)
         return {
-            "isValid": response is not None,
-            "type": response["tokenType"] if response is not None else ''
+            "userId": response["userId"],
+            "type": response["tokenType"]
         }
     except (Exception,) as e:
         raise e

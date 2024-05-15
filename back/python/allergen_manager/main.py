@@ -12,7 +12,7 @@ app = FastAPI()
 
 
 @app.get("/allergen")
-async def get_allergens(starting_with: str, response: Response):
+async def get_allergens(response: Response, starting_with: str = ''):
     try:
         return await services.get_allergens_by_starting_string(starting_with)
     except (Exception,) as e:

@@ -35,6 +35,7 @@ def send_email(recipient: str, subject: str, html_content: str) -> None:
     except Exception as e:
         server.close()
         raise e
+    server.close()
 
 
 def validate_email(email: str) -> bool:

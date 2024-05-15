@@ -3,6 +3,7 @@ from datetime import datetime
 import pymongo.errors
 from pymongo import MongoClient
 from bson import ObjectId
+from constants import ErrorCodes
 
 
 class MongoCollection:
@@ -24,16 +25,16 @@ class ExpiringTokenCollection(MongoCollection):
                 find_query["type"] = token_type
             item = self._collection.find_one(find_query)
         except pymongo.errors.PyMongoError as e:
-            raise Exception(f"Failed to get token! - {str(e)}")
+            raise Exception(ErrorCodes.FAILED_TO_GET_TOKEN)
         return item
 
     def remove_token(self, token_id: ObjectId):
         try:
             result = self._collection.delete_one({"_id": token_id})
             if result.deleted_count == 0:
-                raise Exception(f"No tokens were removed")
+                raise Exception(ErrorCodes.NO_TOKENS_REMOVED)
         except pymongo.errors.PyMongoError as e:
-            raise Exception(f"Failed to remove token! - {str(e)}")
+            raise Exception(ErrorCodes.FAILED_TO_REMOVE_TOKEN)
 
 
 class UserCollection(MongoCollection):
@@ -41,24 +42,17 @@ class UserCollection(MongoCollection):
         super().__init__(connection)
         self._collection = self._connection.cooking_app.user
 
-    def get_user_by_id(self, user_id: str) -> dict:
-        try:
-            item = self._collection.find_one({"id": user_id})
-        # TODO: exception handling
-        except pymongo.errors.PyMongoError as e:
-            raise Exception(f"Failed to get user by id! - {str(e)}")
-        return item
-
-    def update_user(self, user_data):
+    def update_user_field(self, user_id: str, field: str, value: str):
         """
-        update a user and return the id of the user
-        :param user_data
-        :return: id of the newly updated user, as str (must be manually cast to ObjectId)
+        update only for sessions and login.changeToken fields in user
         """
         try:
-            updated_items = self._collection.update_one({"_id": user_data["_id"]}, {"$set": user_data})
+            if field == "sessions":
+                updated_items = self._collection.update_one({"id": user_id}, {"$pull": {field: {"value": value}}})
+            else:
+                updated_items = self._collection.update_one({"id": user_id}, {"$set": {field: None}})
             if updated_items.matched_count == 0:
-                raise Exception("No users matched")
+                raise Exception(ErrorCodes.NO_USERS_MATCHED)
         except pymongo.errors.PyMongoError as e:
-            raise Exception(f"Failed to update user! - {str(e)}")
+            raise Exception(ErrorCodes.FAILED_TO_UPDATE_USER)
 

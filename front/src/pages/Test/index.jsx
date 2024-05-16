@@ -24,21 +24,76 @@ import {
 
 import { MdWavingHand } from 'react-icons/md'
 
-//pagina noua
+import { uploadImage } from '../../services/image'
+
+import { base64ToFile } from '../../utils/base64'
+import { renderJSONtoHTML } from '../../utils/richTextEditor'
+
+function collectImageSrcs(obj, srcs) {
+    if (obj.type === 'image' && obj.attrs.src) {
+        // testing if src is of type base64
+        if (!/^(data:image\/\w+;base64,)/.test(obj.attrs.src)) {
+            return
+        }
+        srcs.add(obj.attrs.src)
+    } else if (obj.content) {
+        obj.content.forEach((contentObj) => collectImageSrcs(contentObj, srcs))
+    }
+}
+
+function replaceImageSrcs(obj, sourceMap) {
+    if (obj.type === 'image') {
+        if (sourceMap.has(obj.attrs.src)) {
+            obj.attrs.src = sourceMap.get(obj.attrs.src)
+        }
+    } else if (obj.content) {
+        obj.content.forEach((contentObj) =>
+            replaceImageSrcs(contentObj, sourceMap)
+        )
+    }
+}
+
 function Test() {
-    const [richTextData, setRichTextData] = useState([null, null])
+    const [richTextData, setRichTextData] = useState({})
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        try {
+            let images = new Set()
+            collectImageSrcs(richTextData, images)
+            let imageArray = Array.from(images)
+            let imageLinkMap = new Map()
+            await Promise.all(
+                imageArray.map(async (base64Image) => {
+                    let formData = new FormData()
+                    formData.append('file', base64ToFile(base64Image))
+
+                    const response = await uploadImage(formData)
+                    imageLinkMap.set(base64Image, response)
+                })
+            )
+            setRichTextData((data) => {
+                replaceImageSrcs(data, imageLinkMap)
+                return data
+            })
+
+            console.log(renderJSONtoHTML(richTextData))
+        } catch (error) {
+            console.error('Error uploading image:', error)
+        }
+    }
 
     return (
         <>
-            <RichTextEditor
-                setData={setRichTextData}
-                onRemove={() => {
-                    console.log('clicked remove on first')
-                }}
-            />
-            <span style={{ backgroundColor: '#ffffff' }}>
-                Preview: {richTextData}
-            </span>
+            <form onSubmit={handleSubmit}>
+                <RichTextEditor
+                    onChange={setRichTextData}
+                    onRemove={() => {
+                        console.log('clicked remove on first')
+                    }}
+                />
+                <button type="submit">Submit</button>
+            </form>
         </>
     )
 }

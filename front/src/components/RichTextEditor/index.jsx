@@ -23,7 +23,7 @@ import { MdFormatClear } from 'react-icons/md'
 import { fileToBase64 } from '../../utils/base64'
 import { extensions } from '../../utils/richTextEditor'
 
-const MenuBar = ({ onChange, onRemove }) => {
+const MenuBar = ({ onChange, onRemove, allowImageUploads }) => {
     const { editor } = useCurrentEditor()
     const timeoutRef = useRef(null)
 
@@ -35,7 +35,6 @@ const MenuBar = ({ onChange, onRemove }) => {
         clearTimeout(timeoutRef.current)
         timeoutRef.current = setTimeout(() => {
             if (onChange) {
-                console.log(editor.getJSON())
                 onChange(editor.getJSON())
             }
         }, 500)
@@ -51,7 +50,6 @@ const MenuBar = ({ onChange, onRemove }) => {
     }
 
     const handleImageUpload = async (event) => {
-        console.log('CHANGED')
         const file = event.target.files[0]
         if (!file) return
 
@@ -153,21 +151,25 @@ const MenuBar = ({ onChange, onRemove }) => {
 
                 <hr className="rich-text-editor-menu-bar-divider" />
 
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    style={{ display: 'none' }}
-                    ref={fileInputRef}
-                />
-                <button
-                    type="button"
-                    onClick={() => {
-                        fileInputRef.current.click()
-                    }}
-                >
-                    <FiImage />
-                </button>
+                {allowImageUploads && (
+                    <>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            style={{ display: 'none' }}
+                            ref={fileInputRef}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => {
+                                fileInputRef.current.click()
+                            }}
+                        >
+                            <FiImage />
+                        </button>
+                    </>
+                )}
 
                 <button
                     type="button"
@@ -199,11 +201,17 @@ const content = `
 </p>
 `
 
-function RichTextEditor({ onChange, onRemove }) {
+function RichTextEditor({ onChange, onRemove, allowImageUploads = true }) {
     return (
         <div className="rich-text-editor">
             <EditorProvider
-                slotBefore={<MenuBar onRemove={onRemove} onChange={onChange} />}
+                slotBefore={
+                    <MenuBar
+                        onRemove={onRemove}
+                        onChange={onChange}
+                        allowImageUploads={allowImageUploads}
+                    />
+                }
                 extensions={extensions}
                 content={content}
             ></EditorProvider>

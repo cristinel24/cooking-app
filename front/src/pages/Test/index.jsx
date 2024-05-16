@@ -79,7 +79,7 @@ function Test() {
 
             console.log(renderJSONtoHTML(richTextData))
         } catch (error) {
-            console.error('Error uploading image:', error)
+            console.error('Error submitting form:', error)
         }
     }
 

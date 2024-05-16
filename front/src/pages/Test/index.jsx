@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
     ActionButton,
@@ -15,6 +15,9 @@ import {
     Report,
     ReportRecipe,
     Categories,
+    Tag,
+    TagSelector,
+    RecipeCard,
     UserCard,
 } from '../../components'
 
@@ -22,6 +25,9 @@ import { MdWavingHand } from 'react-icons/md'
 
 //pagina noua
 function Test() {
+    const [tags, setTags] = useState([])
+    const [favorite, setFavorite] = useState(false)
+
     let userName = 'Utilizator'
     let userNumber = '#1'
     let content =
@@ -87,8 +93,25 @@ function Test() {
         ],
     ]
 
+    // Function to add a tag to the tags array
+    const addTag = (tag) => {
+        if (!tags.includes(tag)) {
+            setTags([...tags, tag])
+        }
+    }
+
+    // Function to remove a tag from the tags array
+    const removeTag = (tagToRemove) => {
+        setTags(tags.filter((tag) => tag !== tagToRemove))
+    }
+
+    // Function to search for similar tags
+    const searchTags = (searchTag) => {
+        return ['suggestionA', 'suggestionB', 'suggestionC']
+    }
     const func1 = () => {}
     const handleFavorite = () => {
+        setFavorite(!favorite)
         console.log('Favorite')
     }
     const handleRemove = () => {
@@ -100,13 +123,28 @@ function Test() {
     return (
         <>
             {/* <RecipeCard
-                title="Reteta cu sushi"
+                title="Reteta cu sushi sushi sushi sushisushi sushisushi sushi"
                 recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
                 authorName="Ioana"
                 authorLink="./Login"
                 recipeLink="./Login"
                 rating={3.8}
                 prepTime={30}
+                favorite={favorite}
+                onFavorite={handleFavorite}
+                onRemove={handleRemove}
+                onEdit={handleEdit}
+            />
+
+            <RecipeCard
+                title="Reteta cu sushi sushi "
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Ioana"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={3.8}
+                prepTime={30}
+                favorite={favorite}
                 onFavorite={handleFavorite}
                 onRemove={handleRemove}
                 onEdit={handleEdit}
@@ -120,7 +158,9 @@ function Test() {
                 recipeLink="./Login"
                 rating={2.1}
                 prepTime={73}
-            />
+            /> */}
+
+            {/*
 
             <UserCard
                 displayName="Ana"
@@ -178,6 +218,12 @@ function Test() {
             </PageButton>
 
             <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
+            {/* <TagSelector
+                tags={tags}
+                addTag={addTag}
+                removeTag={removeTag}
+                searchTags={searchTags}
+            /> */}
         </>
     )
 }

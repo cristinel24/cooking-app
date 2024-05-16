@@ -12,8 +12,8 @@ import {
     PreviewRecipe,
     Filters,
     ShowMenu,
+    ReportBug,
     Report,
-    ReportRecipe,
     Categories,
     Tag,
     TagSelector,
@@ -110,6 +110,33 @@ function Test() {
         return ['suggestionA', 'suggestionB', 'suggestionC']
     }
     const func1 = () => {}
+
+    const [isReportVisible, setIsReportVisible] = useState(false);
+
+    const toggleReportVisibility = () => {
+        setIsReportVisible(!isReportVisible);
+    };
+
+    const [isReportBugVisible,setIsReportBugVisible]=useState(false);
+
+    const toggleReportBugVisibility = () =>{
+        setIsReportBugVisible(!isReportBugVisible);
+    }
+
+    const onSend = (selectedVariants) => {
+        alert('Mesajul a fost trimis!');
+        setIsReportVisible(false);
+    };
+
+    const onGiveUp = () => {
+        setIsReportVisible(false);
+        setIsReportBugVisible(false);
+    };
+
+    const onSendBug = (data) => {
+        alert('Mesajul a fost trimis!');
+        setIsReportBugVisible(false);
+    };
     const handleFavorite = () => {
         setFavorite(!favorite)
         console.log('Favorite')
@@ -175,9 +202,19 @@ function Test() {
                 recipes={mostViewedRecipes}
                 id="recipe-view-1"
             /> */}
+            { /*
+            {isReportVisible && <Report onSend={onSend} onGiveUp={onGiveUp} />}
+            
+            {isReportBugVisible && <ReportBug  onSend={onSendBug} onGiveUp={onGiveUp} />}
 
-            {/* <ReportRecipe /> */}
-            {/* <Report /> */}
+            <button onClick={toggleReportVisibility}>
+                {isReportVisible ? 'Ascunde Report' : 'Arată Report'}
+            </button>
+
+            <button onClick={toggleReportBugVisibility}>
+                {isReportBugVisible ? 'Ascunde ReportBug' : 'Arată ReportBug'}
+            </button>
+            */}
             {/* <ShowMenu /> */}
 
             {/* <PreviewRecipe

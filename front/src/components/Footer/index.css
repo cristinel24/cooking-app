@@ -1,9 +1,13 @@
+:root{
+    --footer-height:3rem;
+}
 .footer {
     display: flex;
     align-items: center;
     background-color: var(--footercolor);
-    width: 100vw;
-    height: 80px;
+    width: 100%;
+    box-sizing: border-box;
+    height: var(--footer-height);
 }
 
 .footer-brand,.footer-bug {
@@ -15,45 +19,26 @@
 }
 
 .footer-brand{
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: bold;
     text-decoration: none;
 }
 
 .footer-brand a {
     font-weight: bolder;
-    font-size: 1rem;
     color: var(--body);
     text-decoration: none;
 }
 
 .footer-bug {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: bold;
     text-decoration: underline;
 }
 
 .footer-bug a {
-    font-size: 1rem;
     color: var(--body);
     text-decoration: none;
-}
-
-.footer-brand p {
-    margin-right: 2px;
-}
-
-.footer-bug p {
-    margin-left: 10px;
-}
-
-.footer-brand{
-    font-size: 0.7rem;
-    margin-top: -1rem;
-}
-
-.footer-bug {
-    font-size: 1rem;
 }
 
 .footer-brand a:hover,
@@ -65,8 +50,6 @@
     .footer {
         flex-direction: column;
         padding: 5px;
-        align-items: center;
-        width: 100%;
     }
 
     .footer-brand a {

@@ -1,6 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from constants import ErrorCode
-from services import *
+from services import get_next_id_services
+from exceptions import *
 from dotenv import load_dotenv
 import uvicorn
 import os
@@ -18,12 +19,10 @@ async def get_id():
     except Exception as e:
         error_code = ErrorCode.DB_ERROR_ID_GENERATOR.value
         error_message = {"errorCode": error_code}
-
-        if error_code == ErrorCode.ERROR_20301.value:
-            status_code = 500  # Internal Server Error
+        if isinstance(e, CustomException):
+            status_code = e.status_code
         else:
-            status_code = 400  # Bad Request
-
+            status_code = 500  # Internal Server Error
         raise HTTPException(status_code=status_code, detail=str(e), headers=error_message)
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ PORT = int(os.getenv("PORT", 8000))
 HOST_URL = os.getenv("HOST_URL", "0.0.0.0")
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME", "cooking_app")
+ALLERGEN_MANAGER_URL = os.getenv("ALLERGEN_MANAGER_URL", "http://localhost:8001")
 MONGO_TIMEOUT = 3
 
 
@@ -17,3 +18,5 @@ class ErrorCodes(Enum):
     SERVER_ERROR = 21802
     INVALID_DATA = 21803
     UNAUTHORIZED = 21804
+    ADD_ALLERGEN_ERROR = 21805
+    REMOVE_ALLERGEN_ERROR = 21806

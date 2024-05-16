@@ -1,19 +1,18 @@
-from fastapi import FastAPI, Response
-from constants import HOST_URL, PORT
+from fastapi import FastAPI, Response, Request, status
+from constants import HOST_URL, PORT, ErrorCodes
 from exception import ProfileDataChangerException
 import services
 import uvicorn
 from schemas import UserProfileData
-from dotenv import load_dotenv
 
 app = FastAPI()
 
-load_dotenv()
-
 
 @app.patch("/{user_id}")
-async def patch_user(user_id: str, user_roles: int, data: UserProfileData, response: Response) -> None | dict:
+async def patch_user(user_id: str, data: UserProfileData, request: Request, response: Response) -> None | dict:
     try:
+        if user_id != request.state.user_id:
+            raise ProfileDataChangerException(status.HTTP_403_FORBIDDEN, ErrorCodes.UNAUTHORIZED.value)
         return await services.patch_user(user_id, data)
     except ProfileDataChangerException as e:
         response.status_code = e.status_code

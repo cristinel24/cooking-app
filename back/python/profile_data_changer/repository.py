@@ -21,7 +21,7 @@ class UserCollection(MongoCollection):
             with pymongo.timeout(MONGO_TIMEOUT):
                 updated = self._collection.update_one({"id": user_id}, {"$set": changes})
             if updated.modified_count == 0:
-                raise ProfileDataChangerException(HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
+                raise ProfileDataChangerException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
         except errors.PyMongoError:
             raise ProfileDataChangerException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)
 

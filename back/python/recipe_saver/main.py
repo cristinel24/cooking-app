@@ -1,6 +1,6 @@
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import status, FastAPI
+from fastapi import status, FastAPI, Request
 from pymongo import response
 
 from recipe_saver import services, constants, exceptions
@@ -10,8 +10,12 @@ app = FastAPI()
 
 
 @app.put("/user/{user_id}/saved-recipes", tags=["user-actions"])
-async def save_recipe(user_id: str, recipe_id: str):
+async def save_recipe(request: Request, recipe_id: str):
     try:
+        user_id = request.path_params.get("user_id")
+        if not request.state.user_id == user_id:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return {"errorCode": constants.ErrorCodes.WRONG_USER_ID.value}
         services.save_recipe(user_id, recipe_id)
     except exceptions.RecipeSaverException as e:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -22,15 +26,20 @@ async def save_recipe(user_id: str, recipe_id: str):
 
 
 @app.delete("/user/{user_id}/saved-recipes", tags=["user-actions"])
-async def remove_recipe_from_saved(user_id: str, recipe_id: str):
+async def remove_recipe_from_saved(request: Request, recipe_id: str):
     try:
-        services.remove_recipe_from_saved(user_id, recipe_id)
+        user_id = request.path_params.get("user_id")
+        if not request.state.user_id == user_id:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return {"errorCode": constants.ErrorCodes.WRONG_USER_ID.value}
+        services.remove_recipe_from_saved(request.state.user_id, recipe_id)
     except exceptions.RecipeSaverException as e:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"errorCode": e.error_code}
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host=constants.HOST_URL, port=constants.PORT)

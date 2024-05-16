@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from constants import USER_DATA_PROJECTION, USER_CARD_DATA_PROJECTION, USER_FULL_DATA_PROJECTION, ErrorCodes
 from repository import UserCollection
 from schemas import *

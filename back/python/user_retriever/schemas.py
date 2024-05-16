@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class UserData(BaseModel):
+    userId: str
     username: str 
     displayName: str
     icon: str
@@ -13,6 +14,7 @@ class UserData(BaseModel):
 
 
 class UserCardData(BaseModel):
+    userId: str
     username: str
     displayName: str
     icon: str
@@ -21,6 +23,7 @@ class UserCardData(BaseModel):
 
 
 class UserFullData(BaseModel):
+    userId: str
     username: str
     displayName: str
     icon: str

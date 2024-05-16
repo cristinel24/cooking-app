@@ -15,6 +15,7 @@ MONGO_TIMEOUT = 3
 
 USER_DATA_PROJECTION = {
     "_id": 0,
+    "id": 1,
     "username": 1,
     "displayName": 1,
     "icon": 1,
@@ -28,6 +29,7 @@ USER_DATA_PROJECTION = {
 
 USER_CARD_DATA_PROJECTION = {
     "_id": 0,
+    "id": 1,
     "username": 1,
     "displayName": 1,
     "icon": 1,
@@ -38,6 +40,7 @@ USER_CARD_DATA_PROJECTION = {
 
 USER_FULL_DATA_PROJECTION = {
     "_id": 0,
+    "id": 1,
     "username": 1,
     "displayName": 1,
     "icon": 1,

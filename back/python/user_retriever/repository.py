@@ -3,9 +3,6 @@ from pymongo import MongoClient, errors
 from constants import MONGO_URL, DB_NAME, ErrorCodes, MONGO_TIMEOUT
 from exception import UserRetrieverException
 from fastapi import status
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class MongoCollection:

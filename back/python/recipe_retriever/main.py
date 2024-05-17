@@ -1,33 +1,34 @@
-from fastapi import FastAPI, status
-from pymongo import response
+from typing import Union
+
+from fastapi import FastAPI, status, Response
 from recipe_retriever import exceptions
 import services
 import uvicorn
 from constants import *
+from recipe_retriever.schemas import *
 
 app = FastAPI()
 
 
 @app.get("/recipe/{recipe_id}", tags=["recipe-retriever"])
-async def get_recipe_by_id(recipe_id: str):
+async def get_recipe_by_id(recipe_id: str, response: Response) -> Union[RecipeData, dict[str, int]]:
     try:
-        return services.get_recipe_by_id(recipe_id)
-    except exceptions.RecipeException as e:
-        response.status_code = status.HTTP_404_NOT_FOUND
-        return {"errorCode": e.error_code}
+        return await services.get_recipe_by_id(recipe_id)
+    except (exceptions.RecipeException, exceptions.UserRetrieverException,) as e:
+        response.status_code = e.status_code
+        return {"errorCode": e.error_code.value}
     except (Exception,) as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
+
 @app.get("/recipe/{recipe_id}/card", tags=["recipe-retriever"])
-async def get_recipe_card_by_id(recipe_id: str):
+async def get_recipe_card_by_id(recipe_id: str, response: Response) -> Union[RecipeCardData, dict[str, int]]:
     try:
-        return services.get_recipe_card_by_id(recipe_id)
-    except exceptions.RecipeException as e:
-        response.status_code = status.HTTP_404_NOT_FOUND
-        return {"errorCode": e.error_code}
+        return await services.get_recipe_card_by_id(recipe_id)
+    except (exceptions.RecipeException, exceptions.UserRetrieverException,) as e:
+        response.status_code = e.status_code
+        return {"errorCode": e.error_code.value}
     except (Exception,) as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 

@@ -1,6 +1,6 @@
 import pymongo
 from pymongo import errors
-
+from fastapi import status
 from constants import MONGO_URL, MAX_TIMEOUT_TIME_SECONDS, ErrorCodes
 from recipe_retriever import exceptions
 
@@ -20,8 +20,7 @@ class RecipeCollection(MongoCollection):
             with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
                 item = self._collection.find_one({"id": recipe_id}, projection=projection_arg)
                 if item is None:
-                    raise exceptions.RecipeException(ErrorCodes.NONEXISTENT_RECIPE.value)
+                    raise exceptions.RecipeException(status.HTTP_404_NOT_FOUND, ErrorCodes.NONEXISTENT_RECIPE)
                 return item
         except errors.PyMongoError:
-            raise exceptions.RecipeException(ErrorCodes.SERVER_ERROR.value)
-
+            raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR.value)

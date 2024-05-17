@@ -7,10 +7,11 @@ PORT = int(os.getenv("PORT", 8000))
 HOST_URL = os.getenv("HOST_URL", "0.0.0.0")
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017/?directConnection=true")
 USER_MICROSERVICE_URL = os.getenv("USER_MICROSERVICE_URL",
-                                  "http://localhost:7998")  # port for user retriever microservice
+                                  "http://localhost:7998")
 MAX_TIMEOUT_TIME_SECONDS = 3
 
 RECIPE_DATA_PROJECTION = {
+    "_id": 0,
     "authorId": 1,
     "title": 1,
     "description": 1,
@@ -24,6 +25,7 @@ RECIPE_DATA_PROJECTION = {
 }
 
 RECIPE_DATA_CARD_PROJECTION = {
+    "_id": 0,
     "authorId": 1,
     "title": 1,
     "description": 1,
@@ -41,3 +43,5 @@ class ErrorCodes(Enum):
     SERVER_ERROR = 20900
     NONEXISTENT_RECIPE = 20901
     FAILED_TO_GET_USER_CARD = 20902
+    USER_NOT_FOUND = 21900
+

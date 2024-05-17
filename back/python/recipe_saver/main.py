@@ -10,9 +10,8 @@ app = FastAPI()
 
 
 @app.put("/user/{user_id}/saved-recipes", tags=["user-actions"])
-async def save_recipe(request: Request, recipe_id: str):
+async def save_recipe(request: Request, user_id: str, recipe_id: str):
     try:
-        user_id = request.path_params.get("user_id")
         if not request.state.user_id == user_id:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {"errorCode": constants.ErrorCodes.WRONG_USER_ID.value}
@@ -26,9 +25,8 @@ async def save_recipe(request: Request, recipe_id: str):
 
 
 @app.delete("/user/{user_id}/saved-recipes", tags=["user-actions"])
-async def remove_recipe_from_saved(request: Request, recipe_id: str):
+async def remove_recipe_from_saved(request: Request, user_id: str, recipe_id: str):
     try:
-        user_id = request.path_params.get("user_id")
         if not request.state.user_id == user_id:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {"errorCode": constants.ErrorCodes.WRONG_USER_ID.value}

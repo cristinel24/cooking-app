@@ -1,0 +1,130 @@
+name: cooking-app
+
+services:
+  mongo1:
+    image: mongo:7.0.2
+    networks:
+      - ca 
+    ports:
+      - 27017:27017
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "0.0.0.0", "--logpath", "/dev/null"]
+
+  mongo2:
+    image: mongo:7.0.2
+    networks:
+      - ca 
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "0.0.0.0", "--logpath", "/dev/null"]
+
+  mongo3:
+    image: mongo:7.0.2
+    networks:
+      - ca 
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "0.0.0.0", "--logpath", "/dev/null"]
+
+  mongo_setup:
+    image: mongo:7.0.2
+    networks:
+      - ca 
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    volumes:
+      - ./db/mongo_setup.sh:/mongo_setup.sh
+    entrypoint: ["bash", "/mongo_setup.sh"]
+
+  mongo_populate:
+    build: ./db
+    networks:
+      - ca
+    depends_on:
+      mongo_setup:
+        condition: service_completed_successfully
+
+
+  allergen_manager:
+    build: 
+      context: ./python/allergen_manager
+      dockerfile: ../../Dockerfile
+    networks: 
+      - ca
+    environment:
+      - PORT=$ALLERGEN_MANAGER_PORT
+      - MONGO_URI=$MONGO_URI
+    volumes:
+      - ./python/allergen_manager:/app
+    depends_on:
+      mongo_populate:
+        condition: service_completed_successfully
+
+  email_system:
+    build: 
+      context: ./python/email_system
+      dockerfile: ../../Dockerfile
+    networks: 
+      - ca
+    environment:
+      - PORT=$EMAIL_SYSTEM_PORT
+      - MONGO_URI=$MONGO_URI
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+      - SMTP_SERVER=
+      - SMTP_PORT=
+      - SMTP_ROOT_EMAIL=
+      - COOKING_APP_DOMAIN=
+    volumes:
+      - ./python/email_system:/app
+    depends_on:
+      mongo_populate:
+        condition: service_completed_successfully
+
+  hasher:
+    build: 
+      context: ./python/hasher
+      dockerfile: ../../Dockerfile
+    networks: 
+      - ca
+    environment:
+      - PORT=$HASHER_PORT
+      - MONGO_URI=$MONGO_URI
+    volumes:
+      - ./python/hasher:/app
+    depends_on:
+      mongo_populate:
+        condition: service_completed_successfully
+
+  rating_manager:
+    build: 
+      context: ./python/rating_manager
+      dockerfile: ../../Dockerfile
+    networks: 
+      - ca
+    environment:
+      - PORT=$RATING_MANAGER_PORT
+      - MONGO_URL=$MONGO_URI
+      - USER_RETRIEVER_API_URL=http://user_retriever:$USER_RETRIEVER_PORT
+      - ID_GENERATOR_API_URL=http://id_generator:$ID_GENERATOR_PORT
+    volumes:
+      - ./python/rating_manager:/app
+    depends_on:
+      mongo_populate:
+        condition: service_completed_successfully
+
+  tag_manager:
+    build: 
+      context: ./python/tag_manager
+      dockerfile: ../../Dockerfile
+    networks: 
+      - ca
+    environment:
+      - PORT=$TAG_MANAGER_PORT
+      - MONGO_URI=$MONGO_URI
+    volumes:
+      - ./python/tag_manager:/app
+    depends_on:
+      mongo_populate:
+        condition: service_completed_successfully
+
+networks:
+  ca:
+    driver: bridge

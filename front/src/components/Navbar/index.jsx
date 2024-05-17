@@ -81,13 +81,19 @@ const Navbar = () => {
             </div>
 
             {/* hamburger menu */}
-            <button className="nav-button-theme" onClick={toggleTheme}>
-                <FaRegMoon />
-            </button>
+            <div className="nav-buttons-hamburger-menu">
+                <button className="nav-button-theme" onClick={toggleTheme}>
+                    <FaRegMoon />
+                </button>
 
-            <button className="nav-dropdown-icon" onClick={toggleDropdown}>
-                {activeDropdown === 'nav-dropdown' ? <FaBars /> : <FaTimes />}
-            </button>
+                <button className="nav-dropdown-icon" onClick={toggleDropdown}>
+                    {activeDropdown === 'nav-dropdown' ? (
+                        <FaBars />
+                    ) : (
+                        <FaTimes />
+                    )}
+                </button>
+            </div>
 
             <div className={activeDropdown}>
                 <button className="nav-button" onClick={settings}>

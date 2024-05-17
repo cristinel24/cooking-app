@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
     ActionButton,
@@ -12,15 +12,22 @@ import {
     PreviewRecipe,
     Filters,
     ShowMenu,
+    ReportBug,
     Report,
-    ReportRecipe,
     Categories,
+    Tag,
+    TagSelector,
+    RecipeCard,
+    UserCard,
 } from '../../components'
 
 import { MdWavingHand } from 'react-icons/md'
 
 //pagina noua
 function Test() {
+    const [tags, setTags] = useState([])
+    const [favorite, setFavorite] = useState(false)
+
     let userName = 'Utilizator'
     let userNumber = '#1'
     let content =
@@ -86,17 +93,128 @@ function Test() {
         ],
     ]
 
+    // Function to add a tag to the tags array
+    const addTag = (tag) => {
+        if (!tags.includes(tag)) {
+            setTags([...tags, tag])
+        }
+    }
+
+    // Function to remove a tag from the tags array
+    const removeTag = (tagToRemove) => {
+        setTags(tags.filter((tag) => tag !== tagToRemove))
+    }
+
+    // Function to search for similar tags
+    const searchTags = (searchTag) => {
+        return ['suggestionA', 'suggestionB', 'suggestionC']
+    }
     const func1 = () => {}
+
+    const [isReportVisible, setIsReportVisible] = useState(false);
+
+    const toggleReportVisibility = () => {
+        setIsReportVisible(!isReportVisible);
+    };
+
+    const [isReportBugVisible,setIsReportBugVisible]=useState(false);
+
+    const toggleReportBugVisibility = () =>{
+        setIsReportBugVisible(!isReportBugVisible);
+    }
+
+    const onSend = (selectedVariants) => {
+        alert('Mesajul a fost trimis!');
+        setIsReportVisible(false);
+    };
+
+    const onGiveUp = () => {
+        setIsReportVisible(false);
+        setIsReportBugVisible(false);
+    };
+
+    const onSendBug = (data) => {
+        alert('Mesajul a fost trimis!');
+        setIsReportBugVisible(false);
+    };
+    const handleFavorite = () => {
+        setFavorite(!favorite)
+        console.log('Favorite')
+    }
+    const handleRemove = () => {
+        console.log('Remove')
+    }
+    const handleEdit = () => {
+        console.log('Edit')
+    }
     return (
         <>
+            {/* <RecipeCard
+                title="Reteta cu sushi sushi sushi sushisushi sushisushi sushi"
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Ioana"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={3.8}
+                prepTime={30}
+                favorite={favorite}
+                onFavorite={handleFavorite}
+                onRemove={handleRemove}
+                onEdit={handleEdit}
+            />
+
+            <RecipeCard
+                title="Reteta cu sushi sushi "
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Ioana"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={3.8}
+                prepTime={30}
+                favorite={favorite}
+                onFavorite={handleFavorite}
+                onRemove={handleRemove}
+                onEdit={handleEdit}
+            />
+
+            <RecipeCard
+                title="Chec pufos"
+                recipePicture="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                authorName="Sabina"
+                authorLink="./Login"
+                recipeLink="./Login"
+                rating={2.1}
+                prepTime={73}
+            /> */}
+
+            {/*
+
+            <UserCard
+                displayName="Ana"
+                username="username"
+                rating={3.6}
+                link="./Register"
+                profilePicture="https://images.unsplash.com/photo-1501869150797-9bbb64f782fd?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            /> */}
+
             {/* <Categories
                 name="Cele mai vizualizate"
                 recipes={mostViewedRecipes}
                 id="recipe-view-1"
             /> */}
+            { /*
+            {isReportVisible && <Report onSend={onSend} onGiveUp={onGiveUp} />}
+            
+            {isReportBugVisible && <ReportBug  onSend={onSendBug} onGiveUp={onGiveUp} />}
 
-            {/* <ReportRecipe /> */}
-            {/* <Report /> */}
+            <button onClick={toggleReportVisibility}>
+                {isReportVisible ? 'Ascunde Report' : 'Arată Report'}
+            </button>
+
+            <button onClick={toggleReportBugVisibility}>
+                {isReportBugVisible ? 'Ascunde ReportBug' : 'Arată ReportBug'}
+            </button>
+            */}
             {/* <ShowMenu /> */}
 
             {/* <PreviewRecipe
@@ -132,11 +250,17 @@ function Test() {
 
             {/* <PopUpChat /> */}
 
-            <PageButton path={pathPage} className="da">
+            {/* <PageButton path={pathPage} className="da">
                 Buna
             </PageButton>
 
-            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} />
+            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
+            {/* <TagSelector
+                tags={tags}
+                addTag={addTag}
+                removeTag={removeTag}
+                searchTags={searchTags}
+            /> */}
         </>
     )
 }

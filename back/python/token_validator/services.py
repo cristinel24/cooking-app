@@ -1,9 +1,10 @@
 from exceptions import TokenException
-from repository import TokenCollection
+from repository import TokenCollection, UserCollection
 from constants import TOKEN_TYPES, Errors
 
 
 token_db = TokenCollection()
+user_db = UserCollection()
 
 
 def token_is_valid(token_value: str, token_type: str) -> dict:
@@ -13,9 +14,13 @@ def token_is_valid(token_value: str, token_type: str) -> dict:
         response = token_db.get_expiring_token(token_value, token_type)
         if response is None:
             raise TokenException(Errors.NOT_FOUND)
-        return {
+        to_return = {
             "userId": response["userId"],
         }
+        if token_type == "session":
+            roles = user_db.find_user_roles(response["userId"])
+            to_return["userRoles"] = roles
+        return to_return
     except (Exception,) as e:
         raise e
 

@@ -7,6 +7,22 @@ from pymongo import MongoClient, errors
 from exceptions import TokenException
 
 
+class UserCollection(MongoCollection):
+    def __init__(self):
+        super().__init__()
+        self._collection = self._connection.cooking_app.user
+
+    def find_user_roles(self, user_id: str):
+        with pymongo.timeout(MAX_TIMEOUT_SECONDS):
+            try:
+                user_roles = self._collection.update_one({"id": user_id}, {"roles": 1})
+                return user_roles
+            except pymongo.errors.ExecutionTimeout:
+                raise TokenException(Errors.DB_TIMEOUT)
+            except pymongo.errors.PyMongoError as e:
+                raise TokenException(Errors.DB_ERROR)
+
+
 class TokenCollection:
     def __init__(self):
         self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
@@ -15,8 +31,6 @@ class TokenCollection:
     def get_expiring_token(self, value: str, token_type: str | None = None) -> dict:
         with pymongo.timeout(MAX_TIMEOUT_SECONDS):
             try:
-                if token_type is not None and token_type not in TOKEN_TYPES:
-                    raise TokenException(Errors.INVALID_TYPE)
                 find_query = {
                     "value": value
                 }

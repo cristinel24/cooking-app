@@ -17,9 +17,6 @@ async def get_recipe_by_id(recipe_id: str, response: Response) -> Union[RecipeDa
     except (exceptions.RecipeException, exceptions.UserRetrieverException,) as e:
         response.status_code = e.status_code
         return {"errorCode": e.error_code.value}
-    except (Exception,) as e:
-        response.status_code = e.status_code
-        return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 
 @app.get("/recipe/{recipe_id}/card", tags=["recipe-retriever"])
@@ -29,9 +26,6 @@ async def get_recipe_card_by_id(recipe_id: str, response: Response) -> Union[Rec
     except (exceptions.RecipeException, exceptions.UserRetrieverException,) as e:
         response.status_code = e.status_code
         return {"errorCode": e.error_code.value}
-    except (Exception,) as e:
-        response.status_code = e.status_code
-        return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 
 if __name__ == "__main__":

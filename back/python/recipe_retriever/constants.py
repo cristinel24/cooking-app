@@ -12,6 +12,7 @@ MAX_TIMEOUT_TIME_SECONDS = 3
 
 RECIPE_DATA_PROJECTION = {
     "_id": 0,
+    "id": 1,
     "authorId": 1,
     "title": 1,
     "description": 1,
@@ -26,6 +27,7 @@ RECIPE_DATA_PROJECTION = {
 
 RECIPE_DATA_CARD_PROJECTION = {
     "_id": 0,
+    "id": 1,
     "authorId": 1,
     "title": 1,
     "description": 1,
@@ -43,5 +45,4 @@ class ErrorCodes(Enum):
     SERVER_ERROR = 20900
     NONEXISTENT_RECIPE = 20901
     FAILED_TO_GET_USER_CARD = 20902
-    USER_NOT_FOUND = 21900
-
+    USER_NOT_FOUND = 20903

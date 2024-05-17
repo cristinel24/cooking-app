@@ -24,3 +24,6 @@ class RecipeCollection(MongoCollection):
                 return item
         except errors.PyMongoError:
             raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR.value)
+        except exceptions.RecipeException as e:
+            raise exceptions.RecipeException(status.HTTP_404_NOT_FOUND, ErrorCodes.NONEXISTENT_RECIPE)
+

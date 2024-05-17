@@ -18,6 +18,7 @@ async def get_recipe_by_id(recipe_id: str, response: Response) -> Union[RecipeDa
         response.status_code = e.status_code
         return {"errorCode": e.error_code.value}
     except (Exception,) as e:
+        response.status_code = e.status_code
         return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 
@@ -29,6 +30,7 @@ async def get_recipe_card_by_id(recipe_id: str, response: Response) -> Union[Rec
         response.status_code = e.status_code
         return {"errorCode": e.error_code.value}
     except (Exception,) as e:
+        response.status_code = e.status_code
         return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 

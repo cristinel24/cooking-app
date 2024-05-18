@@ -1,5 +1,10 @@
 # Change Log
 
+### 18/05/2024
+
+* added `viewCount` field in all `recipe`-s
+* added `newEmail` field set to `None` by default
+
 ### 15/05/2024
 
 * added unique constraint on follow collection over [`user_id`, `follows_id`]

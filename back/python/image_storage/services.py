@@ -7,11 +7,11 @@ from PIL import Image
 from fastapi import UploadFile
 
 import api
-from constants import IMAGE_DIRECTORY_PATH, MAX_IMAGE_SIZE, ACCEPTED_IMAGE_EXTENSIONS, ErrorCodes
+from constants import IMAGE_DIRECTORY_PATH, MAX_IMAGE_SIZE, ACCEPTED_IMAGE_EXTENSIONS, ErrorCodes, IMAGE_URL_HEAD
 from exception import ImageStorageException
 
 
-async def add_image(file: UploadFile):
+async def add_image(file: UploadFile) -> str:
     file_extension = pathlib.Path(file.filename).suffix
     if file_extension not in ACCEPTED_IMAGE_EXTENSIONS:
         raise ImageStorageException(ErrorCodes.INVALID_IMAGE_EXTENSION.value, 400)
@@ -29,6 +29,7 @@ async def add_image(file: UploadFile):
         image_id = await api.get_id()
         image = Image.open(image_bytes)
         image.save(IMAGE_DIRECTORY_PATH + image_id + file_extension)
+        return IMAGE_URL_HEAD + image_id
     except httpx.ConnectError:
         raise ImageStorageException(ErrorCodes.NOT_RESPONSIVE_API.value, 503)
     except OSError:

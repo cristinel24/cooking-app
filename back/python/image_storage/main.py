@@ -15,7 +15,9 @@ app = FastAPI()
 @app.put("/")
 async def add_image(file: UploadFile):
     try:
-        return await services.add_image(file)
+        image_url = await services.add_image(file)
+        print(image_url)
+        return {"url": image_url}
     except ImageStorageException as e:
         return Response(status_code=e.status_code, content=json.dumps({"errorCode": e.error_code}))
 

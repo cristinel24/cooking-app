@@ -1,14 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 
 import './index.css'
-import { Dropdown, Page, RecipeCard } from "../../components";
+import { Dropdown, RecipeCard } from "../../components";
 import { UserContext } from "../../context";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Feed() {
+    const navigate = useNavigate()
+    const { pathname } = useLocation()
+
     const { user } = useContext(UserContext)
     const { loggedIn } = useContext(UserContext)
-    const [feed, setFeed] = useState(type)
+    const [feed, setFeed] = useState(pathname.substring(1))
     const [recipes, setRecipes] = useState([...Array(10).keys()].map(id => {
         return {
             id,
@@ -34,7 +37,15 @@ export default function Feed() {
         }
     }))
 
-    const navigate = useNavigate();
+    const feeds = [
+        "popular",
+        "best",
+        "new"
+    ].concat(loggedIn() ? [
+        "favorite",
+        "followed",
+        "recommended",
+    ] : [])
 
     const onFavorite = (id) => {
         // TODO: use api to add recipe to favorites
@@ -58,10 +69,10 @@ export default function Feed() {
     }
 
     useEffect(() => {
-        if (feed !== type) {
+        if (feed !== pathname.substring(1)) {
             navigate(`/${feed}`)
         }
-    }, [navigate, type, feed])
+    }, [navigate, pathname, feed])
 
     return (
         <div>

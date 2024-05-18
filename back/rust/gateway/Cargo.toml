@@ -1,34 +1,20 @@
-[workspace]
-
-members = [
-    "admin_gateway",
-    "auth_gateway",
-    "gateway",
-    "models",
-    "common"
-]
-
-resolver = "2"
-
-[workspace.package]
+[package]
+name = "gateway"
 authors = [
     "Cristian Andrei <cristianandrei987@gmail.com>"
 ]
 version = "0.1.0"
 edition = "2021"
 
-[workspace.lints.rust]
+[lints.rust]
 unsafe_code = "deny"
 
-[workspace.lints.clippy]
+[lints.clippy]
 pedantic = "deny"
 nursery = "deny"
 unwrap_used = "deny"
 
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[workspace.dependencies]
+[dependencies]
 tokio = { version = "1.37.0", features = ["rt-multi-thread", "macros", "signal"]}
 
 serde = { version = "1.0.202", features = ["derive"]}
@@ -40,9 +26,11 @@ tracing-core = { version = "0.1.32", default-features = true}
 
 clap = { version = "4.5.4", features = ["derive"]}
 figment = { version = "0.10.18", features = ["env", "json"]}
+url = {version = "2.5.0", default-features = true}
 
 salvo = { version = "0.67.2", features = ["oapi", "logging", "anyhow"]}
 reqwest = { version = "0.12.4", features = ["json"]}
 once_cell = {version = "1.19.0", default-features = true }
 dotenv = {version = "0.15.0", default-features = true }
 anyhow = {version = "1.0.83", default-features = true}
+yansi = "1.0.1"

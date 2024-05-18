@@ -18,10 +18,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe"
 
 [[package]]
-name = "admin_gateway"
-version = "0.1.0"
-
-[[package]]
 name = "aead"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -186,10 +182,6 @@ checksum = "8d818003e740b63afc82337e3160717f4f63078720a810b7b903e70a5d1d2994"
 dependencies = [
  "bytemuck",
 ]
-
-[[package]]
-name = "auth_gateway"
-version = "0.1.0"
 
 [[package]]
 name = "autocfg"
@@ -442,16 +434,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b6a852b24ab71dffc585bcb46eaf7959d175cb865a7152e35b348d1b2960422"
 
 [[package]]
-name = "common"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "figment",
- "models",
-]
-
-[[package]]
 name = "cookie"
 version = "0.18.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -541,6 +523,12 @@ dependencies = [
  "crypto-common",
  "subtle",
 ]
+
+[[package]]
+name = "dotenv"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 
 [[package]]
 name = "encoding_rs"
@@ -729,13 +717,20 @@ name = "gateway"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "common",
- "models",
+ "clap",
+ "dotenv",
+ "figment",
+ "once_cell",
+ "reqwest",
  "salvo",
+ "serde",
+ "serde_json",
  "tokio",
  "tracing",
  "tracing-core",
  "tracing-subscriber",
+ "url",
+ "yansi",
 ]
 
 [[package]]
@@ -1168,16 +1163,6 @@ dependencies = [
  "libc",
  "wasi",
  "windows-sys 0.48.0",
-]
-
-[[package]]
-name = "models"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "figment",
- "serde",
 ]
 
 [[package]]

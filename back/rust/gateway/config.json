@@ -5,9 +5,125 @@
     "port": 3000
   },
   "services": {
-    "register_service": {
-      "url": "",
-      "port": 0
+    "rating": {
+      "url": "http://127.0.0.1",
+      "port": 7000
+    },
+    "hash": {
+      "url": "http://hasher-service-url",
+      "port": 5000
+    },
+    "tag": {
+      "url": "http://tag-manager-service-url",
+      "port": 5000
+    },
+    "allergen": {
+      "url": "http://allergen-manager-service-url",
+      "port": 5000
+    },
+    "recipe_saver": {
+      "url": "http://recipe-saver-service-url",
+      "port": 5000
+    },
+    "user_retriever": {
+      "url": "http://user-retriever-service-url",
+      "port": 5000
+    },
+    "email_system": {
+      "url": "http://email-system-service-url",
+      "port": 5000
+    },
+    "role_changer": {
+      "url": "http://role-changer-service-url",
+      "port": 5000
+    },
+    "search_history_manager": {
+      "url": "http://search-history-manager-service-url",
+      "port": 5000
+    },
+    "follow_manager": {
+      "url": "http://follow-manager-service-url",
+      "port": 5000
+    },
+    "message_history_manager": {
+      "url": "http://message-history-manager-service-url",
+      "port": 5000
+    },
+    "user_destroyer": {
+      "url": "http://user-destroyer-service-url",
+      "port": 5000
+    },
+    "profile_data_changer": {
+      "url": "http://profile-data-changer-service-url",
+      "port": 5000
+    },
+    "token_validator": {
+      "url": "http://token-validator-service-url",
+      "port": 5000
+    },
+    "id_generator": {
+      "url": "http://id-generator-service-url",
+      "port": 5000
+    },
+    "token_generator": {
+      "url": "http://token-generator-service-url",
+      "port": 5000
+    },
+    "image_storage": {
+      "url": "http://image-storage-service-url",
+      "port": 5000
+    },
+    "register": {
+      "url": "http://register-service-url",
+      "port": 5000
+    },
+    "token_destroyer": {
+      "url": "http://token-destroyer-service-url",
+      "port": 5000
+    },
+    "verifier": {
+      "url": "http://verifier-service-url",
+      "port": 5000
+    },
+    "login": {
+      "url": "http://login-service-url",
+      "port": 5000
+    },
+    "credentials_change_requester": {
+      "url": "http://credentials-change-requester-service-url",
+      "port": 5000
+    },
+    "username_changer": {
+      "url": "http://username-changer-service-url",
+      "port": 5000
+    },
+    "password_changer": {
+      "url": "http://password-changer-service-url",
+      "port": 5000
+    },
+    "email_changer": {
+      "url": "http://email-changer-service-url",
+      "port": 5000
+    },
+    "recipe_creator": {
+      "url": "http://recipe-creator-service-url",
+      "port": 5000
+    },
+    "recipe_editor": {
+      "url": "http://recipe-editor-service-url",
+      "port": 5000
+    },
+    "recipe_destroyer": {
+      "url": "http://recipe-destroyer-service-url",
+      "port": 5000
+    },
+    "recipe_rating_manager": {
+      "url": "http://recipe-rating-manager-service-url",
+      "port": 5000
+    },
+    "recipe_retriever": {
+      "url": "http://recipe-retriever-service-url",
+      "port": 5000
     }
   }
 }

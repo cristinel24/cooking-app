@@ -1,17 +1,10 @@
-import os
 from typing import Union
 
-from constants import Errors
-from dotenv import load_dotenv
+from constants import *
 from exceptions import TokenException
 from fastapi import FastAPI, Response, status
 from schemas import TokenData
 from services import get_token
-
-load_dotenv()
-
-HOST = os.getenv("TOKEN_VALIDATOR_URL", "localhost")
-PORT = int(os.getenv("PORT", 8090))
 
 
 app = FastAPI()

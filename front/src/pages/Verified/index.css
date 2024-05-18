@@ -1,0 +1,58 @@
+.verified-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--card-bg-color);
+    width: 40rem;
+    margin: auto;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.verified-wrapper p {
+    width: 30rem;
+    text-align: center;
+    padding: 20px;
+    font-weight: bold;
+}
+
+.verified-button-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.verified-button {
+    width: 15rem;
+    text-align: center;
+}
+
+@media screen and (min-width: 601px) and (max-width: 899px) {
+    .verified-wrapper {
+        width: 30rem;
+    }
+
+    .verified-wrapper p {
+        width: 20rem;
+    }
+
+    .verified-button {
+        width: 10rem;
+    }
+}
+@media screen and (max-width: 600px) {
+    .verified-wrapper {
+        width: 15rem;
+        margin: auto;
+    }
+
+    .verified-wrapper p {
+        width: 10rem;
+    }
+
+    .verified-button {
+        width: 10rem;
+    }
+}

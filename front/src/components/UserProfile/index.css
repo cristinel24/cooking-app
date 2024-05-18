@@ -67,7 +67,7 @@
 }
 
 .profile-description a:hover {
-    color: var(--bg-color);
+    color: var(--color-primary);
 }
 .profile-description dot {
     margin-top: 6px;
@@ -95,11 +95,11 @@
 }
 
 .report a:hover::after {
-    background: var(--bg-color);
+    background: var(--color-primary);
 }
 
 .report a:hover {
-    color: var(--bg-color);
+    color: var(--color-primary);
 }
 
 @media only screen and (max-width: 767px) and (min-width: 481px) {

@@ -44,7 +44,7 @@
 
 .footer-brand a:hover,
 .footer-bug a:hover {
-    color: var(--bg-color);
+    color: var(--color-primary);
 }
 
 @media screen and (max-width: 600px) {

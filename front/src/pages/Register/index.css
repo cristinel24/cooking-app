@@ -105,19 +105,19 @@
     border-radius: 5px;
 
     color: var(--text-color);
-    background-color: var(--bg-color);
+    background-color: var(--color-primary);
 
     padding: 10px;
     margin: 0.5rem 0;
 }
 
 .form-link {
-    color: var(--bg-color);
+    color: var(--color-primary);
 }
 
 .form-link:hover {
     text-decoration: underline;
-    text-decoration-color: var(--bg-color);
+    text-decoration-color: var(--color-primary);
     text-underline-offset: 2px;
 }
 

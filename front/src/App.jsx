@@ -2,51 +2,37 @@ import { useEffect, useState } from 'react'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import { ThemeContext, themes } from './context'
+import { ThemeContext } from './context'
 
 import { Login, Register, Test, Verified } from './pages'
 
 function App() {
-    const [theme, setTheme] = useState(
-        themes[localStorage.getItem('theme')] || {}
-    )
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || '')
 
-    const setColorsFromTheme = (theme) => {
-        for (const color in theme) {
-            const kebabColor = color.replace(
-                /[A-Z]/g,
-                (match) => '-' + match.toLowerCase()
-            )
-            document.documentElement.style.setProperty(
-                `--${kebabColor}`,
-                `${theme[color]}`
-            )
-        }
+    const setThemeColors = (theme) => {
+        document.documentElement.setAttribute('data-theme', theme)
     }
 
     useEffect(() => {
         if (theme === '') {
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                setTheme(themes.dark)
-                localStorage.setItem('theme', 'dark')
+                setTheme('dark')
             } else {
-                setTheme(themes.light)
-                localStorage.setItem('theme', 'light')
+                setTheme('light')
             }
         }
     }, [])
 
     useEffect(() => {
-        setColorsFromTheme(theme)
+        localStorage.setItem('theme', theme)
+        setThemeColors(theme)
     }, [theme])
 
     const toggleTheme = () => {
-        if (theme === themes.light) {
-            setTheme(themes.dark)
-            localStorage.setItem('theme', 'dark')
+        if (theme === 'light') {
+            setTheme('dark')
         } else {
-            setTheme(themes.light)
-            localStorage.setItem('theme', 'light')
+            setTheme('light')
         }
     }
 

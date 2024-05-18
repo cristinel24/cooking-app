@@ -24,7 +24,7 @@
     right: 2rem;
     border: 1px solid var(--border-color);
     border-radius: 20px;
-    background-color: var(--bg-color);
+    background-color: var(--color-primary);
     z-index: 1;
 }
 
@@ -42,7 +42,7 @@
         border: 1px solid var(--border-color);
         border-radius: 20px;
         /*padding: 1.5rem;*/
-        background-color: var(--bg-color);
+        background-color: var(--color-primary);
         z-index: 1;
     }
     .pop-up-chat-bot-logo {
@@ -63,7 +63,7 @@
         right: 2rem;
         border: 1px solid var(--border-color);
         border-radius: 20px;
-        background-color: var(--bg-color);
+        background-color: var(--color-primary);
         z-index: 1;
     }
 

@@ -1,5 +1,5 @@
 .tag {
-    background-color: var(--bg-color-dimmed);
+    background-color: var(--body-bg-color-dimmed);
     width: fit-content;
     display: flex;
     gap: 0.5rem;

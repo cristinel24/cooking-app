@@ -67,7 +67,7 @@
 }
 
 .report-recipe-give-up-button .action-button {
-    background-color: var(--cancel-bg-color);
+    background-color: var(--neutral-bg-color);
     padding: 15px;
     width: 7rem;
     margin-left: 50px;
@@ -81,11 +81,11 @@
 }
 
 .report-recipe-send-button .action-button:hover {
-    background-color: var(--bg-color);
+    background-color: var(--color-primary);
 }
 
 .report-recipe-give-up-button .action-button:hover {
-    background-color: var(--bg-color);
+    background-color: var(--color-primary);
 }
 
 @media screen and (max-width: 600px) and (min-width: 481px) {

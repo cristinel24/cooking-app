@@ -1,4 +1,4 @@
-import { ThemeContext, themes } from '../../context'
+import { ThemeContext } from '../../context'
 import React, { useContext, useEffect, useState } from 'react'
 import './index.css'
 import { FaRegHeart, FaRegUser, FaRegMoon, FaBars } from 'react-icons/fa6'

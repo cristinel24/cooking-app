@@ -7,21 +7,33 @@ import { AddRecipe, CredentialsChange, Dashboard, EditRecipe, ErrorPage, Feed, F
 import { AdminRoute, Page, ProtectedRoute, UnprotectedRoute } from './components'
 
 function App() {
-    const [token, setToken] = useState(localStorage.getItem('token') || '')
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || {})
+    const [remember, setRemember] = useState(localStorage.getItem('user'))
+    const [token, setToken] = useState(localStorage.getItem('token') || sessionStorage.getItem('token') || '')
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user')) || {})
 
-    const login = (token, user) => {
+    const login = (token, user, remember) => {
         setToken(token)
         setUser(user)
-        localStorage.setItem("token", token)
-        localStorage.setItem("user", JSON.stringify(user))
+        setRemember(remember)
+        if (remember) {
+            localStorage.setItem("token", token)
+            localStorage.setItem("user", JSON.stringify(user))
+        } else {
+            sessionStorage.setItem("token", token)
+            sessionStorage.setItem("user", JSON.stringify(user))
+        }
     }
 
     const logout = () => {
         setToken('')
         setUser({})
-        localStorage.setItem("token", '')
-        localStorage.setItem("user", JSON.stringify({}))
+        if (remember) {
+            localStorage.removeItem("token")
+            localStorage.removeItem("user")
+        } else {
+            sessionStorage.removeItem("token")
+            sessionStorage.removeItem("user")
+        }
     }
 
     const loggedIn = () => Object.keys(user).length !== 0
@@ -82,7 +94,6 @@ function App() {
             >
                 <Router>
                     <Routes>
-
                         <Route element={<Page />}>
                             {/* error route */}
                             <Route path="*" element={<ErrorPage />} />

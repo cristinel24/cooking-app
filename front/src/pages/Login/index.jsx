@@ -20,14 +20,13 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false)
 
     const onSubmit = async (data) => {
-        console.log(data)
-        return
         // const { token, user } = await login(data)
-        // loginContext(token, user)
+        // loginContext(token, user, remember)
+        console.log(data)
         login("1234", {
             id: "1",
             username: "jimmy07_dylan04",
-        })
+        }, data.remember)
 
         navigate("/")
     }

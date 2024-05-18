@@ -1,5 +1,4 @@
 import fnmatch
-import json
 import os.path
 
 from fastapi import FastAPI, UploadFile, status

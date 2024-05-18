@@ -5,9 +5,6 @@ import services
 import constants
 import exceptions
 
-from dotenv import load_dotenv
-
-load_dotenv()
 app = FastAPI()
 
 

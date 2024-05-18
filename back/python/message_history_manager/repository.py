@@ -1,6 +1,7 @@
 import pymongo
 from pymongo import errors
 from utils import match_collection_error
+from fastapi import status
 
 import constants
 import exceptions
@@ -24,7 +25,7 @@ class MessageHistoryCollection(MongoCollection):
                     {"messageHistory": {"$slice": [start, count]}}
                 )
             if result is None:
-                raise exceptions.MessageHistoryException(constants.ErrorCodes.MESSAGE_HISTORY_NOT_FOUND, 404)
+                raise exceptions.MessageHistoryException(constants.ErrorCodes.MESSAGE_HISTORY_NOT_FOUND, status.HTTP_404_NOT_FOUND)
             return result["messageHistory"]
         except errors.PyMongoError as e:
             raise match_collection_error(e)
@@ -34,10 +35,15 @@ class MessageHistoryCollection(MongoCollection):
             with pymongo.timeout(constants.MAX_TIMEOUT_TIME_SECONDS):
                 update_result = self._collection.update_one(
                     {"id": user_id},
-                    {"$push": {"messageHistory": message}}
+                    {"$push": {
+                        "messageHistory": {
+                            "$each": [message],
+                            "$slice": -constants.HISTORY_MAX_SIZE  # Keeps only the last 10 entries
+                        }
+                    }}
                 )
             if update_result.modified_count == 0:
-                raise exceptions.MessageHistoryException(constants.ErrorCodes.USER_NOT_FOUND, 404)
+                raise exceptions.MessageHistoryException(constants.ErrorCodes.USER_NOT_FOUND, status.HTTP_404_NOT_FOUND)
             return update_result.modified_count
         except errors.PyMongoError as e:
             raise match_collection_error(e)
@@ -50,7 +56,7 @@ class MessageHistoryCollection(MongoCollection):
                     {"$set": {"messageHistory": []}}
                 )
             if update_result.modified_count == 0:
-                raise exceptions.MessageHistoryException(constants.ErrorCodes.USER_NOT_FOUND, 404)
+                raise exceptions.MessageHistoryException(constants.ErrorCodes.USER_NOT_FOUND, status.HTTP_404_NOT_FOUND)
             return update_result.modified_count
         except errors.PyMongoError as e:
             raise match_collection_error(e)

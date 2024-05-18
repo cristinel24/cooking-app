@@ -1,6 +1,7 @@
 import pymongo
 from pymongo import MongoClient, errors
 from utils import match_collection_error
+from fastapi import status
 
 import constants
 import exceptions
@@ -24,7 +25,7 @@ class SearchHistoryCollection(MongoCollection):
                     {"searchHistory": {"$slice": [start, count]}}
                 )
             if result is None:
-                raise exceptions.SearchHistoryException(constants.ErrorCodes.USER_NOT_FOUND, 404)
+                raise exceptions.SearchHistoryException(constants.ErrorCodes.USER_NOT_FOUND, status.HTTP_404_NOT_FOUND)
             return result["searchHistory"]
         except errors.PyMongoError as e:
             raise match_collection_error(e)
@@ -37,12 +38,12 @@ class SearchHistoryCollection(MongoCollection):
                     {"$push": {
                         "searchHistory": {
                             "$each": [search_query],
-                            "$slice": -100  # Keeps only the last 100 entries
+                            "$slice": -constants.HISTORY_MAX_SIZE  # Keeps only the last 100 entries
                         }
                     }}
                 )
             if update_result.modified_count == 0:
-                raise exceptions.SearchHistoryException(constants.ErrorCodes.USER_NOT_FOUND, 404)
+                raise exceptions.SearchHistoryException(constants.ErrorCodes.USER_NOT_FOUND, status.HTTP_404_NOT_FOUND)
             return update_result.modified_count
         except errors.PyMongoError as e:
             raise match_collection_error(e)

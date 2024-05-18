@@ -1,6 +1,5 @@
 from repository import SearchHistoryCollection
 from exceptions import SearchHistoryException
-from constants import ErrorCodes
 
 search_history_collection = SearchHistoryCollection()
 

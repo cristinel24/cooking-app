@@ -13,8 +13,9 @@ app = FastAPI()
 @app.post("/recipe")
 async def create_recipe(recipe_data: RecipeData):
     # todo: add auth request instead of RecipeData
+    user_id = "10"
     try:
-        await services.create_recipe(recipe_data)
+        await services.create_recipe(user_id, recipe_data)
     except RecipeCreatorException as e:
         return Response(status_code=e.status_code, content=json.dumps({"errorCode": e.error_code}))
 

@@ -35,7 +35,7 @@
 
 .profile-down button {
     font-size: 24px;
-    color: var(--txtcolor);
+    color: var(--text-color);
     padding: 10px 20px;
     border-radius: 5px;
     border: none;
@@ -50,11 +50,11 @@
 }
 
 .profile-name {
-    color: var(--profname);
+    color: var(--profile-name-color);
 }
 
 .profile-description {
-    color: var(--txtcolor);
+    color: var(--text-color);
     font-size: 18px;
     display: flex;
     align-items: flex-start;
@@ -63,11 +63,11 @@
 }
 
 .profile-description a {
-    color: var(--txtcolor);
+    color: var(--text-color);
 }
 
 .profile-description a:hover {
-    color: var(--bkgcolor);
+    color: var(--bg-color);
 }
 .profile-description dot {
     margin-top: 6px;
@@ -80,7 +80,7 @@
 .report a {
     font-size: 14px;
     position: relative;
-    color: var(--txtcolor);
+    color: var(--text-color);
 }
 
 .report a::after {
@@ -91,15 +91,15 @@
     width: 110%;
     height: 2px;
     border-radius: 5px;
-    background: var(--txtcolor);
+    background: var(--text-color);
 }
 
 .report a:hover::after {
-    background: var(--bkgcolor);
+    background: var(--bg-color);
 }
 
 .report a:hover {
-    color: var(--bkgcolor);
+    color: var(--bg-color);
 }
 
 @media only screen and (max-width: 767px) and (min-width: 481px) {

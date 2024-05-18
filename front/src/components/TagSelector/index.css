@@ -6,7 +6,7 @@
 }
 .tag-selector-drop-down {
     height: 2rem;
-    color: var(--txtcolordimmed);
+    color: var(--text-color-dimmed);
     width: fit-content;
     display: flex;
     flex-direction: column;
@@ -18,8 +18,8 @@
     z-index: 3;
     height: 1.8rem;
     display: flex;
-    background-color: var(--txtcolordimmed);
-    color: var(--bkgcolordimmed);
+    background-color: var(--text-color-dimmed);
+    color: var(--bg-color-dimmed);
     border-radius: 10px;
 }
 
@@ -28,8 +28,8 @@
     box-sizing: border-box;
     height: 1.8rem;
     font-size: inherit;
-    background-color: var(--txtcolordimmed);
-    color: var(--bkgcolordimmed);
+    background-color: var(--text-color-dimmed);
+    color: var(--bg-color-dimmed);
     border-radius: 10px;
     padding: 0.3rem;
     outline: none;
@@ -48,7 +48,7 @@
 
 .tag-selector-drop-down-suggestions {
     display: flex;
-    background-color: var(--bkgcolordimmed);
+    background-color: var(--bg-color-dimmed);
     flex-direction: column;
     border-radius: 0 0 10px 10px;
     padding-top: 1rem;
@@ -71,10 +71,10 @@
 }
 
 .tag-selector-drop-down-suggestion-button:hover {
-    background-color: color-mix(in srgb, var(--bkgcolordimmed), #808080 10%);
+    background-color: color-mix(in srgb, var(--bg-color-dimmed), #808080 10%);
 }
 .tag-selector-drop-down-suggestion-button:last-child:hover {
-    background-color: color-mix(in srgb, var(--bkgcolordimmed), #808080 10%);
+    background-color: color-mix(in srgb, var(--bg-color-dimmed), #808080 10%);
     border-radius: 0 0 10px 10px;
 }
 .tag-selector-tags {

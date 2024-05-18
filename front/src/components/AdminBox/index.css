@@ -7,7 +7,7 @@ a {
         border: none;
         border-radius: 10px;
         margin: 0;
-        background-color: var(--corpcaseta);
+        background-color: var(--card-bg-color);
         width: 29vw;
         height: 13vw;
     }
@@ -15,8 +15,8 @@ a {
     .admin-header {
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
-        color: var(--txtcolor);
-        background-color: var(--bkgcolor);
+        color: var(--text-color);
+        background-color: var(--bg-color);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -100,7 +100,7 @@ a {
         border: none;
         border-radius: 10px;
         margin: 0;
-        background-color: var(--corpcaseta);
+        background-color: var(--card-bg-color);
         width: 68vw;
         height: 23vw;
     }
@@ -108,8 +108,8 @@ a {
     .admin-header {
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
-        color: var(--txtcolor);
-        background-color: var(--bkgcolor);
+        color: var(--text-color);
+        background-color: var(--bg-color);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -194,7 +194,7 @@ a {
         border: none;
         border-radius: 5px;
         margin: 0;
-        background-color: var(--corpcaseta);
+        background-color: var(--card-bg-color);
         width: 75vw;
         height: 31vw;
     }
@@ -202,8 +202,8 @@ a {
     .admin-header {
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
-        color: var(--txtcolor);
-        background-color: var(--bkgcolor);
+        color: var(--text-color);
+        background-color: var(--bg-color);
         display: flex;
         justify-content: space-between;
         align-items: center;

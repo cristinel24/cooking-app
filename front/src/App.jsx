@@ -7,15 +7,16 @@ import { ThemeContext, themes } from './context'
 import { Login, Register, Test, Verified } from './pages'
 
 function App() {
-    localStorage.setItem('theme', 'dark')
-
     const [theme, setTheme] = useState(
         themes[localStorage.getItem('theme')] || {}
     )
 
     const setColorsFromTheme = (theme) => {
         for (const color in theme) {
-            const kebabColor = color.replace(/[A-Z]/g, match => '-' + match.toLowerCase())
+            const kebabColor = color.replace(
+                /[A-Z]/g,
+                (match) => '-' + match.toLowerCase()
+            )
             document.documentElement.style.setProperty(
                 `--${kebabColor}`,
                 `${theme[color]}`

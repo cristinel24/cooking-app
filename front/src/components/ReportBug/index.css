@@ -5,8 +5,8 @@
     right: 0;
     display: flex;
     flex-direction: column;
-    color: var(--body);
-    background-color: var(--ubody);
+    color: var(--body-bg-color);
+    background-color: var(--report-bg-color);
     width: 400px;
     height: 100vh;
     justify-content: center;
@@ -52,8 +52,8 @@
 
 .report-bug-image-container {
     margin: 0;
-    background-color: var(--body);
-    color: var(--ubody);
+    background-color: var(--body-bg-color);
+    color: var(--report-bg-color);
     border: 2px solid;
     border-radius: 10px;
     padding: 10px;
@@ -68,7 +68,7 @@
 }
 
 .report-bug-send-button .action-button {
-    background-color: var(--body);
+    background-color: var(--body-bg-color);
     margin-bottom: 20px;
     padding: 15px;
     width: 7rem;
@@ -81,7 +81,7 @@
 }
 
 .report-bug-give-up-button .action-button {
-    background-color: var(--neutru);
+    background-color: var(--cancel-bg-color);
     padding: 15px;
     width: 7rem;
     margin-left: 50px;
@@ -95,11 +95,11 @@
 }
 
 .report-bug-send-button .action-button:hover {
-    background-color: var(--bkgcolor);
+    background-color: var(--bg-color);
 }
 
 .report-bug-give-up-button .action-button:hover {
-    background-color: var(--bkgcolor);
+    background-color: var(--bg-color);
 }
 
 @media screen and (max-width: 600px) and (min-width: 481px) {

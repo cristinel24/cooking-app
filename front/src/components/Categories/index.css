@@ -23,5 +23,5 @@
 }
 
 .recipe-view button:hover {
-    background-color: var(--caseta);
+    background-color: var(--card-color);
 }

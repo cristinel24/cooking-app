@@ -50,7 +50,7 @@
 }
 
 .recipe-title {
-    background: var(--caseta);
+    background: var(--card-color);
     border-radius: 10px;
     padding: 0.2rem 2.5rem;
     font-weight: 700;
@@ -60,7 +60,7 @@
 
 .recipe-author {
     font-weight: 300;
-    color: var(--txtcolor);
+    color: var(--text-color);
 }
 
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {

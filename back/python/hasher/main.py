@@ -1,11 +1,7 @@
-import os
-from dotenv import load_dotenv
 from fastapi import FastAPI, status, Response
 import uvicorn
-from constants import ErrorCodesToHTTPCodesMapping
+from constants import HOST, PORT, ErrorCodesToHTTPCodesMapping
 from services import handle_hash_with_primary_algo, handle_hash_with_specific_algo
-
-load_dotenv()
 
 app = FastAPI()
 
@@ -37,4 +33,4 @@ async def hash_with_specific_algo(hash_algorithm_name: str, target: str, respons
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=os.getenv("HOST", "localhost"), port=int(os.getenv("PORT", 2020)))
+    uvicorn.run(app, host=HOST, port=PORT)

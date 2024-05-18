@@ -1,9 +1,7 @@
+from constants import *
+from exception import UserDestroyerException
 from pymongo import MongoClient, errors, timeout
 from pymongo.client_session import ClientSession
-
-from constants import ErrorCodes, MAX_TIMEOUT_TIME_SECONDS, DELETED_USER_ID
-from constants import MONGO_URL
-from exception import UserDestroyerException
 from utils import match_collection_error
 
 
@@ -14,7 +12,7 @@ class MongoCollection:
         if connection is not None:
             self._connection = connection
         else:
-            self._connection = MongoClient(MONGO_URL)
+            self._connection = MongoClient(MONGO_URI)
         try:
             self._connection.admin.command('ping')
         except ConnectionError:
@@ -27,7 +25,7 @@ class MongoCollection:
 class FollowCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.follow
+        self._collection = self._connection.get_database(DB_NAME).follow
 
     def delete_follows_by_user_id(self, user_id: str, session: ClientSession):
         try:
@@ -41,7 +39,7 @@ class FollowCollection(MongoCollection):
 class UserCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.user
+        self._collection = self._connection.get_database(DB_NAME).user
 
     def delete_user_by_user_id(self, user_id: str, session: ClientSession):
         try:
@@ -63,7 +61,7 @@ class UserCollection(MongoCollection):
 class RecipeCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.recipe
+        self._collection = self._connection.get_database(DB_NAME).recipe
 
     def update_author_id_by_user_id(self, user_id: str, session: ClientSession):
         try:
@@ -80,7 +78,7 @@ class RecipeCollection(MongoCollection):
 class RatingCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.rating
+        self._collection = self._connection.get_database(DB_NAME).rating
 
     def update_author_id_by_user_id(self, user_id: str, session: ClientSession):
         try:
@@ -97,7 +95,7 @@ class RatingCollection(MongoCollection):
 class ReportCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.report
+        self._collection = self._connection.get_database(DB_NAME).report
 
     def update_author_id_by_user_id(self, user_id: str, session: ClientSession):
         try:
@@ -124,7 +122,7 @@ class ReportCollection(MongoCollection):
 class ExpiringTokenCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.expiring_token
+        self._collection = self._connection.get_database(DB_NAME).expiring_token
 
     def delete_expiring_tokens_by_user_id(self, user_id: str, session: ClientSession):
         try:

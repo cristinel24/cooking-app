@@ -3,20 +3,20 @@ from datetime import datetime, timezone
 
 import pymongo
 from bson import ObjectId
-from pymongo import MongoClient, errors
+from constants import *
 from exceptions import TokenException, UserException
-from constants import Errors, MAX_TIMEOUT_SECONDS
+from pymongo import MongoClient
 
 
 class MongoCollection:
     def __init__(self):
-        self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
+        self._connection = MongoClient(MONGO_URI)
 
 
 class UserCollection(MongoCollection):
     def __init__(self):
         super().__init__()
-        self._collection = self._connection.cooking_app.user
+        self._collection = self._connection.get_database(DB_NAME).user
 
     def insert_token_to_user(self, user_id: str, token_id: str, token_data: dict):
         with pymongo.timeout(MAX_TIMEOUT_SECONDS):
@@ -40,7 +40,7 @@ user_db = UserCollection()
 class TokenCollection(MongoCollection):
     def __init__(self):
         super().__init__()
-        self._collection = self._connection.cooking_app.expiring_token
+        self._collection = self._connection.get_database(DB_NAME).expiring_token
 
     def insert_token(self, value: str, user_id: str, type_token: str) -> dict:
         with pymongo.timeout(MAX_TIMEOUT_SECONDS):

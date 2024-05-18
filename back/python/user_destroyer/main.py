@@ -3,7 +3,7 @@ import json
 from fastapi import FastAPI, Response
 
 import services
-from constants import HOST_URL, PORT
+from constants import HOST, PORT
 from exception import UserDestroyerException
 
 app = FastAPI()
@@ -20,4 +20,4 @@ async def delete_user(user_id: str):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host=HOST_URL, port=PORT)
+    uvicorn.run(app, host=HOST, port=PORT)

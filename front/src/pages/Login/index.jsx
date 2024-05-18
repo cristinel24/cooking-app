@@ -6,7 +6,6 @@ import photo from '/autentificare.png'
 import eyeIcon from '/eye.svg'
 
 import './index.css'
-import { Page } from '../../components'
 import { UserContext } from '../../context/user-context'
 import { login as loginApi } from '../../services/auth'
 
@@ -18,13 +17,11 @@ export default function Login() {
     const { login } = useContext(UserContext)
     const navigate = useNavigate()
 
-    const [data, setData] = useState({
-        identifier: '',
-        password: '',
-    })
     const [showPassword, setShowPassword] = useState(false)
 
-    const onSubmit = async (e) => {
+    const onSubmit = async (data) => {
+        console.log(data)
+        return
         // const { token, user } = await login(data)
         // loginContext(token, user)
         login("1234", {
@@ -33,14 +30,6 @@ export default function Login() {
         })
 
         navigate("/")
-    }
-
-    const handleChange = (event) => {
-        const { name, value } = event.target
-        setData({
-            ...data,
-            [name]: value,
-        })
     }
 
     const togglePasswordVisibility = () => {
@@ -58,16 +47,12 @@ export default function Login() {
                                 htmlFor="identifier"
                                 className="form-label"
                             >
-                                Username sau email
+                                Nume de utilizator sau email
                             </label>
                             <input
                                 id="identifier"
-                                name="identifier"
                                 className="form-input"
-                                value={data.identifier}
-                                onChange={handleChange}
-                                maxLength={256}
-                                required
+                                {...register("identifier", { required: true, maxLength: 256 })}
                             />
                         </div>
                     </div>
@@ -82,13 +67,8 @@ export default function Login() {
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 id="password"
-                                name="password"
                                 className="form-input"
-                                value={data.password}
-                                onChange={handleChange}
-                                required
-                                minLength={8}
-                                maxLength={64}
+                                {...register("password", { required: true, minLength: 8, maxLength: 64 })}
                             />
                             <img
                                 src={eyeIcon}
@@ -99,7 +79,14 @@ export default function Login() {
                         </div>
                     </div>
                     <div className="form-others">
-                        <span>Ține-mă minte</span>
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="remember"
+                                {...register("remember")}
+                            />
+                            <label htmlFor="remember">Ține-mă minte</label>
+                        </div>
                         <Link className="form-link" to="/forgot-password">
                             Ți-ai uitat parola?
                         </Link>

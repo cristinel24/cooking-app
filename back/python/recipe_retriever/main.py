@@ -1,11 +1,11 @@
 from typing import Union
 
-from fastapi import FastAPI, status, Response
-from recipe_retriever import exceptions
+from fastapi import FastAPI, Response
+import exceptions
 import services
 import uvicorn
 from constants import *
-from recipe_retriever.schemas import *
+from schemas import *
 
 app = FastAPI()
 

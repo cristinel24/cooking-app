@@ -6,8 +6,7 @@ load_dotenv()
 PORT = int(os.getenv("PORT", 8000))
 HOST_URL = os.getenv("HOST_URL", "0.0.0.0")
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017/?directConnection=true")
-USER_MICROSERVICE_URL = os.getenv("USER_MICROSERVICE_URL",
-                                  "http://localhost:7998")
+USER_RETRIEVER_API_URL = os.getenv("USER_RETRIEVER_API_URL", "http://localhost:7998")
 MAX_TIMEOUT_TIME_SECONDS = 3
 
 RECIPE_DATA_PROJECTION = {
@@ -32,10 +31,8 @@ RECIPE_DATA_CARD_PROJECTION = {
     "title": 1,
     "description": 1,
     "prepTime": 1,
-    "steps": 0,
-    "ingredients": 0,
-    "tags": 1,
     "allergens": 1,
+    "tags": 1,
     "thumbnail": 1,
     "viewCount": 1
 }

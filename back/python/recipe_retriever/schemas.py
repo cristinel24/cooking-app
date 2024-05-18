@@ -2,17 +2,20 @@ from pydantic import BaseModel
 
 
 class UserCardData(BaseModel):
+    id: str
     username: str
     displayName: str
     icon: str
-    roles: list[str]
+    roles: int
     ratingAvg: float
 
 
 class RecipeData(BaseModel):
+    id: str
+    author: UserCardData
     title: str
     description: str
-    prepTime: str
+    prepTime: int
     steps: list[str]
     ingredients: list[str]
     allergens: list[str]
@@ -22,9 +25,11 @@ class RecipeData(BaseModel):
 
 
 class RecipeCardData(BaseModel):
+    id: str
+    author: UserCardData
     title: str
     description: str
-    prepTime: str
+    prepTime: int
     tags: list[str]
     allergens: list[str]
     thumbnail: str

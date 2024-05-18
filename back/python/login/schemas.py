@@ -1,0 +1,30 @@
+from pydantic import BaseModel
+
+
+class State(BaseModel):
+    user_id: str
+    user_roles: int
+
+
+class LoginData(BaseModel):
+    state: State
+    identifier: str
+    password: str
+
+
+class HasherResponse(BaseModel):
+    hash: str
+    salt: str | None
+
+
+class TokenResponse(BaseModel):
+    value: str
+    createdAt: str
+    userId: str
+    tokenType: str
+
+
+USER_PROJECTION = {
+    "id": 1,
+    "login": 1
+}

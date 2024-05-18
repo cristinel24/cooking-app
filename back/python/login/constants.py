@@ -1,9 +1,10 @@
-from pydantic import BaseModel
-
-
 WAIT_ON_ERROR = 5
+MAX_TIMEOUT_SECONDS = 3
 
 
-class LoginData(BaseModel):
-    identifier: str
-    password: str
+class Errors:
+    INVALID_CREDS = 25601
+    DB_ERROR = 25602
+    HASH_ERROR = 25603
+    DB_TIMEOUT = 25604
+    TOKEN_ERROR = 25605

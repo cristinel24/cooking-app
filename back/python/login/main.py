@@ -4,8 +4,9 @@ import time
 from dotenv import load_dotenv
 from fastapi import FastAPI, status, Response
 
-from constants import LoginData, WAIT_ON_ERROR
+from constants import WAIT_ON_ERROR
 from exceptions import LoginException
+from schemas import LoginData
 import service
 
 load_dotenv()

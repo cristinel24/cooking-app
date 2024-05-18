@@ -5,7 +5,6 @@ from pymongo import MongoClient, errors
 from constants import ErrorCode, ID_PROJECTION, MAX_TIMEOUT_TIME_SECONDS
 from exceptions import CustomException
 
-# I almost died when integrating this class
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
         if connection is not None:
@@ -26,7 +25,7 @@ class MongoCollection:
                 if result:
                     return result["value"]
                 else:
-                    raise CustomException(status_code=500, detail=ErrorCode.ERROR_20301,
+                    raise CustomException(status_code=500, detail=ErrorCode.DB_ERROR_ID_GENERATOR.value,
                                           headers={ErrorCode.DB_ERROR_ID_GENERATOR: ErrorCode.DB_ERROR_ID_GENERATOR})
         except pymongo.errors.ExecutionTimeout as exc:
             raise CustomException(status_code=500, detail=str(exc), headers={ErrorCode.DB_ERROR_ID_GENERATOR: str(exc)})

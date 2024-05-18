@@ -60,7 +60,7 @@
 .tag-selector-drop-down-suggestion-button {
     display: flex;
     align-items: center;
-    color: var(--txtcolordimmed);
+    color: var(--text-color-dimmed);
     font-size: inherit;
     border: none;
     background-color: transparent;

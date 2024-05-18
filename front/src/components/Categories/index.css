@@ -18,7 +18,7 @@
     border-radius: 20px;
     font-size: 1.2rem;
     background-color: var(--compreteta);
-    color: var(--text);
+    color: var(--text-color);
     cursor: pointer;
 }
 

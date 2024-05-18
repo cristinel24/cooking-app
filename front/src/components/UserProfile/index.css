@@ -145,7 +145,7 @@
 
     .profile-name {
         font-size: 14px;
-        color: var(--name);
+        color: var(--profile-name-color);
     }
 
     .profile-description {

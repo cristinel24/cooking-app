@@ -1,26 +1,21 @@
 .dropdown-item {
     background-color: transparent;
+    font: inherit;
+    font-weight: bold;
+
     border: none;
-    padding: 0 1em 0 0;
+    border-radius: 10px;
+
+    padding: 0.2rem 0.4rem;
     margin: 0;
-    font-family: inherit;
-    font-size: inherit;
-    cursor: inherit;
-    line-height: inherit;
+
+    cursor: pointer;
+    background-color: var(--navbar);
+    color: var(--txtcolor);
 }
 
 .dropdown-item::-ms-expand {
     display: none;
-}
-
-.dropdown-item {
-    border: none;
-    border-radius: 10px;
-    padding: 0.2rem 0.4rem;
-    cursor: pointer;
-    background-color: var(--navbar);
-    color: var(--txtcolor);
-    font-weight: bold;
 }
 
 .dropdown-option {

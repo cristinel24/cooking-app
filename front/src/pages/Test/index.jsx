@@ -77,8 +77,9 @@ function Test() {
                 replaceImageSrcs(data, imageLinkMap)
                 return data
             })
-
-            setFinalData(renderJSONtoHTML(richTextData))
+            const data = renderJSONtoHTML(richTextData)
+            setFinalData(data)
+            console.log(data)
         } catch (error) {
             console.error('Error submitting form:', error)
         }

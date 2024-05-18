@@ -6,6 +6,7 @@ class FollowData(BaseModel):
 
 
 class UserCardData(BaseModel):
+    id: str
     username: str
     displayName: str | None = None
     icon: str | None = None

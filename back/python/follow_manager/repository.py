@@ -1,5 +1,5 @@
-from pymongo import MongoClient, errors, timeout
 from fastapi import status
+from pymongo import MongoClient, errors, timeout
 
 from constants import MONGO_URL, ErrorCodes, MAX_TIMEOUT_TIME_SECONDS
 from exception import FollowManagerException
@@ -26,12 +26,14 @@ class UserCollection(MongoCollection):
         super().__init__(connection)
         self._collection = self._connection.cooking_app.user
 
-    def ping_user(self, user_id: str):
+    def ping_user(self, user_id: str) -> bool:
         try:
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
-                return self._collection.find_one({"id": user_id}, {"_id": 0, "id": 1})
+                if self._collection.find_one({"id": user_id}, {"_id": 0, "id": 1}) is not None:
+                    return True
         except errors.PyMongoError as e:
             raise match_collection_error(e)
+        return False
 
 
 class FollowCollection(MongoCollection):
@@ -39,7 +41,14 @@ class FollowCollection(MongoCollection):
         super().__init__(connection)
         self._collection = self._connection.cooking_app.follow
 
-    def get_followers(self, user_id: str) -> list[str]:
+    def get_followers_count(self, user_id: str) -> int:
+        try:
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                return self._collection.count_documents({"followsId": user_id})
+        except errors.PyMongoError as e:
+            raise match_collection_error(e)
+
+    def get_followers(self, user_id: str, start: int, count: int) -> list[str]:
         try:
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 return list(
@@ -48,12 +57,21 @@ class FollowCollection(MongoCollection):
                         self._collection
                         .find({"followsId": user_id})
                         .sort({"_id": -1})
+                        .skip(start)
+                        .limit(count)
                     )
                 )
         except errors.PyMongoError as e:
             raise match_collection_error(e)
 
-    def get_following(self, user_id: str) -> list[str]:
+    def get_following_count(self, user_id: str) -> int:
+        try:
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                return self._collection.count_documents({"userId": user_id})
+        except errors.PyMongoError as e:
+            raise match_collection_error(e)
+
+    def get_following(self, user_id: str, start: int, count: int) -> list[str]:
         try:
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 return list(
@@ -62,6 +80,8 @@ class FollowCollection(MongoCollection):
                         self._collection
                         .find({"userId": user_id})
                         .sort({"_id": -1})
+                        .skip(start)
+                        .limit(count)
                     )
                 )
         except errors.PyMongoError as e:

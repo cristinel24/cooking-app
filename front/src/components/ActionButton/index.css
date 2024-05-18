@@ -2,23 +2,23 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: var(--bkgcolor);
+    background-color: var(--color-primary);
     padding: 15px 20px 15px 20px;
     border-radius: 10px;
     border: none;
 }
 
 .action-button:hover {
-    background-color: var(--hoverbkgcolor);
+    background-color: var(--hover-bg-color);
 }
 
 .action-button-icon {
-    color: var(--txtcolor);
+    color: var(--text-color);
 }
 
 .action-button-text {
     font-size: 0.8rem;
-    color: var(--txtcolor);
+    color: var(--text-color);
     font-weight: bold;
 }
 
@@ -28,7 +28,7 @@
         border-radius: 10px;
     }
     .action-button:hover {
-        background-color: var(--hoverbkgcolor);
+        background-color: var(--hover-bg-color);
     }
     .action-button-text {
         font-size: 0.7rem;
@@ -41,7 +41,7 @@
         border-radius: 10px;
     }
     .action-button:hover {
-        background-color: var(--hoverbkgcolor);
+        background-color: var(--hover-bg-color);
     }
     .action-button-text {
         font-size: 0.6rem;

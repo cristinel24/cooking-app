@@ -19,4 +19,4 @@ export { default as Rating } from './Rating'
 export { default as RecipeCard } from './RecipeCard'
 export { default as UserCard } from './UserCard'
 export { default as Dropdown } from './Dropdown'
-export { default as ProtectedRoute } from "./ProtectedRoute"
+export { AdminRoute, ProtectedRoute, UnprotectedRoute } from "./Routes"

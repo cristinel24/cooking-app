@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import { ThemeContext, themes } from './context'
-
-import { AddRecipe, CredentialsChange, Dashboard, EditRecipe, ErrorPage, Feed, ForgotPassword, Login, Profile, Recipe, Register, Search, Settings, Test, Verified } from './pages'
-import { UserContext } from './context/user-context'
-import { Page, ProtectedRoute } from './components'
+import { UserContext, ThemeContext, themes } from './context'
+import { AddRecipe, CredentialsChange, Dashboard, EditRecipe, ErrorPage, Feed, ForgotPassword, Login, Profile, Recipe, Register, Search, Settings, Verified } from './pages'
+import { AdminRoute, Page, ProtectedRoute, UnprotectedRoute } from './components'
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('token') || '')
@@ -27,6 +25,8 @@ function App() {
     }
 
     const loggedIn = () => Object.keys(user).length !== 0
+
+    const isAdmin = () => user.roles & 0b10 // TODO: constants instead of magic numbers
 
     const [theme, setTheme] = useState(
         themes[localStorage.getItem('theme')] || ''
@@ -71,6 +71,7 @@ function App() {
                 login,
                 logout,
                 loggedIn,
+                isAdmin,
             }}
         >
             <ThemeContext.Provider
@@ -81,38 +82,44 @@ function App() {
             >
                 <Router>
                     <Routes>
-                        <Route path="/" element={<Page />}>
-                            {/* error route */}
-                            <Route path="/" element={<ErrorPage />} />
 
+                        <Route element={<Page />}>
+                            {/* error route */}
+                            <Route path="*" element={<ErrorPage />} />
+
+                            <Route path="/" element={<Feed />} />
                             <Route path="/popular" element={<Feed />} />
                             <Route path="/best" element={<Feed />} />
-                            <Route path="/recommended" element={<Feed />} />
-                            {/* <Route path="/:type" element={<Feed />} /> */}
-
-                            <Route path="/" element={<ProtectedRoute />}>
-                                <Route path="/favorite" element={<Feed />} />
-                                <Route path="/followed" element={<Feed />} />
-                                <Route path="/recommended" element={<Feed />} />
-                            </Route>
+                            <Route path="/new" element={<Feed />} />
 
                             <Route path="/reset/:type" element={<CredentialsChange />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
-                            <Route path="/login" element={<Login />} />
                             <Route path="/profile/:userId" element={<Profile />} />
                             <Route path="/recipe/:recipeId" element={<Recipe />} />
-                            <Route path="/register" element={<Register />} />
                             <Route path="/search" element={<Search />} />
                             <Route path="/settings" element={<Settings />} />
-                            <Route path="/test" element={<Test />} />
-                            <Route path="/verify" element={<Verified />} />
+
+                            {/* unprotected routes */}
+                            <Route element={<UnprotectedRoute />}>
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/register" element={<Register />} />
+                                <Route path="/verify" element={<Verified />} />
+                            </Route>
 
                             {/* protected routes */}
-                            <Route path="/recipe/add" element={<AddRecipe />} />
-                            <Route path="/recipe/:recipeId/edit" element={<EditRecipe />} />
+                            <Route element={<ProtectedRoute />}>
+                                <Route path="/favorite" element={<Feed />} />
+                                <Route path="/followed" element={<Feed />} />
+                                <Route path="/recommended" element={<Feed />} />
 
-                            {/* admin routes */}
-                            <Route path="/dashboard" element={<Dashboard />} />
+                                <Route path="/recipe/add" element={<AddRecipe />} />
+                                <Route path="/recipe/:recipeId/edit" element={<EditRecipe />} />
+
+                                {/* admin routes */}
+                                <Route element={<AdminRoute />}>
+                                    <Route path="/dashboard" element={<Dashboard />} />
+                                </Route>
+                            </Route>
                         </Route>
                     </Routes>
                 </Router>

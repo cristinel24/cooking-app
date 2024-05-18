@@ -1,25 +1,24 @@
 import os
 
-import pymongo
-from constants import Errors, MAX_TIMEOUT_SECONDS, TOKEN_TYPES
-from pymongo import MongoClient, errors
+from constants import GET_EXPIRING_TOKEN, Errors, MAX_TIMEOUT_SECONDS
+from pymongo import MongoClient, errors, timeout
 
 from exceptions import TokenException
 
 
-class UserCollection(MongoCollection):
+class UserCollection:
     def __init__(self):
-        super().__init__()
+        self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
         self._collection = self._connection.cooking_app.user
 
-    def find_user_roles(self, user_id: str):
-        with pymongo.timeout(MAX_TIMEOUT_SECONDS):
+    def find_user_roles(self, user_id: str) -> dict | None:
+        with timeout(MAX_TIMEOUT_SECONDS):
             try:
-                user_roles = self._collection.update_one({"id": user_id}, {"roles": 1})
+                user_roles = self._collection.find_one({"id": user_id}, GET_EXPIRING_TOKEN)
                 return user_roles
-            except pymongo.errors.ExecutionTimeout:
+            except errors.ExecutionTimeout:
                 raise TokenException(Errors.DB_TIMEOUT)
-            except pymongo.errors.PyMongoError as e:
+            except errors.PyMongoError:
                 raise TokenException(Errors.DB_ERROR)
 
 
@@ -28,11 +27,11 @@ class TokenCollection:
         self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
         self._collection = self._connection.cooking_app.expiring_token
 
-    def get_expiring_token(self, value: str, token_type: str | None = None) -> dict:
-        with pymongo.timeout(MAX_TIMEOUT_SECONDS):
+    def get_expiring_token(self, token: str, token_type: str | None) -> dict | None:
+        with timeout(MAX_TIMEOUT_SECONDS):
             try:
                 find_query = {
-                    "value": value
+                    "value": token
                 }
                 if token_type is not None:
                     find_query["tokenType"] = token_type
@@ -40,8 +39,8 @@ class TokenCollection:
                 return item
             except TokenException as e:
                 raise e
-            except pymongo.errors.ExecutionTimeout:
+            except errors.ExecutionTimeout:
                 raise TokenException(Errors.DB_TIMEOUT)
-            except pymongo.errors.PyMongoError:
+            except errors.PyMongoError:
                 raise TokenException(Errors.DB_ERROR)
 

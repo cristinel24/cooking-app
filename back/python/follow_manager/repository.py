@@ -10,15 +10,15 @@ class MongoCollection:
     _connection = None
 
     def __init__(self, connection: MongoClient | None = None):
-        if self._connection is None:
+        if connection is None:
             self._connection = MongoClient(MONGO_URL)
-            try:
-                self._connection.admin.command('ping')
-            except ConnectionError:
-                raise FollowManagerException(ErrorCodes.DB_CONNECTION_FAILURE.value,
-                                             status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             self._connection = connection
+        try:
+            self._connection.admin.command('ping')
+        except ConnectionError:
+            raise FollowManagerException(ErrorCodes.DB_CONNECTION_FAILURE.value,
+                                         status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UserCollection(MongoCollection):

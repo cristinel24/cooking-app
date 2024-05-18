@@ -34,6 +34,5 @@ class UserCollection(MongoCollection):
                 updated = self._collection.update_one({"id": user_id}, update_pipeline)
                 if updated.matched_count == 0:
                     raise ProfileDataChangerException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
-        except (Exception, errors.PyMongoError) as e:
-            print(e)
+        except (Exception, errors.PyMongoError):
             raise ProfileDataChangerException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR)

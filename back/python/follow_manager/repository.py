@@ -1,30 +1,29 @@
+from constants import DB_NAME, MAX_TIMEOUT_TIME_SECONDS, MONGO_URI, ErrorCodes
+from exception import FollowManagerException
 from fastapi import status
 from pymongo import MongoClient, errors, timeout
-
-from constants import MONGO_URL, ErrorCodes, MAX_TIMEOUT_TIME_SECONDS
-from exception import FollowManagerException
 from utils import match_collection_error
 
 
 class MongoCollection:
-    _connection = None
-
     def __init__(self, connection: MongoClient | None = None):
         if connection is None:
-            self._connection = MongoClient(MONGO_URL)
+            self._connection = MongoClient(MONGO_URI)
         else:
             self._connection = connection
         try:
-            self._connection.admin.command('ping')
+            self._connection.admin.command("ping")
         except ConnectionError:
-            raise FollowManagerException(ErrorCodes.DB_CONNECTION_FAILURE.value,
-                                         status.HTTP_500_INTERNAL_SERVER_ERROR)
+            raise FollowManagerException(
+                ErrorCodes.DB_CONNECTION_FAILURE.value,
+                status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
 
 class UserCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.user
+        self._collection = self._connection.get_database(DB_NAME).user
 
     def ping_user(self, user_id: str) -> bool:
         try:
@@ -39,7 +38,7 @@ class UserCollection(MongoCollection):
 class FollowCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.follow
+        self._collection = self._connection.get_database(DB_NAME).follow
 
     def get_followers_count(self, user_id: str) -> int:
         try:

@@ -35,4 +35,4 @@ class UserCardRequestData(BaseModel):
 
 
 class UserCardResponseData(BaseModel):
-    cards: list[UserCardData] | None = None
+    cards: list[UserCardData]

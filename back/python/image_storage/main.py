@@ -6,7 +6,7 @@ from fastapi import FastAPI, UploadFile, Response, status
 from fastapi.responses import FileResponse
 
 import services
-from constants import HOST_URL, PORT, IMAGE_DIRECTORY_PATH, ErrorCodes
+from constants import HOST, PORT, IMAGE_DIRECTORY_PATH, ErrorCodes
 from exception import ImageStorageException
 
 app = FastAPI()
@@ -43,4 +43,4 @@ async def delete_image(image_id: str):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host=HOST_URL, port=PORT)
+    uvicorn.run(app, host=HOST, port=PORT)

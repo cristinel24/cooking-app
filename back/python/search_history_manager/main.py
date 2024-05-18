@@ -38,4 +38,4 @@ async def clear_search_history(user_id: str):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host=constants.HOST_URL, port=constants.PORT)
+    uvicorn.run(app, host=constants.HOST, port=constants.PORT)

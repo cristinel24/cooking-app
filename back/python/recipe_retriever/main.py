@@ -29,4 +29,4 @@ async def get_recipe_card_by_id(recipe_id: str, response: Response) -> Union[Rec
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=HOST_URL, port=PORT)
+    uvicorn.run(app, host=HOST, port=PORT)

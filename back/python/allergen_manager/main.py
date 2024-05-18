@@ -1,12 +1,8 @@
-import os
-from dotenv import load_dotenv
 from fastapi import FastAPI, status, Response
 import uvicorn
 import services
 import exceptions
-import constants
-
-load_dotenv()
+from constants import ErrorCodes, HOST, PORT
 
 app = FastAPI()
 
@@ -17,7 +13,7 @@ async def get_allergens(response: Response, starting_with: str = ''):
         return await services.get_allergens_by_starting_string(starting_with)
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 
 @app.post("/allergen/{name}")
@@ -26,7 +22,7 @@ async def add_allergen(name: str, response: Response):
         await services.add_allergen_by_name(name)
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 
 @app.delete("/allergen/{name}")
@@ -38,8 +34,8 @@ async def remove_allergen(name: str, response: Response):
         return {"errorCode": e.error_code}
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=os.getenv("HOST", "localhost"), port=int(os.getenv("PORT", 8000)))
+    uvicorn.run(app, host=HOST, port=PORT)

@@ -1,19 +1,19 @@
-import pymongo
-from pymongo import errors
-from fastapi import status
-from constants import MONGO_URL, MAX_TIMEOUT_TIME_SECONDS, ErrorCodes
 import exceptions
+import pymongo
+from constants import DB_NAME, MAX_TIMEOUT_TIME_SECONDS, MONGO_URI, ErrorCodes
+from fastapi import status
+from pymongo import errors
 
 
 class MongoCollection:
     def __init__(self, connection: pymongo.MongoClient | None = None):
-        self._connection = connection if connection is not None else pymongo.MongoClient(MONGO_URL)
+        self._connection = connection if connection is not None else pymongo.MongoClient(MONGO_URI)
 
 
 class RecipeCollection(MongoCollection):
     def __init__(self, connection: pymongo.MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.recipe
+        self._collection = self._connection.get_database(DB_NAME).recipe
 
     def get_recipe_by_id(self, recipe_id: str, projection_arg: dict) -> dict:
         try:

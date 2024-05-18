@@ -39,4 +39,4 @@ async def remove_recipe_from_saved(request: Request, user_id: str, recipe_id: st
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=constants.HOST_URL, port=constants.PORT)
+    uvicorn.run(app, host=constants.HOST, port=constants.PORT)

@@ -7,7 +7,7 @@ let id = 0
 export const uploadImage = async (data) => {
     const imgId = id
     id++
-    return `https://picsum.photos/${id}/picsum/200/300`
+    return `https://picsum.photos/id/${id}/200/300`
     // try {
     //     const response = await axios.put(`${API_URL}/api/image_storage`, data, {
     //         headers: {

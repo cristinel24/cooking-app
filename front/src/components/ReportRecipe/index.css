@@ -1,11 +1,11 @@
-.report-recipe-wrapper{
+.report-recipe-wrapper {
     position: fixed;
     top: 0;
     right: 0;
     display: flex;
     flex-direction: column;
-    color: var(--body);
-    background-color: var(--ubody);
+    color: var(--body-bg-color);
+    background-color: var(--report-bg-color);
     width: 400px;
     height: 100vh;
     justify-content: center;
@@ -49,43 +49,43 @@
 }
 
 .report-recipe-give-up-button .action-button-icon,
-.report-recipe-send-button .action-button-icon{
+.report-recipe-send-button .action-button-icon {
     display: none;
 }
 
 .report-recipe-send-button .action-button {
-    background-color: var(--body);
+    background-color: var(--body-bg-color);
     margin-bottom: 20px;
     padding: 15px;
     width: 7rem;
 }
 
-.report-recipe-send-button .action-button-text{
+.report-recipe-send-button .action-button-text {
     font-size: 0.7rem;
     text-align: center;
     margin: auto;
 }
 
 .report-recipe-give-up-button .action-button {
-    background-color: var(--neutru);
+    background-color: var(--neutral-bg-color);
     padding: 15px;
     width: 7rem;
     margin-left: 50px;
-    border:none;
+    border: none;
 }
 
-.report-recipe-give-up-button .action-button-text{
+.report-recipe-give-up-button .action-button-text {
     font-size: 0.7rem;
     text-align: center;
     margin: auto;
 }
 
-.report-recipe-send-button .action-button:hover{
-    background-color: var(--bkgcolor);
+.report-recipe-send-button .action-button:hover {
+    background-color: var(--color-primary);
 }
 
-.report-recipe-give-up-button .action-button:hover{
-    background-color: var(--bkgcolor);
+.report-recipe-give-up-button .action-button:hover {
+    background-color: var(--color-primary);
 }
 
 @media screen and (max-width: 600px) and (min-width: 481px) {
@@ -108,6 +108,6 @@
     }
 
     .report-recipe-inputs label {
-        font-size:1rem;
+        font-size: 1rem;
     }
 }

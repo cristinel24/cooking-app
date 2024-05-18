@@ -55,6 +55,7 @@ function replaceImageSrcs(obj, sourceMap) {
 
 function Test() {
     const [richTextData, setRichTextData] = useState({})
+    const [finalData, setFinalData] = useState('')
 
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -77,7 +78,7 @@ function Test() {
                 return data
             })
 
-            console.log(renderJSONtoHTML(richTextData))
+            setFinalData(renderJSONtoHTML(richTextData))
         } catch (error) {
             console.error('Error submitting form:', error)
         }
@@ -94,6 +95,11 @@ function Test() {
                 />
                 <button type="submit">Submit</button>
             </form>
+
+            <div className="preview" style={{ backgroundColor: 'white' }}>
+                Preview:
+                <div dangerouslySetInnerHTML={{ __html: finalData }} />
+            </div>
         </>
     )
 }

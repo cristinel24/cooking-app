@@ -1,15 +1,23 @@
 import os
+import pathlib
 from io import BytesIO
 
 import httpx
 from PIL import Image
+from fastapi import UploadFile
 
 import api
-from constants import IMAGE_DIRECTORY_PATH, IMAGE_EXTENSION, ErrorCodes
+from constants import IMAGE_DIRECTORY_PATH, MAX_IMAGE_SIZE, ACCEPTED_IMAGE_EXTENSIONS, ErrorCodes
 from exception import ImageStorageException
 
 
-async def add_image(image_bytes: BytesIO):
+async def add_image(file: UploadFile):
+    file_extension = pathlib.Path(file.filename).suffix
+    if file_extension not in ACCEPTED_IMAGE_EXTENSIONS:
+        raise ImageStorageException(ErrorCodes.INVALID_IMAGE_EXTENSION.value, 400)
+    image_bytes = BytesIO(await file.read())
+    if image_bytes.getbuffer().nbytes > MAX_IMAGE_SIZE:
+        raise ImageStorageException(ErrorCodes.TOO_LARGE_FILE.value, 413)
     if not os.path.exists(IMAGE_DIRECTORY_PATH):
         os.mkdir(IMAGE_DIRECTORY_PATH)
     try:
@@ -20,7 +28,7 @@ async def add_image(image_bytes: BytesIO):
     try:
         image_id = await api.get_id()
         image = Image.open(image_bytes)
-        image.save(IMAGE_DIRECTORY_PATH + image_id + IMAGE_EXTENSION)
+        image.save(IMAGE_DIRECTORY_PATH + image_id + file_extension)
     except httpx.ConnectError:
         raise ImageStorageException(ErrorCodes.NOT_RESPONSIVE_API.value, 503)
     except OSError:

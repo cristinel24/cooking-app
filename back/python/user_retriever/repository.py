@@ -21,7 +21,7 @@ class UserCollection(MongoCollection):
             with pymongo.timeout(MONGO_TIMEOUT):
                 user = self._collection.find_one({"id": user_id}, projection=projection_arg)
                 if user is None:
-                    raise UserRetrieverException(status.HTTP_status.HTTP_404_NOT_FOUND_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
+                    raise UserRetrieverException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
                 return user
         except errors.PyMongoError:
             raise UserRetrieverException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR)

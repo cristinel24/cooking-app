@@ -30,7 +30,7 @@ async def remove_tag(name: str, response: Response):
     try:
         await services.remove_tag_by_name(name)
     except exceptions.TagException as e:
-        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        response.status_code = status.HTTP_404_NOT_FOUND
         return {"errorCode": e.error_code}
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR

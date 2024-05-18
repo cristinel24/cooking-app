@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import ActionButton from '../ActionButton'
-import './index.css'
+import { useState } from 'react'
 import { LuSend } from "react-icons/lu";
 import { MdOutlineCancel } from "react-icons/md";
-function Report(props) {
-    localStorage.setItem('theme', 'light')
 
+import './index.css'
+
+import { Button } from '../../components'
+
+function Report(props) {
     const [formVariants, setFormVariants] = useState([
         { id: 1, text: 'Conținut sexual', checked: false },
         { id: 2, text: 'Conținut respingător/violent', checked: false },
@@ -26,7 +27,8 @@ function Report(props) {
         )
     }
 
-    const fuctionForButton = ()=>{}
+    const fuctionForButton = () => { }
+
     return (
         <div>
             <div className="report-wrapper">
@@ -54,20 +56,20 @@ function Report(props) {
                 </div>
                 <div className="report-buttons">
                     <div className="report-send-button">
-                        <ActionButton
+                        <Button
                             text="Trimite"
                             Icon={LuSend}
                             onClick={() => {
                                 props.onSend(
                                     formVariants.filter(
-                                        (variant) => variant.checked == true
+                                        (variant) => variant.checked === true
                                     )
                                 )
                             }}
                         />
                     </div>
                     <div className="report-give-up-button">
-                        <ActionButton
+                        <Button
                             text="Renunță"
                             Icon={MdOutlineCancel}
                             onClick={props.onGiveUp}

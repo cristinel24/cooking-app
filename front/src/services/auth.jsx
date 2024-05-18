@@ -15,7 +15,9 @@ export const verify = async (token) => {
 }
 
 export const login = async (data) => {
-    await axios.post(`${API_URL}/auth/login`, data)
-        .then(response => console.log(response))
+    const result = await axios.post(`${API_URL}/auth/login`, data)
+        .then(response => response.data)
         .catch(err => console.log(err))
+
+    return result
 }

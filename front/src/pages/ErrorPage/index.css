@@ -1,0 +1,5 @@
+.error {
+    color: var(--txtcolor);
+    display: flex;
+    align-items: center;
+}

@@ -1,74 +1,42 @@
-import { ThemeContext, themes } from '../../context'
-import React, { useEffect, useState } from 'react'
-import './index.css'
+import { useContext, useState } from 'react'
 import { FaRegHeart, FaRegUser, FaRegMoon, FaBars } from 'react-icons/fa6'
-import { IoSettingsOutline, IoSearch } from 'react-icons/io5'
+import { IoSettingsOutline, IoSearch, IoLogOutOutline, IoPerson, IoPersonAdd } from 'react-icons/io5'
+import { AiOutlineUserAdd } from "react-icons/ai";
+import { GrLogin } from "react-icons/gr";
 import { FaTimes } from 'react-icons/fa'
+import { Link, useNavigate } from 'react-router-dom'
+
+import './index.css'
+import { ThemeContext, UserContext } from '../../context'
+import { LuLogIn } from 'react-icons/lu';
 
 const Navbar = () => {
-    const heart = () => {
-        console.log('Pressed heart!')
-    }
-
-    const profile = () => {
-        console.log('Pressed profile!')
-    }
-
-    const settings = () => {
-        console.log('Pressed settings!')
-    }
+    const { logout, loggedIn } = useContext(UserContext);
+    const { toggleTheme } = useContext(ThemeContext);
+    const navigate = useNavigate();
 
     const search = () => {
         const searchInput = Array.from(
             document.getElementsByClassName('nav-search')
         )
             .filter(
-                (element) => window.getComputedStyle(element).display != 'none'
+                (element) => window.getComputedStyle(element).display !== 'none'
             )[0]
             .querySelector('.nav-search-input')
 
-        console.log(searchInput.value)
+        navigate(`/search?query=${searchInput.value}`)
+
+        // TODO: take the filters from somewhere
+    }
+
+    const onLogout = () => {
+        logout()
+        navigate("/")
     }
 
     const handleKeyDown = (event) => {
-        if (event.keyCode === 13) {
-            //enter was pressed
+        if (event.keyCode === 13) { // enter was pressed
             search()
-        }
-    }
-
-    const [theme, setTheme] = useState(
-        themes[localStorage.getItem('theme')] || ''
-    )
-
-    useEffect(() => {
-        if (theme === '') {
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                setTheme(themes.dark)
-                localStorage.setItem('theme', 'dark')
-            } else {
-                setTheme(themes.light)
-                localStorage.setItem('theme', 'light')
-            }
-        }
-    }, [])
-
-    useEffect(() => {
-        for (const color in theme) {
-            document.documentElement.style.setProperty(
-                `--${color}`,
-                `${theme[color]}`
-            )
-        }
-    }, [theme])
-
-    const toggleTheme = () => {
-        if (theme === themes.light) {
-            setTheme(themes.dark)
-            localStorage.setItem('theme', 'dark')
-        } else {
-            setTheme(themes.light)
-            localStorage.setItem('theme', 'light')
         }
     }
 
@@ -79,80 +47,102 @@ const Navbar = () => {
             ? setActiveDropdown('nav-dropdown nav-active')
             : setActiveDropdown('nav-dropdown')
     }
+
     return (
-        <ThemeContext.Provider
-            value={{
-                theme,
-                toggleTheme,
-            }}
-        >
-            <nav className="nav" id="nav">
-                <a href="/" className="nav-brand">
-                    <span className="nav-brand-span">Cooking</span>
-                    <span className="nav-brand-span">App</span>
-                    <img className="nav-brand-img" src="./logo.png"></img>
-                </a>
+        <nav className="nav" id="nav">
+            <a href="/" className="nav-brand">
+                <span className="nav-brand-span">Cooking</span>
+                <span className="nav-brand-span">App</span>
+                <img className="nav-brand-img" src="/logo.png" alt="brand" />
+            </a>
 
-                <div className="nav-search" id="search">
-                    <IoSearch className="nav-search-icon" onClick={search} />
-                    <input
-                        className="nav-search-input"
-                        placeholder="Search"
-                        type="text"
-                        id="searchInput"
-                        onKeyDown={handleKeyDown}
-                    />
-                </div>
+            <div className="nav-search" id="search">
+                <IoSearch className="nav-search-icon" onClick={search} />
+                <input
+                    className="nav-search-input"
+                    placeholder="Search"
+                    type="text"
+                    id="searchInput"
+                    onKeyDown={handleKeyDown}
+                />
+            </div>
 
-                <div className="nav-buttons">
-                    <button className="nav-button" onClick={toggleTheme}>
-                        <FaRegMoon />
-                    </button>
-                    <button className="nav-button" onClick={settings}>
+            <div className="nav-buttons">
+                <button type="button" className="nav-button" onClick={toggleTheme}>
+                    <FaRegMoon />
+                </button>
+                {loggedIn() ? <>
+                    <Link to="/settings" className="nav-button">
                         <IoSettingsOutline />
-                    </button>
-                    <button className="nav-button" onClick={profile}>
+                    </Link>
+                    <Link to="/profile" className="nav-button">
                         <FaRegUser />
-                    </button>
-                    <button className="nav-button" onClick={heart}>
+                    </Link>
+                    <Link to="/profile/favorite" className="nav-button">
                         <FaRegHeart />
+                    </Link>
+                    <button type="button" className="nav-button" onClick={onLogout}>
+                        <IoLogOutOutline />
                     </button>
-                </div>
+                </> : <>
+                    <Link to="/login" className="nav-button">
+                        <LuLogIn />
+                    </Link>
+                    <Link to="/register" className="nav-button">
+                        <AiOutlineUserAdd />
+                    </Link>
+                </>}
+            </div >
 
-                {/* hamburger menu */}
-                <div className="nav-buttons-hamburger-menu">
-                    <button className="nav-button-theme" onClick={toggleTheme}>
-                        <FaRegMoon />
-                    </button>
+            {/* hamburger menu */}
+            <div className="nav-buttons nav-buttons-hamburger-menu">
+                <button type="button" className="nav-button nav-button-theme" onClick={toggleTheme}>
+                    <FaRegMoon />
+                </button>
 
-                    <button
-                        className="nav-dropdown-icon"
-                        onClick={toggleDropdown}
-                    >
-                        {activeDropdown === 'nav-dropdown' ? (
-                            <FaBars />
-                        ) : (
-                            <FaTimes />
-                        )}
-                    </button>
-                </div>
+                <button
+                    type="button"
+                    className="nav-button nav-button-dropdown"
+                    onClick={toggleDropdown}
+                >
+                    {activeDropdown === 'nav-dropdown' ? (
+                        <FaBars />
+                    ) : (
+                        <FaTimes />
+                    )}
+                </button>
+            </div >
 
-                <div className={activeDropdown}>
-                    <button className="nav-button" onClick={settings}>
+            <div className={activeDropdown}>
+                {loggedIn() ? <>
+                    <Link to="/settings" className="nav-button">
                         <IoSettingsOutline />
-                        <p>Setari</p>
-                    </button>
-                    <button className="nav-button" onClick={profile}>
+                        <p>Setări</p>
+                    </Link>
+                    <Link to="/profile" className="nav-button">
                         <FaRegUser />
-                        <p>Profilul tau</p>
-                    </button>
-                    <button className="nav-button" onClick={heart}>
+                        <p>Profilul tău</p>
+                    </Link>
+                    <Link to="/profile/favorite" className="nav-button">
                         <FaRegHeart />
                         <p>Favorite</p>
+                    </Link>
+                    <button type="button" className="nav-button" onClick={onLogout}>
+                        <IoLogOutOutline />
+                        <p>Deconectează-te</p>
                     </button>
-                </div>
-            </nav>
-        </ThemeContext.Provider>
+                </> : <>
+                    <Link to="/login" className="nav-button">
+                        <LuLogIn />
+                        <p>Conectează-te</p>
+                    </Link>
+                    <Link to="/register" className="nav-button">
+                        <AiOutlineUserAdd />
+                        <p>Înregistrează-te</p>
+                    </Link>
+                </>}
+            </div>
+        </nav >
     )
 }
 

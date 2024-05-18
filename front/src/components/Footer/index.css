@@ -1,6 +1,3 @@
-:root{
-    --footer-height:3rem;
-}
 .footer {
     display: flex;
     align-items: center;
@@ -10,7 +7,8 @@
     height: var(--footer-height);
 }
 
-.footer-brand,.footer-bug {
+.footer-brand,
+.footer-bug {
     display: flex;
     flex-grow: 1;
     align-items: center;
@@ -18,7 +16,7 @@
     color: var(--body);
 }
 
-.footer-brand{
+.footer-brand {
     font-size: 0.875rem;
     font-weight: bold;
     text-decoration: none;
@@ -60,7 +58,8 @@
         font-size: 0.625rem;
     }
 
-    .footer-brand,.footer-bug {
+    .footer-brand,
+    .footer-bug {
         text-align: center;
     }
 }

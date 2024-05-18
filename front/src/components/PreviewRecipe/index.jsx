@@ -1,7 +1,8 @@
 import './index.css'
-import ActionButton from '../ActionButton'
-import useResizeWindow from '../../hooks/useResizeWindow'
 import { MdWavingHand } from 'react-icons/md'
+
+import { Button } from '../../components'
+import useResizeWindow from '../../hooks/useResizeWindow'
 
 /**
  * @typedef {Object} PrepareDescriptionReturns
@@ -25,7 +26,7 @@ const prepareDescription = (description, width) => {
         width > 1100 ? descrip.slice(0, 350) : descrip.slice(0, 200)
     // If the trimming changed the length of the string that means
     // we have more to read.
-    const isShowMoreToRead = trimmedDescription.length != descrip.length
+    const isShowMoreToRead = trimmedDescription.length !== descrip.length
 
     return {
         descrip: trimmedDescription,
@@ -56,21 +57,19 @@ const PreviewRecipe = ({ title, tags, allergens, description }) => {
                 <h1 className="preview-recipe-title">{title ?? 'Titlu'}</h1>
                 <div className="preview-recipe-tags">
                     <div className="preview-tags-title">Tag-uri:</div>
-                    {tags &&
-                        tags.map((tag, index) => (
-                            <div key={index} className="preview-tag">
-                                {tag}
-                            </div>
-                        ))}
+                    {tags?.map((tag) => (
+                        <div key={tag} className="preview-tag">
+                            {tag}
+                        </div>
+                    ))}
                 </div>
                 <div className="preview-recipe-allergens">
                     <div className="preview-allergens-title">Alergeni:</div>
-                    {allergens &&
-                        allergens.map((allergen, index) => (
-                            <div key={index} className="preview-allergen">
-                                {allergen}
-                            </div>
-                        ))}
+                    {allergens?.map((allergen) => (
+                        <div key={allergen} className="preview-allergen">
+                            {allergen}
+                        </div>
+                    ))}
                 </div>
                 <div className="preview-recipe-description">
                     <div className="preview-description-title">Descriere:</div>
@@ -78,7 +77,7 @@ const PreviewRecipe = ({ title, tags, allergens, description }) => {
                         {descrip} {isShowMoreToRead && '...'}
                     </div>
                 </div>
-                <ActionButton
+                <Button
                     onClick={handleViewRecipe}
                     text="Vizualizare reteta"
                     Icon={MdWavingHand}

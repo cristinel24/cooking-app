@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import ActionButton from '../ActionButton'
-import './index.css'
+import { useState } from 'react'
 import { LuSend } from "react-icons/lu";
 import { MdOutlineCancel } from "react-icons/md";
-function ReportRecipe() {
-    const pathPage = 'https://www.google.ro/'
-    localStorage.setItem('theme', 'light')
 
+import './index.css'
+
+import { Button } from '../../components'
+
+function ReportRecipe() {
     const [formVariants, setFormVariants] = useState([
         { id: 1, text: 'Continut sexual', checked: false },
         { id: 2, text: 'Continut respingator/violent', checked: false },
@@ -55,14 +55,14 @@ function ReportRecipe() {
                 </div>
                 <div className="report-recipe-buttons">
                     <div className="report-recipe-send-button">
-                        <ActionButton
+                        <Button
                             text="Trimite"
                             Icon={LuSend}
                             onClick={fuctionForButton}
                         />
                     </div>
                     <div className="report-recipe-give-up-button">
-                        <ActionButton
+                        <Button
                             text="Renunta"
                             Icon={MdOutlineCancel}
                             onClick={fuctionForButton}

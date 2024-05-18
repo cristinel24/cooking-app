@@ -2,8 +2,10 @@
 /*componenta asta le tine mereu afisate*/
 
 import { useState } from 'react'
+
 import './index.css'
-import ActionButton from '../ActionButton'
+
+import { Button } from '../../components'
 
 function Filters() {
     const [filterSearchTerm, setFilterSearchTerm] = useState('')
@@ -57,9 +59,9 @@ function Filters() {
                                 .toLowerCase()
                                 .includes(filterSearchTerm.toLowerCase())
                         )
-                        .map((filter, index) => (
-                            <ActionButton
-                                key={index}
+                        .map((filter) => (
+                            <Button
+                                key={filter}
                                 onClick={() => handleFilterClick(filter)}
                                 text={filter}
                             />
@@ -85,7 +87,7 @@ function Filters() {
                                     .includes(alergenSearchTerm.toLowerCase())
                             )
                             .map((alergen, index) => (
-                                <ActionButton
+                                <Button
                                     key={index}
                                     onClick={() => handleAlergenClick(alergen)}
                                     text={alergen}

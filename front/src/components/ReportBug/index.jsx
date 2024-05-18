@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
+
 import './index.css'
-import ActionButton from '../ActionButton';
+
+import { Button } from '../../components';
 
 export default function ReportBug(props) {
 
@@ -60,7 +62,7 @@ export default function ReportBug(props) {
                 </div>
                 <div className="report-bug-buttons">
                     <div className="report-bug-send-button">
-                        <ActionButton
+                        <Button
                             className="report-bug-button1"
                             text="Trimite"
                             onClick={() => {
@@ -69,14 +71,14 @@ export default function ReportBug(props) {
                                     file: selectedFile,
                                 })
                             }}
-                        ></ActionButton>
+                        />
                     </div>
                     <div className="report-bug-give-up-button">
-                        <ActionButton
+                        <Button
                             className="report-bug-button2"
                             text="Renunță"
                             onClick={props.onGiveUp}
-                        ></ActionButton>
+                        />
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import {
-    ActionButton,
+    Button,
     PageButton,
     PopUpChat,
     Recipe,
@@ -24,7 +24,7 @@ import {
 import { MdWavingHand } from 'react-icons/md'
 
 //pagina noua
-function Test() {
+export default function Test() {
     const [tags, setTags] = useState([])
     const [favorite, setFavorite] = useState(false)
 
@@ -35,7 +35,7 @@ function Test() {
     let date = '23.07.2023 18:00 AM'
     let view = 'Vizualizare profil'
     const pathPage = '/'
-    const handleClick = () => {}
+    const handleClick = () => { }
     const mostViewedRecipes = [
         [
             'Title1',
@@ -109,7 +109,7 @@ function Test() {
     const searchTags = (searchTag) => {
         return ['suggestionA', 'suggestionB', 'suggestionC']
     }
-    const func1 = () => {}
+    const func1 = () => { }
 
     const [isReportVisible, setIsReportVisible] = useState(false);
 
@@ -117,9 +117,9 @@ function Test() {
         setIsReportVisible(!isReportVisible);
     };
 
-    const [isReportBugVisible,setIsReportBugVisible]=useState(false);
+    const [isReportBugVisible, setIsReportBugVisible] = useState(false);
 
-    const toggleReportBugVisibility = () =>{
+    const toggleReportBugVisibility = () => {
         setIsReportBugVisible(!isReportBugVisible);
     }
 
@@ -254,7 +254,7 @@ function Test() {
                 Buna
             </PageButton>
 
-            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
+            <Button onClick={func1} text="buna" Icon={MdWavingHand} /> */}
             {/* <TagSelector
                 tags={tags}
                 addTag={addTag}
@@ -264,5 +264,3 @@ function Test() {
         </>
     )
 }
-
-export default Test

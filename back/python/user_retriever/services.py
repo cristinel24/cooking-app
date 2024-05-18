@@ -1,4 +1,4 @@
-from constants import USER_DATA_PROJECTION, USER_CARD_DATA_PROJECTION, USER_FULL_DATA_PROJECTION, ErrorCodes
+from constants import USER_DATA_PROJECTION, USER_CARD_DATA_PROJECTION, USER_FULL_DATA_PROJECTION 
 from repository import UserCollection
 from schemas import *
 from utils import calculate_avg_rating

@@ -4,7 +4,7 @@ from exception import UserRetrieverException
 
 import services
 import uvicorn
-from constants import HOST_URL, PORT, ErrorCodes
+from constants import HOST, PORT, ErrorCodes
 from schemas import UserData, UserCardData, UserCardsRequestData, UserFullData
 
 app = FastAPI()
@@ -50,4 +50,4 @@ async def get_user_full_data(user_id: str, request: Request, response: Response)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=HOST_URL, port=PORT)
+    uvicorn.run(app, host=HOST, port=PORT)

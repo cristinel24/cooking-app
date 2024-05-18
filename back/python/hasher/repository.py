@@ -1,6 +1,5 @@
-import os
+from constants import DB_NAME, MONGO_URI, TIMEOUT_LIMIT, ErrorCodes
 from pymongo import MongoClient, timeout
-from constants import ErrorCodes, TIMEOUT_LIMIT
 
 
 def singleton(cls):
@@ -17,14 +16,14 @@ def singleton(cls):
 class DBWrapper:
     def __init__(self):
         try:
-            self.connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
+            self.connection = MongoClient(MONGO_URI)
         except Exception:
             raise Exception(ErrorCodes.DB_CONNECTION_FAILURE.value)
 
     def get_primary_hash_algorithm_name(self) -> str:
         try:
             with timeout(TIMEOUT_LIMIT):
-                query_result = self.connection.cooking_app.hash_algorithm.find_one({"primary": {"$exists": True}}, {"name": 1})
+                query_result = self.connection.get_database(DB_NAME).hash_algorithm.find_one({"primary": {"$exists": True}}, {"name": 1})
         except Exception:
             raise Exception(ErrorCodes.FAILED_TO_GET_PRIMARY_HASH_ALGO.value)
         return query_result["name"]
@@ -32,7 +31,7 @@ class DBWrapper:
     def check_exists_hash_algorithm_name(self, name: str) -> bool:
         try:
             with timeout(TIMEOUT_LIMIT):
-                query_result = self.connection.cooking_app.hash_algorithm.find_one({"name": name}, {"_id": 1})
+                query_result = self.connection.get_database(DB_NAME).hash_algorithm.find_one({"name": name}, {"_id": 1})
         except Exception:
             raise Exception(ErrorCodes.FAILED_TO_CHECK_HASH_ALGO_EXISTANCE.value)
         return query_result is not None

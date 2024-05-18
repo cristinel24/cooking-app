@@ -1,13 +1,13 @@
 import pymongo
-from pymongo import MongoClient, errors
-from constants import MONGO_URL, DB_NAME, ErrorCodes, MONGO_TIMEOUT
+from constants import DB_NAME, MONGO_TIMEOUT, MONGO_URI, ErrorCodes
 from exception import UserRetrieverException
 from fastapi import status
+from pymongo import MongoClient, errors
 
 
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
-        self._connection = connection if connection is not None else MongoClient(MONGO_URL)
+        self._connection = connection if connection is not None else MongoClient(MONGO_URI)
 
 
 class UserCollection(MongoCollection):

@@ -1,13 +1,9 @@
-import os
-from dotenv import load_dotenv
 from fastapi import FastAPI, status, Response
 import uvicorn
 
-from constants import ErrorCodesToHTTPCodesMapping
+from constants import ErrorCodesToHTTPCodesMapping, HOST, PORT
 from schemas import AccountVerification, ChangeRequest
 from services import handle_account_verification, handle_change_request
-
-load_dotenv()
 
 app = FastAPI()
 
@@ -37,4 +33,4 @@ async def request_change(change_request: ChangeRequest, response: Response):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=os.getenv("HOST", "localhost"), port=int(os.getenv("PORT", 2060)))
+    uvicorn.run(app, host=HOST, port=PORT)

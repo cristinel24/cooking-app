@@ -1,14 +1,13 @@
-import os
 import re
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from constants import ErrorCodes, COMPILED_EMAIL_VALIDATION_REGEX
+from constants import SMTP_PASSWORD, SMTP_PORT, SMTP_ROOT_EMAIL, SMTP_SERVER, SMTP_USERNAME, ErrorCodes, COMPILED_EMAIL_VALIDATION_REGEX
 
 
 def send_email(recipient: str, subject: str, html_content: str) -> None:
     message = MIMEMultipart("alternative")
-    message['From'] = os.getenv("SMTP_ROOT_EMAIL")
+    message['From'] = SMTP_ROOT_EMAIL
     message['To'] = recipient
     message['Subject'] = subject
 
@@ -16,7 +15,7 @@ def send_email(recipient: str, subject: str, html_content: str) -> None:
     message.attach(body)
 
     try:
-        server = smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT")))
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
     except Exception:
         raise Exception(ErrorCodes.SMTP_CONNECTION_FAILED.value)
     try:
@@ -25,7 +24,7 @@ def send_email(recipient: str, subject: str, html_content: str) -> None:
         except Exception:
             raise Exception(ErrorCodes.SMTP_TTLS_FAILED.value)
         try:
-            server.login(os.getenv("SMTP_USERNAME"), os.getenv("SMTP_PASSWORD"))
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
         except Exception:
             raise Exception(ErrorCodes.SMTP_LOGIN_FAILED.value)
         try:

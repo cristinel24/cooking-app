@@ -30,6 +30,15 @@ async def get_image(image_id: str):
                         content=json.dumps({"errorCode": ErrorCodes.NONEXISTENT_IMAGE.value}))
 
 
+@app.delete("/{image_id}")
+async def delete_image(image_id: str):
+    matches = fnmatch.filter(os.listdir(IMAGE_DIRECTORY_PATH), image_id + ".*")
+    if not matches:
+        return Response(status_code=status.HTTP_404_NOT_FOUND,
+                        content=json.dumps({"errorCode": ErrorCodes.NONEXISTENT_IMAGE.value}))
+    os.remove(IMAGE_DIRECTORY_PATH + matches[0])
+
+
 if __name__ == "__main__":
     import uvicorn
 

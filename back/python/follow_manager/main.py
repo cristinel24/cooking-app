@@ -1,7 +1,6 @@
-import json
 from typing import Annotated
 
-from fastapi import Body, FastAPI, Header, Response, status
+from fastapi import FastAPI, Header, status
 from fastapi.responses import JSONResponse
 
 import services
@@ -46,8 +45,9 @@ async def get_following(user_id: str, start: int, count: int):
 
 @app.put("/user/{user_id}/following", tags=["auth", "following"])
 async def add_follow(user_id: str, body: FollowData, x_user_id: Annotated[str | None, Header()] = None):
-    if not x_user_id or user_id is not x_user_id:
-        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})
+    if not x_user_id or user_id != x_user_id:
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})
     try:
         await services.add_follow(user_id, body.followsId)
     except FollowManagerException as e:
@@ -56,8 +56,9 @@ async def add_follow(user_id: str, body: FollowData, x_user_id: Annotated[str | 
 
 @app.delete("/user/{user_id}/following", tags=["auth", "following"])
 async def delete_follow(user_id: str, body: FollowData, x_user_id: Annotated[str | None, Header()] = None):
-    if not x_user_id or user_id is not x_user_id:
-        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})
+    if not x_user_id or user_id != x_user_id:
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})
     try:
         await services.delete_follow(user_id, body.followsId)
     except FollowManagerException as e:

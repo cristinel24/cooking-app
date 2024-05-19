@@ -1,23 +1,17 @@
 use crate::{
-    get_redirect_url,
-    models::ErrorResponse,
     config::get_global_context,
     endpoints::{
-        redirect,
         rating::{
-            EndpointResponse,
-            common::{body_rating_response, PutPatchType, HEADER_KEYS},
-            SERVICE
-        }
-    }
-};
-use salvo::{
-    oapi::endpoint,
-    http::StatusCode,
-    prelude::Json,
-    Request, Response
+            common::{body_rating_response, PutPatchType},
+            EndpointResponse, SERVICE,
+        },
+        redirect,
+    },
+    get_redirect_url,
+    models::ErrorResponse,
 };
 use reqwest::Method;
+use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
 use tracing::error;
 
 #[endpoint(
@@ -32,19 +26,19 @@ pub async fn delete_rating_endpoint(
     let url: String = get_redirect_url!(req, res, SERVICE);
     let rating_id = req.param::<String>("rating_id").unwrap_or_default();
 
-    return match body_rating_response(
+    return (body_rating_response(
         Method::DELETE,
         url.as_str(),
         &[("rating_id", rating_id)],
         PutPatchType::None,
-        &headers,
+        req.headers().clone(),
     )
-        .await
-    {
-        Ok(response) => Json(response),
-        Err(_) => {
-            res.status_code(StatusCode::BAD_REQUEST);
-            Json(EndpointResponse::Error(ErrorResponse::default()))
-        }
-    };
+    .await)
+        .map_or_else(
+            |_| {
+                res.status_code(StatusCode::BAD_REQUEST);
+                Json(EndpointResponse::Error(ErrorResponse::default()))
+            },
+            Json,
+        );
 }

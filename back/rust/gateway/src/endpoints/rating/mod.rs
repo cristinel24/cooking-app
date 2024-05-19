@@ -1,32 +1,31 @@
 mod common;
-pub mod delete_rating;
+pub mod delete;
 
+pub use delete::delete_rating_endpoint;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
-pub use delete_rating::delete_rating_endpoint;
-pub mod get_rating;
-pub use get_rating::get_rating_endpoint;
-pub mod patch_rating;
-pub use patch_rating::patch_rating_endpoint;
-pub mod put_rating;
-pub use put_rating::put_rating_endpoint;
+pub mod get;
+pub use get::get_rating_endpoint;
+pub mod patch;
+pub use patch::patch_rating_endpoint;
+pub mod put;
+use crate::models::rating::List;
 use crate::models::ErrorResponse;
-use crate::models::rating::RatingList;
+pub use put::put_rating_endpoint;
 
 pub const SERVICE: &str = "rating";
 
-
 #[derive(Deserialize, ToSchema)]
 pub enum EndpointResponse {
-    RatingList(RatingList),
+    RatingList(List),
     Ok(String),
     Error(ErrorResponse),
 }
 
 impl Serialize for EndpointResponse {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         match self {
             Self::RatingList(ok_response) => ok_response.serialize(serializer),

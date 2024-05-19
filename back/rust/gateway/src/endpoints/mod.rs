@@ -3,6 +3,8 @@ use anyhow::Context;
 
 pub mod rating;
 
+/// # Errors
+/// * Couldn't get `service`
 pub fn redirect(context: &Configuration, url: &str, service: &str) -> anyhow::Result<String> {
     let service = context
         .services

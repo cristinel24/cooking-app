@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RatingDataCard {
+pub struct DataCard {
     pub parent_id: String,
     pub parent_type: String,
     pub author: User,
@@ -15,14 +15,14 @@ pub struct RatingDataCard {
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RatingList {
-    pub ratings: Vec<RatingDataCard>,
+pub struct List {
+    pub ratings: Vec<DataCard>,
     pub total: usize,
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RatingCreate {
+pub struct Create {
     pub author_id: String,
     pub description: String,
     pub rating: usize,
@@ -31,7 +31,7 @@ pub struct RatingCreate {
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RatingUpdate {
+pub struct Update {
     pub description: String,
     pub rating: usize,
 }

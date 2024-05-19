@@ -42,6 +42,9 @@ pub struct CommandLineArguments {
     pub config_filepath: PathBuf,
 }
 
+/// # Errors
+/// * Configuration file does not exist!
+/// * Bad configuration file!
 pub fn get_configuration() -> Result<Configuration> {
     let cmd_args = Serialized::defaults(CommandLineArguments::parse());
     let config_file = &cmd_args.value.config_filepath;
@@ -60,6 +63,8 @@ pub fn get_configuration() -> Result<Configuration> {
 
 pub static CONTEXT: OnceCell<Configuration> = OnceCell::new();
 
+/// # Errors
+/// * Couldn't load `CookingApp` Configuration
 #[inline]
 pub fn get_global_context() -> Result<&'static Configuration> {
     CONTEXT.get().map_or_else(

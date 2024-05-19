@@ -17,7 +17,7 @@ pub struct User {
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct UserCardData {
+pub struct CardData {
     pub id: String,
     pub username: String,
     pub display_name: String,
@@ -28,7 +28,7 @@ pub struct UserCardData {
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct UserFullData {
+pub struct FullData {
     pub id: String,
     pub username: String,
     pub display_name: String,
@@ -49,6 +49,6 @@ pub struct UserFullData {
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct UserCardsRequestData {
+pub struct CardsRequestData {
     pub ids: Vec<String>,
 }

@@ -14,7 +14,7 @@ pub struct ErrorResponse {
 impl Default for ErrorResponse {
     fn default() -> Self {
         Self {
-            error_code: StatusCode::INTERNAL_SERVER_ERROR.as_u16() as u32,
+            error_code: u32::from(StatusCode::INTERNAL_SERVER_ERROR.as_u16()),
         }
     }
 }

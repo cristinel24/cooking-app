@@ -4,10 +4,12 @@ pub mod graceful_shutdown;
 pub mod models;
 pub mod service;
 
-use crate::config::{CONTEXT, get_configuration};
+use crate::config::{get_configuration, CONTEXT};
+use crate::endpoints::rating::{
+    delete_rating_endpoint, get_rating_endpoint, patch_rating_endpoint, put_rating_endpoint,
+};
 use crate::graceful_shutdown::GracefulShutdown;
 use anyhow::{Context, Result};
-use reqwest::header::HeaderName;
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
 use salvo::{
@@ -18,11 +20,12 @@ use salvo::{
     Depot, FlowCtrl, Listener, Request, Response, Server,
 };
 use tracing::info;
-use crate::endpoints::rating::{delete_rating_endpoint, get_rating_endpoint, patch_rating_endpoint, put_rating_endpoint};
 
-use yansi::Paint;
 
-pub const HEADER_KEYS: [HeaderName; 2] = [HeaderName::from_static("X-User-Id"), HeaderName::from_static("X-User-Roles")];
+pub const HEADER_KEYS: [&str; 2] = [
+    "X-User-Id",
+    "X-User-Roles",
+];
 
 #[handler]
 async fn auth_middleware(
@@ -32,21 +35,21 @@ async fn auth_middleware(
     ctrl: &mut FlowCtrl,
 ) {
     let headers = req.headers_mut();
-    let authorization = req.header(AUTH_HEADER);
+    let _authorization = headers.get::<String>(AUTH_HEADER.to_string());
     headers.clear();
-    let headers = HEADER_KEYS.iter()
-        .map(|header| (header, None)) // TODO: call some serice to get user_id/roles
-        .collect::<Vec<_>>();
+    // let headers = HEADER_KEYS.iter()
+    //     .map(|header| (header, None)) // TODO: call some serice to get user_id/roles
+    //     .collect::<Vec<_>>();
     ctrl.call_next(req, depot, res).await;
 }
 
 #[endpoint]
-async fn test(req: &mut Request, depot: &mut Depot) {
-
-}
+async fn test() {}
 
 const AUTH_HEADER: &str = "Authorization";
 
+
+#[allow(clippy::too_many_lines)]
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt()
@@ -272,16 +275,14 @@ async fn main() -> Result<()> {
         config.input.host, config.input.port
     );
 
-    CONTEXT
-        .set(config)
-        .map_or_else(
-            |_| {
-                Err(anyhow::Error::msg(
-                    "Couldn't initialize CookingApp Configuration!",
-                ))
-            },
-            Ok,
-        )?;
+    CONTEXT.set(config).map_or_else(
+        |_| {
+            Err(anyhow::Error::msg(
+                "Couldn't initialize CookingApp Configuration!",
+            ))
+        },
+        Ok,
+    )?;
 
     let server = Server::new(acceptor);
 

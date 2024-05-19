@@ -1,22 +1,21 @@
-use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
-use reqwest::{Client, Method};
-use serde::Serialize;
-use tracing::warn;
 use crate::{
     endpoints::rating::EndpointResponse,
     models::{
+        rating::{Create, Update},
         ErrorResponse,
-        rating::{RatingCreate, RatingUpdate}
-    }
+    },
 };
+use reqwest::header::HeaderMap;
+use reqwest::{Client, Method};
+use serde::Serialize;
 
 pub enum PutPatchType {
-    RatingCreate(RatingCreate),
-    RatingUpdate(RatingUpdate),
-    None
+    RatingCreate(Create),
+    RatingUpdate(Update),
+    None,
 }
 
-pub async fn body_rating_response<T: Serialize + ?Sized>(
+pub async fn body_rating_response<T: Serialize + ?Sized + Send + Sync>(
     method: Method,
     service_url: &str,
     params: &T,
@@ -31,7 +30,7 @@ pub async fn body_rating_response<T: Serialize + ?Sized>(
     req_builder = match json_body {
         PutPatchType::RatingCreate(value) => req_builder.json(&value),
         PutPatchType::RatingUpdate(value) => req_builder.json(&value),
-        PutPatchType::None => req_builder
+        PutPatchType::None => req_builder,
     };
 
     let response = req_builder.send().await?;
@@ -44,4 +43,3 @@ pub async fn body_rating_response<T: Serialize + ?Sized>(
         ))
     }
 }
-

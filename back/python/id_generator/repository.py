@@ -1,9 +1,10 @@
-import os
-
 import pymongo
-from pymongo import MongoClient, errors
-from constants import ErrorCode, ID_PROJECTION, MAX_TIMEOUT_TIME_SECONDS
-from exceptions import CustomException
+from fastapi import status
+from pymongo import MongoClient
+
+from constants import *
+from exceptions import IdGeneratorException
+
 
 # I almost died when integrating this class
 class MongoCollection:
@@ -11,8 +12,8 @@ class MongoCollection:
         if connection is not None:
             self._connection = connection
         else:
-            self._connection = MongoClient(os.getenv("MONGO_URI"))
-        self.counters_collection = self._connection[os.getenv("DATABASE_NAME")][os.getenv("COUNTERS_COLLECTION")]
+            self._connection = MongoClient(MONGO_URI)
+        self.counters_collection = self._connection.get_database(DB_NAME).counters
 
     def get_next_id(self) -> str:
         try:
@@ -26,9 +27,8 @@ class MongoCollection:
                 if result:
                     return result["value"]
                 else:
-                    raise CustomException(status_code=500, detail=ErrorCode.ERROR_20301,
-                                          headers={ErrorCode.DB_ERROR_ID_GENERATOR: ErrorCode.DB_ERROR_ID_GENERATOR})
-        except pymongo.errors.ExecutionTimeout as exc:
-            raise CustomException(status_code=500, detail=str(exc), headers={ErrorCode.DB_ERROR_ID_GENERATOR: str(exc)})
-        except errors.PyMongoError as exc:
-            raise CustomException(status_code=500, detail=str(exc), headers={ErrorCode.DB_ERROR_ID_GENERATOR: str(exc)})
+                    raise IdGeneratorException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCode.DB_ERROR_ID_GENERATOR)
+        except IdGeneratorException as e:
+            raise e
+        except Exception:
+            raise IdGeneratorException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCode.DB_ERROR_ACCESS)

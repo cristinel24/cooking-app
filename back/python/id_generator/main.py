@@ -1,29 +1,25 @@
-from fastapi import FastAPI
-from constants import ErrorCode
-from services import get_next_id_services
-from exceptions import *
-from dotenv import load_dotenv
 import uvicorn
-import os
+from fastapi import FastAPI, Response, status
+
+from constants import PORT, HOST, ErrorCode
+from exceptions import *
+from services import get_next_id_services
 
 app = FastAPI()
 
-load_dotenv()
-PORT = int(os.getenv("PORT", 12345))
 
 @app.get("/")
-async def get_id():
+async def get_id(response: Response):
     try:
         new_id = get_next_id_services()
         return new_id
-    except Exception as e:
-        error_code = ErrorCode.DB_ERROR_ID_GENERATOR.value
-        error_message = {"errorCode": error_code}
-        if isinstance(e, CustomException):
-            status_code = e.status_code
-        else:
-            status_code = 500  # Internal Server Error
-        raise HTTPException(status_code=status_code, detail=str(e), headers=error_message)
+    except IdGeneratorException as e:
+        response.status_code = e.status_code
+        return {"errorCode": e.error_code}
+    except (Exception,):
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"errorCode": ErrorCode.UNKNOWN}
+
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=PORT, reload=True)
+    uvicorn.run("main:app", host=HOST, port=PORT, reload=True)

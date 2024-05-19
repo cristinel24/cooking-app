@@ -12,19 +12,32 @@ class MongoCollection:
         return self._connection
 
 
-class ExpiringTokenCollection(MongoCollection):
+class UserCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.cooking_app.expiring_token
+        self._collection = self._connection.get_database(DB_NAME).user
 
-    def find_and_remove_token(self, value: str, session) -> dict | None:
+    def exists_user(self, user_id: str):
         try:
-            return self._collection.find_one_and_delete({"value": value}, session=session)
+            return self._collection.find_one({"id": user_id}) is not None
         except pymongo.errors.PyMongoError as e:
             raise match_collection_error(e)
 
-    def find_and_remove_token_by_user_id(self, user_id: str, session) -> dict | None:
+
+
+class ExpiringTokenCollection(MongoCollection):
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).expiring_token
+
+    def find_and_remove_token(self, value: str) -> dict | None:
         try:
-            self._collection.delete_many({"userId": user_id}, session=session)
+            return self._collection.find_one_and_delete({"value": value})
+        except pymongo.errors.PyMongoError as e:
+            raise match_collection_error(e)
+
+    def find_and_remove_token_by_user_id(self, user_id: str) -> dict | None:
+        try:
+            self._collection.delete_many({"userId": user_id})
         except pymongo.errors.PyMongoError as e:
             raise match_collection_error(e)

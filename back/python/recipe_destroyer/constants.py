@@ -23,6 +23,7 @@ if RECIPE_RETRIEVER_IMAGES_API_URL is None:
 
 
 MAX_TIMEOUT_TIME_SECONDS = 3
+MONGO_URI = os.getenv("MONGO_URI","mongodb://localhost:27017/?directConnection=true")
 
 class ErrorCodes(Enum):
     SERVER_ERROR=26300

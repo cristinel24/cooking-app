@@ -1,5 +1,3 @@
-import os
-
 from constants import *
 from pymongo import MongoClient, errors, timeout
 
@@ -24,8 +22,8 @@ class UserCollection:
 
 class TokenCollection:
     def __init__(self):
-        self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
-        self._collection = self._connection.cooking_app.expiring_token
+        self._connection = MongoClient(MONGO_URI)
+        self._collection = self._connection.get_database(DB_NAME).expiring_token
 
     def get_expiring_token(self, token: str, token_type: str | None) -> dict | None:
         with timeout(MAX_TIMEOUT_SECONDS):

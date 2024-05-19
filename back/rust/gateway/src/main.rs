@@ -26,6 +26,8 @@ use salvo::{
     Depot, FlowCtrl, Listener, Request, Response, Server,
 };
 use tracing::info;
+use crate::endpoints::email::{request_change, verify_account};
+use crate::endpoints::role_changer::admin_role_changer_endpoint;
 use crate::endpoints::user_retriever::{get_user_card_item, get_user_data_item, get_user_profile_item, post_user_card_item};
 
 pub const HEADER_KEYS: [&str; 2] = ["X-User-Id", "X-User-Roles"];
@@ -121,13 +123,14 @@ async fn main() -> Result<()> {
         Router::with_path("/email")
             .oapi_tag("EMAIL")
             .append(&mut vec![
-                Router::with_path("/verify-account").post(test),
-                Router::with_path("/request-change").post(test),
+                Router::with_path("/verify-account").post(verify_account),
+                Router::with_path("/request-change").post(request_change),
             ]),
         Router::with_path("/user").oapi_tag("ROLE CHANGER").push(
             Router::with_path("/<user_id>/roles")
                 .hoop(auth_middleware)
-                .oapi_security(security_requirement.clone()),
+                .oapi_security(security_requirement.clone())
+                .patch(admin_role_changer_endpoint),
         ),
         Router::with_path("/user/<user_id>")
             .oapi_tag("SEARCH HISTORY")

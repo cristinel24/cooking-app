@@ -12,6 +12,8 @@ pub mod rating;
 pub mod recipe_saver;
 pub mod tag;
 pub mod user_retriever;
+pub mod email;
+pub mod role_changer;
 
 const SUCCESSFUL_RESPONSE: &str = "Successful operation response";
 const FAILED_RESPONSE: &str = "Failed operation response";

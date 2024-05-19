@@ -294,7 +294,7 @@ report1 = {
 }
 
 report_collection.insert_one(report1)
-user_collection.insert_many([user1, user2, user3])
+user_collection.insert_many([user1, user2, user3, user4])
 recipe_collection.insert_one(recipe1)
 rating_collection.insert_many([rating1, rating2, rating3])
 tag_collection.insert_many(

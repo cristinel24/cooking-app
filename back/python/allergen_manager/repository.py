@@ -23,7 +23,7 @@ class AllergenCollection(MongoCollection):
 
             return [item["allergen"] for item in result]
 
-    async def add_allergen_by_name(self, name: str) -> None:
+    async def inc_allergen(self, name: str) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             result = self._collection.find_one({"allergen": name})
 
@@ -32,7 +32,7 @@ class AllergenCollection(MongoCollection):
             else:
                 self._collection.insert_one({"allergen": name, "counter": 1})
 
-    async def add_allergens(self, names: list[str]) -> None:
+    async def inc_allergens(self, names: list[str]) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             results = [result["allergen"] for result in self._collection.find({"allergen": {"$in": names}})]
             if results:
@@ -41,7 +41,7 @@ class AllergenCollection(MongoCollection):
             if new_allergens:
                 self._collection.insert_many(new_allergens)
 
-    async def remove_allergen_by_name(self, name: str) -> None:
+    async def dec_allergen(self, name: str) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             result = self._collection.find_one({"allergen": name})
 
@@ -53,7 +53,7 @@ class AllergenCollection(MongoCollection):
             else:
                 self._collection.update_one(result, {"$inc": {"counter": -1}})
 
-    async def decrement_allergens(self, names: list[str]) -> None:
+    async def dec_allergens(self, names: list[str]) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             results = [(result["allergen"], result["counter"]) for result in
                        self._collection.find({"allergen": {"$in": names}})]

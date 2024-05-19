@@ -1,5 +1,5 @@
 .tag {
-    background-color: var(--body-bg-color-dimmed);
+    background-color: var(--input-bg-color);
     width: fit-content;
     display: flex;
     gap: 0.5rem;
@@ -7,7 +7,7 @@
     justify-content: center;
     border-radius: 10px;
     padding: 0.2rem;
-    color: var(--text-color-dimmed);
+    color: var(--input-color);
 }
 
 .tag span {

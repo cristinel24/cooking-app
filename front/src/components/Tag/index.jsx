@@ -2,12 +2,12 @@ import React from 'react'
 import { RxCross2 } from 'react-icons/rx'
 import './index.css'
 
-function Tag(props) {
+function Tag({ text, onRemove, className }) {
     return (
-        <div className="tag">
-            <span>{props.text}</span>
-            {props.onRemove && (
-                <button className="tag-button" onClick={props.onRemove}>
+        <div className={`tag ${className}`}>
+            <span>{text}</span>
+            {onRemove && (
+                <button className="tag-button" onClick={onRemove}>
                     <RxCross2 />
                 </button>
             )}

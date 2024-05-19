@@ -1,3 +1,8 @@
+:root {
+    --color-white: #eeeeee;
+    --color-black: #111111;
+}
+
 [data-theme='light'] {
     --color-primary: #ff5348;
     --body-bg-color: #f0f0f0;
@@ -6,7 +11,7 @@
     --hover-bg-color: #ee3326;
     --footer-bg-color: #0c1821;
     --card-color: #ff8878;
-    --card-bg-color: #f7d0c8;
+    --card-bg-color: #f5cac7;
     --border-color: #111111;
     --profile-name-color: #808080;
     --navbar-bg-color: #ff5348;
@@ -35,7 +40,7 @@
     --hover-bg-color: #02080d;
     --footer-bg-color: #eeeeee;
     --card-color: #ff8878;
-    --card-bg-color: #ffe7e2;
+    --card-bg-color: #f5cac7;
     --border-color: #111111;
     --profile-name-color: #808080;
     --navbar-bg-color: #ff5348;

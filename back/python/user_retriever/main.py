@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Response, Request, status
+from typing import Annotated
+
+from fastapi import FastAPI, Response, status, Header
 
 from exception import UserRetrieverException
 
@@ -39,10 +41,11 @@ async def get_user_cards(user_ids: UserCardsRequestData, response: Response) -> 
 
 
 @app.get("/user/{user_id}/profile", tags=["user_full_data, auth"])
-async def get_user_full_data(user_id: str, request: Request, response: Response) -> UserFullData | dict[str, int]:
+async def get_user_full_data(user_id: str, response: Response,
+                             x_user_id: Annotated[str | None, Header()] = None) -> UserFullData | dict[str, int]:
     try:
-        if user_id != request.state.user_id:
-            raise UserRetrieverException(status.HTTP_403_FORBIDDEN, ErrorCodes.UNAUTHORIZED)
+        if user_id != x_user_id:
+            raise UserRetrieverException(status.HTTP_403_FORBIDDEN, ErrorCodes.NOT_AUTHENTICATED)
         return await services.get_user_full_data(user_id)
     except UserRetrieverException as e:
         response.status_code = e.status_code

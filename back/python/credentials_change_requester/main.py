@@ -14,7 +14,7 @@ async def create_request(request: CredentialChangeRequest, response: Response) -
         await services.create_request(request)
     except CredentialChangeRequesterException as e:
         response.status_code = e.status_code
-        return {"errorCode": e.error_code.value}
+        return {"errorCode": e.error_code}
 
 
 if __name__ == "__main__":

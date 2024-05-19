@@ -12,11 +12,12 @@ async def create_request(request: CredentialChangeRequest) -> dict[str, int]:
     try:
         user = user_collection.get_user_by_email(request.email, USER_DATA_PROJECTION)
         if not user:
-            raise CredentialChangeRequesterException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
+            raise CredentialChangeRequesterException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
         try:
             token = await request_token(user["id"], request.changeType + "Change")
         except Exception as e:
-            raise CredentialChangeRequesterException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.TOKEN_GENERATION_ERROR)
+            raise CredentialChangeRequesterException(status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                                     ErrorCodes.TOKEN_GENERATION_ERROR.value)
         email_request = ChangeRequest(
             email=request.email,
             token=token["value"],
@@ -25,7 +26,8 @@ async def create_request(request: CredentialChangeRequest) -> dict[str, int]:
         try:
             await send_email(email_request)
         except Exception as e:
-            raise CredentialChangeRequesterException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.EMAIL_SEND_ERROR)
+            raise CredentialChangeRequesterException(status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                                     ErrorCodes.EMAIL_SEND_ERROR.value)
     except CredentialChangeRequesterException as e:
         raise e
-    return {"errorCode": 200}
+    return {"errorCode": status.HTTP_200_OK}

@@ -1,9 +1,11 @@
-import json
+from typing import Annotated
 
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, status
+from fastapi.params import Header
+from fastapi.responses import JSONResponse
 
 import services
-from constants import HOST_URL, PORT
+from constants import HOST, PORT, ErrorCodes
 from exception import RecipeCreatorException
 from schemas import RecipeData
 
@@ -11,16 +13,17 @@ app = FastAPI()
 
 
 @app.post("/recipe")
-async def create_recipe(recipe_data: RecipeData):
-    # todo: add auth request instead of RecipeData
-    user_id = "10"
+async def create_recipe(recipe_data: RecipeData, x_user_id: Annotated[str | None, Header()]):
+    if not x_user_id:
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})
     try:
-        await services.create_recipe(user_id, recipe_data)
+        await services.create_recipe(x_user_id, recipe_data)
     except RecipeCreatorException as e:
-        return Response(status_code=e.status_code, content=json.dumps({"errorCode": e.error_code}))
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
 
 
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host=HOST_URL, port=PORT)
+    uvicorn.run(app, host=HOST, port=PORT)

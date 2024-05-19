@@ -4,8 +4,13 @@ from fastapi import status
 import api
 from constants import ErrorCodes
 from exception import RecipeCreatorException
+from repository import MongoCollection, UserCollection, RecipeCollection
 from schemas import RecipeData, Recipe
 from utils import validate_recipe_data, check_flags
+
+client = MongoCollection()
+user_collection = UserCollection(client.get_connection())
+recipe_collection = RecipeCollection(client.get_connection())
 
 
 async def create_recipe(user_id: str, recipe_data: RecipeData):
@@ -18,22 +23,19 @@ async def create_recipe(user_id: str, recipe_data: RecipeData):
         raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
     recipe.tokens = await api.tokenize_recipe(recipe_data.model_dump(exclude=set("thumbnail")))
     recipe.authorId = user_id
-    flags = 0b0000
+    flags = 0
     try:
-
-        flags += 1
-
-        flags += 1 << 1
+        with client.get_connection().start_session() as session:
+            with session.start_transaction():
+                user_collection.update_user(user_id, recipe.id, session)
+                recipe_collection.insert_recipe(vars(recipe), session)
         await api.add_allergens(recipe.allergens)
-        flags += 1 << 2
+        flags += 1 << 0
         await api.add_tags(recipe.tags)
-        flags += 1 << 3
+        flags += 1 << 1
     except RecipeCreatorException as e:
         if check_flags(flags, 0):
-            pass
-        if check_flags(flags, 1):
-            pass
-        if check_flags(flags, 2):
             await api.delete_allergens(recipe.allergens)
-        if check_flags(flags, 3):
+        if check_flags(flags, 1):
             await api.delete_tags(recipe.tags)
+        raise e

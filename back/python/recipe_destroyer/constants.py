@@ -1,4 +1,25 @@
+import os
+from dotenv import load_dotenv
 from enum import Enum
+
+load_dotenv()
+
+
+RECIPE_RETRIEVER_ALLERGENS_API_URL = os.getenv("RECIPE_RETRIEVER_ALLERGENS_API_URL")
+if RECIPE_RETRIEVER_ALLERGENS_API_URL is None:
+    raise ValueError("Environment variable 'RECIPE_RETRIEVER_ALLERGENS_API_URL' is not set")
+
+RECIPE_RETRIEVER_RATINGS_API_URL = os.getenv("RECIPE_RETRIEVER_RATINGS_API_URL")
+if RECIPE_RETRIEVER_RATINGS_API_URL is None:
+    raise ValueError("Environment variable 'USER_RETRIEVER_API_URL' is not set")
+
+RECIPE_RETRIEVER_TAGS_API_URL = os.getenv("RECIPE_RETRIEVER_TAGS_API_URL")
+if RECIPE_RETRIEVER_TAGS_API_URL is None:
+    raise ValueError("Environment variable 'RECIPE_RETRIEVER_TAGS_API_URL' is not set")
+
+RECIPE_RETRIEVER_IMAGES_API_URL = os.getenv("RECIPE_RETRIEVER_IMAGES_API_URL")
+if RECIPE_RETRIEVER_IMAGES_API_URL is None:
+    raise ValueError("Environment variable 'RECIPE_RETRIEVER_IMAGES_API_URL' is not set")
 
 
 MAX_TIMEOUT_TIME_SECONDS = 3
@@ -16,7 +37,3 @@ class ErrorCodes(Enum):
     RECIPE_NOT_THUMBNAIL=26308
 
 
-RECIPE_RETRIEVER_ALLERGENS_API_URL = "http://localhost:4009"
-RECIPE_RETRIEVER_TAGS_API_URL = "http://localhost:4008"
-RECIPE_RETRIEVER_RATINGS_API_URL = "http://localhost:4011"
-RECIPE_RETRIEVER_IMAGES_API_URL = "http://localhost:8083"

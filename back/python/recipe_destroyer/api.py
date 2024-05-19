@@ -3,6 +3,7 @@ import httpx
 from fastapi import status
 from exception import *
 
+
 async def delete_allergens(name: str):
     async with httpx.AsyncClient() as client:
         response = await client.delete(f"{RECIPE_RETRIEVER_ALLERGENS_API_URL}/allergen/{name}")

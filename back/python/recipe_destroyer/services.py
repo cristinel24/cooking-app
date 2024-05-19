@@ -27,3 +27,4 @@ async def delete_recipe_service(recipe_id: str):
     
     db.delete_recipe_mongo(recipe_id)
     db_user.delete_recipe_from_users_mongo(recipe_id, user_id)
+    return 0

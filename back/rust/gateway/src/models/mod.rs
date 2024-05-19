@@ -2,11 +2,11 @@ use salvo::http::StatusCode;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
-pub mod rating;
-pub mod user;
-pub mod hash;
-pub mod tags;
 pub mod allergens;
+pub mod hash;
+pub mod rating;
+pub mod tags;
+pub mod user;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]

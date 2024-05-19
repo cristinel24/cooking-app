@@ -1,16 +1,13 @@
+use crate::endpoints::{get_response, EndpointResponse};
 use crate::{
     config::get_global_context,
-    endpoints::{
-        rating::SERVICE,
-        redirect, SUCCESSFUL_RESPONSE, FAILED_RESPONSE
-    },
+    endpoints::{rating::SERVICE, redirect, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
     get_redirect_url,
     models::ErrorResponse,
 };
 use reqwest::Method;
 use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
 use tracing::error;
-use crate::endpoints::{EndpointResponse, get_response};
 
 #[endpoint(
     parameters(
@@ -45,7 +42,7 @@ pub async fn delete_rating_endpoint(
         Some(&[("rating_id", rating_id)]),
         None,
         Some(req.headers().clone()),
-        true
+        true,
     )
     .await)
         .map_or_else(

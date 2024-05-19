@@ -1,18 +1,17 @@
 use crate::config::Configuration;
+use crate::models::ErrorResponse;
 use anyhow::Context;
-use reqwest::{Client, Method, Response};
 use reqwest::header::HeaderMap;
+use reqwest::{Client, Method, Response};
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
-use crate::models::ErrorResponse;
 
-pub mod rating;
-pub mod hash;
-pub mod tag;
 pub mod allergen;
+pub mod hash;
+pub mod rating;
 pub mod recipe_saver;
-mod user_retriever;
-
+pub mod tag;
+pub mod user_retriever;
 
 const SUCCESSFUL_RESPONSE: &str = "Successful operation response";
 const FAILED_RESPONSE: &str = "Failed operation response";
@@ -32,8 +31,8 @@ impl<T: Serialize> Default for EndpointResponse<T> {
 
 impl<T: Serialize> Serialize for EndpointResponse<T> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         match self {
             Self::Ok(ok_response) => ok_response.serialize(serializer),
@@ -45,7 +44,11 @@ impl<T: Serialize> Serialize for EndpointResponse<T> {
 
 /// # Errors
 /// * Couldn't build `reqwest` client
-pub(crate) async fn get_response<T: Serialize + ?Sized + Send + Sync, H: Serialize + Send + Sync, G: Serialize + for<'de> Deserialize<'de>>(
+pub(crate) async fn get_response<
+    T: Serialize + ?Sized + Send + Sync,
+    H: Serialize + Send + Sync,
+    G: Serialize + for<'de> Deserialize<'de>,
+>(
     method: Method,
     service_url: String,
     params: Option<&T>,
@@ -53,8 +56,7 @@ pub(crate) async fn get_response<T: Serialize + ?Sized + Send + Sync, H: Seriali
     headers: Option<HeaderMap>,
     is_null: bool,
 ) -> anyhow::Result<EndpointResponse<G>> {
-    let mut req_builder = Client::new()
-        .request(method, service_url);
+    let mut req_builder = Client::new().request(method, service_url);
 
     if let Some(params) = params {
         req_builder = req_builder.query(params);
@@ -73,15 +75,15 @@ pub(crate) async fn get_response<T: Serialize + ?Sized + Send + Sync, H: Seriali
     if response.status().is_success() {
         if is_null {
             Ok(EndpointResponse::Null(response.text().await?))
+        } else {
+            Ok(EndpointResponse::Ok(response.json::<G>().await?))
         }
-        else {Ok(EndpointResponse::Ok(response.json::<G>().await?))}
     } else {
         Ok(EndpointResponse::Error(
             response.json::<ErrorResponse>().await?,
         ))
     }
 }
-
 
 /// # Errors
 /// * Couldn't get `service`

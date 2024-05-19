@@ -5,9 +5,14 @@ pub mod models;
 pub mod service;
 
 use crate::config::{get_configuration, CONTEXT};
+use crate::endpoints::allergen::{delete_allergen_item, get_allergen_item, post_allergen_item};
+use crate::endpoints::recipe_saver::{delete_recipe, put_recipe};
+use crate::endpoints::tag::{delete_tag_item, get_tag_item, post_tag_item};
 use crate::endpoints::{
     hash::{get_hash_primary, get_hash_with},
-    rating::{delete_rating_endpoint, get_rating_endpoint, patch_rating_endpoint, put_rating_endpoint}
+    rating::{
+        delete_rating_endpoint, get_rating_endpoint, patch_rating_endpoint, put_rating_endpoint,
+    },
 };
 use crate::graceful_shutdown::GracefulShutdown;
 use anyhow::{Context, Result};
@@ -21,15 +26,9 @@ use salvo::{
     Depot, FlowCtrl, Listener, Request, Response, Server,
 };
 use tracing::info;
-use crate::endpoints::allergen::{delete_allergen_item, get_allergen_item, post_allergen_item};
-use crate::endpoints::recipe_saver::{delete_recipe, put_recipe};
-use crate::endpoints::tag::{delete_tag_item, get_tag_item, post_tag_item};
+use crate::endpoints::user_retriever::{get_user_card_item, get_user_data_item, get_user_profile_item, post_user_card_item};
 
-
-pub const HEADER_KEYS: [&str; 2] = [
-    "X-User-Id",
-    "X-User-Roles",
-];
+pub const HEADER_KEYS: [&str; 2] = ["X-User-Id", "X-User-Roles"];
 
 #[handler]
 async fn auth_middleware(
@@ -51,7 +50,6 @@ async fn auth_middleware(
 async fn test() {}
 
 const AUTH_HEADER: &str = "Authorization";
-
 
 #[allow(clippy::too_many_lines)]
 #[tokio::main]
@@ -89,11 +87,19 @@ async fn main() -> Result<()> {
         Router::with_path("/tag")
             .oapi_tag("TAG")
             .get(get_tag_item)
-            .push(Router::with_path("/<name>").post(post_tag_item).delete(delete_tag_item)),
+            .push(
+                Router::with_path("/<name>")
+                    .post(post_tag_item)
+                    .delete(delete_tag_item),
+            ),
         Router::with_path("/allergen")
             .oapi_tag("ALLERGEN")
             .get(get_allergen_item)
-            .push(Router::with_path("/<name>").post(post_allergen_item).delete(delete_allergen_item)),
+            .push(
+                Router::with_path("/<name>")
+                    .post(post_allergen_item)
+                    .delete(delete_allergen_item),
+            ),
         Router::with_path("/user/<user_id>/saved-recipes")
             .oapi_tag("RECIPE SAVER")
             .hoop(auth_middleware)
@@ -103,14 +109,14 @@ async fn main() -> Result<()> {
         Router::with_path("/user")
             .oapi_tag("USER RETRIEVER")
             .append(&mut vec![
-                Router::with_path("/<user_id>").get(test).append(&mut vec![
-                    Router::with_path("/card").get(test),
+                Router::with_path("/<user_id>").get(get_user_data_item).append(&mut vec![
+                    Router::with_path("/card").get(get_user_card_item),
                     Router::with_path("/profile")
                         .hoop(auth_middleware)
                         .oapi_security(security_requirement.clone())
-                        .get(test),
+                        .get(get_user_profile_item),
                 ]),
-                Router::with_path("/user-cards").post(test),
+                Router::with_path("/user-cards").post(post_user_card_item),
             ]),
         Router::with_path("/email")
             .oapi_tag("EMAIL")

@@ -1,9 +1,8 @@
 use super::SERVICE;
+use crate::endpoints::{get_response, EndpointResponse};
 use crate::{
     config::get_global_context,
-    endpoints::{
-        redirect, SUCCESSFUL_RESPONSE, FAILED_RESPONSE
-    },
+    endpoints::{redirect, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
     get_redirect_url,
     models::{rating::Create, ErrorResponse},
 };
@@ -14,7 +13,6 @@ use salvo::{
     Request, Response, Writer,
 };
 use tracing::error;
-use crate::endpoints::{EndpointResponse, get_response};
 
 #[endpoint(
     parameters(
@@ -50,7 +48,7 @@ pub async fn put_rating_endpoint(
         Some(&[("parent_id", parent_id)]),
         Some(rating_create.into_inner()),
         Some(req.headers().clone()),
-        true
+        true,
     )
     .await)
         .map_or_else(

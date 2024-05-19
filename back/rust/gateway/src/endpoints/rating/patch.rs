@@ -1,9 +1,8 @@
 use super::SERVICE;
+use crate::endpoints::{get_response, EndpointResponse};
 use crate::{
     config::get_global_context,
-    endpoints::{
-        redirect, SUCCESSFUL_RESPONSE, FAILED_RESPONSE
-    },
+    endpoints::{redirect, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
     get_redirect_url,
     models::{rating::Update, ErrorResponse},
 };
@@ -14,7 +13,6 @@ use salvo::{
     Request, Response, Writer,
 };
 use tracing::error;
-use crate::endpoints::{EndpointResponse, get_response};
 
 #[endpoint(
     parameters(
@@ -48,7 +46,7 @@ pub async fn patch_rating_endpoint(
         None,
         Some(rating_update.into_inner()),
         Some(req.headers().clone()),
-        true
+        true,
     )
     .await)
         .map_or_else(

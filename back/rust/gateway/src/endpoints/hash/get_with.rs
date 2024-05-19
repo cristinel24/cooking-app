@@ -1,18 +1,17 @@
+use crate::config::get_global_context;
+use crate::endpoints::hash::SERVICE;
+use crate::endpoints::redirect;
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
+use crate::get_redirect_url;
+use crate::models::hash::AlgorithmName;
+use crate::models::ErrorResponse;
 use reqwest::Method;
+use salvo::http::StatusCode;
 use salvo::oapi::endpoint;
 use salvo::oapi::extract::QueryParam;
 use salvo::prelude::Json;
 use salvo::{Request, Response, Writer};
-use salvo::http::StatusCode;
-use crate::endpoints::{SUCCESSFUL_RESPONSE, FAILED_RESPONSE, EndpointResponse, get_response};
-use crate::get_redirect_url;
-use crate::models::ErrorResponse;
-use crate::models::hash::AlgorithmName;
 use tracing::error;
-use crate::config::get_global_context;
-use crate::endpoints::hash::SERVICE;
-use crate::endpoints::redirect;
-
 
 #[endpoint(
     parameters(
@@ -35,7 +34,11 @@ use crate::endpoints::redirect;
         ),
     )
 )]
-pub async fn get_hash_with(req: &mut Request, res: &mut Response, salt: QueryParam<String, true>) -> Json<EndpointResponse<AlgorithmName>> {
+pub async fn get_hash_with(
+    req: &mut Request,
+    res: &mut Response,
+    salt: QueryParam<String, true>,
+) -> Json<EndpointResponse<AlgorithmName>> {
     let uri = req.uri().to_string();
     let mut parts: Vec<&str> = uri.split('/').collect();
     if !parts.is_empty() {
@@ -50,12 +53,14 @@ pub async fn get_hash_with(req: &mut Request, res: &mut Response, salt: QueryPar
         Some(&[("salt", salt.into_inner())]),
         None,
         None,
-        false
-    ).await).map_or_else(
-        |_| {
-            res.status_code(StatusCode::BAD_REQUEST);
-            Json(EndpointResponse::Error(ErrorResponse::default()))
-        },
-        Json,
-    );
+        false,
+    )
+    .await)
+        .map_or_else(
+            |_| {
+                res.status_code(StatusCode::BAD_REQUEST);
+                Json(EndpointResponse::Error(ErrorResponse::default()))
+            },
+            Json,
+        );
 }

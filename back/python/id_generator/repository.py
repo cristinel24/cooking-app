@@ -6,7 +6,6 @@ from constants import *
 from exceptions import IdGeneratorException
 
 
-# I almost died when integrating this class
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
         if connection is not None:

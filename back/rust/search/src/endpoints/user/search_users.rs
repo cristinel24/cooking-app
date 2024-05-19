@@ -1,11 +1,14 @@
-use crate::endpoints::{EndpointResponse, ErrorResponse};
-use crate::get_context;
-use crate::repository::extended_services::UserDatabaseOperations;
-use crate::repository::get_repository;
-use crate::repository::models::user::User;
-use salvo::http::StatusCode;
-use salvo::prelude::{endpoint, Json};
-use salvo::{Request, Response};
+use crate::{
+    context::get_global_context,
+    endpoints::{EndpointResponse, ErrorResponse},
+    get_endpoint_context,
+    repository::{models::user::User, service::user::Repository as UserRepository},
+};
+use salvo::{
+    http::StatusCode,
+    prelude::{endpoint, Json},
+    Request, Response,
+};
 use tracing::error;
 
 #[endpoint(
@@ -16,9 +19,9 @@ use tracing::error;
 )]
 pub async fn search_users(res: &mut Response, req: &mut Request) -> Json<EndpointResponse<User>> {
     let id = req.param::<String>("name").unwrap_or_default();
-    let context = get_context!(res);
+    let context = get_endpoint_context!(res);
 
-    return match context.user_collection.find_by_name(id).await {
+    return match context.repository.user_collection.find_by_name(&id).await {
         Ok(value) => Json(EndpointResponse::Success(value)),
         Err(e) => {
             error!("Error: {e}");

@@ -7,7 +7,7 @@
 .login-separator-line {
     width: 100%;
     height: 1px;
-    background-color: var(--txtcolor);
+    background-color: var(--text-color);
 }
 
 .login-separator-text {
@@ -16,7 +16,7 @@
 }
 
 .login-external {
-    color: var(--navbarcolor1);
+    color: var(--navbar-color-primary);
     font-weight: bold;
 
     width: calc(100% - 4rem);
@@ -24,6 +24,6 @@
     margin: 0.5rem 0;
     text-align: center;
 
-    border: 1px solid var(--navbarcolor1);
+    border: 1px solid var(--navbar-color-primary);
     border-radius: 10px;
 }

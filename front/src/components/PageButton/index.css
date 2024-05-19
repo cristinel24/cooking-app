@@ -1,14 +1,14 @@
 .link {
-    background-color: var(--bkgcolor);
+    background-color: var(--color-primary);
     padding: 15px 20px 15px 20px;
     border-radius: 10px;
     font-size: 0.8rem;
-    color: var(--txtcolor);
+    color: var(--text-color);
     font-weight: bold;
 }
 
 .link:hover {
-    background-color: var(--hoverbkgcolor);
+    background-color: var(--hover-bg-color);
 }
 
 @media (min-width: 481px) and (max-width: 767px) {
@@ -18,7 +18,7 @@
         border-radius: 10px;
     }
     .link:hover {
-        background-color: var(--hoverbkgcolor);
+        background-color: var(--hover-bg-color);
     }
 }
 
@@ -29,6 +29,6 @@
         border-radius: 10px;
     }
     .link:hover {
-        background-color: var(--hoverbkgcolor);
+        background-color: var(--hover-bg-color);
     }
 }

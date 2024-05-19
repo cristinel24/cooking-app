@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI, status, Response
 
 import exceptions
+import schemas
 import services
 from constants import ErrorCodes, HOST, PORT
 
@@ -27,9 +28,9 @@ async def inc_allergen(name: str, response: Response):
 
 
 @app.post("/allergens/inc")
-async def inc_allergens(names: list[str], response: Response):
+async def inc_allergens(body: schemas.AllergensBody, response: Response):
     try:
-        await services.inc_allergens(names)
+        await services.inc_allergens(body.allergens)
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": ErrorCodes.SERVER_ERROR.value}
@@ -48,9 +49,9 @@ async def dec_allergen(name: str, response: Response):
 
 
 @app.post("/allergens/dec")
-async def dec_allergens(names: list[str], response: Response):
+async def dec_allergens(body: schemas.AllergensBody, response: Response):
     try:
-        await services.dec_allergens(names)
+        await services.dec_allergens(body.allergens)
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": ErrorCodes.SERVER_ERROR.value}

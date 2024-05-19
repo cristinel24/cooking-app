@@ -1,40 +1,29 @@
-import os
-from datetime import datetime
 import pymongo.errors
 from pymongo import MongoClient
-from bson import ObjectId
-from constants import ErrorCodes
-
+from constants import *
+from utils import match_collection_error
+from exception import TokenDestroyerException
 
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
-        self._connection = connection if connection is not None else MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
+        self._connection = connection if connection is not None else MongoClient(MONGO_URI)
 
+    def get_connection(self) -> MongoClient:
+        return self._connection
 
 class ExpiringTokenCollection(MongoCollection):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
         self._collection = self._connection.cooking_app.expiring_token
 
-    def get_expiring_token(self, value: str, token_type: str | None = None) -> dict:
+    def find_and_remove_token(self, value: str, session) -> dict:
         try:
-            find_query = {
-                "value": value
-            }
-            if token_type is not None:
-                find_query["type"] = token_type
-            item = self._collection.find_one(find_query)
+            token_data = self._collection.find_one_and_delete({"value": value}, session=session)
+            if not token_data:
+                raise TokenDestroyerException(ErrorCodes.TOKEN_NOT_FOUND, 404)
+            return token_data
         except pymongo.errors.PyMongoError as e:
-            raise Exception(ErrorCodes.FAILED_TO_GET_TOKEN)
-        return item
-
-    def remove_token(self, token_id: ObjectId):
-        try:
-            result = self._collection.delete_one({"_id": token_id})
-            if result.deleted_count == 0:
-                raise Exception(ErrorCodes.NO_TOKENS_REMOVED)
-        except pymongo.errors.PyMongoError as e:
-            raise Exception(ErrorCodes.FAILED_TO_REMOVE_TOKEN)
+            raise match_collection_error(e)
 
 
 class UserCollection(MongoCollection):
@@ -42,17 +31,25 @@ class UserCollection(MongoCollection):
         super().__init__(connection)
         self._collection = self._connection.cooking_app.user
 
-    def update_user_field(self, user_id: str, field: str, value: str):
+    def update_user_field(self, user_id: str, field: str, value: str, session):
         """
         update only for sessions and login.changeToken fields in user
         """
         try:
             if field == "sessions":
-                updated_items = self._collection.update_one({"id": user_id}, {"$pull": {field: {"value": value}}})
+                updated_items = self._collection.update_one(
+                    {"id": user_id},
+                    {"$pull": {field: {"value": value}}},
+                    session=session)
             else:
-                updated_items = self._collection.update_one({"id": user_id}, {"$set": {field: None}})
+                updated_items = self._collection.update_one(
+                    {"id": user_id},
+                    {"$set": {field: None}},
+                    session=session)
             if updated_items.matched_count == 0:
-                raise Exception(ErrorCodes.NO_USERS_MATCHED)
+                raise TokenDestroyerException(ErrorCodes.NO_USERS_MATCHED, 404)
+            if updated_items.modified_count == 0:
+                raise TokenDestroyerException(ErrorCodes.FAILED_TO_UPDATE_USER, 500)
         except pymongo.errors.PyMongoError as e:
-            raise Exception(ErrorCodes.FAILED_TO_UPDATE_USER)
+            raise match_collection_error(e)
 

@@ -1,22 +1,30 @@
-from repository import ExpiringTokenCollection
-from repository import UserCollection
-from constants import ErrorCodes
+import os
 
-expiring_token_collection = ExpiringTokenCollection()
-user_collection = UserCollection()
+
+from repository import *
+from constants import ErrorCodes
+from exception import TokenDestroyerException
+client = MongoCollection()
+expiring_token_collection = ExpiringTokenCollection(client.get_connection())
+user_collection = UserCollection(client.get_connection())
+
 
 
 async def delete_token(token: str):
+    session = client.get_connection().start_session()
     try:
-        token_data = expiring_token_collection.get_expiring_token(token)
-        if token_data:
-            user_id = token_data.get("userId")
-            expiring_token_collection.remove_token(token_data["_id"])
-            if token_data.get("tokenType") == "session":
-                user_collection.update_user_field(user_id, "sessions", token_data.get("value"))
-            elif token_data.get("tokenType") in ["passwordChange", "usernameChange", "emailChange", "emailConfirm"]:
-                user_collection.update_user_field(user_id,"login.changeToken", "None")
-        else:
-            raise Exception(ErrorCodes.TOKEN_NOT_FOUND)
+        with session.start_transaction():
+            token_data = expiring_token_collection.find_and_remove_token(token, session)
+            if token_data:
+                user_id = token_data.get("userId")
+                if token_data.get("tokenType") == "session":
+                    user_collection.update_user_field(user_id, "sessions", token_data.get("value"), session)
+                elif token_data.get("tokenType") in ["passwordChange", "usernameChange", "emailChange", "emailConfirm"]:
+                    user_collection.update_user_field(user_id, "login.changeToken", "None", session)
+            else:
+                raise TokenDestroyerException(ErrorCodes.TOKEN_NOT_FOUND, 404)
+    except TokenDestroyerException as e:
+        raise e
     except Exception as e:
-        raise Exception(ErrorCodes.FAILED_TO_DELETE_TOKEN)
+        raise TokenDestroyerException(ErrorCodes.FAILED_TO_DELETE_TOKEN, 500) from e
+    session.end_session()

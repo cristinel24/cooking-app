@@ -1,14 +1,9 @@
-import os
-
-from dotenv import load_dotenv
-from fastapi import FastAPI, status, Response
-from constants import ErrorCodes
+import json
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from constants import *
 from services import delete_token
-
-load_dotenv()
-
-PORT = int(os.getenv("PORT", 8000))
-HOST = os.getenv("HOST", "0.0.0.0")
+from exception import TokenDestroyerException
 
 app = FastAPI()
 
@@ -17,9 +12,8 @@ app = FastAPI()
 async def delete_token_route(token: str):
     try:
         await delete_token(token)
-    except Exception as e:
-        Response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": ErrorCodes.SERVER_ERROR.value}
+    except TokenDestroyerException as e:
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code.value})
 
 if __name__ == "__main__":
     import uvicorn

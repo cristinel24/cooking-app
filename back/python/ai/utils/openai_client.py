@@ -1,9 +1,5 @@
-from dotenv import load_dotenv
-
 from openai import AsyncOpenAI
-import os
-
-load_dotenv()
+from utils.constants import AI_API_KEY
 
 
 def function_singleton(original_function):
@@ -18,4 +14,4 @@ def function_singleton(original_function):
 
 @function_singleton
 def openai_client():
-    return AsyncOpenAI(api_key=str(os.getenv("AI_API_KEY", "")))
+    return AsyncOpenAI(api_key=AI_API_KEY)

@@ -2,7 +2,7 @@ import pymongo
 from constants import *
 from fastapi import status
 
-from recipe_saver import exceptions
+import exceptions
 
 
 class MongoCollection:
@@ -29,5 +29,5 @@ class UserCollection(MongoCollection):
             result = self._collection.update_one({"id": user_id}, {"$pull": {"savedRecipes": recipe_id}})
             if result.matched_count == 0:
                 raise exceptions.RecipeSaverException(status.HTTP_404_NOT_FOUND, ErrorCodes.NONEXISTENT_USER.value)
-            if result.updated_count == 0:
+            if result.modified_count == 0:
                 raise exceptions.RecipeSaverException(status.HTTP_404_NOT_FOUND, ErrorCodes.RECIPE_NOT_SAVED.value)

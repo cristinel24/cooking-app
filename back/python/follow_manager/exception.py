@@ -1,6 +1,3 @@
-from constants import ErrorCodes
-
-
 class FollowManagerException(Exception):
     def __init__(self, error_code: int, status_code: int):
         self.error_code = error_code

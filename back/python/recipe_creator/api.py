@@ -11,11 +11,13 @@ from exception import RecipeCreatorException
 async def get_id() -> str:
     async with httpx.AsyncClient() as client:
         response = await client.get(url=ID_GENERATOR_ROUTE)
-        if response.json().get("id") is None:
-            if response.json().get("errorCode") is None:
-                raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
+        if "id" not in response.json():
+            if "errorCode" in response.json():
+                raise RecipeCreatorException(int(response.json()["errorCode"]),
+                                             status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
-                raise RecipeCreatorException(int(response.json()["errorCode"]), status.HTTP_500_INTERNAL_SERVER_ERROR)
+                raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API,
+                                             status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return response.json()["id"]
 
@@ -26,8 +28,14 @@ async def tokenize_recipe(recipe_data: dict) -> list[str]:
         try:
             response = await client.post(url=AI_RECIPE_TOKENIZER_ROUTE,
                                          content=payload)
-            if response.json().get("tokens") is None:
+            if "tokens" not in response.json():
                 logging.warning("AI API did not return tokens")
+                if "errorCode" in response.json():
+                    raise RecipeCreatorException(int(response.json()["errorCode"]),
+                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
+                else:
+                    raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API,
+                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
                 return response.json()["tokens"]
         except (Exception,):
@@ -38,7 +46,14 @@ async def add_allergens(allergens: list[str]):
     async with httpx.AsyncClient() as client:
         payload = json.dumps({"allergens": allergens})
         try:
-            await client.post(url=INC_ALLERGENS_ROUTE, content=payload)
+            response = await client.post(url=INC_ALLERGENS_ROUTE, content=payload)
+            if response.status_code <= 199 or response.status_code >= 300:
+                if "errorCode" in response.json():
+                    raise RecipeCreatorException(int(response.json()["errorCode"]),
+                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
+                else:
+                    raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API,
+                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
         except (Exception,):
             logging.fatal("ALLERGENS MANAGER is not responsive")
             raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
@@ -48,7 +63,14 @@ async def delete_allergens(allergens: list[str]):
     async with httpx.AsyncClient() as client:
         payload = json.dumps({"allergens": allergens})
         try:
-            await client.post(url=DEC_ALLERGENS_ROUTE, content=payload)
+            response = await client.post(url=DEC_ALLERGENS_ROUTE, content=payload)
+            if response.status_code <= 199 or response.status_code >= 300:
+                if "errorCode" in response.json():
+                    raise RecipeCreatorException(int(response.json()["errorCode"]),
+                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
+                else:
+                    raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API,
+                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
         except (Exception,):
             raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
 
@@ -57,7 +79,14 @@ async def add_tags(tags: list[str]):
     async with httpx.AsyncClient() as client:
         payload = json.dumps({"tags": tags})
         try:
-            await client.post(url=INC_TAGS_ROUTE, content=payload)
+            response = await client.post(url=INC_TAGS_ROUTE, content=payload)
+            if response.status_code <= 199 or response.status_code >= 300:
+                if "errorCode" in response.json():
+                    raise RecipeCreatorException(int(response.json()["errorCode"]),
+                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
+                else:
+                    raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API,
+                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
         except (Exception,):
             logging.fatal("TAGS MANAGER is not responsive")
             raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
@@ -67,6 +96,13 @@ async def delete_tags(tags: list[str]):
     async with httpx.AsyncClient() as client:
         payload = json.dumps({"tags": tags})
         try:
-            await client.post(url=DEC_TAGS_ROUTE, content=payload)
+            response = await client.post(url=DEC_TAGS_ROUTE, content=payload)
+            if response.status_code <= 199 or response.status_code >= 300:
+                if "errorCode" in response.json():
+                    raise RecipeCreatorException(int(response.json()["errorCode"]),
+                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
+                else:
+                    raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API,
+                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
         except (Exception,):
             raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)

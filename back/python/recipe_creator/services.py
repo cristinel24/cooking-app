@@ -16,8 +16,7 @@ recipe_collection = RecipeCollection(client.get_connection())
 
 
 async def create_recipe(user_id: str, recipe_data: RecipeData):
-    if validate_recipe_data(recipe_data) is False:
-        raise RecipeCreatorException(ErrorCodes.INVALID_RECIPE_DATA.value, status.HTTP_400_BAD_REQUEST)
+    validate_recipe_data(recipe_data)
     recipe = Recipe(recipe_data)
     try:
         recipe.id = await api.get_id()
@@ -32,10 +31,10 @@ async def create_recipe(user_id: str, recipe_data: RecipeData):
             with session.start_transaction():
                 user_collection.update_user(user_id, recipe.id, session)
                 recipe_collection.insert_recipe(vars(recipe), session)
-        await api.add_allergens(recipe.allergens)
-        flags += 1
-        await api.add_tags(recipe.tags)
-        flags += 1 << 1
+                await api.add_allergens(recipe.allergens)
+                flags += 1
+                await api.add_tags(recipe.tags)
+                flags += 1 << 1
     except RecipeCreatorException as e:
         if check_flags(flags, 0):
             await api.delete_allergens(recipe.allergens)

@@ -17,9 +17,6 @@ async def patch_user(user_id: str, data: UserProfileData, request: Request, resp
     except ProfileDataChangerException as e:
         response.status_code = e.status_code
         return {"errorCode": e.error_code}
-    except (Exception,):
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 
 if __name__ == "__main__":

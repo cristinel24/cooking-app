@@ -9,6 +9,8 @@ HOST = os.getenv("HOST", "0.0.0.0")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME", "cooking_app")
 ALLERGEN_MANAGER_API_URL = os.getenv("ALLERGEN_MANAGER_URL", "http://localhost:8001")
+ADD_ALLERGENS = "/allergens/inc"
+REMOVE_ALLERGENS = "/allergens/dec"
 MONGO_TIMEOUT = 3
 
 

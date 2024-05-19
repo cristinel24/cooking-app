@@ -3,10 +3,7 @@ import httpx
 
 from exceptions import LoginException
 from schemas import HasherResponse, TokenResponse
-from constants import Errors
-
-HASHER_URL = os.getenv("HASHER_URL", "http://localhost:8202")
-TOKEN_GEN_URL = os.getenv("TOKEN_GEN_URL", "http://localhost:8256")
+from constants import Errors, HASHER_URL, TOKEN_GEN_URL
 
 
 async def request_hash(target: str, alg_name: str, salt: str):

@@ -1,18 +1,12 @@
-import os
 import time
 
-from dotenv import load_dotenv
 from fastapi import FastAPI, Response, status
 
-from constants import WAIT_ON_ERROR, Errors
+from constants import WAIT_ON_ERROR, Errors, HOST, PORT
 from exceptions import LoginException
 from schemas import LoginData
 import service
 
-load_dotenv()
-
-HOST = os.getenv("LOGIN_URL", "localhost")
-PORT = int(os.getenv("PORT", "5000"))
 
 app = FastAPI()
 

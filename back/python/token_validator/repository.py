@@ -1,5 +1,6 @@
 from constants import *
 from pymongo import MongoClient, errors, timeout
+from fastapi import status
 
 from exceptions import TokenException
 
@@ -15,9 +16,9 @@ class UserCollection:
                 user_roles = self._collection.find_one({"id": user_id}, GET_EXPIRING_TOKEN)
                 return user_roles
             except errors.ExecutionTimeout:
-                raise TokenException(Errors.DB_TIMEOUT)
+                raise TokenException(status.HTTP_504_GATEWAY_TIMEOUT, Errors.DB_TIMEOUT)
             except errors.PyMongoError:
-                raise TokenException(Errors.DB_ERROR)
+                raise TokenException(status.HTTP_500_INTERNAL_SERVER_ERROR, Errors.DB_ERROR)
 
 
 class TokenCollection:
@@ -38,7 +39,7 @@ class TokenCollection:
             except TokenException as e:
                 raise e
             except errors.ExecutionTimeout:
-                raise TokenException(Errors.DB_TIMEOUT)
+                raise TokenException(status.HTTP_504_GATEWAY_TIMEOUT, Errors.DB_TIMEOUT)
             except errors.PyMongoError:
-                raise TokenException(Errors.DB_ERROR)
+                raise TokenException(status.HTTP_500_INTERNAL_SERVER_ERROR, Errors.DB_ERROR)
 

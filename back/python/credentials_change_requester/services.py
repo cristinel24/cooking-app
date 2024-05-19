@@ -8,22 +8,22 @@ from api import *
 user_collection = UserCollection()
 
 
-def create_request(request: CredentialChangeRequest) -> dict[str, int]:
+async def create_request(request: CredentialChangeRequest) -> dict[str, int]:
     try:
         user = user_collection.get_user_by_email(request.email, USER_DATA_PROJECTION)
         if not user:
-            raise CredentialChangeRequesterException(404, ErrorCodes.USER_NOT_FOUND)
+            raise CredentialChangeRequesterException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
         try:
-            token = request_token(user["id"], request.change_type)
+            token = await request_token(user["id"], request.changeType + "Change")
         except Exception as e:
             raise CredentialChangeRequesterException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.TOKEN_GENERATION_ERROR)
         email_request = ChangeRequest(
             email=request.email,
-            token=token,
+            token=token["value"],
             changeType=request.changeType
         )
         try:
-            send_email(email_request)
+            await send_email(email_request)
         except Exception as e:
             raise CredentialChangeRequesterException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.EMAIL_SEND_ERROR)
     except CredentialChangeRequesterException as e:

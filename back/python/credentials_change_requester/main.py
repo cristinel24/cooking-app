@@ -11,7 +11,7 @@ app = FastAPI()
 @app.post("/", tags=["credentials_change_requester"])
 async def create_request(request: CredentialChangeRequest, response: Response) -> dict[str, int]:
     try:
-        services.create_request(request)
+        await services.create_request(request)
     except CredentialChangeRequesterException as e:
         response.status_code = e.status_code
         return {"errorCode": e.error_code.value}

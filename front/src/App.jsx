@@ -2,44 +2,37 @@ import { useEffect, useState } from 'react'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import { ThemeContext, themes } from './context'
+import { ThemeContext } from './context'
 
 import { Login, Register, Test, Verified } from './pages'
 
 function App() {
-    localStorage.setItem('theme', 'dark')
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || '')
 
-    const [theme, setTheme] = useState(
-        themes[localStorage.getItem('theme')] || ''
-    )
+    const setThemeColors = (theme) => {
+        document.documentElement.setAttribute('data-theme', theme)
+    }
 
     useEffect(() => {
         if (theme === '') {
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                setTheme(themes.dark)
-                localStorage.setItem('theme', 'dark')
+                setTheme('dark')
             } else {
-                setTheme(themes.light)
-                localStorage.setItem('theme', 'light')
+                setTheme('light')
             }
         }
     }, [])
 
-    useEffect(() => { for (const color in theme) {
-            document.documentElement.style.setProperty(
-                `--${color}`,
-                `${theme[color]}`
-            )
-        }
+    useEffect(() => {
+        localStorage.setItem('theme', theme)
+        setThemeColors(theme)
     }, [theme])
 
     const toggleTheme = () => {
-        if (theme === themes.light) {
-            setTheme(themes.dark)
-            localStorage.setItem('theme', 'dark')
+        if (theme === 'light') {
+            setTheme('dark')
         } else {
-            setTheme(themes.light)
-            localStorage.setItem('theme', 'light')
+            setTheme('light')
         }
     }
 

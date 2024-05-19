@@ -5,7 +5,7 @@
 }
 
 .preview-recipe-details-container {
-    background-color: var(--caseta);
+    background-color: var(--card-color);
     display: flex;
     flex-direction: column;
     color: #ffffff;

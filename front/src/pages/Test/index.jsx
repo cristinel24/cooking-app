@@ -12,8 +12,8 @@ import {
     PreviewRecipe,
     Filters,
     ShowMenu,
+    ReportBug,
     Report,
-    ReportRecipe,
     Categories,
     Tag,
     TagSelector,
@@ -110,6 +110,33 @@ function Test() {
         return ['suggestionA', 'suggestionB', 'suggestionC']
     }
     const func1 = () => {}
+
+    const [isReportVisible, setIsReportVisible] = useState(false)
+
+    const toggleReportVisibility = () => {
+        setIsReportVisible(!isReportVisible)
+    }
+
+    const [isReportBugVisible, setIsReportBugVisible] = useState(false)
+
+    const toggleReportBugVisibility = () => {
+        setIsReportBugVisible(!isReportBugVisible)
+    }
+
+    const onSend = (selectedVariants) => {
+        alert('Mesajul a fost trimis!')
+        setIsReportVisible(false)
+    }
+
+    const onGiveUp = () => {
+        setIsReportVisible(false)
+        setIsReportBugVisible(false)
+    }
+
+    const onSendBug = (data) => {
+        alert('Mesajul a fost trimis!')
+        setIsReportBugVisible(false)
+    }
     const handleFavorite = () => {
         setFavorite(!favorite)
         console.log('Favorite')
@@ -176,18 +203,30 @@ function Test() {
                 id="recipe-view-1"
             /> */}
 
-            {/* <ReportRecipe /> */}
-            {/* <Report /> */}
+            {isReportVisible && <Report onSend={onSend} onGiveUp={onGiveUp} />}
+
+            {isReportBugVisible && (
+                <ReportBug onSend={onSendBug} onGiveUp={onGiveUp} />
+            )}
+
+            <button onClick={toggleReportVisibility}>
+                {isReportVisible ? 'Ascunde Report' : 'Arată Report'}
+            </button>
+
+            <button onClick={toggleReportBugVisibility}>
+                {isReportBugVisible ? 'Ascunde ReportBug' : 'Arată ReportBug'}
+            </button>
+
             {/* <ShowMenu /> */}
 
-            {/* <PreviewRecipe
+            <PreviewRecipe
                 title="Titlu reteta"
                 tags={['tag1', 'tag2', 'tag3', 'tag4', 'tag5']}
                 allergens={['apa', 'gluten', 'porumb', 'alergen4', 'alergen5']}
                 description="Descrierea Rețetei"
-            /> */}
+            />
 
-            {/* <AdminBox
+            <AdminBox
                 userName={userName}
                 userNumber={userNumber}
                 content={content}
@@ -195,35 +234,27 @@ function Test() {
                 view={view}
                 pathPage={pathPage}
                 handleClick={handleClick}
-            /> */}
+            />
 
-            {/* <Navbar /> */}
+            <Navbar />
 
-            {/* <UserProfile /> */}
+            <UserProfile />
 
-            {/* <Footer /> */}
+            <Footer />
 
-            {/* componenta de reteta */}
-            {/* <Recipe
-                title="Title1"
-                author="Author1"
-                image="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
-                description="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima ea id aliquam quisquam dolore recusandae fugit placeat perspiciatis est similique doloribus iure quas, dolores non inventore provident dolorem unde fuga necessitatibus earum quam quia! Rerum ad, velit aliquid eveniet error, natus saepe unde id ratione quaerat numquam repellendus nobis maxime perferendis suscipit sit ipsa ab alias quasi sequi totam libero accusamus reiciendis! Aperiam veniam molestias sint ex provident libero inventore nesciunt voluptatum dolorem deserunt labore odio qui vel eos, beatae numquam saepe excepturi id tempora! Nesciunt velit molestias deleniti! Vitae ut eum nam, aspernatur facere provident ullam voluptate porro debitis."
-            ></Recipe> */}
+            <PopUpChat />
 
-            {/* <PopUpChat /> */}
-
-            {/* <PageButton path={pathPage} className="da">
+            <PageButton path={pathPage} className="da">
                 Buna
             </PageButton>
 
-            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} /> */}
-            {/* <TagSelector
+            <ActionButton onClick={func1} text="buna" Icon={MdWavingHand} />
+            <TagSelector
                 tags={tags}
                 addTag={addTag}
                 removeTag={removeTag}
                 searchTags={searchTags}
-            /> */}
+            />
         </>
     )
 }

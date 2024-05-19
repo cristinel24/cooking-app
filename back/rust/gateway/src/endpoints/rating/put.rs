@@ -3,7 +3,7 @@ use crate::{
     config::get_global_context,
     endpoints::{
         rating::common::{body_rating_response, PutPatchType},
-        redirect,
+        redirect, SUCCESSFUL_RESPONSE, FAILED_RESPONSE
     },
     get_redirect_url,
     models::{rating::Create, ErrorResponse},
@@ -19,6 +19,21 @@ use tracing::error;
 #[endpoint(
     parameters(
         ("parent_id" = String, description = "Rating id")
+    ),
+    responses
+    (
+        (
+            status_code = StatusCode::OK,
+            description = SUCCESSFUL_RESPONSE,
+            body = String,
+            example = json!("null")
+        ),
+        (
+            status_code = StatusCode::INTERNAL_SERVER_ERROR,
+            description = FAILED_RESPONSE,
+            body = ErrorResponse,
+            example = json!(EndpointResponse::Error(ErrorResponse::default()))
+        ),
     )
 )]
 pub async fn put_rating_endpoint(

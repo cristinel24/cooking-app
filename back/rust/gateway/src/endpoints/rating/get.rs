@@ -2,7 +2,7 @@ use crate::{
     config::get_global_context,
     endpoints::{
         rating::{EndpointResponse, SERVICE},
-        redirect,
+        redirect, SUCCESSFUL_RESPONSE, FAILED_RESPONSE
     },
     get_redirect_url,
     models::{rating::List, ErrorResponse},
@@ -45,6 +45,21 @@ async fn get_rating_response(
         ("parent_id" = String, description = "Rating id"),
         ("start" = i64, description = "Start value"),
         ("count" = i64, description = "Count value")
+    ),
+    responses
+    (
+        (
+            status_code = StatusCode::OK,
+            description = SUCCESSFUL_RESPONSE,
+            body = List,
+            example = json!(EndpointResponse::RatingList(List::default()))
+        ),
+        (
+            status_code = StatusCode::INTERNAL_SERVER_ERROR,
+            description = FAILED_RESPONSE,
+            body = ErrorResponse,
+            example = json!(EndpointResponse::Error(ErrorResponse::default()))
+        ),
     )
 )]
 pub async fn get_rating_endpoint(

@@ -1,7 +1,7 @@
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
     pub id: String,
@@ -15,7 +15,7 @@ pub struct User {
     pub ratings: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct CardData {
     pub id: String,
@@ -26,7 +26,7 @@ pub struct CardData {
     pub rating_avg: f32,
 }
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct FullData {
     pub id: String,
@@ -47,7 +47,7 @@ pub struct FullData {
     pub saved_recipes: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct CardsRequestData {
     pub ids: Vec<String>,

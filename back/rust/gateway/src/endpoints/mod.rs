@@ -3,6 +3,12 @@ use anyhow::Context;
 
 pub mod rating;
 
+
+const SUCCESSFUL_RESPONSE: &str = "Successful operation response";
+const FAILED_RESPONSE: &str = "Failed operation response";
+const INTERNAL_SERVER_ERROR: &str = "Internal Server Error";
+
+
 /// # Errors
 /// * Couldn't get `service`
 pub fn redirect(context: &Configuration, url: &str, service: &str) -> anyhow::Result<String> {

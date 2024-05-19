@@ -5,7 +5,7 @@ use crate::{
             common::{body_rating_response, PutPatchType},
             EndpointResponse, SERVICE,
         },
-        redirect,
+        redirect, SUCCESSFUL_RESPONSE, FAILED_RESPONSE
     },
     get_redirect_url,
     models::ErrorResponse,
@@ -17,6 +17,21 @@ use tracing::error;
 #[endpoint(
     parameters(
         ("rating_id" = String, description = "Rating id")
+    ),
+    responses
+    (
+        (
+            status_code = StatusCode::OK,
+            description = SUCCESSFUL_RESPONSE,
+            body = String,
+            example = json!("null")
+        ),
+        (
+            status_code = StatusCode::INTERNAL_SERVER_ERROR,
+            description = FAILED_RESPONSE,
+            body = ErrorResponse,
+            example = json!(EndpointResponse::Error(ErrorResponse::default()))
+        ),
     )
 )]
 pub async fn delete_rating_endpoint(

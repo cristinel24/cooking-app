@@ -36,7 +36,7 @@ async fn auth_middleware(
 ) {
     let headers = req.headers_mut();
     let _authorization = headers.get::<String>(AUTH_HEADER.to_string());
-    headers.clear();
+    headers.remove("Content-length");
     // let headers = HEADER_KEYS.iter()
     //     .map(|header| (header, None)) // TODO: call some serice to get user_id/roles
     //     .collect::<Vec<_>>();

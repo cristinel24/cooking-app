@@ -1,2 +1,2 @@
-export { themes, ThemeContext } from "./theme-context";
 export { UserContext } from "./user-context";
+export { ThemeContext } from './theme-context'

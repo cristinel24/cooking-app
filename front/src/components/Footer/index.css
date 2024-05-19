@@ -1,7 +1,7 @@
 .footer {
     display: flex;
     align-items: center;
-    background-color: var(--footercolor);
+    background-color: var(--footer-bg-color);
     width: 100%;
     box-sizing: border-box;
     height: var(--footer-height);
@@ -13,7 +13,7 @@
     flex-grow: 1;
     align-items: center;
     justify-content: center;
-    color: var(--body);
+    color: var(--body-bg-color);
 }
 
 .footer-brand {
@@ -24,7 +24,7 @@
 
 .footer-brand a {
     font-weight: bolder;
-    color: var(--body);
+    color: var(--body-bg-color);
     text-decoration: none;
 }
 
@@ -35,13 +35,13 @@
 }
 
 .footer-bug a {
-    color: var(--body);
+    color: var(--body-bg-color);
     text-decoration: none;
 }
 
 .footer-brand a:hover,
 .footer-bug a:hover {
-    color: var(--bkgcolor);
+    color: var(--color-primary);
 }
 
 @media screen and (max-width: 600px) {

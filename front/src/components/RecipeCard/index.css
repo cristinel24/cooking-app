@@ -44,7 +44,7 @@
     padding-left: calc(var(--recipe-card-image-height) / 2 + var(--recipe-card-padding));
     margin-left: calc(var(--recipe-card-image-height) * (-1) / 2);
 
-    background-color: #f9e5e5;
+    background-color: var(--card-bg-color);
     border-radius: 20px;
 
     width: 100%;

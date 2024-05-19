@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import { UserContext, ThemeContext, themes } from './context'
+import { UserContext, ThemeContext } from './context'
 import { AddRecipe, CredentialsChange, Dashboard, EditRecipe, ErrorPage, Feed, ForgotPassword, Login, Profile, Recipe, Register, Search, Settings, Verified } from './pages'
 import { AdminRoute, Page, ProtectedRoute, UnprotectedRoute } from './components'
 
@@ -41,37 +41,33 @@ function App() {
     const isAdmin = () => user.roles & 0b10 // TODO: constants instead of magic numbers
 
     const [theme, setTheme] = useState(
-        themes[localStorage.getItem('theme')] || ''
+        localStorage.getItem('theme') || ''
     )
+
+    const setThemeColors = (theme) => {
+        document.documentElement.setAttribute('data-theme', theme)
+    }
 
     useEffect(() => {
         if (theme === '') {
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                setTheme(themes.dark)
-                localStorage.setItem('theme', 'dark')
+                setTheme('dark')
             } else {
-                setTheme(themes.light)
-                localStorage.setItem('theme', 'light')
+                setTheme('light')
             }
         }
     }, [])
 
     useEffect(() => {
-        for (const color in theme) {
-            document.documentElement.style.setProperty(
-                `--${color}`,
-                `${theme[color]}`
-            )
-        }
+        localStorage.setItem('theme', theme)
+        setThemeColors(theme)
     }, [theme])
 
     const toggleTheme = () => {
-        if (theme === themes.light) {
-            setTheme(themes.dark)
-            localStorage.setItem('theme', 'dark')
+        if (theme === 'light') {
+            setTheme('dark')
         } else {
-            setTheme(themes.light)
-            localStorage.setItem('theme', 'light')
+            setTheme('light')
         }
     }
 

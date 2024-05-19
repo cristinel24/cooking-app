@@ -10,8 +10,8 @@
     margin: 0;
 
     cursor: pointer;
-    background-color: var(--navbar);
-    color: var(--txtcolor);
+    background-color: var(--navbar-bg-color);
+    color: var(--text-color);
 }
 
 .dropdown-item::-ms-expand {
@@ -19,9 +19,8 @@
 }
 
 .dropdown-option {
-    background-color: var(--bkgdropdown);
+    background-color: var(--card-bg-color);
     border-radius: 10px;
     width: 16rem;
     color: black;
-
 }

@@ -1,12 +1,8 @@
-import os
-from dotenv import load_dotenv
-from fastapi import FastAPI, status, Response
-import uvicorn
-import services
 import exceptions
-import constants
-
-load_dotenv()
+import services
+import uvicorn
+from constants import HOST, PORT, ErrorCodes
+from fastapi import FastAPI, Response, status
 
 app = FastAPI()
 
@@ -17,7 +13,7 @@ async def get_tags(response: Response, starting_with: str = ''):
         return await services.get_tags_by_starting_string(starting_with)
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 
 @app.post("/tag/{name}")
@@ -26,7 +22,7 @@ async def add_tag(name: str, response: Response):
         await services.add_tag_by_name(name)
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 
 @app.delete("/tag/{name}")
@@ -34,12 +30,12 @@ async def remove_tag(name: str, response: Response):
     try:
         await services.remove_tag_by_name(name)
     except exceptions.TagException as e:
-        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        response.status_code = status.HTTP_404_NOT_FOUND
         return {"errorCode": e.error_code}
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        return {"errorCode": ErrorCodes.SERVER_ERROR.value}
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=os.getenv("HOST", "localhost"), port=int(os.getenv("PORT", 8000)))
+    uvicorn.run(app, host=HOST, port=PORT)

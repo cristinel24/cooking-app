@@ -9,8 +9,8 @@
     height: var(--nav-height);
     width: 100%;
     box-sizing: border-box;
-    background-color: var(--navbar);
-    color: var(--navbarcolor1);
+    background-color: var(--navbar-bg-color);
+    color: var(--navbar-color-primary);
 }
 
 .nav-brand {
@@ -18,7 +18,7 @@
     width: fit-content;
     align-items: center;
     text-decoration: none;
-    color: var(--navbarcolor1);
+    color: var(--navbar-color-primary);
     font-size: 2rem;
     font-weight: 700;
     line-height: 48.76px;
@@ -31,7 +31,7 @@
 }
 
 .nav-brand-span:nth-child(2) {
-    color: var(--navbarcolor2);
+    color: var(--navbar-color-secondary);
 }
 
 .nav-brand-img {
@@ -39,9 +39,9 @@
 }
 
 .nav-search {
+    background-color: var(--searchbar-bg-color);
+    color: var(--border-color);
     box-sizing: border-box;
-    background-color: var(--searchbar);
-    color: var(--border);
     padding: 0.3rem 0.5rem;
     display: flex;
     align-items: center;
@@ -98,7 +98,7 @@
     display: none;
     flex-direction: column;
     position: fixed;
-    background-color: var(--navbar);
+    background-color: var(--navbar-bg-color);
     top: var(--nav-height);
     right: 0;
     width: fit-content;

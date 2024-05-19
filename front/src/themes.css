@@ -1,0 +1,41 @@
+[data-theme='light'] {
+    --color-primary: #ff5348;
+    --body-bg-color: #f0f0f0;
+    --text-color: #0c1821;
+    --neutral-bg-color: #828282;
+    --hover-bg-color: #ee3326;
+    --footer-bg-color: #0c1821;
+    --card-color: #ff8878;
+    --card-bg-color: #f7d0c8;
+    --border-color: #111111;
+    --profile-name-color: #808080;
+    --navbar-bg-color: #ff5348;
+    --navbar-color-primary: #111111;
+    --navbar-color-secondary: #eeeeee;
+    --searchbar-bg-color: #ffffff;
+    --report-bg-color: #1c1c1c;
+    --filter-bg-color: #f3f3f3;
+    --body-bg-color-dimmed: #f3f3f3;
+    --text-color-dimmed: #b4b4b4;
+}
+
+[data-theme='dark'] {
+    --color-primary: #ff5348;
+    --body-bg-color: #1c1c1c;
+    --text-color: #eeeeee;
+    --neutral-bg-color: #828282;
+    --hover-bg-color: #02080d;
+    --footer-bg-color: #eeeeee;
+    --card-color: #ff8878;
+    --card-bg-color: #ffe7e2;
+    --border-color: #111111;
+    --profile-name-color: #808080;
+    --navbar-bg-color: #ff5348;
+    --navbar-color-primary: #eeeeee;
+    --navbar-color-secondary: #111111;
+    --searchbar-bg-color: #eeeeee;
+    --report-bg-color: #eeeeee;
+    --filter-bg-color: #303233;
+    --body-bg-color-dimmed: #303233;
+    --text-color-dimmed: #b4b4b4;
+}

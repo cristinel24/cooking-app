@@ -9,6 +9,8 @@ HOST = os.getenv("HOST", "0.0.0.0")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")
 
+MAX_TIMEOUT = 3
+
 
 class ErrorCodes(Enum):
     TOKEN_NOT_FOUND = 22000

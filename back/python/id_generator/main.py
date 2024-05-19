@@ -12,7 +12,7 @@ app = FastAPI()
 async def get_id(response: Response):
     try:
         new_id = get_next_id_services()
-        return new_id
+        return {"id": new_id}
     except IdGeneratorException as e:
         response.status_code = e.status_code
         return {"errorCode": e.error_code}

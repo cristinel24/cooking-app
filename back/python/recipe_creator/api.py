@@ -38,7 +38,7 @@ async def add_allergens(allergens: list[str]):
     async with httpx.AsyncClient() as client:
         payload = json.dumps({"allergens": allergens})
         try:
-            await client.post(url=ADD_ALLERGENS_ROUTE, content=payload)
+            await client.post(url=INC_ALLERGENS_ROUTE, content=payload)
         except (Exception,):
             logging.fatal("ALLERGENS MANAGER is not responsive")
             raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
@@ -48,7 +48,7 @@ async def delete_allergens(allergens: list[str]):
     async with httpx.AsyncClient() as client:
         payload = json.dumps({"allergens": allergens})
         try:
-            await client.patch(url=DELETE_ALLERGENS_ROUTE, content=payload)
+            await client.patch(url=DEC_ALLERGENS_ROUTE, content=payload)
         except (Exception,):
             raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
 
@@ -57,7 +57,7 @@ async def add_tags(tags: list[str]):
     async with httpx.AsyncClient() as client:
         payload = json.dumps({"tags": tags})
         try:
-            await client.post(url=ADD_TAGS_ROUTE, content=payload)
+            await client.post(url=INC_TAGS_ROUTE, content=payload)
         except (Exception,):
             logging.fatal("TAGS MANAGER is not responsive")
             raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
@@ -67,6 +67,6 @@ async def delete_tags(tags: list[str]):
     async with httpx.AsyncClient() as client:
         payload = json.dumps({"tags": tags})
         try:
-            await client.patch(url=DELETE_TAGS_ROUTE, content=payload)
+            await client.patch(url=DEC_TAGS_ROUTE, content=payload)
         except (Exception,):
             raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)

@@ -9,7 +9,6 @@ app = FastAPI()
 async def get_user_token(user_id: str, token_type: str, response: Response) -> dict:
     try:
         token = services.insert_user_token(user_id, token_type)
-        print(token)
         return token
     except services.UserException as e:
         response.status_code = e.status_code

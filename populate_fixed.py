@@ -1,13 +1,15 @@
 import datetime
-import time
-
-import bson
-from bson import utc
 from utils.init_tables import *
 from utils.utils import *
 
-
 VALID_INGREDIENTS = ["milk", "eggs", "fish", "peanuts", "flour"]
+
+
+@static_vars(VALID_ALLERGENS=["milk", "eggs", "fish", "peanuts", "flour"], counter=[0, 0, 0, 0, 0])
+def get_allergen(index: int) -> tuple[str, int]:
+    get_allergen.counter[index] += 1
+    return get_allergen.VALID_ALLERGENS[index], get_allergen.counter[index]
+
 
 user1 = {
     "id": generate_id(counters_collection),
@@ -17,15 +19,15 @@ user1 = {
     "icon": "my-icon.png",
     "displayName": "Karma",
     "roles": 2,
-    "ratingSum": 0,
-    "ratingCount": 0,
+    "ratingSum": 7,
+    "ratingCount": 2,
     "description": "This is my very real description!",
     "login": {
         "emailStatus": "Confirmed",
         "hashAlgName": "random_sha256",
         "hash": "passwordpassword",
         "salt": "useless_salt_for_password",
-        "changeToken": None,
+        "newEmail": None,
     },
     "messageHistory": [
         "A recent message in history",
@@ -38,10 +40,21 @@ user1 = {
         "Latest search",
     ],
     "recipes": [],
-    "allergens": [VALID_INGREDIENTS[0], VALID_INGREDIENTS[1], VALID_INGREDIENTS[2]],
+    "allergens": [get_allergen(0)[0], get_allergen(1)[0], get_allergen(2)[0]],
     "ratings": [],
-    "sessions": [],
     "savedRecipes": []
+}
+token1 = {
+    "createdAt": datetime.datetime.now(datetime.timezone.utc),
+    "userId": user1["id"],
+    "value": "tokentokentokentoken1",
+    "tokenType": "session"
+}
+token2 = {
+    "createdAt": datetime.datetime.now(datetime.timezone.utc),
+    "userId": user1["id"],
+    "value": "tokentokentokentoken2",
+    "tokenType": "session"
 }
 user2 = {
     "id": generate_id(counters_collection),
@@ -59,7 +72,7 @@ user2 = {
         "hashAlgName": "random_sha256",
         "hash": "passwordpassword",
         "salt": "useless_salt_for_password",
-        "changeToken": None,
+        "newEmail": None,
     },
     "messageHistory": [
         "A recent message in history",
@@ -72,9 +85,9 @@ user2 = {
         "Latest search",
     ],
     "recipes": [],
-    "allergens": [VALID_INGREDIENTS[0], VALID_INGREDIENTS[1], VALID_INGREDIENTS[2], VALID_INGREDIENTS[3], VALID_INGREDIENTS[4]],
+    "allergens": [get_allergen(0)[0], get_allergen(1)[0], get_allergen(2)[0], get_allergen(3)[0],
+                  get_allergen(4)[0]],
     "ratings": [],
-    "sessions": [],
     "savedRecipes": []
 }
 user3 = {
@@ -93,7 +106,7 @@ user3 = {
         "hashAlgName": "random_sha256",
         "hash": "passwordpassword",
         "salt": "useless_salt_for_password",
-        "changeToken": None,
+        "newEmail": None,
     },
     "messageHistory": [
         "A recent message in history",
@@ -106,13 +119,56 @@ user3 = {
         "Latest search",
     ],
     "recipes": [],
-    "allergens": [VALID_INGREDIENTS[3], VALID_INGREDIENTS[4]],
+    "allergens": [get_allergen(0)[0], get_allergen(4)[0]],
     "ratings": [],
-    "sessions": [],
     "savedRecipes": []
 }
+token4 = {
+    "createdAt": datetime.datetime.now(datetime.timezone.utc),
+    "userId": user3["id"],
+    "value": "tokentokentokentoken4",
+    "tokenType": "usernameChange"
+}
 
-user_collection.insert_many([user1, user2, user3])
+user4 = {
+    "id": generate_id(counters_collection),
+    "updatedAt": datetime.datetime.now(datetime.timezone.utc),
+    "username": "username4",
+    "email": None,
+    "icon": "my-icon4.png",
+    "displayName": "razvan",
+    "roles": 2,
+    "ratingSum": 0,
+    "ratingCount": 0,
+    "description": "This is my very real description!",
+    "login": {
+        "emailStatus": "Pending",
+        "hashAlgName": "random_sha256",
+        "hash": "passwordpassword",
+        "salt": "useless_salt_for_password",
+        "newEmail": "mail.fii4@gmail.com",
+    },
+    "messageHistory": [
+        "A recent message in history",
+        "A more recent message in history",
+        "Latest history message",
+    ],
+    "searchHistory": [
+        "A recent search",
+        "A more recent search",
+        "Latest search",
+    ],
+    "recipes": [],
+    "allergens": [get_allergen(0)[0], get_allergen(4)[0]],
+    "ratings": [],
+    "savedRecipes": []
+}
+token3 = {
+    "createdAt": datetime.datetime.now(datetime.timezone.utc),
+    "userId": user4["id"],
+    "value": "tokentokentokentoken",
+    "tokenType": "emailConfirm"
+}
 
 recipe1 = {
     "updatedAt": datetime.datetime.now(datetime.timezone.utc),
@@ -179,4 +235,82 @@ recipe1 = {
     ],
     "thumbnail": "default-img.png",
     "viewCount": 10,
+    "ratingCount": 2,
+    "ratingSum": 7,
 }
+
+rating1 = {
+    "id": generate_id(counters_collection),
+    "updatedAt": datetime.datetime.now(datetime.timezone.utc),
+    "authorId": user2["id"],
+    "parentType": "recipe",
+    "parentId": recipe1["id"],
+    "rating": 5,
+    "description": "Great!!! So delicious!!!!!!",
+    "children": [],
+}
+rating2 = {
+    "id": generate_id(counters_collection),
+    "updatedAt": datetime.datetime.now(datetime.timezone.utc),
+    "authorId": user3["id"],
+    "parentType": "recipe",
+    "parentId": recipe1["id"],
+    "rating": 2,
+    "description": "Cool but I'm allergic 😢",
+    "children": [],
+}
+rating3 = {
+    "id": generate_id(counters_collection),
+    "updatedAt": datetime.datetime.now(datetime.timezone.utc),
+    "authorId": user1["id"],
+    "parentType": "rating",
+    "parentId": rating1["id"],
+    "rating": 0,
+    "description": "Thank you!",
+    "children": [],
+}
+rating1["children"].append(rating3["id"])
+user1["ratings"].append(rating3["id"])
+user2["ratings"].append(rating1["id"])
+user3["ratings"].append(rating2["id"])
+user2["savedRecipes"].append(recipe1["id"])
+
+allergen_collection.insert_many(
+    [
+        {
+            "allergen": get_allergen(i)[0],
+            "counter": get_allergen(i)[1]
+        }
+        for i in range(0, 5)
+    ]
+)
+
+report1 = {
+    "id": generate_id(counters_collection),
+    "authorId": user1["id"],
+    "reportedId": rating2["id"],
+    "content": "Why am I getting a bad rating because the user is allergic?!?!",
+    "reportedType": "rating",
+}
+
+report_collection.insert_one(report1)
+user_collection.insert_many([user1, user2, user3])
+recipe_collection.insert_one(recipe1)
+rating_collection.insert_many([rating1, rating2, rating3])
+tag_collection.insert_many(
+    [
+        {
+            "tag": tag,
+            "counter": 1,
+        }
+        for tag in recipe1["tags"]
+    ]
+)
+follow_collection.insert_many([
+    {"userId": user2["id"], "followsId": user1["id"]},
+    {"userId": user3["id"], "followsId": user2["id"]},
+    {"userId": user2["id"], "followsId": user3["id"]},
+])
+expiring_token_collection.insert_many([
+    token1, token2, token3, token4
+])

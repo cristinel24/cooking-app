@@ -2,6 +2,8 @@
 
 ### 19/05/2024
 
+* NEW! Created `populate_fixed.py` -> generates a tiny, predefined database for testing purposes
+
 * completely removed all `expiring_token`-s from the `user` collection. Now `expiring token`-s are only found in the `expiring token` collection 
 
 ### 18/05/2024

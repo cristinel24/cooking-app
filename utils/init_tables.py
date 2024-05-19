@@ -131,7 +131,7 @@ expiring_token_collection.create_indexes([
         ["createdAt"],
         name="expiring_index_credential_change",
         partialFilterExpression={
-            "tokenType": "credentialChange",
+            "tokenType": {"$in": ["usernameChange", "emailChange", "passwordChange", "emailConfirm"]},
         },
         expireAfterSeconds=60 * 60 * 24,
     ),
@@ -142,6 +142,13 @@ expiring_token_collection.create_indexes([
             "tokenType": "session",
         },
         expireAfterSeconds=60 * 60 * 24 * 30,
+    ),
+    IndexModel(
+        ["userId", "tokenType"],
+        name="one_change_token_per_user",
+        partialFilterExpression={
+            "tokenType": {"$in": ["usernameChange", "emailChange", "passwordChange", "emailConfirm"]},
+        },
     )
 ])
 
@@ -784,4 +791,17 @@ counter = {
 counter["_id"] = counters_collection.insert_one(
     counter
 ).inserted_id
+
+
+hash_algos = ["argon2", "bcrypt", "random_sha256"]
+hash_algo_dicts = list()
+for hash_algo in hash_algos:
+    hash_algo_dicts.append({
+        "name": hash_algo
+    })
+    if hash_algo == "argon2":
+        hash_algo_dicts[len(hash_algo_dicts) - 1]["primary"] = True
+
+hash_algorithm_collection.insert_many(hash_algo_dicts, False)
+
 print("Done")

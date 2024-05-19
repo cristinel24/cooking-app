@@ -42,8 +42,6 @@ available_roles = {
     "banned": 0b1000
 }
 
-hash_algos = ["argon2", "bcrypt", "random_sha256"]
-
 
 def get_role():
     role = 0
@@ -236,16 +234,6 @@ def get_report():
         "reportedType": random_from(report_type),
     }
 
-
-hash_algo_dicts = list()
-for hash_algo in hash_algos:
-    hash_algo_dicts.append({
-        "name": hash_algo
-    })
-    if hash_algo == "argon2":
-        hash_algo_dicts[len(hash_algo_dicts) - 1]["primary"] = True
-
-hash_algorithm_collection.insert_many(hash_algo_dicts, False)
 
 print("Stirring up some users...".ljust(36, '.'), end="")
 # generate users

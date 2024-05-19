@@ -11,6 +11,7 @@ class UserCreateData(BaseModel):
 class HasherResponse(BaseModel):
     hash: str
     salt: str | None
+    hash_alg_name: str
 
 
 class TokenResponse(BaseModel):
@@ -22,5 +23,5 @@ class TokenResponse(BaseModel):
 
 USER_PROJECTION = {
     "id": 1,
-    "register": 1
+    "login": 1
 }

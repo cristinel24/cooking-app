@@ -52,4 +52,10 @@ class UserCollection(MongoCollection):
             except errors.PyMongoError as e:
                 raise match_collection_error(e)
 
+    def insert_user(self, user_data: dict):
+        with pymongo.timeout(constants.MAX_TIMEOUT_SECONDS):
+            try:
+                self._collection.insert_one(user_data)
+            except errors.PyMongoError as e:
+                raise match_collection_error(e)
 

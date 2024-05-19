@@ -1,7 +1,9 @@
 import pymongo.errors
 from pymongo import MongoClient
 from constants import *
+from exception import TokenDestroyerException
 from utils import match_collection_error
+from fastapi import status
 
 
 class MongoCollection:
@@ -31,10 +33,13 @@ class ExpiringTokenCollection(MongoCollection):
         super().__init__(connection)
         self._collection = self._connection.get_database(DB_NAME).expiring_token
 
-    def find_and_remove_token(self, value: str) -> dict | None:
+    def find_and_remove_token(self, value: str):
         try:
             with pymongo.timeout(MAX_TIMEOUT):
-                return self._collection.find_one_and_delete({"value": value})
+                res = self._collection.delete_one({"value": value})
+
+                if res.deleted_count == 0:
+                    raise TokenDestroyerException(status.HTTP_404_NOT_FOUND, ErrorCodes.TOKEN_NOT_FOUND.value)
         except pymongo.errors.PyMongoError as e:
             raise match_collection_error(e)
 

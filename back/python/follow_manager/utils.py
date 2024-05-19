@@ -1,5 +1,5 @@
-from pymongo import errors
 from fastapi import status
+from pymongo import errors
 
 from constants import ErrorCodes
 from exception import FollowManagerException

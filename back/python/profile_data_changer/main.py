@@ -15,7 +15,7 @@ async def patch_user(user_id: str, data: UserProfileData, response: Response,
                      x_user_id: Annotated[str | None, Header()] = None) -> None | dict:
     try:
         if user_id != x_user_id:
-            raise ProfileDataChangerException(status.HTTP_403_FORBIDDEN, ErrorCodes.NOT_AUTHENTICATED.value)
+            raise ProfileDataChangerException(status.HTTP_403_FORBIDDEN, ErrorCodes.UNAUTHORIZED.value)
         return await services.patch_user(user_id, data)
     except ProfileDataChangerException as e:
         response.status_code = e.status_code

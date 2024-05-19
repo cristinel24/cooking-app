@@ -4,6 +4,9 @@ use serde::{Deserialize, Serialize};
 
 pub mod rating;
 pub mod user;
+pub mod hash;
+pub mod tags;
+pub mod allergens;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]

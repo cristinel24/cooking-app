@@ -1,25 +1,16 @@
-use super::SERVICE;
-use crate::{
-    config::get_global_context,
-    endpoints::{
-        redirect, SUCCESSFUL_RESPONSE, FAILED_RESPONSE
-    },
-    get_redirect_url,
-    models::{rating::Update, ErrorResponse},
-};
 use reqwest::{Method, StatusCode};
-use salvo::{
-    oapi::{endpoint, extract::JsonBody},
-    prelude::Json,
-    Request, Response, Writer,
-};
+use salvo::prelude::Json;
+use salvo::{Request, Response};
+use salvo::oapi::endpoint;
+use crate::endpoints::{SUCCESSFUL_RESPONSE, FAILED_RESPONSE, recipe_saver::{EndpointResponse, SERVICE}, get_response};
+use crate::get_redirect_url;
+use crate::models::ErrorResponse;
 use tracing::error;
-use crate::endpoints::{EndpointResponse, get_response};
+use crate::config::get_global_context;
+use crate::endpoints::redirect;
+
 
 #[endpoint(
-    parameters(
-        ("rating_id" = String, description = "Rating id")
-    ),
     responses
     (
         (
@@ -36,21 +27,18 @@ use crate::endpoints::{EndpointResponse, get_response};
         ),
     )
 )]
-pub async fn patch_rating_endpoint(
-    rating_update: JsonBody<Update>,
-    req: &mut Request,
-    res: &mut Response,
-) -> Json<EndpointResponse<String>> {
+pub async fn put_recipe(req: &mut Request, res: &mut Response) -> Json<EndpointResponse<String>> {
     let url: String = get_redirect_url!(req, res, req.uri().path(), SERVICE);
-    return (get_response::<&str, Update, String>(
-        Method::PATCH,
+
+    return (get_response::<&str, &str, String>(
+        Method::PUT,
         url,
         None,
-        Some(rating_update.into_inner()),
-        Some(req.headers().clone()),
+        None,
+        None,
         true
     )
-    .await)
+        .await)
         .map_or_else(
             |_| {
                 res.status_code(StatusCode::BAD_REQUEST);

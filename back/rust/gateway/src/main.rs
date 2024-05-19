@@ -5,8 +5,9 @@ pub mod models;
 pub mod service;
 
 use crate::config::{get_configuration, CONTEXT};
-use crate::endpoints::rating::{
-    delete_rating_endpoint, get_rating_endpoint, patch_rating_endpoint, put_rating_endpoint,
+use crate::endpoints::{
+    hash::{get_hash_primary, get_hash_with},
+    rating::{delete_rating_endpoint, get_rating_endpoint, patch_rating_endpoint, put_rating_endpoint}
 };
 use crate::graceful_shutdown::GracefulShutdown;
 use anyhow::{Context, Result};
@@ -20,6 +21,9 @@ use salvo::{
     Depot, FlowCtrl, Listener, Request, Response, Server,
 };
 use tracing::info;
+use crate::endpoints::allergen::{delete_allergen_item, get_allergen_item, post_allergen_item};
+use crate::endpoints::recipe_saver::{delete_recipe, put_recipe};
+use crate::endpoints::tag::{delete_tag_item, get_tag_item, post_tag_item};
 
 
 pub const HEADER_KEYS: [&str; 2] = [
@@ -79,26 +83,23 @@ async fn main() -> Result<()> {
         Router::with_path("/hash")
             .oapi_tag("HASH")
             .append(&mut vec![
-                Router::with_path("/<target>").get(test),
-                Router::with_path("/<hash_algorithm_name>/<target>").get(test),
+                Router::with_path("/<target>").get(get_hash_primary),
+                Router::with_path("/<hash_algorithm_name>/<target>").get(get_hash_with),
             ]),
         Router::with_path("/tag")
             .oapi_tag("TAG")
-            .get(test)
-            .push(Router::with_path("/<name>").post(test).delete(test)),
+            .get(get_tag_item)
+            .push(Router::with_path("/<name>").post(post_tag_item).delete(delete_tag_item)),
         Router::with_path("/allergen")
             .oapi_tag("ALLERGEN")
-            .get(test)
-            .push(Router::with_path("/<name>").post(test).delete(test)),
-        Router::with_path("/user")
+            .get(get_allergen_item)
+            .push(Router::with_path("/<name>").post(post_allergen_item).delete(delete_allergen_item)),
+        Router::with_path("/user/<user_id>/saved-recipes")
             .oapi_tag("RECIPE SAVER")
             .hoop(auth_middleware)
             .oapi_security(security_requirement.clone())
-            .push(
-                Router::with_path("/<user_id>/saved-recipes")
-                    .put(test)
-                    .delete(test),
-            ),
+            .put(put_recipe)
+            .delete(delete_recipe),
         Router::with_path("/user")
             .oapi_tag("USER RETRIEVER")
             .append(&mut vec![

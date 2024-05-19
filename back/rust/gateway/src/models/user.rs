@@ -52,3 +52,9 @@ pub struct FullData {
 pub struct CardsRequestData {
     pub ids: Vec<String>,
 }
+
+#[derive(Serialize, Deserialize, Default, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct Cards {
+    pub cards: Vec<CardData>,
+}

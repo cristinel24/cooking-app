@@ -1,21 +1,16 @@
-use crate::{
-    config::get_global_context,
-    endpoints::{
-        rating::SERVICE,
-        redirect, SUCCESSFUL_RESPONSE, FAILED_RESPONSE
-    },
-    get_redirect_url,
-    models::ErrorResponse,
-};
-use reqwest::Method;
-use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
+use reqwest::{Method, StatusCode};
+use salvo::prelude::Json;
+use salvo::{Request, Response};
+use salvo::oapi::endpoint;
+use crate::endpoints::{SUCCESSFUL_RESPONSE, FAILED_RESPONSE, recipe_saver::{EndpointResponse, SERVICE}, get_response};
+use crate::get_redirect_url;
+use crate::models::ErrorResponse;
 use tracing::error;
-use crate::endpoints::{EndpointResponse, get_response};
+use crate::config::get_global_context;
+use crate::endpoints::redirect;
+
 
 #[endpoint(
-    parameters(
-        ("rating_id" = String, description = "Rating id")
-    ),
     responses
     (
         (
@@ -32,22 +27,18 @@ use crate::endpoints::{EndpointResponse, get_response};
         ),
     )
 )]
-pub async fn delete_rating_endpoint(
-    req: &mut Request,
-    res: &mut Response,
-) -> Json<EndpointResponse<String>> {
+pub async fn delete_recipe(req: &mut Request, res: &mut Response) -> Json<EndpointResponse<String>> {
     let url: String = get_redirect_url!(req, res, req.uri().path(), SERVICE);
-    let rating_id = req.param::<String>("rating_id").unwrap_or_default();
 
-    return (get_response::<[(&str, String); 1], &str, String>(
+    return (get_response::<&str, &str, String>(
         Method::DELETE,
         url,
-        Some(&[("rating_id", rating_id)]),
         None,
-        Some(req.headers().clone()),
+        None,
+        None,
         true
     )
-    .await)
+        .await)
         .map_or_else(
             |_| {
                 res.status_code(StatusCode::BAD_REQUEST);

@@ -1,8 +1,7 @@
-use super::{EndpointResponse, SERVICE};
+use super::SERVICE;
 use crate::{
     config::get_global_context,
     endpoints::{
-        rating::common::{body_rating_response, PutPatchType},
         redirect, SUCCESSFUL_RESPONSE, FAILED_RESPONSE
     },
     get_redirect_url,
@@ -15,6 +14,7 @@ use salvo::{
     Request, Response, Writer,
 };
 use tracing::error;
+use crate::endpoints::{EndpointResponse, get_response};
 
 #[endpoint(
     parameters(
@@ -32,7 +32,7 @@ use tracing::error;
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
             description = FAILED_RESPONSE,
             body = ErrorResponse,
-            example = json!(EndpointResponse::Error(ErrorResponse::default()))
+            example = json!(ErrorResponse::default())
         ),
     )
 )]
@@ -40,17 +40,17 @@ pub async fn put_rating_endpoint(
     rating_create: JsonBody<Create>,
     req: &mut Request,
     res: &mut Response,
-) -> Json<EndpointResponse> {
-    println!("{:#?}", req.uri());
-    let url: String = get_redirect_url!(req, res, SERVICE);
+) -> Json<EndpointResponse<String>> {
+    let url: String = get_redirect_url!(req, res, req.uri().path(), SERVICE);
     let parent_id = req.param::<String>("parent_id").unwrap_or_default();
 
-    return (body_rating_response(
+    return (get_response::<[(&str, String); 1], Create, String>(
         Method::PUT,
-        url.as_str(),
-        &[("parent_id", parent_id)],
-        PutPatchType::RatingCreate(rating_create.into_inner()),
-        req.headers().clone(),
+        url,
+        Some(&[("parent_id", parent_id)]),
+        Some(rating_create.into_inner()),
+        Some(req.headers().clone()),
+        true
     )
     .await)
         .map_or_else(

@@ -1,44 +1,18 @@
 use crate::{
     config::get_global_context,
     endpoints::{
-        rating::{EndpointResponse, SERVICE},
+        rating::SERVICE,
         redirect, SUCCESSFUL_RESPONSE, FAILED_RESPONSE
     },
     get_redirect_url,
     models::{rating::List, ErrorResponse},
 };
-use anyhow::Result;
-use reqwest::{Client, Method};
+use reqwest::Method;
 use salvo::oapi::extract::QueryParam;
 use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response, Writer};
 use tracing::error;
-use tracing::log::debug;
+use crate::endpoints::{EndpointResponse, get_response};
 
-async fn get_rating_response(
-    method: Method,
-    service_url: &str,
-    parent_id: String,
-    params: &[(&str, u32)],
-) -> Result<EndpointResponse> {
-    let response = Client::new()
-        .request(method, service_url)
-        .query(&[("parent_id", parent_id)])
-        .query(params)
-        .send()
-        .await?;
-
-    debug!("{:#?}", response.url().as_str());
-
-    if response.status().is_success() {
-        Ok(EndpointResponse::RatingList(
-            response.json::<List>().await?,
-        ))
-    } else {
-        Ok(EndpointResponse::Error(
-            response.json::<ErrorResponse>().await?,
-        ))
-    }
-}
 
 #[endpoint(
     parameters(
@@ -52,13 +26,13 @@ async fn get_rating_response(
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
             body = List,
-            example = json!(EndpointResponse::RatingList(List::default()))
+            example = json!(List::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
             description = FAILED_RESPONSE,
             body = ErrorResponse,
-            example = json!(EndpointResponse::Error(ErrorResponse::default()))
+            example = json!(ErrorResponse::default())
         ),
     )
 )]
@@ -67,16 +41,16 @@ pub async fn get_rating_endpoint(
     res: &mut Response,
     start: QueryParam<u32, true>,
     count: QueryParam<u32, true>,
-) -> Json<EndpointResponse> {
-    let url: String = get_redirect_url!(req, res, SERVICE);
-    println!("test: {:#?}, {}, {}", req.queries(), start, count);
-    let parent_id = req.param::<String>("parent_id").unwrap_or_default();
+) -> Json<EndpointResponse<List>> {
+    let url: String = get_redirect_url!(req, res, req.uri().path(), SERVICE);
 
-    return (get_rating_response(
+    return (get_response::<[(&str, u32); 2], &str, List>(
         Method::GET,
-        url.as_str(),
-        parent_id,
-        &[("start", start.into_inner()), ("count", count.into_inner())],
+        url,
+        Some(&[("start", start.into_inner()), ("count", count.into_inner())]),
+        None,
+        None,
+        false
     )
     .await)
         .map_or_else(

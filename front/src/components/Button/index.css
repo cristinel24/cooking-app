@@ -1,4 +1,4 @@
-.action-button {
+.button {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -6,44 +6,46 @@
     padding: 15px 20px 15px 20px;
     border-radius: 10px;
     border: none;
+    cursor: pointer;
+    gap: 1rem;
 }
 
-.action-button:hover {
+.button:hover {
     background-color: var(--hover-bg-color);
 }
 
-.action-button-icon {
+.button-icon {
     color: var(--text-color);
 }
 
-.action-button-text {
+.button-text {
     font-size: 0.8rem;
     color: var(--text-color);
     font-weight: bold;
 }
 
-@media (min-width: 481px) and (max-width: 767px) {
-    .action-button {
+@media (min-width: 481px) and (max-width: 768px) {
+    .button {
         padding: 10px 15px 10px 15px;
         border-radius: 10px;
     }
-    .action-button:hover {
+    .button:hover {
         background-color: var(--hover-bg-color);
     }
-    .action-button-text {
+    .button-text {
         font-size: 0.7rem;
     }
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
-    .action-button {
+    .button {
         padding: 8px 10px 8px 10px;
         border-radius: 10px;
     }
-    .action-button:hover {
+    .button:hover {
         background-color: var(--hover-bg-color);
     }
-    .action-button-text {
+    .button-text {
         font-size: 0.6rem;
     }
 }

@@ -45,7 +45,7 @@ async def get_user_full_data(user_id: str, response: Response,
                              x_user_id: Annotated[str | None, Header()] = None) -> UserFullData | dict[str, int]:
     try:
         if user_id != x_user_id:
-            raise UserRetrieverException(status.HTTP_403_FORBIDDEN, ErrorCodes.NOT_AUTHENTICATED)
+            raise UserRetrieverException(status.HTTP_403_FORBIDDEN, ErrorCodes.UNAUTHORIZED.value)
         return await services.get_user_full_data(user_id)
     except UserRetrieverException as e:
         response.status_code = e.status_code

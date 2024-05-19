@@ -1,5 +1,5 @@
 .page {
-    color: var(--txtcolor);
+    color: var(--text-color);
     font: inherit;
     height: 100%;
     display: flex;
@@ -7,7 +7,7 @@
 
 .page-separator {
     width: 1px;
-    background-color: var(--txtcolor);
+    background-color: var(--text-color);
     margin: 4rem 0;
 }
 
@@ -77,14 +77,14 @@
     display: block;
     font-weight: bold;
     margin-bottom: 10px;
-    color: var(--txtcolor);
+    color: var(--text-color);
 }
 
 .form-input {
     width: calc(100% - 20px);
     padding: 10px;
     border-radius: 10px;
-    background-color: var(--searchbar);
+    background-color: var(--searchbar-bg-color);
     border: none;
 }
 
@@ -104,20 +104,20 @@
     border: none;
     border-radius: 5px;
 
-    color: var(--txtcolor);
-    background-color: var(--bkgcolor);
+    color: var(--text-color);
+    background-color: var(--color-primary);
 
     padding: 10px;
     margin: 0.5rem 0;
 }
 
 .form-link {
-    color: var(--bkgcolor);
+    color: var(--color-primary);
 }
 
 .form-link:hover {
     text-decoration: underline;
-    text-decoration-color: var(--bkgcolor);
+    text-decoration-color: var(--color-primary);
     text-underline-offset: 2px;
 }
 

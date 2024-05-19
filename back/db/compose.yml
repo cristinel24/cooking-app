@@ -1,0 +1,49 @@
+name: cooking-app
+
+services:
+  mongo1:
+    image: mongo:7.0.2
+    networks:
+      - ca 
+    ports:
+      - 27017:27017
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "0.0.0.0", "--logpath", "/dev/null"]
+
+  mongo2:
+    image: mongo:7.0.2
+    networks:
+      - ca 
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "0.0.0.0", "--logpath", "/dev/null"]
+
+  mongo3:
+    image: mongo:7.0.2
+    networks:
+      - ca 
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "0.0.0.0", "--logpath", "/dev/null"]
+
+  mongo_setup:
+    image: mongo:7.0.2
+    networks:
+      - ca 
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    volumes:
+      - ./mongo_setup.sh:/mongo_setup.sh
+    entrypoint: ["bash", "/mongo_setup.sh"]
+
+  mongo_populate:
+    build: .
+    networks:
+      - ca
+    environment:
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    depends_on:
+      mongo_setup:
+        condition: service_completed_successfully
+
+networks:
+  ca:
+    driver: bridge

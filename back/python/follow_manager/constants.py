@@ -1,5 +1,5 @@
 import os
-from enum import Enum, unique
+from enum import Enum
 
 from dotenv import load_dotenv
 
@@ -24,3 +24,4 @@ class ErrorCodes(Enum):
     NOT_RESPONSIVE_API = 21005
     INVALID_USER = 21006
     NOT_AUTHENTICATED = 21007
+    INVALID_FOLLOWS = 21008

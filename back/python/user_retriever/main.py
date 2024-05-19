@@ -16,7 +16,7 @@ async def get_user_data(user_id: str, response: Response) -> UserData | dict[str
         return await services.get_user_data(user_id)
     except UserRetrieverException as e:
         response.status_code = e.status_code
-        return {"errorCode": e.error_code.value}
+        return {"errorCode": e.error_code}
 
 
 @app.get("/user/{user_id}/card", tags=["user_card_data"])
@@ -25,7 +25,7 @@ async def get_user_card(user_id: str, response: Response) -> UserCardData | dict
         return await services.get_user_card_data(user_id)
     except UserRetrieverException as e:
         response.status_code = e.status_code
-        return {"errorCode": e.error_code.value}
+        return {"errorCode": e.error_code}
 
 
 @app.post("/user-cards", tags=["user_cards_data"])
@@ -35,18 +35,18 @@ async def get_user_cards(user_ids: UserCardsRequestData, response: Response) -> 
         return {"cards": await services.get_user_cards_data(user_ids.ids)}
     except UserRetrieverException as e:
         response.status_code = e.status_code
-        return {"errorCode": e.error_code.value}
+        return {"errorCode": e.error_code}
 
 
 @app.get("/user/{user_id}/profile", tags=["user_full_data, auth"])
 async def get_user_full_data(user_id: str, request: Request, response: Response) -> UserFullData | dict[str, int]:
     try:
         if user_id != request.state.user_id:
-            raise UserRetrieverException(status.HTTP_403_FORBIDDEN, ErrorCodes.UNAUTHORIZED)
+            raise UserRetrieverException(status.HTTP_403_FORBIDDEN, ErrorCodes.UNAUTHORIZED.value)
         return await services.get_user_full_data(user_id)
     except UserRetrieverException as e:
         response.status_code = e.status_code
-        return {"errorCode": e.error_code.value}
+        return {"errorCode": e.error_code}
 
 
 if __name__ == "__main__":

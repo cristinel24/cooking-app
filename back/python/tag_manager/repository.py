@@ -22,7 +22,7 @@ class TagCollection(MongoCollection):
 
             return [item["tag"] for item in result]
 
-    async def add_tag_by_name(self, name: str) -> None:
+    async def inc_tag(self, name: str) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             result = self._collection.find_one({"tag": name})
 
@@ -31,7 +31,7 @@ class TagCollection(MongoCollection):
             else:
                 self._collection.insert_one({"tag": name, "counter": 1})
 
-    async def add_tags(self, names: list[str]) -> None:
+    async def inc_tags(self, names: list[str]) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             results = [result["tag"] for result in self._collection.find({"tag": {"$in": names}})]
             if results:
@@ -40,7 +40,7 @@ class TagCollection(MongoCollection):
             if new_tags:
                 self._collection.insert_many(new_tags)
 
-    async def remove_tag_by_name(self, name: str) -> None:
+    async def dec_tag(self, name: str) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             result = self._collection.find_one({"tag": name})
 
@@ -53,7 +53,7 @@ class TagCollection(MongoCollection):
                 self._collection.update_one(result, {"$inc": {"counter": -1}})
                 self._collection.update_one(result, {"$inc": {"counter": -1}})
 
-    async def decrement_tags(self, names: list[str]) -> None:
+    async def dec_tags(self, names: list[str]) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             results = [(result["tag"], result["counter"]) for result in
                        self._collection.find({"tag": {"$in": names}})]

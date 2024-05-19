@@ -11,5 +11,13 @@ async def add_tag_by_name(name: str) -> None:
     await tag_collection.add_tag_by_name(name.lower())
 
 
+async def add_tags(names: list[str]) -> None:
+    await tag_collection.add_tags([tags.lower() for tags in names])
+
+
 async def remove_tag_by_name(name: str) -> None:
     await tag_collection.remove_tag_by_name(name.lower())
+
+
+async def decrement_tags(names: list[str]) -> None:
+    await tag_collection.decrement_tags([tag.lower() for tag in names])

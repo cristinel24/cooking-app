@@ -2,10 +2,10 @@ name: cooking-app
 
 services:
   ai:
-    build: 
+    build:
       context: ./python/ai
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $AI_PORT:80
@@ -21,7 +21,7 @@ services:
     build: 
       context: ./python/allergen_manager
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $ALLERGEN_MANAGER_PORT:80
@@ -36,7 +36,7 @@ services:
     build: 
       context: ./python/email_system
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $EMAIL_SYSTEM_PORT:80
@@ -56,7 +56,7 @@ services:
     build: 
       context: ./python/follow_manager
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $FOLLOW_MANAGER_PORT:80
@@ -72,7 +72,7 @@ services:
     build: 
       context: ./python/hasher
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $HASHER_PORT:80
@@ -84,10 +84,10 @@ services:
       - ./python/hasher:/app
 
   id_generator:
-    build: 
+    build:
       context: ./python/id_generator
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $ID_GENERATOR_PORT:80
@@ -97,12 +97,12 @@ services:
       - DB_NAME=$DB_NAME
     volumes:
       - ./python/id_generator:/app
-    
+
   image_storage:
     build: 
       context: ./python/image_storage
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $IMAGE_STORAGE_PORT:80
@@ -117,7 +117,7 @@ services:
     build: 
       context: ./python/message_history_manager
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $MESSAGE_HISTORY_MANAGER_PORT:80
@@ -133,7 +133,7 @@ services:
     build: 
       context: ./python/profile_data_changer
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $PROFILE_DATA_CHANGER_PORT:80
@@ -149,7 +149,7 @@ services:
     build: 
       context: ./python/rating_manager
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $RATING_MANAGER_PORT:80
@@ -166,7 +166,7 @@ services:
     build: 
       context: ./python/recipe_retriever
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $RECIPE_RETRIEVER_PORT:80
@@ -182,7 +182,7 @@ services:
     build: 
       context: ./python/recipe_saver
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $RECIPE_SAVER_PORT:80
@@ -197,7 +197,7 @@ services:
     build: 
       context: ./python/search_history_manager
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $SEARCH_HISTORY_MANAGER_PORT:80
@@ -213,7 +213,7 @@ services:
     build: 
       context: ./python/tag_manager
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $TAG_MANAGER_PORT:80
@@ -225,10 +225,10 @@ services:
       - ./python/tag_manager:/app
 
   token_destroyer:
-    build: 
+    build:
       context: ./python/token_destroyer
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $TOKEN_DESTROYER_PORT:80
@@ -238,12 +238,12 @@ services:
       - DB_NAME=$DB_NAME
     volumes:
       - ./python/token_destroyer:/app
-    
+
   token_generator:
     build: 
       context: ./python/token_generator
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $TOKEN_GENERATOR_PORT:80
@@ -258,7 +258,7 @@ services:
     build: 
       context: ./python/token_validator
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $TOKEN_VALIDATOR_PORT:80
@@ -273,7 +273,7 @@ services:
     build: 
       context: ./python/user_destroyer
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $USER_DESTROYER_PORT:80
@@ -288,7 +288,7 @@ services:
     build: 
       context: ./python/user_retriever
       dockerfile: ../Dockerfile
-    networks: 
+    networks:
       - ca
     ports:
       - $USER_RETRIEVER_PORT:80

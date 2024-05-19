@@ -126,7 +126,6 @@ def get_login_data():
             "hashAlgName": "random_sha256",
             "hash": fake.sha256(),
             "salt": fake.sha256(),
-            "changeToken": None,
             "newEmail": None,
         }
 
@@ -182,7 +181,6 @@ def get_user():
         "recipes": [],
         "allergens": random_unique_arr(get_allergen, 0, 5),
         "ratings": [],
-        "sessions": [],
         "savedRecipes": [],
     }
 
@@ -260,22 +258,6 @@ print("Done")
 
 print("Baking fresh expiring tokens...".ljust(36, '.'), end="")
 for user in users:
-
-    no_sessions = random.randint(0, 2)
-    user["sessions"] = [get_expiring_token(user["id"], "session") for _ in range(no_sessions)]
-    for session in user["sessions"]:
-        session["_id"] = expiring_token_collection.insert_one(
-            session
-        ).inserted_id
-
-        session.pop("createdAt")
-        session.pop("userId")
-
-    user_collection.update_one(
-        {"id": user["id"]},
-        {"$set": {"sessions": user["sessions"]}}
-    )
-
     if user.get("login") is None:
         continue
 
@@ -301,7 +283,6 @@ for user in users:
         expiring_token.pop("createdAt")
         expiring_token.pop("userId")
 
-        user["login"]["changeToken"] = expiring_token
         user["login"]["newEmail"] = fake.email()
         user_collection.update_one(
             {"id": user["id"]},

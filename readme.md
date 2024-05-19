@@ -1,5 +1,9 @@
 # Change Log
 
+### 19/05/2024
+
+* completely removed all `expiring_token`-s from the `user` collection. Now `expiring token`-s are only found in the `expiring token` collection 
+
 ### 18/05/2024
 
 * added `viewCount` field in all `recipe`-s

@@ -568,35 +568,6 @@ tag_collection.create_indexes([
     IndexModel(["tag"], unique=True)
 ])
 
-user_change_token_embed_object = {
-    "bsonType": ["object", "null"],
-    "description": "must be the objectId of an expiring token",
-    "additionalProperties": False,
-    "required": ["_id", "value", "tokenType"],
-    "properties": {
-        "_id": {
-            "bsonType": "objectId",
-        },
-        "_class": {},
-        "value": {
-            "bsonType": "string",
-            "description": "must be the value of a valid expiring token"
-        },
-        "tokenType": {
-            "bsonType": "string",
-            "enum": [
-                "session",
-                "usernameChange",
-                "emailChange",
-                "passwordChange",
-                "emailConfirm"
-            ],
-            "description": "must be a valid type from the enum: [session, usernameChange, "
-                           "emailChange, passwordChange, emailConfirm]",
-        },
-    },
-}
-
 db.create_collection("user")
 db.command(
     "collMod",
@@ -612,7 +583,6 @@ db.command(
                 "displayName",
                 "roles",
                 "savedRecipes",
-                "sessions",
             ],
             "properties": {
                 "_id": {
@@ -702,7 +672,6 @@ db.command(
                             "maxLength": 512,
                             "description": "must be the salt used in the hashing of the password",
                         },
-                        "changeToken": user_change_token_embed_object,
                         "newEmail": {
                             "bsonType": ["string", "null"],
                             "description": "must "
@@ -775,11 +744,6 @@ db.command(
                         "bsonType": ["string"],
                         "description": "items must be the ids of recipes",
                     },
-                },
-                "sessions": {
-                    "bsonType": "array",
-                    "description": "must be an array containing all active user sessions",
-                    "items": user_change_token_embed_object
                 },
             },
             "additionalProperties": False,

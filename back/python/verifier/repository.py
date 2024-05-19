@@ -30,5 +30,8 @@ class UserCollection(MongoCollection):
         try:
             with pymongo.timeout(MONGO_TIMEOUT):
                 self._collection.update_one({"id": user_id}, {"$set": changes})
-        except errors.PyMongoError:
-            raise VerifierException(status.HTTP_504_GATEWAY_TIMEOUT, ErrorCodes.DATABASE_ERROR.value)
+        except errors.PyMongoError as e:
+            if isinstance(e, pymongo.errors.WTimeoutError):
+                raise VerifierException(status.HTTP_504_GATEWAY_TIMEOUT, ErrorCodes.DATABASE_TIMEOUT.value)
+            else:
+                raise VerifierException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)

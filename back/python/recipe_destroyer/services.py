@@ -2,27 +2,31 @@ from api import *
 from repository import RecipeCollection, UserCollection
 
 async def delete_recipe_service(recipe_id: str):
-    db = RecipeCollection()
-    db_user = UserCollection()
+    recipe_collection = RecipeCollection()
+    user_collection = UserCollection()
 
-    details = db.get_recipe_details(recipe_id)
+    details = recipe_collection.get_recipe_details(recipe_id)
     ratings = details["ratings"]
     tags = details["tags"]
     allergens = details["allergens"]
+    thumbnail = details["thumbnail"]
     user_id = details["authorId"]
 
+    res= await delete_ratings(ratings)
+    if res != 200:
+        print("Ratings are not deleted correctly" + res.status_code)
+
+    await delete_tags(tags)
+    if res != 200:
+        print("Tags are not deleted correctly" + res.status_code)
     
-    for rating in ratings:
-        await delete_ratings(rating)
-  
-    for tag in tags:
-        await delete_tags(tag)
+    await delete_allergens(allergens)
+    if res != 200:
+        print("Allergens are not deleted correctly" + res.status_code)
     
-    for allergen in allergens:
-        await delete_allergens(allergen)
-    
-    
-    db.delete_recipe(recipe_id)
-    db_user.delete_recipe_from_users(recipe_id, user_id)
-    
-    return 0
+    ##await delete_image(thumbnail)
+    ##if res != 200:
+      ##  print("Thumbnail is not deleted correctly" + res.status_code)
+
+    recipe_collection.delete_recipe(recipe_id)
+    user_collection.delete_recipe_from_users(recipe_id, user_id)

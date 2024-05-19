@@ -23,30 +23,17 @@ class RecipeCollection:
     def get_recipe_details(self, recipe_id: str):
         with timeout(MAX_TIMEOUT_TIME_SECONDS):
             try:
-                recipe = self._collection.find_one({"id": recipe_id}, {"tags": 1, "allergens": 1, "ratings": 1, "authorId": 1, "thumbnail":1})
-                if recipe is None:
-                    return {
-                        "tags": ErrorCodes.RECIPE_NOT_FOUND,
-                        "allergens": ErrorCodes.RECIPE_NOT_FOUND,
-                        "ratings": ErrorCodes.RECIPE_NOT_FOUND,
-                        "authorId": ErrorCodes.RECIPE_NOT_FOUND,
-                        "thumbnail": ErrorCodes.RECIPE_NOT_THUMBNAIL
-                    }
-                return {
-                    "tags": recipe.get("tags", []),
-                    "allergens": recipe.get("allergens", []),
-                    "ratings": recipe.get("ratings", []),
-                    "authorId": recipe.get("authorId", ""),
-                    "thumbnail": recipe.get("thumbnail", "")
-                }
+                details = {}
+                recipe = self._collection.find_one({"id": recipe_id}, {"tags": 1, "allergens": 1, "ratings": 1, "authorId": 1, "thumbnail": 1})
+                details["tags"] = recipe.get("tags", [])
+                details["allergens"] = recipe.get("allergens", [])
+                details["ratings"] = recipe.get("ratings", [])
+                details["authorId"] = recipe.get("authorId", "")
+                details["thumbnail"] = recipe.get("thumbnail", "")
+
             except errors.PyMongoError as e:
-                return {
-                    "tags": ErrorCodes.RECIPE_NOT_TAGS,
-                    "allergens": ErrorCodes.RECIPE_NOT_ALLERGENS,
-                    "ratings": ErrorCodes.RECIPE_NOT_RATINGS,
-                    "authorId": ErrorCodes.RECIPE_NOT_AUTHOR,
-                    "thumbnail": ErrorCodes.RECIPE_NOT_THUMBNAIL
-                }
+                return ErrorCodes.RECIPE_NOT_FOUND
+            return details
             
     
 class UserCollection:
@@ -69,4 +56,3 @@ class UserCollection:
             except errors.PyMongoError as e:
                 return ErrorCodes.FAILED_DESTROY_RECIPE
             
-        

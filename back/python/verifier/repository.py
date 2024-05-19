@@ -24,11 +24,11 @@ class UserCollection(MongoCollection):
                     raise VerifierException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
                 return user
         except errors.PyMongoError:
-            raise VerifierException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)
+            raise VerifierException(status.HTTP_504_GATEWAY_TIMEOUT, ErrorCodes.DATABASE_ERROR.value)
 
     def update_user_by_id(self, user_id: str, changes: dict) -> None:
         try:
             with pymongo.timeout(MONGO_TIMEOUT):
                 self._collection.update_one({"id": user_id}, {"$set": changes})
         except errors.PyMongoError:
-            raise VerifierException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)
+            raise VerifierException(status.HTTP_504_GATEWAY_TIMEOUT, ErrorCodes.DATABASE_ERROR.value)

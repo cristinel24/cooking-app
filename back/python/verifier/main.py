@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 from fastapi import FastAPI, Response
 import services
 import uvicorn
@@ -6,8 +5,6 @@ from constants import HOST, PORT
 from exception import VerifierException
 
 app = FastAPI()
-
-load_dotenv()
 
 
 @app.post("/", tags=["verify"])

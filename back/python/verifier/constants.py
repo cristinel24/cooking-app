@@ -11,13 +11,12 @@ DB_NAME = os.getenv("DB_NAME", "cooking_app")
 MONGO_TIMEOUT = 3
 TOKEN_VALIDATOR_API_URL = os.getenv("TOKEN_VALIDATOR_API_URL", "http://0.0.0.0:8001")
 TOKEN_DESTROYER_API_URL = os.getenv("TOKEN_DESTROYER_API_URL", "http://0.0.0.0:8002")
-VERIFY_TOKEN_ROUTE = os.getenv("VERIFY_TOKEN_ROUTE", "/{token_type}/{token}")
-DESTROY_TOKEN_ROUTE = os.getenv("DESTROY_TOKEN_ROUTE", "/{token}")
+VERIFY_TOKEN_ROUTE = "/{token_type}/{token}"
+DESTROY_TOKEN_ROUTE = "/{token}"
 
-CONFIRM_DATA_PROJECTION = {
+NEW_EMAIL_PROJECTION = {
     "_id": 0,
-    "email": 1,
-    "login": 1
+    "login.newEmail": 1
 }
 
 EMAIL_CHANGE_TOKEN = "emailChange"

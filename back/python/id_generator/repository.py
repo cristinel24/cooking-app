@@ -14,7 +14,7 @@ class MongoCollection:
             self._connection = MongoClient(MONGO_URI)
         self.counters_collection = self._connection.get_database(DB_NAME).counters
 
-    def get_next_id(self) -> str:
+    def get_next_id(self) -> int:
         try:
             with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
                 result = self.counters_collection.find_one_and_update(

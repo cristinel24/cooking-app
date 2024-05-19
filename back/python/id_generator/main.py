@@ -4,6 +4,7 @@ from fastapi import FastAPI, Response, status
 from constants import PORT, HOST, ErrorCode
 from exceptions import *
 from services import get_next_id_services
+from utils import base36encode
 
 app = FastAPI()
 
@@ -12,7 +13,7 @@ app = FastAPI()
 async def get_id(response: Response):
     try:
         new_id = get_next_id_services()
-        return new_id
+        return {"id": base36encode(new_id)}
     except IdGeneratorException as e:
         response.status_code = e.status_code
         return {"errorCode": e.error_code}

@@ -10,6 +10,6 @@ def get_mongo_collection():
     return mongo_collection
 
 
-def get_next_id_services() -> str:
+def get_next_id_services() -> int:
     collection = get_mongo_collection()
     return collection.get_next_id()

@@ -6,7 +6,6 @@ from fastapi import FastAPI, Response, status
 from schemas import TokenData
 from services import get_token
 
-
 app = FastAPI()
 
 
@@ -18,17 +17,9 @@ async def is_valid_token(
         res = get_token(token, token_type)
         return TokenData(**res)
     except TokenException as e:
-        match e.error_code:
-            case Errors.INVALID_TYPE:
-                response.status_code = status.HTTP_400_BAD_REQUEST
-            case Errors.DB_ERROR:
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            case Errors.DB_TIMEOUT:
-                response.status_code = status.HTTP_504_GATEWAY_TIMEOUT
-            case _:
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response.status_code = e.status_code
         return {"errorCode": e.error_code}
-    except Exception as e:
+    except Exception:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": Errors.UNKNOWN}
 
@@ -41,15 +32,7 @@ async def token_exists(
         res = get_token(token)
         return TokenData(**res)
     except TokenException as e:
-        match e.error_code:
-            case Errors.INVALID_TYPE:
-                response.status_code = status.HTTP_400_BAD_REQUEST
-            case Errors.DB_ERROR:
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            case Errors.DB_TIMEOUT:
-                response.status_code = status.HTTP_504_GATEWAY_TIMEOUT
-            case _:
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response.status_code = e.status_code
         return {"errorCode": e.error_code}
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR

@@ -1,7 +1,7 @@
 import os
 from pymongo import MongoClient, errors, timeout
-from bson import ObjectId
 from constants import *
+from schemas import *
 
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
@@ -11,27 +11,43 @@ class MongoCollection:
             self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
         self._collection = self._connection['cooking_app']['user']
 
-    def update_roles(self, user_id: str, roles: int) -> None:
+    def update_roles(self, user_id: str, roles: Dict[str, int]) -> None:
         with timeout(MAX_TIMEOUT_TIME_SECONDS):
             try:
-                if roles < UserRoles.ACTIVE or roles >= UserRoles.BANNED*2:
-                   return ErrorCodes.NONEXISTENT_ROLES
-                
-                if roles & UserRoles.BANNED:
+                user = self._collection.find_one({"id": user_id})
+                if not user:
+                    return ErrorCodes.NONEXISTENT_USER
+
+                current_roles = user.get("roles", UserRoles.ACTIVE)
+                new_roles = current_roles
+
+                for role, value in roles.items():
+                    if not hasattr(UserRoles, role.upper()):
+                        return ErrorCodes.NONEXISTENT_ROLES
+
+                    role_bit = getattr(UserRoles, role.upper())
+                    
+                    if value == 1:
+                        new_roles |= role_bit  
+                    elif value == -1:
+                        new_roles &= ~role_bit  
+                    else:
+                        return ErrorCodes.NONEXISTENT_ROLES
+
+                if new_roles & UserRoles.BANNED:
                     result = self._collection.update_one(
                         {"id": user_id},
-                        {"$bit": {"roles": {"or": roles}}}
-                        )
-                
+                        {"$bit": {"roles": {"or": new_roles}}}
+                    )
                 else:
                     result = self._collection.update_one(
                         {"id": user_id},
-                        {"$set": {"roles": roles}}
-                        )
+                        {"$set": {"roles": new_roles}}
+                    )
 
-                if result.matched_count==0:
+                if result.matched_count == 0:
                     return ErrorCodes.NONEXISTENT_USER
+
                 return 0
             except errors.PyMongoError as e:
                 return ErrorCodes.FAILED_ROLES
-           

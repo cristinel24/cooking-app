@@ -1,8 +1,10 @@
-import exceptions
-import services
 import uvicorn
-from constants import HOST, PORT, ErrorCodes
 from fastapi import FastAPI, Response, status
+
+import exceptions
+import schemas
+import services
+from constants import HOST, PORT, ErrorCodes
 
 app = FastAPI()
 
@@ -26,9 +28,9 @@ async def inc_tag(name: str, response: Response):
 
 
 @app.post("/tags/inc")
-async def inc_tags(names: list[str], response: Response):
+async def inc_tags(body: schemas.TagsBody, response: Response):
     try:
-        await services.inc_tags(names)
+        await services.inc_tags(body.tags)
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": ErrorCodes.SERVER_ERROR.value}
@@ -47,9 +49,9 @@ async def dec_tag(name: str, response: Response):
 
 
 @app.post("/tags/dec")
-async def dec_tags(names: list[str], response: Response):
+async def dec_tags(body: schemas.TagsBody, response: Response):
     try:
-        await services.dec_tags(names)
+        await services.dec_tags(body.tags)
     except (Exception,) as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"errorCode": ErrorCodes.SERVER_ERROR.value}

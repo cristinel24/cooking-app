@@ -1,3 +1,5 @@
+import datetime
+
 from pydantic import BaseModel
 
 
@@ -15,6 +17,7 @@ class RecipeData(BaseModel):
 class Recipe:
     id: str
     authorId: str
+    updatedAt: datetime.datetime
     title: str
     ratingSum: int
     ratingCount: int
@@ -43,4 +46,3 @@ class Recipe:
         self.allergens = recipe_data.allergens
         self.tags = recipe_data.tags
         self.thumbnail = recipe_data.thumbnail
-

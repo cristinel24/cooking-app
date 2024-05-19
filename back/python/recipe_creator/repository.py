@@ -45,7 +45,7 @@ class UserCollection(MongoCollection):
 class RecipeCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
-        self._collection = self._connection.get_database(DB_NAME).user
+        self._collection = self._connection.get_database(DB_NAME).recipe
 
     def insert_recipe(self, recipe: dict, session: ClientSession):
         try:

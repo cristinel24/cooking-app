@@ -1,3 +1,5 @@
+import datetime
+
 import httpx
 from fastapi import status
 
@@ -23,6 +25,7 @@ async def create_recipe(user_id: str, recipe_data: RecipeData):
         raise RecipeCreatorException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
     recipe.tokens = await api.tokenize_recipe(recipe_data.model_dump(exclude=set("thumbnail")))
     recipe.authorId = user_id
+    recipe.updatedAt = datetime.datetime.now(datetime.UTC)
     flags = 0
     try:
         with client.get_connection().start_session() as session:
@@ -30,7 +33,7 @@ async def create_recipe(user_id: str, recipe_data: RecipeData):
                 user_collection.update_user(user_id, recipe.id, session)
                 recipe_collection.insert_recipe(vars(recipe), session)
         await api.add_allergens(recipe.allergens)
-        flags += 1 << 0
+        flags += 1
         await api.add_tags(recipe.tags)
         flags += 1 << 1
     except RecipeCreatorException as e:

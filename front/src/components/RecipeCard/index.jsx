@@ -4,7 +4,7 @@ import { IoIosTime } from 'react-icons/io'
 import { Link } from 'react-router-dom'
 
 import './index.css'
-import { Rating } from '../../components'
+import { RatingValue } from '../../components'
 import { prepTimeDisplayText } from '../../utils/recipeData'
 
 export default function RecipeCard({ recipe, owned, onFavorite, onRemove }) {

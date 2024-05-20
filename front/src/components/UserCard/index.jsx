@@ -1,5 +1,5 @@
 import './index.css'
-import RatingValue from '../index.jsx'
+import { RatingValue } from '../index.jsx'
 
 export default function UserCard({
     displayName,
@@ -20,7 +20,7 @@ export default function UserCard({
                         <i className="fa-solid fa-at"></i>
                         {username}
                     </p>
-                    <RatingValue ratingValue={rating} />
+                    <RatingValue value={rating} />
                 </div>
             </div>
         </a>

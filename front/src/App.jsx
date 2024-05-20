@@ -3,24 +3,43 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import { UserContext, ThemeContext } from './context'
-import { AddRecipe, CredentialsChange, Dashboard, EditRecipe, ErrorPage, Feed, ForgotPassword, Login, Profile, Recipe, Register, Search, Settings, Verified } from './pages'
+import {
+    AddRecipe,
+    CredentialsChange,
+    Dashboard,
+    EditRecipe,
+    ErrorPage,
+    Feed,
+    ForgotPassword,
+    Login,
+    Profile,
+    Recipe,
+    Register,
+    Search,
+    Settings,
+    Verified,
+} from './pages'
 import { AdminRoute, Page, ProtectedRoute, UnprotectedRoute } from './components'
 
 function App() {
     const [remember, setRemember] = useState(localStorage.getItem('user'))
-    const [token, setToken] = useState(localStorage.getItem('token') || sessionStorage.getItem('token') || '')
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user')) || {})
+    const [token, setToken] = useState(
+        localStorage.getItem('token') || sessionStorage.getItem('token') || ''
+    )
+    const [user, setUser] = useState(
+        JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user')) || {}
+    )
 
     const login = (token, user, remember) => {
         setToken(token)
         setUser(user)
         setRemember(remember)
         if (remember) {
-            localStorage.setItem("token", token)
-            localStorage.setItem("user", JSON.stringify(user))
+            localStorage.setItem('token', token)
+            localStorage.setItem('user', JSON.stringify(user))
         } else {
-            sessionStorage.setItem("token", token)
-            sessionStorage.setItem("user", JSON.stringify(user))
+            sessionStorage.setItem('token', token)
+            sessionStorage.setItem('user', JSON.stringify(user))
         }
     }
 
@@ -28,11 +47,11 @@ function App() {
         setToken('')
         setUser({})
         if (remember) {
-            localStorage.removeItem("token")
-            localStorage.removeItem("user")
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
         } else {
-            sessionStorage.removeItem("token")
-            sessionStorage.removeItem("user")
+            sessionStorage.removeItem('token')
+            sessionStorage.removeItem('user')
         }
     }
 
@@ -40,9 +59,7 @@ function App() {
 
     const isAdmin = () => user.roles & 0b10 // TODO: constants instead of magic numbers
 
-    const [theme, setTheme] = useState(
-        localStorage.getItem('theme') || ''
-    )
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || '')
 
     const setThemeColors = (theme) => {
         document.documentElement.setAttribute('data-theme', theme)

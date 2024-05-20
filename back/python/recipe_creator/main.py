@@ -13,7 +13,7 @@ app = FastAPI()
 
 
 @app.post("/recipe")
-async def create_recipe(recipe_data: RecipeData, x_user_id: Annotated[str | None, Header()]):
+async def create_recipe(recipe_data: RecipeData, x_user_id: Annotated[str | None, Header()] = None):
     if not x_user_id:
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
                             content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})

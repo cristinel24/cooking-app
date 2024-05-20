@@ -52,16 +52,18 @@ async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
                 flags += 1 << 4
 
     except RecipeEditorException as e:
-        await recipe_collection.edit_recipe(recipe_id, recipe_dict, session)
-        if check_flags(flags, 0):
-            await api.add_allergens(allergens_to_delete)
-        if check_flags(flags, 1):
-            await api.delete_allergens(allergens_to_add)
-        if check_flags(flags, 2):
-            await api.add_tags(tags_to_delete)
-        if check_flags(flags, 3):
-            await api.delete_tags(tags_to_add)
-        if check_flags(flags, 4):
-            # tokens are already restored at the first glance
-            pass
-        raise e
+        with client.get_connection().start_session() as session:
+            with session.start_transaction():
+                await recipe_collection.edit_recipe(recipe_id, recipe_dict, session)
+                if check_flags(flags, 0):
+                    await api.add_allergens(allergens_to_delete)
+                if check_flags(flags, 1):
+                    await api.delete_allergens(allergens_to_add)
+                if check_flags(flags, 2):
+                    await api.add_tags(tags_to_delete)
+                if check_flags(flags, 3):
+                    await api.delete_tags(tags_to_add)
+                if check_flags(flags, 4):
+                    # tokens are already restored at the first glance
+                    pass
+                raise e

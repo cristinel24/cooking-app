@@ -14,7 +14,7 @@ async def tokenize_recipe(recipe_data: dict) -> list[str]:
         try:
             response = await client.post(url=AI_RECIPE_TOKENIZER_ROUTE,
                                          content=payload)
-            if "tags" not in response.json():
+            if "tokens" not in response.json():
                 logging.warning("AI API did not return tokens")
                 if "errorCode" in response.json():
                     raise RecipeEditorException(int(response.json()["errorCode"]),
@@ -23,7 +23,7 @@ async def tokenize_recipe(recipe_data: dict) -> list[str]:
                     raise RecipeEditorException(ErrorCodes.NOT_RESPONSIVE_API,
                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
-                return response.json()["tags"]
+                return response.json()["tokens"]
         except (Exception,):
             logging.warning("AI API is not responsive")
 

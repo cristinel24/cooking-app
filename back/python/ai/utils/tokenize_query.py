@@ -86,4 +86,6 @@ def normalise_dict(dictionary: dict) -> dict:
             normalised_tags.append(tag.lower())
 
     dictionary["tags"] = normalised_tags
+    dictionary["tokens"] = dictionary["tags"]
+    dictionary.pop("tags")
     return dictionary

@@ -1,17 +1,12 @@
-import os
-from dotenv import load_dotenv
 from fastapi import FastAPI, APIRouter
 
 import processor
 from utils import schemas
 
 from utils import tokenize_query
+from utils.constants import PORT
 
-load_dotenv()
-
-PORT = int(os.getenv("PORT", "8000"))
-
-app = FastAPI()
+app = FastAPI(title="AI")
 
 router = APIRouter(
     prefix="/api"

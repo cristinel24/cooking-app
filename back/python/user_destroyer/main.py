@@ -1,20 +1,19 @@
-import json
-
-from fastapi import FastAPI, Response
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
 import services
 from constants import HOST, PORT
 from exception import UserDestroyerException
 
-app = FastAPI()
+app = FastAPI(title="User Destroyer")
 
 
-@app.delete("/user/{user_id}", tags=["user-destroyer"])
-async def delete_user(user_id: str):
+@app.delete("/{user_id}", tags=["user-destroyer"], response_model=None, response_description="Successful operation")
+async def delete_user(user_id: str) -> None | JSONResponse:
     try:
-        return await services.delete_user(user_id)
+        await services.delete_user(user_id)
     except UserDestroyerException as e:
-        return Response(status_code=e.status_code, content=json.dumps({"errorCode": e.error_code.value}))
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code.value})
 
 
 if __name__ == "__main__":

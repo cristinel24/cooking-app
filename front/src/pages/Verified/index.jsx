@@ -1,7 +1,6 @@
 import { useSearchParams } from "react-router-dom"
-import { Page } from "../../components"
 import { useEffect } from "react"
-import { verify } from "../../services/auth"
+import { verifyAccount } from "../../services/auth"
 import PageButton from '../../components/PageButton/index.jsx'
 import './index.css'
 
@@ -15,7 +14,7 @@ export default function Verified() {
                 return;
             }
 
-            await verify(token)
+            await verifyAccount(token)
         }
 
         verifyToken()

@@ -1,9 +1,5 @@
-import "./index.css"
-
-export default function Settings() {
-    return (
-        <div>
-            Settings
-        </div>
-    )
-}
+export { default as AccountSettings } from './AccountSettings'
+export { default as History } from './History'
+export { default as Notifications } from './Notifications'
+export { default as ProfileSettings } from './ProfileSettings'
+export { default as Settings } from './Settings'

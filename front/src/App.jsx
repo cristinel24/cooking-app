@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-
 import { UserContext, ThemeContext } from './context'
 import {
+    AccountSettings,
     AddRecipe,
     CredentialsChange,
     Dashboard,
@@ -11,8 +11,11 @@ import {
     ErrorPage,
     Feed,
     ForgotPassword,
+    History,
     Login,
+    Notifications,
     Profile,
+    ProfileSettings,
     Recipe,
     Register,
     Search,
@@ -121,7 +124,6 @@ function App() {
                             <Route path="/profile/:userId" element={<Profile />} />
                             <Route path="/recipe/:recipeId" element={<Recipe />} />
                             <Route path="/search" element={<Search />} />
-                            <Route path="/settings" element={<Settings />} />
 
                             {/* unprotected routes */}
                             <Route element={<UnprotectedRoute />}>
@@ -138,6 +140,17 @@ function App() {
 
                                 <Route path="/recipe/add" element={<AddRecipe />} />
                                 <Route path="/recipe/:recipeId/edit" element={<EditRecipe />} />
+
+                                <Route element={<Settings />}>
+                                    <Route path="/settings" element={<AccountSettings />} />
+                                    <Route path="/settings/account" element={<AccountSettings />} />
+                                    <Route path="/settings/history" element={<History />} />
+                                    <Route
+                                        path="/settings/notifications"
+                                        element={<Notifications />}
+                                    />
+                                    <Route path="/settings/profile" element={<ProfileSettings />} />
+                                </Route>
 
                                 {/* admin routes */}
                                 <Route element={<AdminRoute />}>

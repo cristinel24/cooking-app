@@ -1,19 +1,19 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 import services
 import uvicorn
 from constants import HOST, PORT
 from exception import VerifierException
 
-app = FastAPI()
+app = FastAPI(title="Verifier")
 
 
-@app.post("/", tags=["verify"])
-async def verify(token_value: str, response: Response) -> dict[str, int] | None:
+@app.post("/", tags=["verify"], response_model=None, response_description="Successful operation")
+async def verify(token_value: str) -> dict[str, int] | None | JSONResponse:
     try:
         await services.verify(token_value)
     except VerifierException as e:
-        response.status_code = e.status_code
-        return {"errorCode": e.error_code}
+        return JSONResponse(status_code=e.status_code, content={"error_code": e.error_code})
 
 
 if __name__ == "__main__":

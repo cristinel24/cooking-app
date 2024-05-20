@@ -16,26 +16,55 @@ async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
     validate_recipe_data(recipe_data)
     recipe = Recipe(recipe_data)
 
-    recipe.tokens = await api.tokenize_recipe(recipe_data.model_dump(exclude=set("thumbnail")))
     recipe.updatedAt = datetime.datetime.now(datetime.UTC)
     flags = 0
 
     try:
         with client.get_connection().start_session() as session:
             with session.start_transaction():
-                recipe_dict = recipe_collection.get_recipe_by_id(recipe_id, session)
-
+                recipe_dict = await recipe_collection.get_recipe_by_id(recipe_id, session)
                 if recipe_dict["authorId"] != x_user_id:
                     raise RecipeEditorException(ErrorCodes.ACCESS_UNAUTHORIZED.value, status.HTTP_403_FORBIDDEN)
 
-                recipe_collection.edit_recipe(recipe_id, vars(recipe), session)
-                # await api.add_allergens(recipe.allergens)
-                # flags += 1
-                # await api.add_tags(recipe.tags)
-                # flags += 1 << 1
+                await recipe_collection.edit_recipe(recipe_id, vars(recipe), session)
+
+                if recipe_data.allergens is not None:
+                    allergens_to_delete = [item for item in recipe_dict["allergens"] if item not in recipe.allergens]
+                    allergens_to_add = [item for item in recipe.allergens if item not in recipe_dict["allergens"]]
+                    await api.delete_allergens(allergens_to_delete)
+                    flags += 1
+                    await api.add_allergens(allergens_to_add)
+                    flags += 1 << 1
+
+                if recipe_data.tags is not None:
+                    tags_to_delete = [item for item in recipe_dict["tags"] if item not in recipe.tags]
+                    tags_to_add = [item for item in recipe.tags if item not in recipe_dict["tags"]]
+                    await api.delete_tags(tags_to_delete)
+                    flags += 1 << 2
+                    await api.add_tags(tags_to_add)
+                    flags += 1 << 3
+
+                # regenerate tokens and edit them
+                new_recipe_dict = await recipe_collection.get_recipe_by_id(recipe_id, session)
+                fields_needed = ["title", "prepTime", "tags", "allergens", "description", "ingredients", "steps"]
+                recipe.tokens = await api.tokenize_recipe({key: new_recipe_dict[key] for key in fields_needed})
+                await recipe_collection.edit_recipe(recipe_id, {"tokens": recipe.tokens}, session)
+                flags += 1 << 4
+
     except RecipeEditorException as e:
-        # if check_flags(flags, 0):
-        #     await api.delete_allergens(recipe.allergens)
-        # if check_flags(flags, 1):
-        #     await api.delete_tags(recipe.tags)
+        if check_flags(flags, 1):
+            await api.delete_allergens(allergens_to_add)
+            await api.add_allergens(allergens_to_delete)
+        elif check_flags(flags, 0):
+            await api.add_allergens(allergens_to_delete)
+
+        if check_flags(flags, 3):
+            await api.delete_tags(tags_to_add)
+            await api.add_tags(tags_to_delete)
+        elif check_flags(flags, 2):
+            await api.add_tags(tags_to_delete)
+
+        if check_flags(flags, 4):
+            await recipe_collection.restore_tokens(recipe_dict["id"], recipe_dict["tokens"], session)
+
         raise e

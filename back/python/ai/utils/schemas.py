@@ -10,12 +10,12 @@ class ChatbotInput(BaseModel):
 
 class TokenizeRecipeSchema(BaseModel):
     title: str
-    prepare_time: int
+    prepTime: int
     tags: Optional[list[str]] = []
     allergens: Optional[list[str]] = []
     description: str
     ingredients: list[str]
-    prepare_steps: list[str]
+    steps: list[str]
 
 
 class ReplaceIngredientSchema(BaseModel):

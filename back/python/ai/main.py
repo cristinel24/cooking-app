@@ -4,7 +4,7 @@ import processor
 from utils import schemas
 
 from utils import tokenize_query
-from utils.constants import PORT
+from utils.constants import PORT, HOST
 
 app = FastAPI()
 
@@ -36,4 +36,4 @@ app.include_router(router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=PORT)
+    uvicorn.run(app, host=HOST, port=PORT)

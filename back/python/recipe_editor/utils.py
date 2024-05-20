@@ -7,18 +7,17 @@ from schemas import RecipeData
 
 
 def validate_recipe_data(recipe_data: RecipeData):
-    TODO: validations
-    if not 8 <= len(recipe_data.title) <= 128:
+    if recipe_data.title is not None and not 8 <= len(recipe_data.title) <= 128:
         raise RecipeEditorException(ErrorCodes.INVALID_TITLE_SIZE.value, status.HTTP_400_BAD_REQUEST)
-    if not 80 <= len(recipe_data.description) <= 10_000:
+    if recipe_data.description is not None and not 80 <= len(recipe_data.description) <= 10_000:
         raise RecipeEditorException(ErrorCodes.INVALID_DESCRIPTION_SIZE.value, status.HTTP_400_BAD_REQUEST)
-    if recipe_data.prepTime % 5 != 0 or recipe_data.prepTime == 0:
+    if recipe_data.prepTime is not None and recipe_data.prepTime % 5 != 0 or recipe_data.prepTime == 0:
         raise RecipeEditorException(ErrorCodes.INVALID_PREPTIME.value, status.HTTP_400_BAD_REQUEST)
-    if not recipe_data.steps:
+    if recipe_data.steps is not None and not recipe_data.steps:
         raise RecipeEditorException(ErrorCodes.EMPTY_LIST_STEPS.value, status.HTTP_400_BAD_REQUEST)
-    if not recipe_data.ingredients:
+    if recipe_data.ingredients is not None and not recipe_data.ingredients:
         raise RecipeEditorException(ErrorCodes.EMPTY_LIST_INGREDIENTS.value, status.HTTP_400_BAD_REQUEST)
-    if not 0 <= len(recipe_data.thumbnail) <= 2048:
+    if recipe_data.thumbnail is not None and not 0 <= len(recipe_data.thumbnail) <= 2048:
         raise RecipeEditorException(ErrorCodes.INVALID_THUMBNAIL_URL_SIZE.value, status.HTTP_400_BAD_REQUEST)
 
 

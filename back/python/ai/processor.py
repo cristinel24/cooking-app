@@ -21,16 +21,15 @@ async def process_recipe(recipe):
     string_to_tokenize = f"""titlu: {recipe_dict["title"]}
     descriere: {recipe_dict["description"]}
     ingrediente: {recipe_dict["ingredients"]}
-    pasi de preparare: {recipe_dict["prepare_steps"]}
+    pasi de preparare: {recipe_dict["steps"]}
     """
-    print("string to tokenize: ", string_to_tokenize)
 
     generated_tokens = await verify_generated_tokens(await tokenize_user_query(string_to_tokenize))
 
     # can be changed
-    if int(recipe_dict["prepare_time"]) < 30:
+    if int(recipe_dict["prepTime"]) < 30:
         generated_tokens["tags"].insert(0, "timp de preparare scurt")
-    elif int(recipe_dict["prepare_time"]) > 120:
+    elif int(recipe_dict["prepTime"]) > 120:
         generated_tokens["tags"].insert(0, "timp de preparare lung")
     else:
         generated_tokens["tags"].insert(0, "timp de preparare mediu")

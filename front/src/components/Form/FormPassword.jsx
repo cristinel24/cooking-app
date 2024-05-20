@@ -1,33 +1,38 @@
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
+import { forwardRef, useState } from 'react'
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
-function FormPassword({ register, showPassword, setShowPassword }) {
-    const handleShowPassword = e => {
-        e.preventDefault(setShowPassword(value => !value))
+const FormPassword = forwardRef(function FormPassword(
+    { className, label, id, errorCheck, ...other },
+    ref
+) {
+    const [showPassword, setShowPassword] = useState(false)
+
+    const handleShowPassword = (e) => {
+        e.preventDefault(setShowPassword((value) => !value))
     }
 
     return (
-        <div className="form-item">
+        <div className={`form-item ${className ? className : ''}`}>
             <label className="form-label" htmlFor="password">
-                Password
+                {label}
             </label>
             <input
                 className="form-input"
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                {...register("password", {
-                    required: true,
-                })}
-            />
-            <button type="submit" className="password_button" onClick={handleShowPassword}>
+                id={id}
+                type={showPassword ? 'text' : 'password'}
+                ref={ref}
+                {...other}
+            ></input>
+            <button type="submit" className="form-password-button" onClick={handleShowPassword}>
                 {showPassword ? (
-                    <AiOutlineEyeInvisible className="form-icon" />
+                    <AiOutlineEyeInvisible  className="form-password-button-icon" />
                 ) : (
-                    <AiOutlineEye className="form-icon" />
+                    <AiOutlineEye  className="form-password-button-icon" />
                 )}
             </button>
+            {errorCheck && errorCheck(id)}
         </div>
     )
-}
+})
 
 export default FormPassword

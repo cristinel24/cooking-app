@@ -1,175 +1,104 @@
-import { useState } from 'react'
-import './index.css'
-import photo from '/register.png'
-import eyeIcon from '/eye.svg'
-import { Page } from '../../components'
 import { Link } from 'react-router-dom'
-import { register } from '../../services/auth'
+import { useForm } from 'react-hook-form'
+
+import './index.css'
+
+import photo from '/register.png'
+import { FormInput, FormPassword, length } from '../../components'
+import { registerUser } from '../../services/auth'
 
 export default function Register() {
-    const [data, setData] = useState({
-        username: '',
-        displayName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-    })
-    const [passwordVisible, setPasswordVisible] = useState(false)
-    const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors },
+    } = useForm()
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    const onSubmit = async (data) => {
+        console.log(data)
 
         // Validate input fields
         if (data.password !== data.confirmPassword) {
-            alert('Parola si Confirmare parola nu se potrivesc.')
+            setError('submit', { message: 'Parola și confirmarea parolei nu se potrivesc.' })
             return
         }
 
         data.confirmPassword = undefined
-        await register(data)
+        await registerUser(data)
+
+        // TODO: error handling for API
     }
 
-    const handleChange = (event) => {
-        const { name, value } = event.target
-        setData({
-            ...data,
-            [name]: value,
-        })
-    }
+    const errorCheck = (id) => {
+        if (errors[id]) {
+            if (errors[id].type == 'required') {
+                return <p className="form-error">Acest câmp este obligatoriu</p>
+            }
 
-    const togglePasswordVisibility = () => {
-        setPasswordVisible(!passwordVisible)
-    }
-
-    const toggleConfirmPasswordVisibility = () => {
-        setConfirmPasswordVisible(!confirmPasswordVisible)
+            return <p className="form-error">{errors[id].message}</p>
+        }
     }
 
     return (
         <div className="page">
             <div className="form-container">
-                <h2>Inregistrare</h2>
-                <form id="form" className="form" onSubmit={handleSubmit}>
+                <h2>Înregistrare</h2>
+                <form id="form" className="form" onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-row">
-                        <div className="form-item">
-                            <label
-                                htmlFor="username"
-                                className="form-label"
-                            >
-                                Nume de utilizator
-                            </label>
-                            <input
-                                id="username"
-                                name="username"
-                                value={data.username}
-                                onChange={handleChange}
-                                className="form-input"
-                                required
-                                minLength={8}
-                                maxLength={64}
-                            />
-                        </div>
-                        <div className="form-item">
-                            <label
-                                htmlFor="displayName"
-                                className="form-label"
-                            >
-                                Nume
-                            </label>
-                            <input
-                                id="displayName"
-                                name="displayName"
-                                value={data.displayName}
-                                onChange={handleChange}
-                                className="form-input"
-                                required
-                                minLength={4}
-                                maxLength={64}
-                            />
-                        </div>
+                        <FormInput
+                            label="Nume de utilizator"
+                            id="username"
+                            errorCheck={errorCheck}
+                            {...register('username', {
+                                required: true,
+                                minLength: length('minim', 8),
+                                maxLength: length('maxim', 64),
+                            })}
+                        />
+                        <FormInput
+                            label="Nume"
+                            id="displayName"
+                            errorCheck={errorCheck}
+                            {...register('displayName', {
+                                minLength: length('minim', 4),
+                                maxLength: length('maxim', 64),
+                            })}
+                        />
                     </div>
                     <div className="form-row">
-                        <div className="form-item form-item--full">
-                            <label htmlFor="email" className="form-label">
-                                Email
-                            </label>
-                            <input
-                                id="email"
-                                name="email"
-                                value={data.email}
-                                onChange={handleChange}
-                                className="form-input"
-                                type="email"
-                                required
-                                maxLength={256}
-                            />
-                        </div>
+                        <FormInput
+                            type="email"
+                            label="Email"
+                            id="email"
+                            errorCheck={errorCheck}
+                            {...register('email', {
+                                required: true,
+                                maxLength: length('maxim', 256),
+                            })}
+                        />
                     </div>
                     <div className="form-row">
-                        <div className="form-item">
-                            <label
-                                htmlFor="password"
-                                className="form-label"
-                            >
-                                Parolă
-                            </label>
-                            <input
-                                id="password"
-                                name="password"
-                                value={data.password}
-                                onChange={handleChange}
-                                className="form-input form-input-password"
-                                type={passwordVisible ? 'text' : 'password'}
-                                required
-                                minLength={8}
-                                maxLength={64}
-                            />
-                            <img
-                                className="form-icon"
-                                src={eyeIcon}
-                                alt={
-                                    passwordVisible
-                                        ? 'Hide password'
-                                        : 'Show password'
-                                }
-                                onClick={togglePasswordVisibility}
-                            />
-                        </div>
-                        <div className="form-item">
-                            <label
-                                htmlFor="confirmPassword"
-                                className="form-label"
-                            >
-                                Confirmare parolă
-                            </label>
-                            <input
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                value={data.confirmPassword}
-                                onChange={handleChange}
-                                className="form-input form-input-password"
-                                type={
-                                    confirmPasswordVisible
-                                        ? 'text'
-                                        : 'password'
-                                }
-                                required
-                                minLength={8}
-                                maxLength={64}
-                            />
-                            <img
-                                className="form-icon"
-                                src={eyeIcon}
-                                alt={
-                                    passwordVisible
-                                        ? 'Hide password'
-                                        : 'Show password'
-                                }
-                                onClick={toggleConfirmPasswordVisibility}
-                            />
-                        </div>
+                        <FormPassword
+                            label="Parolă"
+                            id="password"
+                            errorCheck={errorCheck}
+                            {...register('password', {
+                                required: true,
+                                minLength: length('minim', 8),
+                                maxLength: length('maxim', 64),
+                            })}
+                        />
+                        <FormPassword
+                            label="Confirmare parolă"
+                            id="confirmPassword"
+                            errorCheck={errorCheck}
+                            {...register('confirmPassword', {
+                                required: true,
+                            })}
+                        />
                     </div>
+                    {errorCheck('submit')}
                     <button type="submit" className="form-submit">
                         Înregistrare
                     </button>
@@ -183,11 +112,7 @@ export default function Register() {
             </div>
             <div className="page-separator"></div>
             <div className="bg-image-container">
-                <img
-                    className="bg-image"
-                    src={photo}
-                    alt="photo doesn't appear"
-                />
+                <img className="bg-image" src={photo} alt="photo doesn't appear" />
             </div>
         </div>
     )

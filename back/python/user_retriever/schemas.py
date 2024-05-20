@@ -22,6 +22,10 @@ class UserCardData(BaseModel):
     ratingAvg: float
 
 
+class UserCardDataList(BaseModel):
+    cards: list[UserCardData]
+
+
 class UserFullData(BaseModel):
     id: str
     username: str

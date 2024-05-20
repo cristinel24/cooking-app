@@ -1,6 +1,14 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import List
+
+
+class AuthorCardData(BaseModel):
+    id: str
+    username: str
+    displayName: str
+    icon: str
+    roles: int
+    ratingAvg: float
 
 
 class Rating(BaseModel):
@@ -9,13 +17,13 @@ class Rating(BaseModel):
     authorId: str
     rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")
     description: str
-    children: List[str]
+    children: list[str]
     parentId: str
     parentType: str
 
 
 class RatingChildren(BaseModel):
-    children: List[str]
+    children: list[str]
     parentId: str
     parentType: str
 
@@ -23,14 +31,14 @@ class RatingChildren(BaseModel):
 class RatingDataCard(BaseModel):
     parentId: str
     parentType: str
-    author: dict
+    author: AuthorCardData
     updatedAt: str
     rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")
     description: str
 
 
 class RatingList(BaseModel):
-    ratings: List[RatingDataCard]
+    ratings: list[RatingDataCard]
     total: int
 
 

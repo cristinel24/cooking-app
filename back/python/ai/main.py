@@ -6,7 +6,7 @@ from utils import schemas
 from utils import tokenize_query
 from utils.constants import PORT, HOST
 
-app = FastAPI()
+app = FastAPI(title="AI")
 
 router = APIRouter(
     prefix="/api"

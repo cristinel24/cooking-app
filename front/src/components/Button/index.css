@@ -6,6 +6,7 @@
     padding: 15px 20px 15px 20px;
     border-radius: 10px;
     border: none;
+    max-width: 100%;
 }
 
 .action-button:hover {
@@ -20,6 +21,8 @@
     font-size: 0.8rem;
     color: var(--text-color);
     font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 @media (min-width: 481px) and (max-width: 767px) {
@@ -27,9 +30,11 @@
         padding: 10px 15px 10px 15px;
         border-radius: 10px;
     }
+
     .action-button:hover {
         background-color: var(--hover-bg-color);
     }
+
     .action-button-text {
         font-size: 0.7rem;
     }
@@ -40,9 +45,11 @@
         padding: 8px 10px 8px 10px;
         border-radius: 10px;
     }
+
     .action-button:hover {
         background-color: var(--hover-bg-color);
     }
+
     .action-button-text {
         font-size: 0.6rem;
     }

@@ -2,8 +2,9 @@ import { useForm } from 'react-hook-form'
 
 import './index.css'
 
-import { FormInput, length } from '../../components'
+import { FormInput } from '../../components'
 import { useState } from 'react'
+import { length } from '../../utils/form'
 
 export default function ForgotPassword() {
     const {

@@ -4,8 +4,9 @@ import { useForm } from 'react-hook-form'
 import './index.css'
 
 import photo from '/register.png'
-import { FormInput, FormPassword, length } from '../../components'
+import { FormInput, FormPassword } from '../../components'
 import { registerUser } from '../../services/auth'
+import { length } from '../../utils/form'
 
 export default function Register() {
     const {

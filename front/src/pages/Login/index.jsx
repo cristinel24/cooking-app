@@ -6,7 +6,8 @@ import photo from '/autentificare.png'
 
 import './index.css'
 import { UserContext } from '../../context/user-context'
-import { FormCheckbox, FormInput, FormPassword, length } from '../../components'
+import { FormCheckbox, FormInput, FormPassword } from '../../components'
+import { length } from '../../utils/form'
 
 export default function Login() {
     const {

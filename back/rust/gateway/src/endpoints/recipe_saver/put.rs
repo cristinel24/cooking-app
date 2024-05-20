@@ -1,10 +1,6 @@
 use crate::config::get_global_context;
-use crate::endpoints::redirect;
-use crate::endpoints::{
-    get_response,
-    recipe_saver::{EndpointResponse, SERVICE},
-    FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
-};
+use crate::endpoints::{get_response, recipe_saver::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
+use crate::endpoints::{redirect, EndpointResponse};
 use crate::get_redirect_url;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};

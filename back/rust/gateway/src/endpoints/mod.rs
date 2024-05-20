@@ -7,13 +7,14 @@ use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 
 pub mod allergen;
+pub mod email;
 pub mod hash;
+pub mod history_manager;
 pub mod rating;
 pub mod recipe_saver;
+pub mod role_changer;
 pub mod tag;
 pub mod user_retriever;
-pub mod email;
-pub mod role_changer;
 
 const SUCCESSFUL_RESPONSE: &str = "Successful operation response";
 const FAILED_RESPONSE: &str = "Failed operation response";
@@ -59,7 +60,6 @@ pub(crate) async fn get_response<
     is_null: bool,
 ) -> anyhow::Result<EndpointResponse<G>> {
     let mut req_builder = Client::new().request(method, service_url);
-
     if let Some(params) = params {
         req_builder = req_builder.query(params);
     }

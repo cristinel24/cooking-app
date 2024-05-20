@@ -1,25 +1,30 @@
 use crate::config::get_global_context;
-use crate::endpoints::email::SERVICE;
-use crate::endpoints::{
-    get_response, redirect, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
-};
+use crate::endpoints::history_manager::SERVICE;
+use crate::endpoints::{get_response, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
+use crate::endpoints::{redirect, EndpointResponse};
 use crate::get_redirect_url;
-use crate::models::email::RequestChange;
+use crate::models::search::Results;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
-use salvo::oapi::extract::JsonBody;
+use salvo::oapi::extract::QueryParam;
 use salvo::prelude::Json;
-use salvo::{Request, Response, Writer};
+use salvo::Writer;
+use salvo::{Request, Response};
 use tracing::error;
 
 #[endpoint(
+    parameters(
+        ("user_id" = String, description = "Id of the user"),
+        ("start" = i64, description = "Start value"),
+        ("count" = i64, description = "Count value")
+    ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = String,
+            body = Results,
             example = json!("null")
         ),
         (
@@ -30,19 +35,21 @@ use tracing::error;
         ),
     )
 )]
-pub async fn request_change(
+pub async fn get_search_history_endpoint(
     req: &mut Request,
     res: &mut Response,
-    request_change_data: JsonBody<RequestChange>,
-) -> Json<EndpointResponse<String>> {
+    start: QueryParam<i64, true>,
+    count: QueryParam<i64, true>,
+) -> Json<EndpointResponse<Results>> {
     let url: String = get_redirect_url!(req, res, req.uri().path(), SERVICE);
-    return (get_response::<&str, RequestChange, String>(
-        Method::POST,
+
+    return (get_response::<[(&str, i64); 2], &str, Results>(
+        Method::GET,
         url,
+        Some(&[("start", start.into_inner()), ("count", count.into_inner())]),
         None,
-        Some(request_change_data.into_inner()),
-        None,
-        true,
+        Some(req.headers().clone()),
+        false,
     )
     .await)
         .map_or_else(

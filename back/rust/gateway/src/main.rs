@@ -1,13 +1,21 @@
 pub mod config;
 pub mod endpoints;
 pub mod graceful_shutdown;
-pub mod models;
 mod middlewares;
+pub mod models;
 
 use crate::config::{get_configuration, CONTEXT};
 use crate::endpoints::allergen::{delete_allergen_item, get_allergen_item, post_allergen_item};
+use crate::endpoints::email::{request_change, verify_account};
+use crate::endpoints::history_manager::{
+    delete_item_search_history, get_search_history_endpoint, put_in_search_history,
+};
 use crate::endpoints::recipe_saver::{delete_recipe, put_recipe};
+use crate::endpoints::role_changer::admin_role_changer_endpoint;
 use crate::endpoints::tag::{delete_tag_item, get_tag_item, post_tag_item};
+use crate::endpoints::user_retriever::{
+    get_user_card_item, get_user_data_item, get_user_profile_item, post_user_card_item,
+};
 use crate::endpoints::{
     hash::{get_hash_primary, get_hash_with},
     rating::{
@@ -15,20 +23,20 @@ use crate::endpoints::{
     },
 };
 use crate::graceful_shutdown::GracefulShutdown;
+use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
-use salvo::{logging::Logger, oapi::{Info, OpenApi}, prelude::{Router, RouterExt, SwaggerUi, TcpListener}, Listener, Server};
-use crate::endpoints::email::{request_change, verify_account};
-use crate::endpoints::role_changer::admin_role_changer_endpoint;
-use crate::endpoints::user_retriever::{get_user_card_item, get_user_data_item, get_user_profile_item, post_user_card_item};
-use crate::middlewares::auth::{AUTH_HEADER, auth_middleware};
+use salvo::{
+    logging::Logger,
+    oapi::{Info, OpenApi},
+    prelude::{Router, RouterExt, SwaggerUi, TcpListener},
+    Listener, Server,
+};
 use tracing::info;
-
 
 #[endpoint]
 async fn test() {}
-
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -99,7 +107,10 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn setup_rating_routes(auth_middleware: auth_middleware, security_requirement: &SecurityRequirement) -> Router {
+fn setup_rating_routes(
+    auth_middleware: auth_middleware,
+    security_requirement: &SecurityRequirement,
+) -> Router {
     Router::with_path("/rating")
         .oapi_tag("RATING")
         .append(&mut vec![
@@ -147,7 +158,10 @@ fn setup_allergen_routes() -> Router {
         )
 }
 
-fn setup_user_saved_recipes_routes(auth_middleware: auth_middleware, security_requirement: &SecurityRequirement) -> Router {
+fn setup_user_saved_recipes_routes(
+    auth_middleware: auth_middleware,
+    security_requirement: &SecurityRequirement,
+) -> Router {
     Router::with_path("/user/<user_id>/saved-recipes")
         .oapi_tag("RECIPE SAVER")
         .hoop(auth_middleware)
@@ -156,18 +170,22 @@ fn setup_user_saved_recipes_routes(auth_middleware: auth_middleware, security_re
         .delete(delete_recipe)
 }
 
-fn setup_user_routes(auth_middleware: auth_middleware, security_requirement: &SecurityRequirement) -> Router {
+fn setup_user_routes(
+    auth_middleware: auth_middleware,
+    security_requirement: &SecurityRequirement,
+) -> Router {
     Router::with_path("/user")
         .append(&mut vec![
             Router::with_path("/<user_id>")
                 .oapi_tag("USER RETRIEVER")
-                .get(get_user_data_item).append(&mut vec![
-                Router::with_path("/card").get(get_user_card_item),
-                Router::with_path("/profile")
-                    .hoop(auth_middleware)
-                    .oapi_security(security_requirement.clone())
-                    .get(get_user_profile_item),
-            ]),
+                .get(get_user_data_item)
+                .append(&mut vec![
+                    Router::with_path("/card").get(get_user_card_item),
+                    Router::with_path("/profile")
+                        .hoop(auth_middleware)
+                        .oapi_security(security_requirement.clone())
+                        .get(get_user_profile_item),
+                ]),
             Router::with_path("/user-cards").post(post_user_card_item),
         ])
         .push(
@@ -182,9 +200,9 @@ fn setup_user_routes(auth_middleware: auth_middleware, security_requirement: &Se
                 .oapi_tag("SEARCH HISTORY")
                 .hoop(auth_middleware)
                 .oapi_security(security_requirement.clone())
-                .get(test)
-                .put(test)
-                .delete(test),
+                .get(get_search_history_endpoint)
+                .put(put_in_search_history)
+                .delete(delete_item_search_history),
         )
         .push(
             Router::with_path("/<user_id>/followers")
@@ -222,7 +240,10 @@ fn setup_user_routes(auth_middleware: auth_middleware, security_requirement: &Se
         )
 }
 
-fn setup_profile_routes(auth_middleware: auth_middleware, security_requirement: &SecurityRequirement) -> Router {
+fn setup_profile_routes(
+    auth_middleware: auth_middleware,
+    security_requirement: &SecurityRequirement,
+) -> Router {
     Router::with_path("/profile")
         .oapi_tag("PROFILE DATA CHANGER")
         .hoop(auth_middleware)
@@ -230,7 +251,10 @@ fn setup_profile_routes(auth_middleware: auth_middleware, security_requirement: 
         .push(Router::with_path("/<user_id>").patch(test))
 }
 
-fn setup_token_routes(auth_middleware: auth_middleware, security_requirement: &SecurityRequirement) -> Router {
+fn setup_token_routes(
+    auth_middleware: auth_middleware,
+    security_requirement: &SecurityRequirement,
+) -> Router {
     Router::with_path("/token")
         .oapi_tag("TOKEN VALIDATOR")
         .append(&mut vec![
@@ -253,7 +277,10 @@ fn setup_token_routes(auth_middleware: auth_middleware, security_requirement: &S
         )
 }
 
-fn setup_misc_routes(auth_middleware: auth_middleware, security_requirement: &SecurityRequirement) -> Router {
+fn setup_misc_routes(
+    auth_middleware: auth_middleware,
+    security_requirement: &SecurityRequirement,
+) -> Router {
     Router::new().append(&mut vec![
         Router::with_path("/id").oapi_tag("ID GENERATOR").get(test),
         Router::with_path("/image")

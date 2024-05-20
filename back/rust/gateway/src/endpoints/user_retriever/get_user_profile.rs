@@ -1,17 +1,16 @@
 use crate::endpoints::user_retriever::SERVICE;
-use crate::endpoints::{get_response, EndpointResponse, SUCCESSFUL_RESPONSE, FAILED_RESPONSE};
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::get_redirect_url;
 use crate::models::user::FullData;
 use reqwest::{Method, StatusCode};
+use salvo::oapi::endpoint;
 use salvo::prelude::Json;
 use salvo::{Request, Response};
-use salvo::oapi::endpoint;
 
 use crate::config::get_global_context;
 use crate::endpoints::redirect;
 use crate::models::ErrorResponse;
 use tracing::error;
-
 
 #[endpoint(
     parameters(

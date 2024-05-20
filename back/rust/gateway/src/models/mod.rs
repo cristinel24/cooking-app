@@ -3,12 +3,13 @@ use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
 pub mod allergens;
+pub mod email;
 pub mod hash;
 pub mod rating;
+pub mod role_changer;
+pub mod search;
 pub mod tags;
 pub mod user;
-pub mod email;
-pub mod role_changer;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]

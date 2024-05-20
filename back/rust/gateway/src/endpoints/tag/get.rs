@@ -18,7 +18,7 @@ use tracing::error;
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = String,
+            body = Tags,
             example = json!(Tags::default())
         ),
         (

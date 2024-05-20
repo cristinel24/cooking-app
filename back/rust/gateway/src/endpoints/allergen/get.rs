@@ -19,7 +19,7 @@ use tracing::error;
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = String,
+            body = Allergens,
             example = json!(Allergens::default())
         ),
         (

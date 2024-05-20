@@ -1,8 +1,7 @@
-use salvo::{Depot, FlowCtrl, handler, Request, Response};
+use salvo::{handler, Depot, FlowCtrl, Request, Response};
 
 pub const AUTH_HEADER: &str = "Authorization";
 pub const HEADER_KEYS: [&str; 2] = ["X-User-Id", "X-User-Roles"];
-
 
 #[handler]
 pub async fn auth_middleware(

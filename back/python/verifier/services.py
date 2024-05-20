@@ -7,9 +7,9 @@ user_collection = UserCollection()
 
 async def verify(token_value: str) -> None:
     user_id = await request_is_token_valid(token_value)
-    user = user_collection.get_user_by_id(user_id, NEW_EMAIL_PROJECTION)
+    new_email = user_collection.get_user_by_id(user_id, NEW_EMAIL_PROJECTION)
     changes = {
-        "email": user["login"]["newEmail"],
+        "email": new_email["login"]["newEmail"],
         "login.newEmail": None,
         "login.emailStatus": "Confirmed"
     }

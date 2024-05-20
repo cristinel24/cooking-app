@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import FastAPI, Response, status, Header
+from fastapi import FastAPI, status, Header
 from fastapi.responses import JSONResponse
 from exception import UserRetrieverException
 import services

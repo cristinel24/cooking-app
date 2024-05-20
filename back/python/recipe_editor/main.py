@@ -9,11 +9,11 @@ from constants import HOST, PORT, ErrorCodes
 from exception import RecipeEditorException
 from schemas import RecipeData
 
-app = FastAPI()
+app = FastAPI(title="Recipe Editor")
 
 
-@app.post("/recipe/{recipe_id}")
-async def edit_recipe(recipe_id: str, recipe_data: RecipeData, x_user_id: Annotated[str | None, Header()]):
+@app.post("/", response_model=None, response_description="Successful operation")
+async def edit_recipe(recipe_id: str, recipe_data: RecipeData, x_user_id: Annotated[str | None, Header()]) -> None | JSONResponse:
     if not x_user_id:
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
                             content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})
@@ -25,5 +25,4 @@ async def edit_recipe(recipe_id: str, recipe_data: RecipeData, x_user_id: Annota
 
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(app, host=HOST, port=PORT)

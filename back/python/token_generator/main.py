@@ -1,21 +1,21 @@
+from fastapi.responses import JSONResponse
+from schemas import TokenData
 import services
 from constants import HOST, PORT, Errors
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, status
 
-app = FastAPI()
+app = FastAPI(title="Token Generator")
 
 
-@app.get("/{user_id}/{token_type}")
-async def get_user_token(user_id: str, token_type: str, response: Response) -> dict:
+@app.get("/{user_id}/{token_type}", response_model=TokenData, response_description="Successful operation")
+async def get_user_token(user_id: str, token_type: str) -> TokenData | JSONResponse:
     try:
         token = services.insert_user_token(user_id, token_type)
-        return token
+        return TokenData(**token)
     except (services.UserException, services.TokenException) as e:
-        response.status_code = e.status_code
-        return {"errorCode": e.error_code}
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
     except Exception as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": Errors.UNKNOWN}
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": Errors.UNKNOWN})
 
 
 if __name__ == "__main__":

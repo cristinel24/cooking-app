@@ -15,11 +15,11 @@ class UserCardData(BaseModel):
 
 
 class FollowersCountData(BaseModel):
-    followers_count: int | None = None
+    followersCount: int | None = None
 
 
 class FollowingCountData(BaseModel):
-    following_count: int | None = None
+    followingCount: int | None = None
 
 
 class FollowersCardsData(BaseModel):

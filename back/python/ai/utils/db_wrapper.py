@@ -2,6 +2,8 @@ import os
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
+from utils.constants import DB_NAME, MONGO_URI
+
 
 def singleton(cls):
     instances = {}
@@ -17,7 +19,7 @@ def singleton(cls):
 class DBWrapper:
 
     def __init__(self):
-        self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
+        self._connection = MongoClient(MONGO_URI)
 
     @property
     def _admin_database(self):
@@ -25,11 +27,11 @@ class DBWrapper:
 
     @property
     def _recipe_collection(self):
-        return self._connection.cooking_app.recipe
+        return self._connection.get_database(DB_NAME).recipe
 
     @property
     def _user_collection(self):
-        return self._connection.cooking_app.user
+        return self._connection.get_database(DB_NAME).user
 
     def ping_db(self) -> bool:
         try:

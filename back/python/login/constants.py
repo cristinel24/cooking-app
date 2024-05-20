@@ -9,8 +9,8 @@ MAX_TIMEOUT_SECONDS = 3
 
 HOST = os.getenv("HOST", "localhost")
 PORT = int(os.getenv("PORT", "5000"))
-HASHER_URL = os.getenv("HASHER_URL", "http://localhost:8202")
-TOKEN_GEN_URL = os.getenv("TOKEN_GEN_URL", "http://localhost:8256")
+HASHER_API_URL = os.getenv("HASHER_API_URL", "http://localhost:8202")
+TOKEN_GENERATOR_API_URL = os.getenv("TOKEN_GENERATOR_API_URL", "http://localhost:8256")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")
 
@@ -21,3 +21,10 @@ class Errors:
     HASH_ERROR = 25603
     DB_TIMEOUT = 25604
     TOKEN_ERROR = 25605
+
+
+USER_PROJECTION = {
+    "id": 1,
+    "login": 1
+}
+

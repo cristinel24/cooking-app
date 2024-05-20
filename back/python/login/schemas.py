@@ -19,12 +19,5 @@ class HasherResponse(BaseModel):
 
 class TokenResponse(BaseModel):
     value: str
-    createdAt: str
     userId: str
     tokenType: str
-
-
-USER_PROJECTION = {
-    "id": 1,
-    "login": 1
-}

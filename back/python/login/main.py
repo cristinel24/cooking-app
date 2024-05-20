@@ -28,14 +28,10 @@ async def login(data: LoginData, response=Response):
         # calculez cat timp a trecut, si astept restul de timp
         time_passed = time.time() - time_start
         time.sleep(WAIT_ON_ERROR - time_passed)
-        # trimitem error message doar daca avem invalid creds
-        if e.error_code == Errors.INVALID_CREDS:
-            return {
-                "errorCode": e.error_code,
-                "errorMessage": e.error_message
-            }
-        else:
-            return Response(content="", status_code=response.status_code)
+        response.status_code = e.http_code
+        return {
+            "errorCode": e.error_code,
+        }
 
 
 if __name__ == "__main__":

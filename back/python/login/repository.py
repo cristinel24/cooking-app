@@ -1,8 +1,8 @@
 import pymongo
 from pymongo import MongoClient, errors
+from fastapi import status
 from exceptions import LoginException
-from constants import MAX_TIMEOUT_SECONDS, Errors, MONGO_URI, DB_NAME
-from schemas import USER_PROJECTION
+from constants import *
 
 
 class MongoCollection:
@@ -20,17 +20,17 @@ class UserCollection(MongoCollection):
             try:
                 user = self._collection.find_one({"username": name}, USER_PROJECTION)
                 if not user:
-                    raise LoginException(Errors.INVALID_CREDS, "invalid credentials")
+                    raise LoginException(Errors.INVALID_CREDS, status.HTTP_401_UNAUTHORIZED)
                 return user
             except pymongo.errors.PyMongoError:
-                raise LoginException(Errors.DB_ERROR, "server error")
+                raise LoginException(Errors.DB_ERROR, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def find_user_by_mail(self, mail: str):
         with pymongo.timeout(MAX_TIMEOUT_SECONDS):
             try:
-                user = self._collection.find_one({"email": mail})
+                user = self._collection.find_one({"email": mail}, USER_PROJECTION)
                 if not user:
-                    raise LoginException(Errors.INVALID_CREDS, "invalid credentials")
+                    raise LoginException(Errors.INVALID_CREDS, status.HTTP_401_UNAUTHORIZED)
                 return user
             except pymongo.errors.PyMongoError:
-                raise LoginException(Errors.DB_ERROR, "server error")
+                raise LoginException(Errors.DB_ERROR, status.HTTP_500_INTERNAL_SERVER_ERROR)

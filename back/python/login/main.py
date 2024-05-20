@@ -20,9 +20,9 @@ async def login(data: LoginData, response=Response):
     except LoginException as e:
         match e.error_code:
             case Errors.INVALID_CREDS:
-                response.status_code = status.HTTP_504_GATEWAY_TIMEOUT
+                response.status_code = status.HTTP_401_UNAUTHORIZED
             case Errors.DB_TIMEOUT:
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+                response.status_code = status.HTTP_504_GATEWAY_TIMEOUT
             case _:
                 response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         # calculez cat timp a trecut, si astept restul de timp

@@ -24,6 +24,7 @@ class Errors:
 
 
 USER_PROJECTION = {
+    "_id": 0,
     "id": 1,
     "login": 1
 }

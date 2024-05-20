@@ -1,24 +1,24 @@
+from fastapi.responses import JSONResponse
 import uvicorn
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, status
 
 from constants import PORT, HOST, ErrorCode
 from exceptions import *
+from schemas import Id
 from services import get_next_id_services
 
-app = FastAPI()
+app = FastAPI(title="Id Generator")
 
 
-@app.get("/")
-async def get_id(response: Response):
+@app.get("/", response_model=Id, response_description="Successful operation")
+async def get_id() -> Id | JSONResponse:
     try:
         new_id = get_next_id_services()
-        return {"id": new_id}
+        return Id(id=new_id)
     except IdGeneratorException as e:
-        response.status_code = e.status_code
-        return {"errorCode": e.error_code}
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
     except (Exception,):
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": ErrorCode.UNKNOWN}
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCode.UNKNOWN})
 
 
 if __name__ == "__main__":

@@ -9,11 +9,11 @@ from constants import HOST, PORT, ErrorCodes
 from exception import RecipeCreatorException
 from schemas import RecipeData
 
-app = FastAPI()
+app = FastAPI(title="Recipe Creator")
 
 
-@app.post("/recipe")
-async def create_recipe(recipe_data: RecipeData, x_user_id: Annotated[str | None, Header()] = None):
+@app.post("/", response_model=None, response_description="Successful operation")
+async def create_recipe(recipe_data: RecipeData, x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
     if not x_user_id:
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
                             content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})

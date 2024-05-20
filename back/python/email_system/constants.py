@@ -10,11 +10,11 @@ load_dotenv()
 HOST=os.getenv("HOST", "0.0.0.0")
 PORT=int(os.getenv("PORT", 2060))
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://cooking.app")
-SMTP_ROOT_EMAIL=os.getenv("SMTP_ROOT_EMAIL")
-SMTP_SERVER=os.getenv("SMTP_SERVER")
-SMTP_PORT=int(os.getenv("SMTP_PORT", 0))
-SMTP_USERNAME=os.getenv("SMTP_USERNAME")
-SMTP_PASSWORD=os.getenv("SMTP_PASSWORD")
+SMTP_ROOT_EMAIL=os.getenv("SMTP_ROOT_EMAIL", "")
+SMTP_SERVER=os.getenv("SMTP_SERVER", "")
+SMTP_PORT=os.getenv("SMTP_PORT", 2061)
+SMTP_USERNAME=os.getenv("SMTP_USERNAME", "")
+SMTP_PASSWORD=os.getenv("SMTP_PASSWORD", "")
 
 ACCOUNT_VERIFICATION_ROUTE = "verify_account"
 CHANGE_REQUEST_ROUTE = "verify_change"

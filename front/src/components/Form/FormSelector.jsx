@@ -34,16 +34,20 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
         setItems(suggest(newInputValue))
     }
 
+    const addItemAndClearSuggestions = (value) => {
+        addItem(value)
+        // reset state
+        setSuggestionsActive(false)
+        setInputValue('')
+        setItems([])
+    }
+
     const handleInputEnter = (e) => {
         if (e.code != 'Enter') {
             return
         }
 
-        addItem(inputValue)
-        // reset state
-        setSuggestionsActive(false)
-        setInputValue('')
-        setItems([])
+        addItemAndClearSuggestions(inputValue)
     }
 
     const addItem = (item) => {
@@ -72,7 +76,9 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
             </label>
             <input
                 autoComplete="off"
-                className={`form-input form-selector ${suggestionsActive ? 'form-selector-active' : ''}`}
+                className={`form-input form-selector ${
+                    suggestionsActive ? 'form-selector-active' : ''
+                }`}
                 id={id}
                 value={inputValue}
                 onChange={handleInputChange}
@@ -87,7 +93,9 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
                             <p
                                 className="form-selector-dropdown-item"
                                 key={item}
-                                onClick={() => addItem(item)}
+                                onClick={() => {
+                                    addItemAndClearSuggestions(item)
+                                }}
                             >
                                 {item}
                             </p>

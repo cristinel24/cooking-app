@@ -1,31 +1,30 @@
-from typing import Union
-
-from fastapi import FastAPI, Response
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 import exceptions
 import services
 import uvicorn
 from constants import *
 from schemas import *
 
-app = FastAPI()
+app = FastAPI(title="Recipe Retriever")
 
 
-@app.get("/recipe/{recipe_id}", tags=["recipe-retriever"])
-async def get_recipe_by_id(recipe_id: str, response: Response) -> Union[RecipeData, dict[str, int]]:
+@app.get("/{recipe_id}", tags=["recipe-retriever"], response_model=RecipeData, response_description="Successful operation")
+async def get_recipe_by_id(recipe_id: str) -> RecipeData | JSONResponse:
     try:
-        return await services.get_recipe_by_id(recipe_id)
+        recipe = await services.get_recipe_by_id(recipe_id)
+        return RecipeData(**recipe)
     except (exceptions.RecipeException, exceptions.UserRetrieverException,) as e:
-        response.status_code = e.status_code
-        return {"errorCode": e.error_code.value}
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code.value})
 
 
-@app.get("/recipe/{recipe_id}/card", tags=["recipe-retriever"])
-async def get_recipe_card_by_id(recipe_id: str, response: Response) -> Union[RecipeCardData, dict[str, int]]:
+@app.get("/{recipe_id}/card", tags=["recipe-retriever"], response_model=RecipeCardData, response_description="Successful operation")
+async def get_recipe_card_by_id(recipe_id: str) -> RecipeCardData | JSONResponse:
     try:
-        return await services.get_recipe_card_by_id(recipe_id)
+        recipe_card = await services.get_recipe_card_by_id(recipe_id)
+        return RecipeCardData(**recipe_card)
     except (exceptions.RecipeException, exceptions.UserRetrieverException,) as e:
-        response.status_code = e.status_code
-        return {"errorCode": e.error_code.value}
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code.value})
 
 
 if __name__ == "__main__":

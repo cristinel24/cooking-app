@@ -57,7 +57,7 @@ export default function RecipeCard({ recipe, owned, onFavorite, onRemove }) {
                         <p className="recipe-card-details-time">
                             <IoIosTime /> {prepTimeDisplayText(recipe.prepTime)}
                         </p>
-                        <Rating ratingValue={recipe.author.ratingAvg} />
+                        <RatingValue value={recipe.author.ratingAvg} />
                     </div>
                 </div>
                 {onFavorite && (

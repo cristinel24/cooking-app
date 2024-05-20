@@ -1,14 +1,14 @@
 import './index.css'
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa'
 
-export default function Rating({ ratingValue, className }) {
-    const getStars = (ratingValue) => {
-        const fullStars = Math.floor(ratingValue)
+export default function RatingValue({ value, className }) {
+    const getStars = (value) => {
+        const fullStars = Math.floor(value)
         const stars = []
         for (let i = 0; i < fullStars; i++) {
             stars.push(<FaStar key={stars.length} />)
         }
-        if (ratingValue - fullStars >= 0.5) {
+        if (value - fullStars >= 0.5) {
             stars.push(<FaStarHalfAlt key={stars.length} />)
         }
         const emptyStars = 5 - stars.length
@@ -19,9 +19,9 @@ export default function Rating({ ratingValue, className }) {
     }
 
     return (
-        <div className={`rating-container ${className}`}>
-            {getStars(ratingValue)}
-            <div className="rating-value">{ratingValue}</div>
+        <div className={`rating-value-container ${className ? className : ''}`}>
+            {getStars(value)}
+            <div className="rating-value">{value}</div>
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Rating, Tag, Button, Report } from '../../components'
+import { RatingValue, Tag, Button, Report } from '../../components'
 import './index.css'
 import { prepTimeDisplayText, ratingToNumber } from '../../utils/recipeData'
 import { IoIosTime } from 'react-icons/io'
@@ -136,9 +136,9 @@ export default function Recipe() {
                                 <span>{recipeData.author.displayName}</span>
                             </div>
 
-                            <Rating
+                            <RatingValue
                                 className="recipe-page-rating-stars"
-                                ratingValue={ratingToNumber(
+                                value={ratingToNumber(
                                     recipeData.ratingSum,
                                     recipeData.ratingCount
                                 )}

@@ -171,6 +171,18 @@
         align-items: unset;
         flex-direction: column;
     }
+
+    .recipe-page-step {
+        display: block;
+    }
+
+    .recipe-page-step-index {
+        float: left;
+        width: 60px;
+
+        padding: 0;
+        margin: 0 20px 10px 0;
+    }
 }
 
 @media screen and (max-width: 560px) {

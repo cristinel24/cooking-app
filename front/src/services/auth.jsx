@@ -25,5 +25,11 @@ export const loginUser = async (data) => {
     return result
 }
 
+export const credentialChange = async (email, type) => {
+    const result = await axios
+        .post(`${API_URL}/auth/reset`, { email, type })
+        .then((response) => response.data)
+        .catch((err) => console.log(err))
+
     return result
 }

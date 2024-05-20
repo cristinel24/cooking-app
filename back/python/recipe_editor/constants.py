@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 PORT = int(os.getenv("PORT", 7997))
-HOST = os.getenv("HOST_URL", "localhost")
+HOST = os.getenv("HOST", "localhost")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")
 

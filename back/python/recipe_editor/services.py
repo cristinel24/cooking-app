@@ -52,19 +52,16 @@ async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
                 flags += 1 << 4
 
     except RecipeEditorException as e:
+        await recipe_collection.edit_recipe(recipe_id, recipe_dict, session)
+        if check_flags(flags, 0):
+            await api.add_allergens(allergens_to_delete)
         if check_flags(flags, 1):
             await api.delete_allergens(allergens_to_add)
-            await api.add_allergens(allergens_to_delete)
-        elif check_flags(flags, 0):
-            await api.add_allergens(allergens_to_delete)
-
+        if check_flags(flags, 2):
+            await api.add_tags(tags_to_delete)
         if check_flags(flags, 3):
             await api.delete_tags(tags_to_add)
-            await api.add_tags(tags_to_delete)
-        elif check_flags(flags, 2):
-            await api.add_tags(tags_to_delete)
-
         if check_flags(flags, 4):
-            await recipe_collection.restore_tokens(recipe_dict["id"], recipe_dict["tokens"], session)
-
+            # tokens are already restored at the first glance
+            pass
         raise e

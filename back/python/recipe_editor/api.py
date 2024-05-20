@@ -24,8 +24,7 @@ async def tokenize_recipe(recipe_data: dict) -> list[str]:
                                                 status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
                 return response.json()["tags"]
-        except (Exception,) as e:
-            print(e)
+        except (Exception,):
             logging.warning("AI API is not responsive")
 
 

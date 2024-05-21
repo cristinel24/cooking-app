@@ -11,12 +11,9 @@ class UserProfileData(BaseModel):
 
 class UserData:
     def __init__(self, data: UserProfileData):
-        if data.icon is not None:
-            self.icon = data.icon
-        if data.displayName is not None:
-            self.displayName = data.displayName
-        if data.description is not None:
-            self.description = data.description
+        self.icon = data.icon
+        self.displayName = data.displayName
+        self.description = data.description
         self.allergens_to_add = []
         self.allergens_to_remove = []
         if data.allergens is not None:

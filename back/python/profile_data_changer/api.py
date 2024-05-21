@@ -6,9 +6,10 @@ from exception import ProfileDataChangerException
 
 
 async def request_add_or_remove_allergens(allergens: list[str], method: str) -> None:
-    async with httpx.AsyncClient() as client:
-        url = f"{ALLERGEN_MANAGER_API_URL}{method}"
-        payload = json.dumps(allergens)
-        response = await client.post(url, content=payload)
-        if response.status_code != status.HTTP_200_OK:
-            raise ProfileDataChangerException(response.status_code, error_code=response.json()["errorCode"])
+    if len(allergens) > 0:
+        async with httpx.AsyncClient() as client:
+            url = f"{ALLERGEN_MANAGER_API_URL}{method}"
+            payload = json.dumps({"allergens": allergens})
+            response = await client.post(url, content=payload)
+            if response.status_code != status.HTTP_200_OK:
+                raise ProfileDataChangerException(response.status_code, error_code=response.json()["errorCode"])

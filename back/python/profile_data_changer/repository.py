@@ -16,8 +16,7 @@ class UserCollection(MongoCollection):
         db = self.connection.get_database(DB_NAME)
         self._collection = db.user
 
-    def patch_user(self, user_id: str, changes: dict, allergens_to_add: list[str],
-                   allergens_to_remove: list[str]) -> None:
+    def patch_user(self, user_id: str, changes: dict, allergens_to_add: list[str], allergens_to_remove: list[str]) -> None:
         try:
             with pymongo.timeout(MONGO_TIMEOUT):
                 update_pipeline = [
@@ -34,5 +33,5 @@ class UserCollection(MongoCollection):
                 updated = self._collection.update_one({"id": user_id}, update_pipeline)
                 if updated.matched_count == 0:
                     raise ProfileDataChangerException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
-        except (Exception, errors.PyMongoError):
+        except (Exception, errors.PyMongoError) as e:
             raise ProfileDataChangerException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)

@@ -19,6 +19,4 @@ async def send_email(request: ChangeRequest):
     async with httpx.AsyncClient() as client:
         url = f"{EMAIL_SYSTEM_API_URL}/request-change"
         payload = json.dumps(request.dict())
-        response = await client.post(url, content=payload)
-        if response.status_code != status.HTTP_200_OK:
-            raise CredentialChangeRequesterException(response.status_code, response.json()["errorCode"])
+        response = client.post(url, content=payload)

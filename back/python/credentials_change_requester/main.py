@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Response, Request, status
-from exceptions import CredentialChangeRequesterException
+from typing import Set, Any
+
+from fastapi import FastAPI,status
 import services
 import uvicorn
 from constants import HOST, PORT, ErrorCodes
@@ -9,12 +10,9 @@ app = FastAPI()
 
 
 @app.post("/", tags=["credentials_change_requester"])
-async def create_request(request: CredentialChangeRequest, response: Response) -> dict[str, int]:
-    try:
-        await services.create_request(request)
-    except CredentialChangeRequesterException as e:
-        response.status_code = e.status_code
-        return {"errorCode": e.error_code}
+async def create_request(request: CredentialChangeRequest) -> set[Any]:
+        services.create_request(request)
+        return {status.HTTP_200_OK}
 
 
 if __name__ == "__main__":

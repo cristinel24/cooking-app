@@ -30,10 +30,10 @@ class RecipeCollection(MongoCollection):
         super().__init__(connection)
         self._collection = self._connection.get_database(DB_NAME).recipe
 
-    async def get_recipe_by_id(self, recipe_id: str, session: ClientSession):
+    async def get_recipe_by_id(self, recipe_id: str):
         try:
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
-                item = self._collection.find_one({"id": recipe_id}, session=session)
+                item = self._collection.find_one({"id": recipe_id})
                 if item is None:
                     raise RecipeEditorException(ErrorCodes.NONEXISTENT_RECIPE.value, status.HTTP_404_NOT_FOUND)
                 return item

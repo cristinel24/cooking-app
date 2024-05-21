@@ -16,20 +16,11 @@ class UserCollection(MongoCollection):
         db = self._connection.get_database(DB_NAME)
         self._collection = db.user
 
-    def get_user_by_id(self, user_id: str, projection_arg: dict) -> dict:
+    def update_user_by_id(self, user_id: str, pipeline: list[dict]) -> None:
         try:
             with pymongo.timeout(MONGO_TIMEOUT):
-                user = self._collection.find_one({"id": user_id}, projection=projection_arg)
-                if user is None:
-                    raise VerifierException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
-                return user
-        except errors.PyMongoError:
-            raise VerifierException(status.HTTP_504_GATEWAY_TIMEOUT, ErrorCodes.DATABASE_ERROR.value)
-
-    def update_user_by_id(self, user_id: str, changes: dict) -> None:
-        try:
-            with pymongo.timeout(MONGO_TIMEOUT):
-                self._collection.update_one({"id": user_id}, {"$set": changes})
+                pipeline[0]["$match"]["id"] = user_id
+                self._collection.aggregate(pipeline)
         except errors.PyMongoError as e:
             if e.timeout:
                 raise VerifierException(status.HTTP_504_GATEWAY_TIMEOUT, ErrorCodes.DATABASE_TIMEOUT.value)

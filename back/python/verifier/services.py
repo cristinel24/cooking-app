@@ -1,17 +1,11 @@
 from repository import UserCollection
 from api import request_is_token_valid, request_destroy_token
-from constants import NEW_EMAIL_PROJECTION
+from constants import PIPELINE_EMAIL_CHANGE
 
 user_collection = UserCollection()
 
 
 async def verify(token_value: str) -> None:
     user_id = await request_is_token_valid(token_value)
-    new_email = user_collection.get_user_by_id(user_id, NEW_EMAIL_PROJECTION)
-    changes = {
-        "email": new_email["login"]["newEmail"],
-        "login.newEmail": None,
-        "login.emailStatus": "Confirmed"
-    }
-    user_collection.update_user_by_id(user_id, changes)
+    user_collection.update_user_by_id(user_id, PIPELINE_EMAIL_CHANGE)
     await request_destroy_token(token_value)

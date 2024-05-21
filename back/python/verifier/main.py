@@ -9,7 +9,7 @@ app = FastAPI(title="Verifier")
 
 
 @app.post("/", tags=["verify"], response_model=None, response_description="Successful operation")
-async def verify(token_value: str) -> dict[str, int] | None | JSONResponse:
+async def verify(token_value: str) -> None | JSONResponse:
     try:
         await services.verify(token_value)
     except VerifierException as e:

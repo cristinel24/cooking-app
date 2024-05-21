@@ -1,5 +1,3 @@
-from fastapi import status
-from exceptions import RecipeRatingManagerException
 from api import *
 from repository import *
 
@@ -8,7 +6,7 @@ client = MongoCollection
 user_collection = UserCollection(client.get_connection())
 recipe_collection = RecipeCollection(client.get_connection())
 
-async def put_recipe(recipe_id: str, rating_data: RatingCreateRequest):
+async def put_recipe_service(recipe_id: str, rating_data: RatingCreateRequest):
     try:
         # Call Rating Manager to create the rating
         response = await update_recipe_rating(recipe_id, rating_data.authorId, rating_data)
@@ -21,7 +19,7 @@ async def put_recipe(recipe_id: str, rating_data: RatingCreateRequest):
     except Exception as e:
         raise RecipeRatingManagerException(ErrorCodes.INTERNAL_SERVER_ERROR.value, str(e))
 
-async def patch_recipe(recipe_id: str, rating_id: str, rating_data: RatingUpdateRequest):
+async def patch_recipe_service(recipe_id: str, rating_id: str, rating_data: RatingUpdateRequest):
     try:
         # Get previous rating value from Rating Manager
         previous_rating_response = await get_ratings(rating_id, start=0, count=1, user_id="")
@@ -39,7 +37,7 @@ async def patch_recipe(recipe_id: str, rating_id: str, rating_data: RatingUpdate
     except Exception as e:
         raise RecipeRatingManagerException(ErrorCodes.INTERNAL_SERVER_ERROR.value, str(e))
 
-async def delete_recipe(recipe_id: str, rating_id: str):
+async def delete_recipe_service(recipe_id: str, rating_id: str):
     try:
         # Get previous rating value from Rating Manager
         previous_rating_response = await get_ratings(rating_id, start=0, count=1, user_id="")

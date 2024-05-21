@@ -52,16 +52,19 @@ async def process_query(query) -> list[str]:
     return normalise_dict(await verify_generated_tokens(await tokenize_user_query(query)))
 
 
-async def process_chatbot(chatbot_input: schemas.ChatbotInput):
-    user_info = db_wrapper.get_user_context(chatbot_input.userId)
-    message_history = await api.get_message_history(chatbot_input.userId)
-    print(message_history)
-    # saved_recipe_tags = get_tags_from_saved_recipes(user_info["savedRecipes"])
-    #
-    # return await process_chatbot_query(
-    #         user_info["messageHistory"],
-    #         chatbot_input.userQuery,
-    #         saved_recipe_tags,
-    #         user_info["allergens"],
-    #         []
-    #     )
+async def process_chatbot(chatbot_input: schemas.ChatbotInput, user_id: str):
+    user_info = db_wrapper.get_user_context(user_id)
+    message_history = await api.get_message_history(user_id)
+    saved_recipe_tags = get_tags_from_saved_recipes(user_info["savedRecipes"])
+
+    message = await process_chatbot_query(
+            message_history,
+            chatbot_input.userQuery,
+            saved_recipe_tags,
+            user_info["allergens"],
+            []
+        )
+
+    await api.add_message_to_history(user_id, message)
+
+    return message

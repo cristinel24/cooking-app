@@ -2,7 +2,6 @@ from pydantic import BaseModel
 
 
 class ChatbotInput(BaseModel):
-    userId: str
     userQuery: str
 
 

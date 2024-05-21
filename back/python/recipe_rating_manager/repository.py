@@ -1,31 +1,37 @@
-import os
-
 import pymongo
 from pymongo import MongoClient, errors
 from schemas import *
 from constants import *
-from exceptions import CustomException
+from exceptions import RecipeRatingManagerException
 
 
 class MongoCollection:
-    def __init__(self):
-        self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
+
+    def __init__(self, connection: MongoClient | None = None):
+        if connection is not None:
+            self._connection = connection
+        else:
+            self.connection = MongoClient(os.getenv("MONGO_URI", "mongodb""://localhost:27017/?directConnection=true"))
+
+    def get_connection(self) -> MongoClient:
+        return self._connection
 
 
 class UserCollection(MongoCollection):
-    def __init__(self):
-        super().__init__()
-        self._collection = self._connection.cooking_app.user
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).user
 
     def update_user_ratings(self, author_id: str, rating: int):
         if not (1 <= rating <= 5):
-            raise CustomException(ErrorCodes.INVALID_RATING.value, "Invalid rating! Should be a value between 1 and 5")
+            raise RecipeRatingManagerException(ErrorCodes.INVALID_RATING.value, "Invalid rating! Should be a value "
+                                                                                "between 1 and 5")
 
         with pymongo.timeout(MAX_TIMEOUT_SECONDS):
             try:
                 user = self._collection.find_one({"id": author_id}, USER_PROJECTION)
                 if not user:
-                    raise CustomException(ErrorCodes.USER_NOT_FOUND.value, "User not found")
+                    raise RecipeRatingManagerException(ErrorCodes.USER_NOT_FOUND.value, "User not found")
 
                 # Update ratingSum and ratingCount
                 self._collection.update_one(
@@ -35,17 +41,18 @@ class UserCollection(MongoCollection):
                     }
                 )
             except pymongo.errors.PyMongoError:
-                raise CustomException(ErrorCodes.DB_ERROR.value, "Database error!")
+                raise RecipeRatingManagerException(ErrorCodes.DB_ERROR.value, "Database error!")
 
     def remove_user_rating(self, author_id: str, rating_value: int):
         if not (1 <= rating_value <= 5):
-            raise CustomException(ErrorCodes.INVALID_RATING.value, "Invalid rating! Should be a value between 1 and 5")
+            raise RecipeRatingManagerException(ErrorCodes.INVALID_RATING.value, "Invalid rating! Should be a value "
+                                                                                "between 1 and 5")
 
         with pymongo.timeout(MAX_TIMEOUT_SECONDS):
             try:
                 user = self._collection.find_one({"id": author_id}, USER_PROJECTION)
                 if not user:
-                    raise CustomException(ErrorCodes.USER_NOT_FOUND.value, "User not found")
+                    raise RecipeRatingManagerException(ErrorCodes.USER_NOT_FOUND.value, "User not found")
 
                 self._collection.update_one(
                     {"id": author_id},
@@ -54,23 +61,24 @@ class UserCollection(MongoCollection):
                     }
                 )
             except pymongo.errors.PyMongoError:
-                raise CustomException(ErrorCodes.DB_ERROR.value, "Database error!")
+                raise RecipeRatingManagerException(ErrorCodes.DB_ERROR.value, "Database error!")
 
 
 class RecipeCollection(MongoCollection):
-    def __init__(self):
-        super().__init__()
-        self._collection = self._connection.cooking_app.recipe
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).recipe
 
     def update_recipe_ratings(self, recipe_id: str, rating: int):
         if not (1 <= rating <= 5):
-            raise CustomException(ErrorCodes.INVALID_RATING.value, "Invalid rating! Should be a value between 1 and 5")
+            raise RecipeRatingManagerException(ErrorCodes.INVALID_RATING.value, "Invalid rating! Should be a value "
+                                                                                "between 1 and 5")
 
         with pymongo.timeout(MAX_TIMEOUT_SECONDS):
             try:
                 recipe = self._collection.find_one({"id": recipe_id}, RECIPE_PROJECTION)
                 if not recipe:
-                    raise CustomException(ErrorCodes.RECIPE_NOT_FOUND.value, "Recipe not found!")
+                    raise RecipeRatingManagerException(ErrorCodes.RECIPE_NOT_FOUND.value, "Recipe not found!")
 
                 self._collection.update_one(
                     {"id": recipe_id},
@@ -79,17 +87,18 @@ class RecipeCollection(MongoCollection):
                     }
                 )
             except pymongo.errors.PyMongoError:
-                raise CustomException(ErrorCodes.DB_ERROR.value, "Database error!")
+                raise RecipeRatingManagerException(ErrorCodes.DB_ERROR.value, "Database error!")
 
     def remove_recipe_rating(self, recipe_id: str, rating_value: int):
         if not (1 <= rating_value <= 5):
-            raise CustomException(ErrorCodes.INVALID_RATING.value, "Invalid rating! Should be a value between 1 and 5")
+            raise RecipeRatingManagerException(ErrorCodes.INVALID_RATING.value, "Invalid rating! Should be a value "
+                                                                                "between 1 and 5")
 
         with pymongo.timeout(MAX_TIMEOUT_SECONDS):
             try:
                 recipe = self._collection.find_one({"id": recipe_id}, RECIPE_PROJECTION)
                 if not recipe:
-                    raise CustomException(ErrorCodes.RECIPE_NOT_FOUND.value, "Recipe not found")
+                    raise RecipeRatingManagerException(ErrorCodes.RECIPE_NOT_FOUND.value, "Recipe not found")
 
                 self._collection.update_one(
                     {"id": recipe_id},
@@ -98,4 +107,4 @@ class RecipeCollection(MongoCollection):
                     }
                 )
             except pymongo.errors.PyMongoError:
-                raise CustomException(ErrorCodes.DB_ERROR.value, "Database error!")
+                raise RecipeRatingManagerException(ErrorCodes.DB_ERROR.value, "Database error!")

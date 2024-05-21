@@ -1,9 +1,11 @@
+import uvicorn
 from fastapi import FastAPI, Query, APIRouter, Request, status
 from fastapi.responses import JSONResponse
 
 from schemas import RatingList, RatingCreate, RatingUpdate
 from services import RatingService
 from exceptions import DatabaseError, ExternalError, InternalError, InvalidDataError, DatabaseNotFoundDataError
+
 
 app = FastAPI()
 
@@ -50,3 +52,8 @@ async def update_rating(rating_id: str, rating_data: RatingUpdate) -> JSONRespon
 @app.delete("/rating/{rating_id}", response_description="Successful operation")
 async def delete_rating(rating_id: str) -> JSONResponse:
     return await rating_service.delete_rating(rating_id)
+
+if __name__ == "__main__":
+    PORT = int(8001)
+    HOST = "127.0.0.1"
+    uvicorn.run(app, host=HOST, port=PORT, reload=True)

@@ -29,7 +29,10 @@ async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
 
                 # regenerate tokens
                 fields_needed = ["title", "prepTime", "tags", "allergens", "description", "ingredients", "steps"]
-                recipe.tokens = await api.tokenize_recipe({key: (recipe_dict[key] if not hasattr(recipe, key) else getattr(recipe, key)) for key in fields_needed})
+                ans = await api.tokenize_recipe({key: (recipe_dict[key] if not hasattr(recipe, key) else getattr(recipe, key)) for key in fields_needed})
+                if ans is not None:
+                    recipe.tokens = ans
+
                 await recipe_collection.edit_recipe(recipe_id, vars(recipe), session)
 
                 if recipe_data.allergens is not None:

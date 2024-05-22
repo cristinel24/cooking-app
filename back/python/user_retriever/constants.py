@@ -1,16 +1,17 @@
 import os
 from enum import Enum
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 PORT = int(os.getenv("PORT", 8000))
-HOST_URL = os.getenv("HOST_URL", "0.0.0.0")
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017/?directConnection=true")
-DB_NAME = os.getenv("DB_NAME", "cooking_app")
+HOST = os.getenv("HOST", "0.0.0.0")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
+DB_NAME = os.getenv("DB_NAME")
 FOLLOW_MANAGER_API_URL = os.getenv("FOLLOW_MANAGER_API_URL", "http://0.0.0.0:8000")
-FOLLOWERS_COUNT_ROUTE = os.getenv("FOLLOWERS_COUNT_ROUTE", "/followers/count")
-FOLLOWING_COUNT_ROUTE = os.getenv("FOLLOWING_COUNT_ROUTE", "/following/count")
+FOLLOWERS_COUNT_ROUTE = "/followers/count"
+FOLLOWING_COUNT_ROUTE = "/following/count"
 MONGO_TIMEOUT = 3
 
 USER_DATA_PROJECTION = {
@@ -65,3 +66,5 @@ class ErrorCodes(Enum):
     FAILED_TO_GET_USER_FOLLOWING_COUNT = 21904
     UNAUTHORIZED = 21905
     DATABASE_ERROR = 21906
+    DATABASE_TIMEOUT = 21907
+    SERVER_ERROR = 21908

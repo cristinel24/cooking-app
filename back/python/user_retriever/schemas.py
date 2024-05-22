@@ -2,8 +2,8 @@ from pydantic import BaseModel
 
 
 class UserData(BaseModel):
-    userId: str
-    username: str 
+    id: str
+    username: str
     displayName: str
     icon: str
     roles: int
@@ -14,7 +14,7 @@ class UserData(BaseModel):
 
 
 class UserCardData(BaseModel):
-    userId: str
+    id: str
     username: str
     displayName: str
     icon: str
@@ -22,8 +22,12 @@ class UserCardData(BaseModel):
     ratingAvg: float
 
 
+class UserCardDataList(BaseModel):
+    cards: list[UserCardData]
+
+
 class UserFullData(BaseModel):
-    userId: str
+    id: str
     username: str
     displayName: str
     icon: str

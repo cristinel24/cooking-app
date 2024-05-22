@@ -1,7 +1,7 @@
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from schemas import Rating, RatingUpdate
-from constants import MONGO_URI, MONGO_DATABASE, MONGO_COLLECTION, RATING_PROJECTION, DELETED_FIELD
+from constants import MONGO_URI, DB_NAME, MONGO_COLLECTION, RATING_PROJECTION, DELETED_FIELD
 from exceptions import DatabaseError, InternalError, DatabaseNotFoundDataError
 from utils import singleton, init_logger
 
@@ -12,7 +12,7 @@ OPERATION_TIMEOUT_MESSAGE: str = "Database operation timed out"
 @singleton
 class RatingRepository:
     def __init__(self, db_url: str = MONGO_URI,
-                 db_name: str = MONGO_DATABASE,
+                 db_name: str = DB_NAME,
                  collection_name: str = MONGO_COLLECTION):
         self.client = AsyncIOMotorClient(db_url)
         self.db = self.client[db_name]

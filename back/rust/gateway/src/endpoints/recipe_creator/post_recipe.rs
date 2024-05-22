@@ -1,8 +1,10 @@
 use crate::config::get_global_context;
+use crate::endpoints::recipe_creator::SERVICE;
 use crate::endpoints::{
     get_response, redirect, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
 };
 use crate::get_redirect_url;
+use crate::models::recipe::Recipe;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -10,8 +12,6 @@ use salvo::oapi::extract::JsonBody;
 use salvo::prelude::Json;
 use salvo::{Request, Response, Writer};
 use tracing::error;
-use crate::endpoints::recipe_creator::SERVICE;
-use crate::models::recipe::Recipe;
 
 #[endpoint(
     responses
@@ -48,7 +48,7 @@ pub async fn post_recipe_item(
         Some(req.headers().clone()),
         true,
     )
-        .await)
+    .await)
         .map_or_else(
             |_| {
                 res.status_code(StatusCode::BAD_REQUEST);

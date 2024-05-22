@@ -5,21 +5,29 @@ mod middlewares;
 pub mod models;
 
 use crate::config::{get_configuration, CONTEXT};
+use crate::endpoints::ai::{ai_talk, replace_ingredient};
 use crate::endpoints::allergen::get_allergen_item;
 use crate::endpoints::email::{request_change, verify_account};
+use crate::endpoints::follow_manager::{
+    delete_following_user, get_all_followers, get_all_following, get_followers_count,
+    get_user_following_count, put_new_following_user,
+};
 use crate::endpoints::history_manager::{
     delete_item_search_history, get_search_history_endpoint, put_in_search_history,
 };
+use crate::endpoints::message_history_manager::{delete_history, get_history, put_history};
+use crate::endpoints::profile_data_changer::patch_profile_data;
+use crate::endpoints::rating::{
+    delete_rating_endpoint, get_rating_endpoint, patch_rating_endpoint, put_rating_endpoint,
+};
+use crate::endpoints::recipe_creator::post_recipe_item;
+use crate::endpoints::recipe_retriever::{get_card_recipe, get_full_recipe};
 use crate::endpoints::recipe_saver::{delete_recipe, put_recipe};
 use crate::endpoints::role_changer::admin_role_changer_endpoint;
 use crate::endpoints::tag::get_tag_item;
+use crate::endpoints::user_destroyer::delete_user;
 use crate::endpoints::user_retriever::{
     get_user_card_item, get_user_data_item, get_user_profile_item, post_user_card_item,
-};
-use crate::endpoints::{
-    rating::{
-        delete_rating_endpoint, get_rating_endpoint, patch_rating_endpoint, put_rating_endpoint,
-    },
 };
 use crate::graceful_shutdown::GracefulShutdown;
 use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
@@ -33,10 +41,7 @@ use salvo::{
     Listener, Server,
 };
 use tracing::info;
-use crate::endpoints::follow_manager::{delete_following_user, get_all_followers, get_all_following, get_followers_count, get_user_following_count, put_new_following_user};
-use crate::endpoints::message_history_manager::{delete_history, get_history, put_history};
-use crate::endpoints::profile_data_changer::patch_profile_data;
-use crate::endpoints::recipe_creator::post_recipe_item;
+use crate::endpoints::image_storage::{get_image, put_image};
 
 #[endpoint]
 async fn test() {}
@@ -52,23 +57,22 @@ async fn main() -> Result<()> {
     let auth_scheme = SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new(AUTH_HEADER)));
     let security_requirement = SecurityRequirement::new(AUTH_HEADER, Vec::<String>::new());
 
-    let router = Router::new()
-        .hoop(Logger::new())
-        .push(
-            Router::with_path("/api")
-                .hoop(auth_middleware)
-                .oapi_security(security_requirement.clone())
-                .append(&mut vec![
-                    setup_rating_routes(),
-                    setup_tag_routes(),
-                    setup_allergen_routes(),
-                    setup_user_saved_recipes_routes(),
-                    setup_user_routes(),
-                    setup_profile_routes(),
-                    setup_misc_routes(),
-                    setup_email_routes(),
-                ])
-        );
+    let router = Router::new().hoop(Logger::new()).push(
+        Router::with_path("/api")
+            .hoop(auth_middleware)
+            .oapi_security(security_requirement.clone())
+            .append(&mut vec![
+                setup_rating_routes(),
+                setup_tag_routes(),
+                setup_allergen_routes(),
+                setup_user_saved_recipes_routes(),
+                setup_user_routes(),
+                setup_profile_routes(),
+                setup_misc_routes(),
+                setup_email_routes(),
+                setup_ai_routes(),
+            ]),
+    );
 
     println!("{router:#?}");
 
@@ -115,11 +119,20 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
+fn setup_ai_routes() -> Router {
+    Router::with_path("/ai").append(&mut vec![
+        Router::with_path("/tokenize/replace_ingredient").post(replace_ingredient),
+        Router::with_path("/chatbot").post(ai_talk),
+    ])
+}
+
 fn setup_rating_routes() -> Router {
     Router::with_path("/rating")
         .oapi_tag("RATING")
         .append(&mut vec![
-            Router::with_path("/<parent_id>/replies").get(get_rating_endpoint).put(put_rating_endpoint),
+            Router::with_path("/<parent_id>/replies")
+                .get(get_rating_endpoint)
+                .put(put_rating_endpoint),
             Router::with_path("/<rating_id>")
                 .patch(patch_rating_endpoint)
                 .delete(delete_rating_endpoint),
@@ -127,9 +140,7 @@ fn setup_rating_routes() -> Router {
 }
 
 fn setup_tag_routes() -> Router {
-    Router::with_path("/tag")
-        .oapi_tag("TAG")
-        .get(get_tag_item)
+    Router::with_path("/tag").oapi_tag("TAG").get(get_tag_item)
 }
 
 fn setup_allergen_routes() -> Router {
@@ -153,8 +164,7 @@ fn setup_user_routes() -> Router {
                 .get(get_user_data_item)
                 .append(&mut vec![
                     Router::with_path("/card").get(get_user_card_item),
-                    Router::with_path("/profile")
-                        .get(get_user_profile_item),
+                    Router::with_path("/profile").post(get_user_profile_item),
                 ]),
             Router::with_path("/user-cards").post(post_user_card_item),
         ])
@@ -193,7 +203,7 @@ fn setup_user_routes() -> Router {
         .push(
             Router::with_path("/<user_id>")
                 .oapi_tag("USER DESTROYER")
-                .delete(test),
+                .delete(delete_user),
         )
 }
 
@@ -205,47 +215,17 @@ fn setup_profile_routes() -> Router {
 
 fn setup_misc_routes() -> Router {
     Router::new().append(&mut vec![
-        Router::with_path("/image")
+        Router::with_path("/images")
             .oapi_tag("IMAGE STORAGE")
-            .put(test)
-            .push(Router::with_path("/<image_id>").get(test)),
-        Router::with_path("/register")
-            .oapi_tag("REGISTER")
-            .post(test),
-        Router::with_path("/verify").oapi_tag("VERIFIER").post(test),
-        Router::with_path("/login").oapi_tag("LOGIN").post(test),
-        Router::with_path("/creds")
-            .oapi_tag("CREDENTIALS CHANGE REQUESTER")
-            .post(test),
-        Router::with_path("/username")
-            .oapi_tag("USERNAME CHANGER")
-            .post(test),
-        Router::with_path("/password")
-            .oapi_tag("PASSWORD CHANGER")
-            .post(test),
-        Router::with_path("/email")
-            .oapi_tag("EMAIL CHANGER")
-            .post(test),
+            .put(put_image)
+            .push(Router::with_path("/<image_id>").get(get_image)),
         Router::with_path("/recipe")
             .oapi_tag("RECIPE CREATOR")
             .post(post_recipe_item),
         Router::with_path("/recipe/<recipe_id>")
-            .oapi_tag("RECIPE EDITOR")
-            .post(test),
-        Router::with_path("/recipe/<recipe_id>")
-            .oapi_tag("RECIPE DESTROYER")
-            .delete(test),
-        Router::with_path("/recipe/<recipe_id>")
-            .oapi_tag("RECIPE RATING MANAGER")
-            .push(
-                Router::with_path("/ratings")
-                    .put(test)
-                    .push(Router::with_path("/<rating_id>").patch(test).delete(test)),
-            ),
-        Router::with_path("/recipe/<recipe_id>")
             .oapi_tag("RECIPE RETRIEVER")
-            .get(test)
-            .push(Router::with_path("/card").get(test)),
+            .get(get_full_recipe)
+            .push(Router::with_path("/card").get(get_card_recipe)),
     ])
 }
 

@@ -70,8 +70,8 @@
       "port": 5000
     },
     "image_storage": {
-      "url": "http://image-storage-service-url",
-      "port": 5000
+      "url": "localhost",
+      "port": 7000
     },
     "register": {
       "url": "http://register-service-url",

@@ -11,5 +11,4 @@ pub use put_new_follower::put_new_following_user;
 pub mod delete_following;
 pub use delete_following::delete_following_user;
 
-
 pub const SERVICE: &str = "follow_manager";

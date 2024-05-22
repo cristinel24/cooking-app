@@ -1,4 +1,5 @@
 use crate::config::get_global_context;
+use crate::endpoints::follow_manager::SERVICE;
 use crate::endpoints::{
     get_response, redirect, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
 };
@@ -9,7 +10,6 @@ use salvo::oapi::endpoint;
 use salvo::prelude::Json;
 use salvo::{Request, Response};
 use tracing::error;
-use crate::endpoints::follow_manager::SERVICE;
 
 #[endpoint(
     parameters(
@@ -48,7 +48,7 @@ pub async fn delete_history(
         Some(req.headers().clone()),
         true,
     )
-        .await)
+    .await)
         .map_or_else(
             |_| {
                 res.status_code(StatusCode::BAD_REQUEST);

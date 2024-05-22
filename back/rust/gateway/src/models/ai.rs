@@ -1,21 +1,26 @@
-use crate::models::user::CardData;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct FollowCount {
-    pub followers_count: u32,
+pub struct TokenizeRequest {
+    pub ingredient: String,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct Follow {
-    pub followers: Vec<CardData>,
+pub struct TokenizeResponse {
+    pub replace_options: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct Follows {
-    pub follows_id: String,
+pub struct ChatBotRequest {
+    pub user_query: String,
+}
+
+#[derive(Serialize, Deserialize, Default, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct ChatBotResponse {
+    pub response: String,
 }

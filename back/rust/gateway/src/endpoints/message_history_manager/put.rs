@@ -1,8 +1,10 @@
 use crate::config::get_global_context;
+use crate::endpoints::follow_manager::SERVICE;
 use crate::endpoints::{
     get_response, redirect, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
 };
 use crate::get_redirect_url;
+use crate::models::message_history::Message;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -10,8 +12,6 @@ use salvo::oapi::extract::JsonBody;
 use salvo::prelude::Json;
 use salvo::{Request, Response, Writer};
 use tracing::error;
-use crate::endpoints::follow_manager::SERVICE;
-use crate::models::message_history::Message;
 
 #[endpoint(
     parameters(
@@ -51,7 +51,7 @@ pub async fn put_history(
         Some(req.headers().clone()),
         true,
     )
-        .await)
+    .await)
         .map_or_else(
             |_| {
                 res.status_code(StatusCode::BAD_REQUEST);

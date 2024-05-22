@@ -6,18 +6,22 @@ use reqwest::{Client, Method, Response};
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 
+pub mod ai;
 pub mod allergen;
 pub mod email;
+pub mod follow_manager;
 pub mod history_manager;
+pub mod message_history_manager;
+pub mod profile_data_changer;
 pub mod rating;
+pub mod recipe_creator;
+pub mod recipe_retriever;
 pub mod recipe_saver;
 pub mod role_changer;
 pub mod tag;
+pub mod user_destroyer;
 pub mod user_retriever;
-pub mod follow_manager;
-pub mod message_history_manager;
-pub mod profile_data_changer;
-pub mod recipe_creator;
+pub mod image_storage;
 
 const SUCCESSFUL_RESPONSE: &str = "Successful operation response";
 const FAILED_RESPONSE: &str = "Failed operation response";
@@ -97,7 +101,7 @@ pub fn redirect(context: &Configuration, url: &str, service: &str) -> anyhow::Re
         .services
         .get(service)
         .context("Cannot get service")?;
-    Ok(format!("{}:{}{}", service.url, service.port, url))
+    Ok(format!("{}:{}/{}", service.url, service.port, url))
 }
 
 #[macro_export]

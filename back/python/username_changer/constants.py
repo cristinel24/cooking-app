@@ -1,5 +1,15 @@
+import os
 from enum import Enum
+from dotenv import load_dotenv
 from fastapi import status
+
+load_dotenv()
+
+HOST = os.getenv("HOST", "localhost")
+PORT = int(os.getenv("PORT", 2580))
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
+DB_NAME = os.getenv("DB_NAME")
+
 
 TIMEOUT_LIMIT = 3
 DESIRED_USERNAME_CHANGE_TOKEN_TYPE = "usernameChange"

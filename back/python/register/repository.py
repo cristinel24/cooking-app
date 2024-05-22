@@ -23,5 +23,4 @@ class UserCollection(MongoCollection):
     async def insert_user(self, user_data: dict, empty_fields: dict) -> None:
         with pymongo.timeout(MONGO_TIMEOUT):
             new_user = {**user_data, **empty_fields}
-            pprint(new_user)
             self._collection.insert_one(new_user)

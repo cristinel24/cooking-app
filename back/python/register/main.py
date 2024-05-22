@@ -1,24 +1,25 @@
-import os
 import uvicorn
 
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, status
+from fastapi.responses import JSONResponse
 
-from constants import  HOST_URL, PORT, ErrorCodes
-from exceptions import RegisterException
-from schemas import UserCreateData
-import service
+from constants import HOST, PORT, ErrorCodes
+from exception import RegisterException
+from schemas import NewUserData
+import services
 
-app = FastAPI()
+app = FastAPI(title="Register")
 
 
-@app.post("/", tags=["register"])
-async def register(user_data: UserCreateData, response: Response) -> dict[str, ErrorCodes] | None:
+@app.post("/", tags=["register"], response_model=None, response_description="Successful operation")
+async def register(user_data: NewUserData) -> None | JSONResponse:
     try:
-        await service.register(user_data)
+        await services.register(user_data)
     except RegisterException as e:
-        response.status_code = e.status_code
-        return {"errorCode": e.error_code}
+        return JSONResponse(status_code=e.status_code, content={"error_code": e.error_code})
+    except (Exception,):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"error_code": ErrorCodes.SERVER_ERROR.value})
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=HOST_URL, port=PORT)
+    uvicorn.run("main:app", host=HOST, port=PORT, reload=True)

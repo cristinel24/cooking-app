@@ -1,61 +1,27 @@
-import os
-import pymongo
-import exceptions
-import constants
-import schemas
+from pprint import pprint
 
-from fastapi import status
-from utils import match_collection_error
-from pymongo import errors
+import pymongo
+from constants import MONGO_URI, DB_NAME, MONGO_TIMEOUT
+from pymongo import MongoClient
 
 
 class MongoCollection:
-    def __init__(self):
-        self._connection = pymongo.MongoClient(os.getenv("MONGO_URI",
-                                                         "mongodb://localhost:27017/?directConnection=true"))
+    def __init__(self, connection: MongoClient | None = None):
+        self._connection = connection if connection is not None else MongoClient(MONGO_URI)
 
 
 class UserCollection(MongoCollection):
     def __init__(self):
         super().__init__()
-        self._collection = self._connection.cooking_app.user
+        db = self._connection.get_database(DB_NAME)
+        self._collection = db.get_collection("user")
 
-    def find_user_by_name(self, name: str):
-        with pymongo.timeout(constants.MAX_TIMEOUT_SECONDS):
-            try:
-                user = self._collection.find_one(
-                    {"username": name},
-                    schemas.USER_PROJECTION
-                )
-                if user:
-                    raise exceptions.RegisterException(
-                        error_code=constants.ErrorCodes.USERNAME_ALREADY_EXISTS,
-                        status_code=400
-                    )
-                return 1
-            except errors.PyMongoError as e:
-                raise match_collection_error(e)
+    def user_exists_by_field(self, attribute: str, value: str) -> bool:
+        with pymongo.timeout(MONGO_TIMEOUT):
+            return self._collection.find_one({attribute: value}) is not None
 
-    def find_user_by_email(self, email: str):
-        with pymongo.timeout(constants.MAX_TIMEOUT_SECONDS):
-            try:
-                user = self._collection.find_one(
-                    {"email": email},
-                    schemas.USER_PROJECTION
-                )
-                if user:
-                    raise exceptions.RegisterException(
-                        error_code=constants.ErrorCodes.EMAIL_ALREADY_REGISTERED,
-                        status_code=400
-                    )
-                return 1
-            except errors.PyMongoError as e:
-                raise match_collection_error(e)
-
-    def insert_user(self, user_data: dict):
-        with pymongo.timeout(constants.MAX_TIMEOUT_SECONDS):
-            try:
-                self._collection.insert_one(user_data)
-            except errors.PyMongoError as e:
-                raise match_collection_error(e)
-
+    async def insert_user(self, user_data: dict, empty_fields: dict) -> None:
+        with pymongo.timeout(MONGO_TIMEOUT):
+            new_user = {**user_data, **empty_fields}
+            pprint(new_user)
+            self._collection.insert_one(new_user)

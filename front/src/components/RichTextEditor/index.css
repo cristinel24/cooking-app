@@ -6,6 +6,7 @@
 .rich-text-editor {
     overflow: hidden;
     border-radius: 10px;
+    color: var(--color-black);
 }
 
 .rich-text-editor-menu-bar {
@@ -22,13 +23,6 @@
         background: transparent;
         border: none;
         cursor: pointer;
-    }
-
-    svg {
-        font-size: 1.2rem;
-        padding: 0;
-        margin: 0;
-        color: var(--text-color);
     }
 
     button:hover {
@@ -48,14 +42,21 @@
     }
 }
 
+.rich-text-editor-menu-bar-icon {
+    font-size: 1.2rem;
+    padding: 0;
+    margin: 0;
+    color: var(--text-color);
+}
+
 .rich-text-editor-menu-bar-buttons {
     display: flex;
     flex-wrap: wrap;
 }
 
 .rich-text-editor-menu-bar-divider {
-    background-color: rgba(255, 255, 255, 0.5);
-    color: rgba(255, 255, 255, 0.5);
+    background-color: color-mix(in srgb, rgba(0, 0, 0, 0), var(--text-color) 30%);
+    color: color-mix(in srgb, rgba(0, 0, 0, 0), var(--text-color) 30%);
     border: unset;
     width: 0.1rem;
     margin: 0.5rem;
@@ -63,7 +64,7 @@
     display: inline-flex;
 }
 
-.tiptap {
+.rich-text-editor-content {
     overflow-x: auto;
     padding: 0.5rem;
     background-color: var(--card-bg-color);

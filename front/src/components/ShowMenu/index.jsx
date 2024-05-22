@@ -1,7 +1,8 @@
 import { useState } from 'react'
+
 import './index.css'
-import Filters from '../Filters'
-import ActionButton from '../ActionButton'
+
+import { Button, Filters } from '../../components'
 
 function ShowMenu() {
     const [menuOpen, setMenuOpen] = useState(false)
@@ -13,7 +14,7 @@ function ShowMenu() {
     return (
         <div className="menu-wrapper">
             <div className="menu-container">
-                <ActionButton text="Filtre" onClick={toggleMenu}></ActionButton>
+                <Button text="Filtre" onClick={toggleMenu} />
                 {menuOpen && <Filters />}
             </div>
         </div>

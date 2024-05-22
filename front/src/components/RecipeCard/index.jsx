@@ -1,93 +1,84 @@
-import './index.css'
-import Rating from '../Rating'
+import { useState } from 'react'
+import { FaEdit, FaHeart, FaTrash } from 'react-icons/fa'
 import { IoIosTime } from 'react-icons/io'
-import { FaHeart, FaEdit, FaTrash } from 'react-icons/fa'
-export default function RecipeCard({
-    title,
-    recipePicture,
-    authorName,
-    authorLink,
-    recipeLink,
-    rating,
-    prepTime,
-    favorite,
-    onFavorite,
-    onRemove,
-    onEdit,
-}) {
-    const prepTimeDisplayText = (() => {
-        const prepTimeHours = Math.floor(prepTime / 60)
-        const prepTimeMinutes = prepTime % 60
-        switch (true) {
-            case prepTimeHours > 0 && prepTimeMinutes > 0:
-                return `${prepTimeHours} ${
-                    prepTimeHours === 1 ? 'oră' : 'ore'
-                } ${prepTimeMinutes} ${
-                    prepTimeMinutes === 1 ? 'minut' : 'minute'
-                }`
-            case prepTimeHours > 0:
-                return `${prepTimeHours} ${prepTimeHours === 1 ? 'oră' : 'ore'}`
-            default:
-                return `${prepTimeMinutes} ${
-                    prepTimeMinutes === 1 ? 'minut' : 'minute'
-                }`
-        }
-    })()
+import { Link } from 'react-router-dom'
+
+import './index.css'
+import { RatingValue } from '../../components'
+import { prepTimeDisplayText } from '../../utils/recipeData'
+
+export default function RecipeCard({ recipe, owned, onFavorite, onRemove }) {
+    const [favorite, setFavorite] = useState(recipe.favorite)
+
+    const onFavoriteInternal = () => {
+        setFavorite((favorite) => !favorite)
+        onFavorite(recipe.id)
+    }
 
     return (
         <div className="recipe-card">
-            <a href={recipeLink}>
-                <img src={recipePicture} className="recipe-card-image" />
+            <a href={`/recipe/${recipe.id}`}>
+                <img
+                    src={`${recipe.thumbnail}`}
+                    className="recipe-card-image"
+                    alt="recipe"
+                />
             </a>
             <div className="recipe-card-details">
                 <div className="recipe-card-details-title-and-options">
-                    <a className="recipe-card-details-title" href={recipeLink}>
-                        {title}
+                    <a
+                        className="recipe-card-details-title"
+                        href={`/recipe/${recipe.id}`}
+                    >
+                        {recipe.title}
                     </a>
                     <div className="recipe-card-details-options">
-                        {onRemove && (
+                        {owned && onRemove && (
                             <FaTrash
                                 className="recipe-card-trash-icon"
-                                onClick={onRemove}
+                                onClick={() => onRemove(recipe.id)}
                             />
                         )}
-                        {onEdit && (
-                            <FaEdit
-                                className="recipe-card-edit-icon"
-                                onClick={onEdit}
-                            />
+                        {owned && (
+                            <Link to={`/recipe/${recipe.id}/edit`}>
+                                <FaEdit className="recipe-card-edit-icon" />
+                            </Link>
                         )}
                     </div>
                 </div>
                 <div className="recipe-card-details-author-time-rating">
                     <p className="recipe-card-details-author">
-                        Autor: <a href={authorLink}>{authorName}</a>
+                        Autor:{' '}
+                        <a href={`/profile/${recipe.author.id}`}>
+                            {recipe.author.displayName}
+                        </a>
                     </p>
                     <div className="recipe-card-details-time-and-rating">
                         <p className="recipe-card-details-time">
-                            <IoIosTime /> {prepTimeDisplayText}
+                            <IoIosTime /> {prepTimeDisplayText(recipe.prepTime)}
                         </p>
-                        <Rating ratingValue={rating} />
+                        <RatingValue value={recipe.author.ratingAvg} />
                     </div>
                 </div>
-                {(favorite === true || favorite === false) && onFavorite && (
-                    <div
+                {onFavorite && (
+                    <button
+                        type="button"
                         className="recipe-card-details-favorite"
-                        onClick={onFavorite}
+                        onClick={onFavoriteInternal}
                     >
                         <FaHeart
                             className={
-                                favorite === true
+                                favorite
                                     ? 'recipe-card-heart-icon-favorite'
                                     : 'recipe-card-heart-icon-not-favorite'
                             }
                         />
                         <p>
-                            {favorite === true
+                            {favorite
                                 ? 'Elimină din favorite'
                                 : 'Adaugă la favorite'}
                         </p>
-                    </div>
+                    </button>
                 )}
             </div>
         </div>

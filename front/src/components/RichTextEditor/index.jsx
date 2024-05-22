@@ -61,73 +61,55 @@ const MenuBar = ({ onChange, onRemove, allowImageUploads }) => {
                     title="Bold"
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     disabled={!editor.can().chain().focus().toggleBold().run()}
-                    className={
-                        editor.isActive('bold')
-                            ? 'rich-text-editor-button-active'
-                            : ''
-                    }
+                    className={editor.isActive('bold') ? 'rich-text-editor-button-active' : ''}
                 >
-                    <FiBold />
+                    <FiBold className="rich-text-editor-menu-bar-icon" />
                 </button>
                 <button
                     type="button"
                     title="Italic"
                     onClick={() => editor.chain().focus().toggleItalic().run()}
-                    disabled={
-                        !editor.can().chain().focus().toggleItalic().run()
-                    }
+                    disabled={!editor.can().chain().focus().toggleItalic().run()}
                     className={
                         '' +
                         ' ' +
-                        (editor.isActive('italic')
-                            ? 'rich-text-editor-button-active'
-                            : '')
+                        (editor.isActive('italic') ? 'rich-text-editor-button-active' : '')
                     }
                 >
-                    <FiItalic />
+                    <FiItalic className="rich-text-editor-menu-bar-icon" />
                 </button>
                 <button
                     type="button"
                     title="Subliniat"
-                    onClick={() =>
-                        editor.chain().focus().toggleUnderline().run()
-                    }
-                    disabled={
-                        !editor.can().chain().focus().toggleUnderline().run()
-                    }
+                    onClick={() => editor.chain().focus().toggleUnderline().run()}
+                    disabled={!editor.can().chain().focus().toggleUnderline().run()}
                     className={
                         '' +
                         ' ' +
-                        (editor.isActive('underline')
-                            ? 'rich-text-editor-button-active'
-                            : '')
+                        (editor.isActive('underline') ? 'rich-text-editor-button-active' : '')
                     }
                 >
-                    <FiUnderline />
+                    <FiUnderline className="rich-text-editor-menu-bar-icon" />
                 </button>
                 <button
                     type="button"
                     title="Tăiat"
                     onClick={() => editor.chain().focus().toggleStrike().run()}
-                    disabled={
-                        !editor.can().chain().focus().toggleStrike().run()
-                    }
+                    disabled={!editor.can().chain().focus().toggleStrike().run()}
                     className={
                         '' +
                         ' ' +
-                        (editor.isActive('strike')
-                            ? 'rich-text-editor-button-active'
-                            : '')
+                        (editor.isActive('strike') ? 'rich-text-editor-button-active' : '')
                     }
                 >
-                    <GoStrikethrough />
+                    <GoStrikethrough className="rich-text-editor-menu-bar-icon" />
                 </button>
                 <button
                     type="button"
                     title="Ștergere formatare"
                     onClick={() => editor.chain().focus().unsetAllMarks().run()}
                 >
-                    <MdFormatClear />
+                    <MdFormatClear className="rich-text-editor-menu-bar-icon" />
                 </button>
 
                 <hr className="rich-text-editor-menu-bar-divider" />
@@ -142,35 +124,31 @@ const MenuBar = ({ onChange, onRemove, allowImageUploads }) => {
                             : ''
                     }
                 >
-                    <GrTextAlignLeft />
+                    <GrTextAlignLeft className="rich-text-editor-menu-bar-icon" />
                 </button>
                 <button
                     type="button"
                     title="Puncte de paragraf"
-                    onClick={() =>
-                        editor.chain().focus().toggleBulletList().run()
-                    }
+                    onClick={() => editor.chain().focus().toggleBulletList().run()}
                     className={
                         '' + ' ' + editor.isActive('bulletList')
                             ? 'rich-text-editor-button-active'
                             : ''
                     }
                 >
-                    <GoListUnordered />
+                    <GoListUnordered className="rich-text-editor-menu-bar-icon" />
                 </button>
                 <button
                     type="button"
                     title="Listă ordonată"
-                    onClick={() =>
-                        editor.chain().focus().toggleOrderedList().run()
-                    }
+                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
                     className={
                         '' + ' ' + editor.isActive('orderedList')
                             ? 'rich-text-editor-button-active'
                             : ''
                     }
                 >
-                    <GoListOrdered />
+                    <GoListOrdered className="rich-text-editor-menu-bar-icon" />
                 </button>
 
                 <button
@@ -178,7 +156,7 @@ const MenuBar = ({ onChange, onRemove, allowImageUploads }) => {
                     title="Rând nou"
                     onClick={() => editor.chain().focus().setHardBreak().run()}
                 >
-                    <IoIosReturnLeft />
+                    <IoIosReturnLeft className="rich-text-editor-menu-bar-icon" />
                 </button>
 
                 <hr className="rich-text-editor-menu-bar-divider" />
@@ -199,7 +177,7 @@ const MenuBar = ({ onChange, onRemove, allowImageUploads }) => {
                                 fileInputRef.current.click()
                             }}
                         >
-                            <FiImage />
+                            <FiImage className="rich-text-editor-menu-bar-icon" />
                         </button>
                     </>
                 )}
@@ -210,7 +188,7 @@ const MenuBar = ({ onChange, onRemove, allowImageUploads }) => {
                     onClick={() => editor.chain().focus().undo().run()}
                     disabled={!editor.can().chain().focus().undo().run()}
                 >
-                    <LuUndo />
+                    <LuUndo className="rich-text-editor-menu-bar-icon" />
                 </button>
                 <button
                     type="button"
@@ -218,11 +196,11 @@ const MenuBar = ({ onChange, onRemove, allowImageUploads }) => {
                     onClick={() => editor.chain().focus().redo().run()}
                     disabled={!editor.can().chain().focus().redo().run()}
                 >
-                    <LuRedo />
+                    <LuRedo className="rich-text-editor-menu-bar-icon" />
                 </button>
             </div>
             <button type="button" onClick={onRemove}>
-                <RxCross2 />
+                <RxCross2 className="rich-text-editor-menu-bar-icon" />
             </button>
         </div>
     )
@@ -247,6 +225,11 @@ function RichTextEditor({ onChange, onRemove, allowImageUploads = true }) {
                 }
                 extensions={extensions}
                 content={content}
+                editorProps={{
+                    attributes: {
+                        class: 'rich-text-editor-content',
+                    },
+                }}
             ></EditorProvider>
         </div>
     )

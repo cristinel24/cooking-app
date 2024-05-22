@@ -2,8 +2,14 @@
 
 :root {
     font-family: 'Montserrat';
+
+    --max-content-width: 1200px;
+    --nav-height: 80px;
+    --footer-height: 60px;
 }
+
 body {
     margin: 0;
     background-color: var(--body-bg-color);
+    color: var(--text-color);
 }

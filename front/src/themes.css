@@ -1,3 +1,8 @@
+:root {
+    --color-white: #eeeeee;
+    --color-black: #111111;
+}
+
 [data-theme='light'] {
     --color-primary: #ff5348;
     --body-bg-color: #f0f0f0;
@@ -6,36 +11,52 @@
     --hover-bg-color: #ee3326;
     --footer-bg-color: #0c1821;
     --card-color: #ff8878;
-    --card-bg-color: #ffe7e2;
-    --border-color: #000000;
+    --card-bg-color: #f5cac7;
+    --border-color: #111111;
     --profile-name-color: #808080;
     --navbar-bg-color: #ff5348;
-    --navbar-color-primary: #000000;
-    --navbar-color-secondary: #ffffff;
+    --navbar-color-primary: #111111;
+    --navbar-color-secondary: #eeeeee;
     --searchbar-bg-color: #ffffff;
     --report-bg-color: #1c1c1c;
     --filter-bg-color: #f3f3f3;
     --body-bg-color-dimmed: #f3f3f3;
     --text-color-dimmed: #b4b4b4;
+
+    --input-color: #646464;
+    --input-bg-color: #ffffff;
+
+    --input-color-inverted: #c0c0c0;
+    --input-bg-color-inverted: #444444;
+    --body-bg-color-inverted: #1c1c1c;
+    --text-color-inverted: #eeeeee;
 }
 
 [data-theme='dark'] {
     --color-primary: #ff5348;
     --body-bg-color: #1c1c1c;
-    --text-color: #ffffff;
+    --text-color: #eeeeee;
     --neutral-bg-color: #828282;
     --hover-bg-color: #02080d;
-    --footer-bg-color: #ffffff;
+    --footer-bg-color: #eeeeee;
     --card-color: #ff8878;
-    --card-bg-color: #ffe7e2;
-    --border-color: #000000;
+    --card-bg-color: #f5cac7;
+    --border-color: #111111;
     --profile-name-color: #808080;
     --navbar-bg-color: #ff5348;
-    --navbar-color-primary: #ffffff;
-    --navbar-color-secondary: #000000;
-    --searchbar-bg-color: #ffffff;
-    --report-bg-color: #ffffff;
+    --navbar-color-primary: #eeeeee;
+    --navbar-color-secondary: #111111;
+    --searchbar-bg-color: #eeeeee;
+    --report-bg-color: #eeeeee;
     --filter-bg-color: #303233;
     --body-bg-color-dimmed: #303233;
     --text-color-dimmed: #b4b4b4;
+
+    --input-color: #c0c0c0;
+    --input-bg-color: #444444;
+
+    --input-color-inverted: #646464;
+    --input-bg-color-inverted: #ffffff;
+    --body-bg-color-inverted: #f0f0f0;
+    --text-color-inverted: #0c1821;
 }

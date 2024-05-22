@@ -1,0 +1,26 @@
+.dropdown-item {
+    background-color: transparent;
+    font: inherit;
+    font-weight: bold;
+
+    border: none;
+    border-radius: 10px;
+
+    padding: 0.2rem 0.4rem;
+    margin: 0;
+
+    cursor: pointer;
+    background-color: var(--navbar-bg-color);
+    color: var(--text-color);
+}
+
+.dropdown-item::-ms-expand {
+    display: none;
+}
+
+.dropdown-option {
+    background-color: var(--card-bg-color);
+    border-radius: 10px;
+    width: 16rem;
+    color: var(--color-black);
+}

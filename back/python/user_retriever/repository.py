@@ -1,13 +1,13 @@
 import pymongo
-from pymongo import MongoClient, errors
-from constants import MONGO_URL, DB_NAME, ErrorCodes, MONGO_TIMEOUT
+from constants import DB_NAME, MONGO_TIMEOUT, MONGO_URI, ErrorCodes
 from exception import UserRetrieverException
 from fastapi import status
+from pymongo import MongoClient, errors
 
 
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
-        self._connection = connection if connection is not None else MongoClient(MONGO_URL)
+        self._connection = connection if connection is not None else MongoClient(MONGO_URI)
 
 
 class UserCollection(MongoCollection):
@@ -21,7 +21,7 @@ class UserCollection(MongoCollection):
             with pymongo.timeout(MONGO_TIMEOUT):
                 user = self._collection.find_one({"id": user_id}, projection=projection_arg)
                 if user is None:
-                    raise UserRetrieverException(status.HTTP_status.HTTP_404_NOT_FOUND_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
+                    raise UserRetrieverException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
                 return user
         except errors.PyMongoError:
             raise UserRetrieverException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR)

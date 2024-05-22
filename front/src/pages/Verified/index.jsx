@@ -1,11 +1,10 @@
 import { useSearchParams } from "react-router-dom"
-import { Page } from "../../components"
 import { useEffect } from "react"
-import { verify } from "../../services/auth"
+import { verifyAccount } from "../../services/auth"
 import PageButton from '../../components/PageButton/index.jsx'
 import './index.css'
 
-const Verified = () => {
+export default function Verified() {
     const [queryParams, _] = useSearchParams()
 
     useEffect(() => {
@@ -15,24 +14,20 @@ const Verified = () => {
                 return;
             }
 
-            await verify(token)
+            await verifyAccount(token)
         }
 
         verifyToken()
     }, [])
 
     return (
-        <Page>
-            <div className="verified-wrapper">
-                <p>Contul tău a fost înregistrat cu succes. Te poți întoarce la pagina principală.</p>
+        <div className="verified-wrapper">
+            <p>Contul tău a fost înregistrat cu succes. Te poți întoarce la pagina principală.</p>
             <div className="verified-button-wrapper">
                 <PageButton path={'https://www.google.ro/'} className="verified-button">
-                     Acasă
+                    Acasă
                 </PageButton>
             </div>
-            </div>
-        </Page>
+        </div>
     )
 }
-
-export default Verified

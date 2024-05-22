@@ -45,3 +45,25 @@ export const renderJSONtoHTML = (json) => {
     })
     return editor.getHTML()
 }
+
+export function collectImageSrcs(obj, srcs) {
+    if (obj.type === 'image' && obj.attrs.src) {
+        // testing if src is of type base64
+        if (!/^(data:image\/\w+;base64,)/.test(obj.attrs.src)) {
+            return
+        }
+        srcs.add(obj.attrs.src)
+    } else if (obj.content) {
+        obj.content.forEach((contentObj) => collectImageSrcs(contentObj, srcs))
+    }
+}
+
+export function replaceImageSrcs(obj, sourceMap) {
+    if (obj.type === 'image') {
+        if (sourceMap.has(obj.attrs.src)) {
+            obj.attrs.src = sourceMap.get(obj.attrs.src)
+        }
+    } else if (obj.content) {
+        obj.content.forEach((contentObj) => replaceImageSrcs(contentObj, sourceMap))
+    }
+}

@@ -1,6 +1,6 @@
 import './index.css'
 import '../index'
-import { PageButton, Recipe, ActionButton } from '../index'
+import { Recipe, Button } from '../../components'
 
 const ViewRecipe = (props) => {
     const toogleRecipe = () => {
@@ -33,7 +33,7 @@ const ViewRecipe = (props) => {
     }
     return (
         <div className="recipe-view" id={props.id}>
-            <ActionButton onClick={toogleRecipe} text={props.name} />
+            <Button onClick={toogleRecipe} text={props.name} />
             {recipes}
         </div>
     )

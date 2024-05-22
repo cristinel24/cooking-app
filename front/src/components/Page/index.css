@@ -1,0 +1,9 @@
+.page-container {
+    min-height: calc(100vh - var(--nav-height) - var(--footer-height));
+    display: flex;
+    flex-direction: column;
+
+    padding: 2rem 1rem;
+    max-width: var(--max-content-width);
+    margin: auto;
+}

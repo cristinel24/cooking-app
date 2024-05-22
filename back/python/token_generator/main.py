@@ -1,13 +1,6 @@
-import os
-from dotenv import load_dotenv
-from fastapi import FastAPI, Response, status
-from constants import Errors
 import services
-
-load_dotenv()
-
-HOST = os.getenv("TOKEN_GENERATOR_URL", "localhost")
-PORT = int(os.getenv("PORT", "8090"))
+from constants import HOST, PORT, Errors
+from fastapi import FastAPI, Response, status
 
 app = FastAPI()
 

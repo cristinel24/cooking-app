@@ -1,57 +1,11 @@
 import React, { useState } from 'react'
 
-import {
-    ActionButton,
-    PageButton,
-    PopUpChat,
-    Recipe,
-    Footer,
-    UserProfile,
-    Navbar,
-    AdminBox,
-    PreviewRecipe,
-    Filters,
-    ShowMenu,
-    ReportBug,
-    Report,
-    Categories,
-    Tag,
-    TagSelector,
-    RecipeCard,
-    UserCard,
-    RichTextEditor,
-} from '../../components'
-
-import { MdWavingHand } from 'react-icons/md'
+import { RichTextEditor } from '../../components'
 
 import { uploadImage } from '../../services/image'
 
 import { base64ToFile } from '../../utils/base64'
-import { renderJSONtoHTML } from '../../utils/richTextEditor'
-
-function collectImageSrcs(obj, srcs) {
-    if (obj.type === 'image' && obj.attrs.src) {
-        // testing if src is of type base64
-        if (!/^(data:image\/\w+;base64,)/.test(obj.attrs.src)) {
-            return
-        }
-        srcs.add(obj.attrs.src)
-    } else if (obj.content) {
-        obj.content.forEach((contentObj) => collectImageSrcs(contentObj, srcs))
-    }
-}
-
-function replaceImageSrcs(obj, sourceMap) {
-    if (obj.type === 'image') {
-        if (sourceMap.has(obj.attrs.src)) {
-            obj.attrs.src = sourceMap.get(obj.attrs.src)
-        }
-    } else if (obj.content) {
-        obj.content.forEach((contentObj) =>
-            replaceImageSrcs(contentObj, sourceMap)
-        )
-    }
-}
+import { renderJSONtoHTML, collectImageSrcs, replaceImageSrcs } from '../../utils/richTextEditor'
 
 function Test() {
     const [richTextData, setRichTextData] = useState({})
@@ -97,7 +51,7 @@ function Test() {
                 <button type="submit">Submit</button>
             </form>
 
-            <div className="preview" style={{ backgroundColor: 'white' }}>
+            <div>
                 Preview:
                 <div dangerouslySetInnerHTML={{ __html: finalData }} />
             </div>

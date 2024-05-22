@@ -41,7 +41,10 @@ pub async fn get_search_history_endpoint(
     start: QueryParam<i64, true>,
     count: QueryParam<i64, true>,
 ) -> Json<EndpointResponse<Results>> {
-    let url: String = get_redirect_url!(req, res, req.uri().path(), SERVICE);
+    let uri = req.uri().to_string();
+    let parts: Vec<&str> = uri.split('/').collect();
+    let new_url = parts[1..].join("/");
+    let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
 
     return (get_response::<[(&str, i64); 2], &str, Results>(
         Method::GET,

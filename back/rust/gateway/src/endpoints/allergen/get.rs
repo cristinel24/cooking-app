@@ -35,13 +35,16 @@ pub async fn get_allergen_item(
     res: &mut Response,
     starting_with: QueryParam<String, true>,
 ) -> Json<EndpointResponse<Allergens>> {
-    let url: String = get_redirect_url!(req, res, req.uri().path(), SERVICE);
+    let uri = req.uri().to_string();
+    let parts: Vec<&str> = uri.split('/').collect();
+    let new_url = parts[1..].join("/");
+    let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
     return (get_response::<[(&str, String); 1], &str, Allergens>(
         Method::GET,
         url,
         Some(&[("starting_with", starting_with.into_inner())]),
         None,
-        None,
+        Some(req.headers().clone()),
         false,
     )
     .await)

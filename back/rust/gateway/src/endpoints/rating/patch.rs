@@ -39,7 +39,10 @@ pub async fn patch_rating_endpoint(
     req: &mut Request,
     res: &mut Response,
 ) -> Json<EndpointResponse<String>> {
-    let url: String = get_redirect_url!(req, res, req.uri().path(), SERVICE);
+    let uri = req.uri().to_string();
+    let parts: Vec<&str> = uri.split('/').collect();
+    let new_url = parts[1..].join("/");
+    let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
     return (get_response::<&str, Update, String>(
         Method::PATCH,
         url,

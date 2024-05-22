@@ -10,6 +10,10 @@ pub mod role_changer;
 pub mod search;
 pub mod tags;
 pub mod user;
+pub mod follow_manager;
+pub mod message_history;
+pub mod patch_profile;
+pub mod recipe;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]

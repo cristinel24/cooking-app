@@ -35,13 +35,16 @@ pub async fn verify_account(
     res: &mut Response,
     verify_account_data: JsonBody<VerifyAccount>,
 ) -> Json<EndpointResponse<String>> {
-    let url: String = get_redirect_url!(req, res, req.uri().path(), SERVICE);
+    let uri = req.uri().to_string();
+    let parts: Vec<&str> = uri.split('/').collect();
+    let new_url = parts[1..].join("/");
+    let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
     return (get_response::<&str, VerifyAccount, String>(
         Method::POST,
         url,
         None,
         Some(verify_account_data.into_inner()),
-        None,
+        Some(req.headers().clone()),
         true,
     )
     .await)

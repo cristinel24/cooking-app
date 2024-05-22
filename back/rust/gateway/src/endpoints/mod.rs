@@ -8,13 +8,16 @@ use serde::{Deserialize, Serialize, Serializer};
 
 pub mod allergen;
 pub mod email;
-pub mod hash;
 pub mod history_manager;
 pub mod rating;
 pub mod recipe_saver;
 pub mod role_changer;
 pub mod tag;
 pub mod user_retriever;
+pub mod follow_manager;
+pub mod message_history_manager;
+pub mod profile_data_changer;
+pub mod recipe_creator;
 
 const SUCCESSFUL_RESPONSE: &str = "Successful operation response";
 const FAILED_RESPONSE: &str = "Failed operation response";

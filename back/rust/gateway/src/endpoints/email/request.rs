@@ -35,13 +35,16 @@ pub async fn request_change(
     res: &mut Response,
     request_change_data: JsonBody<RequestChange>,
 ) -> Json<EndpointResponse<String>> {
-    let url: String = get_redirect_url!(req, res, req.uri().path(), SERVICE);
+    let uri = req.uri().to_string();
+    let parts: Vec<&str> = uri.split('/').collect();
+    let new_url = parts[1..].join("/");
+    let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
     return (get_response::<&str, RequestChange, String>(
         Method::POST,
         url,
         None,
         Some(request_change_data.into_inner()),
-        None,
+        Some(req.headers().clone()),
         true,
     )
     .await)

@@ -34,14 +34,11 @@ pub async fn post_user_card_item(
     res: &mut Response,
 ) -> Json<EndpointResponse<Cards>> {
     let uri = req.uri().to_string();
-    let mut parts: Vec<&str> = uri.split('/').collect();
-    if !parts.is_empty() {
-        parts.remove(1);
-    }
-    let new_url = parts.join("/");
+    let parts: Vec<&str> = uri.split('/').collect();
+    let new_url = parts[1..].join("/");
     let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
 
-    return (get_response::<&str, &str, Cards>(Method::POST, url, None, None, None, true).await)
+    return (get_response::<&str, &str, Cards>(Method::POST, url, None, None, Some(req.headers().clone()), true).await)
         .map_or_else(
             |_| {
                 res.status_code(StatusCode::BAD_REQUEST);

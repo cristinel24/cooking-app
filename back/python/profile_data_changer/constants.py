@@ -7,7 +7,7 @@ load_dotenv()
 PORT = int(os.getenv("PORT", 8000))
 HOST = os.getenv("HOST", "0.0.0.0")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
-DB_NAME = os.getenv("DB_NAME", "cooking_app")
+DB_NAME = os.getenv("DB_NAME")
 ALLERGEN_MANAGER_API_URL = os.getenv("ALLERGEN_MANAGER_URL", "http://localhost:8001")
 ADD_ALLERGENS = "/allergens/inc"
 REMOVE_ALLERGENS = "/allergens/dec"
@@ -31,6 +31,7 @@ class ErrorCodes(Enum):
     DISPLAY_NAME_REQUIRED = 21808
     DESCRIPTION_REQUIRED = 21809
     DESCRIPTION_TOO_LONG = 21810
+    MALFORMED_DESCRIPTION = 21811
 
 
 ICON_VALIDATION = {

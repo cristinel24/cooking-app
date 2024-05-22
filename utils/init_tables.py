@@ -776,7 +776,7 @@ db.command(
 user_collection = db["user"]
 user_collection.create_indexes([
     IndexModel(["username"], unique=True),
-    IndexModel(["email"], unique=True),
+    IndexModel(["email"], unique=True, partialFilterExpression={"email": {"$type": "string"}}),
     IndexModel(["displayName"]),
     IndexModel(["id"], unique=True)
 ])

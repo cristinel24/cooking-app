@@ -11,7 +11,7 @@ app = FastAPI(title="Username Changer")
 @app.post("/", response_model=None, response_description="Successful operation")
 async def change_username(username_change: UsernameChange) -> None | JSONResponse:
     try:
-        handle_change_username(username_change)
+        await handle_change_username(username_change)
     except Exception as e:
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         error_code = int(str(e))

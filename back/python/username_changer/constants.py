@@ -9,6 +9,8 @@ HOST = os.getenv("HOST", "localhost")
 PORT = int(os.getenv("PORT", 2580))
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")
+TOKEN_VALIDATOR_API_URL = os.getenv("TOKEN_VALIDATOR_API_URL", "http://localhost:8090")
+TOKEN_DESTROYER_API_URL = os.getenv("TOKEN_DESTROYER_API_URL", "http://localhost:8000")
 
 
 TIMEOUT_LIMIT = 3
@@ -17,17 +19,10 @@ DESIRED_USERNAME_CHANGE_TOKEN_TYPE = "usernameChange"
 
 class ErrorCodes(Enum):
     DB_CONNECTION_FAILURE = 25800
-    FAILED_TO_GET_TOKEN_TYPE = 25801
-    TOKEN_NOT_FOUND = 25802
-    FAILED_TO_GET_USER_ID = 25803
-    USER_NOT_FOUND = 25804
-    FAILED_TO_DESTROY_TOKENS = 25805
-    FAILED_TO_UPDATE_USERNAME = 25806
-    INVALID_TOKEN_TYPE = 25807
+    FAILED_TO_UPDATE_USERNAME = 25801
+    TOKEN_VALIDATOR_REQUEST_FAILED = 25802
+    TOKEN_DESTROYER_REQUEST_FAILED = 25803
 
 
 ErrorCodesToHTTPCodesMapping: dict[int, int] = {
-    ErrorCodes.TOKEN_NOT_FOUND.value: status.HTTP_404_NOT_FOUND,
-    ErrorCodes.USER_NOT_FOUND.value: status.HTTP_404_NOT_FOUND,
-    ErrorCodes.INVALID_TOKEN_TYPE.value: status.HTTP_403_FORBIDDEN,
 }

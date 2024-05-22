@@ -17,7 +17,7 @@ async def create_request(request: CredentialChangeRequest) -> None:
         raise CredentialChangeRequesterException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
     try:
         token = await request_token(user["id"], request.changeType + "Change")
-    except Exception as e:
+    except httpx.ConnectError:
         raise CredentialChangeRequesterException(status.HTTP_500_INTERNAL_SERVER_ERROR,
                                                  ErrorCodes.TOKEN_GENERATION_ERROR.value)
     email_request = ChangeRequest(
@@ -27,6 +27,6 @@ async def create_request(request: CredentialChangeRequest) -> None:
     )
     try:
         await send_email(email_request)
-    except Exception as e:
+    except httpx.ConnectError:
         raise CredentialChangeRequesterException(status.HTTP_500_INTERNAL_SERVER_ERROR,
                                                  ErrorCodes.EMAIL_SEND_ERROR.value)

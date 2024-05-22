@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { RatingValue, Tag, Button, Report } from '../../components'
 import './index.css'
 import { prepTimeDisplayText, ratingToNumber } from '../../utils/recipeData'
@@ -77,8 +78,7 @@ export default function Recipe() {
         ],
         tokens: [],
         ratings: [],
-        thumbnail:
-            'https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png',
+        thumbnail: 'https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png',
         viewCount: 10,
         ratingCount: 2,
         ratingSum: 7,
@@ -116,9 +116,7 @@ export default function Recipe() {
 
     return (
         <>
-            {isReportVisible && (
-                <Report onSend={toggleReport} onCancel={toggleReport} />
-            )}
+            {isReportVisible && <Report onSend={toggleReport} onCancel={toggleReport} />}
             <div className="recipe-page-container">
                 <div className="recipe-page-grid-container">
                     <div className="recipe-page-data">
@@ -127,21 +125,24 @@ export default function Recipe() {
                         <div className="recipe-page-metadata">
                             <div className="recipe-page-icon-data">
                                 <IoIosTime />
-                                <span>
-                                    {prepTimeDisplayText(recipeData.prepTime)}
-                                </span>
+                                <span>{prepTimeDisplayText(recipeData.prepTime)}</span>
                             </div>
                             <div className="recipe-page-icon-data">
                                 <FaUser />
-                                <span>{recipeData.author.displayName}</span>
+                                <Link
+                                    to={
+                                        recipeData.author.id
+                                            ? `/profile/${recipeData.author.id}`
+                                            : '/'
+                                    }
+                                >
+                                    {recipeData.author.displayName}
+                                </Link>
                             </div>
 
                             <RatingValue
                                 className="recipe-page-rating-stars"
-                                value={ratingToNumber(
-                                    recipeData.ratingSum,
-                                    recipeData.ratingCount
-                                )}
+                                value={ratingToNumber(recipeData.ratingSum, recipeData.ratingCount)}
                             />
 
                             <button
@@ -157,11 +158,7 @@ export default function Recipe() {
                             Tag-uri:
                             <div className="recipe-page-tags-container">
                                 {recipeData.tags.map((tag, index) => (
-                                    <Tag
-                                        className="recipe-page-tag"
-                                        key={index}
-                                        text={tag}
-                                    />
+                                    <Tag className="recipe-page-tag" key={index} text={tag} />
                                 ))}
                             </div>
                         </div>
@@ -170,11 +167,7 @@ export default function Recipe() {
                             Alergeni:
                             <div className="recipe-page-tags-container">
                                 {recipeData.allergens.map((tag, index) => (
-                                    <Tag
-                                        className="recipe-page-tag"
-                                        key={index}
-                                        text={tag}
-                                    />
+                                    <Tag className="recipe-page-tag" key={index} text={tag} />
                                 ))}
                             </div>
                         </div>
@@ -182,17 +175,12 @@ export default function Recipe() {
 
                     <div className="recipe-page-image-container">
                         <div className="recipe-page-image">
-                            <img
-                                src={recipeData.thumbnail}
-                                alt="recipe image"
-                            />
+                            <img src={recipeData.thumbnail} alt="recipe image" />
                         </div>
                         <Button
                             className={'recipe-page-button-favorite'}
                             text={
-                                recipeData.favorite
-                                    ? 'Elimină din favorite'
-                                    : 'Adaugă la favorite'
+                                recipeData.favorite ? 'Elimină din favorite' : 'Adaugă la favorite'
                             }
                             onClick={onFavorite}
                         />

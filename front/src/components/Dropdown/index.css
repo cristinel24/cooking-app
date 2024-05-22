@@ -22,5 +22,5 @@
     background-color: var(--card-bg-color);
     border-radius: 10px;
     width: 16rem;
-    color: black;
+    color: var(--color-black);
 }

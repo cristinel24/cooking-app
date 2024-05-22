@@ -34,7 +34,7 @@
 .preview-tag,
 .preview-allergen {
     background-color: #ffffff;
-    color: black;
+    color: var(--color-black);
     border-radius: 12px;
     padding: 5px 20px;
     margin-right: 5px;
@@ -45,7 +45,7 @@
 
 .preview-description-text {
     background-color: #ffd4d4;
-    color: black;
+    color: var(--color-black);
     font-size: 0.8rem;
     padding: 10px;
     border-radius: 20px;
@@ -57,7 +57,7 @@
 .preview-recipe-details-container .actionbutton {
     padding: 6px 2px;
     width: 75%;
-    color: white;
+    color: var(--color-white);
     min-width: 100px;
     align-self: center;
     border-radius: 20px;

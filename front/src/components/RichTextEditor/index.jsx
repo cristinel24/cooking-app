@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './index.css'
 
-import ListItem from '@tiptap/extension-list-item'
-import TextStyle from '@tiptap/extension-text-style'
-import Image from '@tiptap/extension-image'
-import StarterKit from '@tiptap/starter-kit'
 import { EditorProvider, useCurrentEditor } from '@tiptap/react'
 
 import { FiBold } from 'react-icons/fi'
@@ -12,7 +8,7 @@ import { FiUnderline } from 'react-icons/fi'
 import { FiItalic } from 'react-icons/fi'
 import { FiImage } from 'react-icons/fi'
 import { GrTextAlignLeft } from 'react-icons/gr'
-import { GoListOrdered } from 'react-icons/go'
+import { GoListOrdered, GoStrikethrough } from 'react-icons/go'
 import { GoListUnordered } from 'react-icons/go'
 import { IoIosReturnLeft } from 'react-icons/io'
 import { LuUndo } from 'react-icons/lu'
@@ -92,6 +88,42 @@ const MenuBar = ({ onChange, onRemove, allowImageUploads }) => {
                 </button>
                 <button
                     type="button"
+                    title="Subliniat"
+                    onClick={() =>
+                        editor.chain().focus().toggleUnderline().run()
+                    }
+                    disabled={
+                        !editor.can().chain().focus().toggleUnderline().run()
+                    }
+                    className={
+                        '' +
+                        ' ' +
+                        (editor.isActive('underline')
+                            ? 'rich-text-editor-button-active'
+                            : '')
+                    }
+                >
+                    <FiUnderline />
+                </button>
+                <button
+                    type="button"
+                    title="Tăiat"
+                    onClick={() => editor.chain().focus().toggleStrike().run()}
+                    disabled={
+                        !editor.can().chain().focus().toggleStrike().run()
+                    }
+                    className={
+                        '' +
+                        ' ' +
+                        (editor.isActive('strike')
+                            ? 'rich-text-editor-button-active'
+                            : '')
+                    }
+                >
+                    <GoStrikethrough />
+                </button>
+                <button
+                    type="button"
                     title="Ștergere formatare"
                     onClick={() => editor.chain().focus().unsetAllMarks().run()}
                 >
@@ -162,6 +194,7 @@ const MenuBar = ({ onChange, onRemove, allowImageUploads }) => {
                         />
                         <button
                             type="button"
+                            title="Adaugă o imagine"
                             onClick={() => {
                                 fileInputRef.current.click()
                             }}

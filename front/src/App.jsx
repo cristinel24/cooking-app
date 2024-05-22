@@ -116,7 +116,6 @@ function App() {
                             <Route path="*" element={<ErrorPage />} />
 
                             <Route path="/" element={<Feed />} />
-                            <Route path="/test" element={<Test />} />
                             <Route path="/popular" element={<Feed />} />
                             <Route path="/best" element={<Feed />} />
                             <Route path="/new" element={<Feed />} />

@@ -14,6 +14,10 @@ import OrderedList from '@tiptap/extension-ordered-list'
 import HardBreak from '@tiptap/extension-hard-break'
 import Image from '@tiptap/extension-image'
 
+import { uploadImage } from '../services/image'
+import { base64ToFile } from './base64'
+
+// such that both the RTEs created in the frontend and the headless renderer have the same specs
 export const extensions = [
     Document,
     History,
@@ -38,6 +42,7 @@ export const extensions = [
     }),
 ]
 
+// takes JSON object from RTE, returns HTML string ready to be sent to backend
 export const renderJSONtoHTML = (json) => {
     let editor = new Editor({
         extensions: extensions,
@@ -46,7 +51,28 @@ export const renderJSONtoHTML = (json) => {
     return editor.getHTML()
 }
 
-export function collectImageSrcs(obj, srcs) {
+// takes raw RTE JSON, returns RTE JSON with base64 images uploaded to the server
+export async function uploadImagesInJSON(richTextData) {
+    let images = new Set()
+    collectImageSrcs(richTextData, images)
+    let imageArray = Array.from(images)
+    let imageLinkMap = new Map()
+    await Promise.all(
+        imageArray.map(async (base64Image) => {
+            let formData = new FormData()
+            formData.append('file', base64ToFile(base64Image))
+
+            const response = await uploadImage(formData)
+            imageLinkMap.set(base64Image, response)
+        })
+    )
+    replaceImageSrcs(richTextData, imageLinkMap)
+    return richTextData
+}
+
+// -- utils --
+
+function collectImageSrcs(obj, srcs) {
     if (obj.type === 'image' && obj.attrs.src) {
         // testing if src is of type base64
         if (!/^(data:image\/\w+;base64,)/.test(obj.attrs.src)) {
@@ -58,7 +84,7 @@ export function collectImageSrcs(obj, srcs) {
     }
 }
 
-export function replaceImageSrcs(obj, sourceMap) {
+function replaceImageSrcs(obj, sourceMap) {
     if (obj.type === 'image') {
         if (sourceMap.has(obj.attrs.src)) {
             obj.attrs.src = sourceMap.get(obj.attrs.src)

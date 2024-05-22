@@ -1,9 +1,9 @@
 @import './themes.css';
 
 :root {
-    font-family: "Montserrat";
+    font-family: 'Montserrat';
 
-    --max-content-width: 1000px;
+    --max-content-width: 1200px;
     --nav-height: 80px;
     --footer-height: 60px;
 }

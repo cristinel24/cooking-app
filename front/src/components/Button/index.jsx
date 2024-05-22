@@ -1,15 +1,10 @@
 import './index.css'
 
-function Button({ className, onClick, text, Icon, iconAfter }) {
+function Button({ className, onClick, text, Icon }) {
     return (
-        <button
-            type="button"
-            className={`action-button ${className ? className : ''}`}
-            onClick={onClick}
-        >
-            {!iconAfter && Icon && <Icon className="action-button-icon" />}
-            {text && <span className="action-button-text">{text}</span>}
-            {iconAfter && Icon && <Icon className="action-button-icon" />}
+        <button type="button" className={`button ${className}`} onClick={onClick}>
+            {Icon && <Icon className="button-icon" />}
+            {text && <span className="button-text">{text}</span>}
         </button>
     )
 }

@@ -1,138 +1,95 @@
+.report-bug-wrapper,
+.report-bug-wrapper * {
+    box-sizing: border-box;
+}
+
 .report-bug-wrapper {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
     z-index: 1000;
     position: fixed;
     top: 0;
     right: 0;
     display: flex;
     flex-direction: column;
-    color: var(--body-bg-color);
-    background-color: var(--report-bg-color);
+    color: var(--text-color-inverted);
+    background-color: var(--body-bg-color-inverted);
     width: 400px;
     height: 100vh;
     justify-content: center;
     align-items: center;
-}
 
-.report-bug-wrapper p {
-    align-self: flex-start;
-    margin-left: 30px;
-    font-size: 1rem;
-    margin-bottom: 20px;
+    padding: 30px;
+    gap: 30px;
 }
 
 .report-bug-wrapper-title {
-    margin-top: 5rem;
-    margin-bottom: 60px;
+    font-size: 2.25rem;
     font-weight: bolder;
     text-align: center;
     width: 100%;
-}
-.report-bug-wrapper-title p {
-    font-size: 2.25rem;
-    font-weight: bolder;
-    margin: auto;
-}
-
-.report-bug-textbox-container textarea {
-    width: 350px;
-    height: 100px;
-    margin: auto;
-    padding: 5px;
-    border-radius: 1rem;
-    margin-bottom: 30px;
-}
-
-.report-bug-hide-initial-msg {
-    display: none;
-}
-
-.report-bug-upload-file span {
-    margin-left: 5px;
-}
-
-.report-bug-image-container {
     margin: 0;
-    background-color: var(--body-bg-color);
-    color: var(--report-bg-color);
-    border: 2px solid;
+}
+
+.report-bug-input-wrapper {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+
+    p {
+        margin: 0;
+    }
+
+    textarea {
+        color: var(--input-color-inverted);
+        background-color: var(--input-bg-color-inverted);
+        border: 0;
+        border-radius: 10px;
+        min-height: 100px;
+        padding: 10px;
+    }
+}
+
+.report-bug-upload-input {
+    color: var(--input-color-inverted);
+    background-color: var(--input-bg-color-inverted);
+    cursor: pointer;
+    margin: 0;
     border-radius: 10px;
     padding: 10px;
-    width: 350px;
+    width: 100%;
+}
+
+.report-bug-upload-input span {
+    margin-left: 10px;
 }
 
 .report-bug-buttons {
     display: flex;
-    flex-direction: row;
-    margin: auto;
-    align-self: center;
+    gap: 30px;
+    * {
+        color: white;
+    }
 }
 
-.report-bug-send-button .action-button {
-    background-color: var(--body-bg-color);
-    margin-bottom: 20px;
-    padding: 15px;
-    width: 7rem;
-}
-
-.report-bug-send-button .action-button-text {
-    font-size: 0.7rem;
-    text-align: center;
-    margin: auto;
-}
-
-.report-bug-give-up-button .action-button {
+.report-bug-button-cancel {
     background-color: var(--neutral-bg-color);
-    padding: 15px;
-    width: 7rem;
-    margin-left: 50px;
-    border: none;
 }
 
-.report-bug-give-up-button .action-button-text {
-    font-size: 0.7rem;
-    text-align: center;
-    margin: auto;
-}
-
-.report-bug-send-button .action-button:hover {
-    background-color: var(--color-primary);
-}
-
-.report-bug-give-up-button .action-button:hover {
-    background-color: var(--color-primary);
+@media screen and (max-width: 600px) {
+    .report-bug-wrapper {
+        width: 100vw;
+    }
 }
 
 @media screen and (max-width: 600px) and (min-width: 481px) {
-    .report-bug-wrapper-title p {
+    .report-bug-wrapper-title {
         font-size: 2rem;
     }
-
-    .report-bug-wrapper {
-        width: 100vw;
-    }
-
-    .report-bug-textbox-container textarea {
-        width: 450px;
-    }
-
-    .report-bug-image-container {
-        width: 450px;
-    }
 }
+
 @media screen and (max-width: 480px) {
-    .report-bug-wrapper {
-        width: 100vw;
-    }
-
-    .report-bug-wrapper-title p {
+    .report-bug-wrapper-title {
         font-size: 1.75rem;
-    }
-
-    .report-bug-textbox-container textarea {
-        width: 300px;
-    }
-
-    .report-bug-image-container {
-        width: 300px;
     }
 }

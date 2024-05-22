@@ -1,48 +1,35 @@
 import { useState } from 'react'
 import { FaEdit, FaHeart, FaTrash } from 'react-icons/fa'
 import { IoIosTime } from 'react-icons/io'
-
-import './index.css'
-import { Rating } from '../../components'
 import { Link } from 'react-router-dom'
 
-export default function RecipeCard({
-    recipe,
-    owned,
-    onFavorite,
-    onRemove,
-}) {
+import './index.css'
+import { RatingValue } from '../../components'
+import { prepTimeDisplayText } from '../../utils/recipeData'
+
+export default function RecipeCard({ recipe, owned, onFavorite, onRemove }) {
     const [favorite, setFavorite] = useState(recipe.favorite)
 
-    const prepTimeDisplayText = () => {
-        const prepTimeHours = Math.floor(recipe.prepTime / 60)
-        const prepTimeMinutes = recipe.prepTime % 60
-        switch (true) {
-            case prepTimeHours > 0 && prepTimeMinutes > 0:
-                return `${prepTimeHours} ${prepTimeHours === 1 ? 'oră' : 'ore'
-                    } ${prepTimeMinutes} ${prepTimeMinutes === 1 ? 'minut' : 'minute'
-                    }`
-            case prepTimeHours > 0:
-                return `${prepTimeHours} ${prepTimeHours === 1 ? 'oră' : 'ore'}`
-            default:
-                return `${prepTimeMinutes} ${prepTimeMinutes === 1 ? 'minut' : 'minute'
-                    }`
-        }
-    }
-
     const onFavoriteInternal = () => {
-        setFavorite(favorite => !favorite)
+        setFavorite((favorite) => !favorite)
         onFavorite(recipe.id)
     }
 
     return (
         <div className="recipe-card">
             <a href={`/recipe/${recipe.id}`}>
-                <img src={`${recipe.thumbnail}`} className="recipe-card-image" alt="recipe" />
+                <img
+                    src={`${recipe.thumbnail}`}
+                    className="recipe-card-image"
+                    alt="recipe"
+                />
             </a>
             <div className="recipe-card-details">
                 <div className="recipe-card-details-title-and-options">
-                    <a className="recipe-card-details-title" href={`/recipe/${recipe.id}`}>
+                    <a
+                        className="recipe-card-details-title"
+                        href={`/recipe/${recipe.id}`}
+                    >
                         {recipe.title}
                     </a>
                     <div className="recipe-card-details-options">
@@ -54,22 +41,23 @@ export default function RecipeCard({
                         )}
                         {owned && (
                             <Link to={`/recipe/${recipe.id}/edit`}>
-                                <FaEdit
-                                    className="recipe-card-edit-icon"
-                                />
+                                <FaEdit className="recipe-card-edit-icon" />
                             </Link>
                         )}
                     </div>
                 </div>
                 <div className="recipe-card-details-author-time-rating">
                     <p className="recipe-card-details-author">
-                        Autor: <a href={`/profile/${recipe.author.id}`}>{recipe.author.displayName}</a>
+                        Autor:{' '}
+                        <a href={`/profile/${recipe.author.id}`}>
+                            {recipe.author.displayName}
+                        </a>
                     </p>
                     <div className="recipe-card-details-time-and-rating">
                         <p className="recipe-card-details-time">
                             <IoIosTime /> {prepTimeDisplayText(recipe.prepTime)}
                         </p>
-                        <Rating ratingValue={recipe.author.ratingAvg} />
+                        <RatingValue value={recipe.author.ratingAvg} />
                     </div>
                 </div>
                 {onFavorite && (

@@ -1,0 +1,9 @@
+.rating-value-container {
+    display: flex;
+    /* color: var(--text-color); */
+}
+
+.rating-value {
+    padding: 0;
+    margin: 0 6px;
+}

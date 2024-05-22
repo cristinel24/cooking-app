@@ -21,12 +21,12 @@ async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
 
     recipe_dict = await recipe_collection.get_recipe_by_id(recipe_id)
 
+    if recipe_dict["authorId"] != x_user_id:
+        raise RecipeEditorException(ErrorCodes.ACCESS_UNAUTHORIZED.value, status.HTTP_403_FORBIDDEN)
+
     try:
         with client.get_connection().start_session() as session:
             with session.start_transaction():
-                if recipe_dict["authorId"] != x_user_id:
-                    raise RecipeEditorException(ErrorCodes.ACCESS_UNAUTHORIZED.value, status.HTTP_403_FORBIDDEN)
-
                 # regenerate tokens
                 fields_needed = ["title", "prepTime", "tags", "allergens", "description", "ingredients", "steps"]
                 ans = await api.tokenize_recipe({key: (recipe_dict[key] if not hasattr(recipe, key) else getattr(recipe, key)) for key in fields_needed})

@@ -1,22 +1,44 @@
-// Function to encode the object to a base64 string
+export const base64ToFile = (base64Image) => {
+    const buffer = base64Image.split(',')[1].trim()
+    const byteCharacters = atob(buffer)
+    const byteArrays = []
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512)
+        const byteNumbers = new Array(slice.length)
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i)
+        }
+        const byteArray = new Uint8Array(byteNumbers)
+        byteArrays.push(byteArray)
+    }
+    const blob = new Blob(byteArrays, {
+        type: base64Image.split(',')[0].trim(),
+    })
+    return new File([blob], '', { type: base64Image.split(',')[0].trim() })
+}
+
+export const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => {
+            resolve(reader.result)
+        }
+        reader.onerror = () => {
+            reject(reader.error)
+        }
+        reader.readAsDataURL(file)
+    })
+}
+
 export function encodeObjectToBase64(obj) {
-    // Convert the object to a JSON string
     const jsonString = JSON.stringify(obj);
     console.log(jsonString)
-
-    // Encode the JSON string to a base64 string
     const base64String = btoa(encodeURIComponent(jsonString));
-
     return base64String;
 }
 
-// Function to decode the base64 string back to an object
 export function decodeBase64ToObject(base64String) {
-    // Decode the base64 string to a JSON string
     const jsonString = decodeURIComponent(atob(base64String));
-
-    // Parse the JSON string to get the original object
     const obj = JSON.parse(jsonString);
-
     return obj;
 }

@@ -1,7 +1,7 @@
 import ast
 
+import constants
 from .openai_client import openai_client
-from . import constants
 
 client = openai_client()
 
@@ -30,12 +30,7 @@ async def tokenize_user_query(query: str) -> str:
         ],
         model=constants.GPT_MODEL,
     )
-
-    print("generated query: ", chat_completion.choices[0].message.content)
     return chat_completion.choices[0].message.content
-
-
-
 
 
 async def verify_generated_tokens(generated_response: str) -> dict:
@@ -46,7 +41,6 @@ async def verify_generated_tokens(generated_response: str) -> dict:
     """
 
     tokens_dict = convert_to_dict(generated_response)
-    print("generated tokens: ", tokens_dict)
 
     verification_header = f"""
     Din acest JSON, scoate tag-urile care nu au legătură cu domeniul culinar (pot rămâne 0 tag-uri).
@@ -62,8 +56,6 @@ async def verify_generated_tokens(generated_response: str) -> dict:
         ],
         model=constants.GPT_MODEL,
     )
-
-    print("verified tokens: ", convert_to_dict(chat_completion.choices[0].message.content))
     return convert_to_dict(chat_completion.choices[0].message.content)
 
 
@@ -85,11 +77,10 @@ def convert_to_dict(text: str) -> dict:
     return dictionary
 
 
-def normalise_dict(dictionary: dict) -> dict:
+def normalise_dict(dictionary: dict) -> list[str]:
     normalised_tags = []
     for tag in dictionary["tags"]:
         if tag.lower() not in normalised_tags:
             normalised_tags.append(tag.lower())
 
-    dictionary["tags"] = normalised_tags
-    return dictionary
+    return normalised_tags

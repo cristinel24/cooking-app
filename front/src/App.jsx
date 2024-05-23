@@ -14,7 +14,10 @@ import {
     History,
     Login,
     Notifications,
-    // Profile,
+    Profile,
+    ProfileDescription,
+    // ProfileRecipes,
+    ProfileFavorites,
     ProfileSettings,
     Recipe,
     Register,
@@ -123,6 +126,22 @@ function App() {
                             <Route path="/forgot-password" element={<ForgotPassword />} />
                             <Route path="/recipe/:recipeId" element={<Recipe />} />
                             <Route path="/search" element={<Search />} />
+                            {/* <Route path="/profile/:profileId" element={<ProfileDescription />} /> */}
+
+                            <Route element={<Profile />}>
+                                <Route
+                                    path="/profile/:profileId"
+                                    element={<ProfileDescription />}
+                                />
+                                {/* <Route
+                                    path="/profile/:profileId/description"
+                                    element={<ProfileDescription />}
+                                />
+                                <Route
+                                    path="/profile/:profileId/favorites"
+                                    element={<ProfileFavorites />}
+                                /> */}
+                            </Route>
 
                             {/* unprotected routes */}
                             <Route element={<UnprotectedRoute />}>

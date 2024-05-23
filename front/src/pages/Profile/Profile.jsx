@@ -1,39 +1,56 @@
-// import { Link, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-// import './index.css'
-// import { SideButton } from './index'
-// import { useContext } from 'react'
-// import { UserContext } from '../../context'
+import { Link, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import './index.css'
+import React, { useContext, useState, useEffect } from 'react'
+import { UserContext } from '../../context'
+import { ClipLoader } from 'react-spinners'
 
-// export default function Profile() {
-//     const navigate = useNavigate()
-//     const {} = useContext(UserContext)
-//     const { pathname } = useLocation()
+export default function Profile() {
+    const navigate = useNavigate()
+    const { pathname } = useLocation()
 
-//     const [profileData, setProfileData] = useState({})
+    const [loading, setLoading] = useState(false)
 
-//     useEffect(() => {
-//         const profileData = await
-//     }, [])
+    const [profileData, setProfileData] = useState({})
+    const profileId = 21
 
-//     // TODO: useEffect to do the following: if id from search params is not valid, redirect to /404 with useNavigate
+    useEffect(() => {}, [])
 
-//     const links = [
-//         // { link: `/profile/${}/account`, display: 'Account', alt: ['/settings'] },
-//         { link: `/settings/history`, display: 'History' },
-//         { link: `/settings/notifications`, display: 'Notifications' },
-//         { link: `/settings/profile`, display: 'Profile' },
-//     ]
+    const links = [
+        {
+            link: `/profile/${profileId}/description`,
+            display: 'Descriere',
+            alt: [`/profile/${profileId}`],
+        },
+        { link: `/profile/${profileId}/favorites`, display: 'Favorite' },
+        { link: `/profile/${profileId}/recipes`, display: 'Rețete' },
+    ]
 
-//     // const onLogout = () => {
-//     //     logout()
-//     //     navigate('/')
-//     // }
+    // const onLogout = () => {
+    //     logout()
+    //     navigate('/')
+    // }
 
-//     return (
-//         <div className="profile">
-//             <div className="profile-tab">
-//                 <Outlet />
-//             </div>
-//         </div>
-//     )
+    return (
+        <>
+            <ClipLoader
+                // color={'blue'}
+                className="loading"
+                cssOverride={{
+                    borderColor: 'var(--color-white)',
+                    color: 'var(--color-white)',
+                    alignSelf: 'center',
+                }}
+                width={'100%'}
+                loading={loading}
+                aria-label="Se încarcă..."
+                data-testid="loader"
+            />
+            {!loading && (
+                <div className="profile">
+                    <div className="profile-sidebar"></div>
+                    <Outlet />
+                </div>
+            )}
+        </>
+    )
 }

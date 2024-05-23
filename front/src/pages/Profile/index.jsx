@@ -1,4 +1,4 @@
-// export { default as Description } from './Description'
-// export { default as Favorites } from './Favorites'
-// export { default as Sidebar } from './Sidebar'
-// export { default as SideButton } from './SideButton'
+export { default as ProfileDescription } from './Description'
+export { default as ProfileFavorites } from './Favorites'
+export { default as ProfileSidebar } from './Sidebar'
+export { default as Profile } from './Profile'

@@ -21,3 +21,7 @@ class TokenResponse(BaseModel):
     value: str
     userId: str
     tokenType: str
+
+
+class LoginResponse(BaseModel):
+    sessionToken: str

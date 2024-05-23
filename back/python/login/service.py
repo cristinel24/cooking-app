@@ -22,7 +22,8 @@ async def login(data: LoginData) -> dict:
         # If user does not exist, LoginException is raised
 
         # There might be externalLogin instead of login
-        # TODO: find out what am i supposed to do here
+        # since no further information was provided on how to handle it
+        # im doing this
         if user["login"] is None:
             raise LoginException(Errors.INVALID_CREDS, status.HTTP_401_UNAUTHORIZED)
 
@@ -34,11 +35,10 @@ async def login(data: LoginData) -> dict:
         hasher_response = await request_hash(password, db_alg_name, db_salt)
         if hasher_response["hash"] != db_password:
             raise LoginException(Errors.INVALID_CREDS, status.HTTP_401_UNAUTHORIZED)
-        else:
-            token_response = await request_token(user_id, "session")
-            return {
-                "sessionToken": token_response.value
-            }
+        token_response = await request_token(user_id, "session")
+        return {
+            "sessionToken": token_response.value
+        }
     except pymongo.errors.ExecutionTimeout:
         raise LoginException(Errors.DB_TIMEOUT, status.HTTP_500_INTERNAL_SERVER_ERROR)
     except LoginException as e:

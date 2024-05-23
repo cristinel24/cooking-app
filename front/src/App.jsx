@@ -14,7 +14,7 @@ import {
     History,
     Login,
     Notifications,
-    Profile,
+    // Profile,
     ProfileSettings,
     Recipe,
     Register,
@@ -121,7 +121,6 @@ function App() {
 
                             <Route path="/reset/:type" element={<CredentialsChange />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
-                            <Route path="/profile/:userId" element={<Profile />} />
                             <Route path="/recipe/:recipeId" element={<Recipe />} />
                             <Route path="/search" element={<Search />} />
 

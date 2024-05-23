@@ -1,9 +1,4 @@
-import "./index.css"
-
-export default function Profile() {
-    return (
-        <div>
-            Profile
-        </div>
-    )
-}
+// export { default as Description } from './Description'
+// export { default as Favorites } from './Favorites'
+// export { default as Sidebar } from './Sidebar'
+// export { default as SideButton } from './SideButton'

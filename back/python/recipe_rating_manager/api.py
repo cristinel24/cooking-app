@@ -1,9 +1,12 @@
+from typing import Union
+
 import httpx  # asynchronous HTTP client for Python
 
 from schemas import *
 from constants import *
 from starlette import status
 from exceptions import RecipeRatingManagerException
+
 
 async def delete_rating(url: str, rating_id: str):
     full_url = f"{url}/rating/{rating_id}"
@@ -50,25 +53,45 @@ async def update_rating(rating_id: str, user_id: str, rating_data: RatingUpdateR
                 error = response.json()
                 raise RecipeRatingManagerException(error.get("errorCode", ErrorCodes.INTERNAL_SERVER_ERROR.value),
                                                    error.get("message", "An error occurred with the Rating Manager"))
-            return response.json()
+            parsed_response = RatingListResponse.model_validate(response.json(), strict=True)
+            return parsed_response
     except Exception:
         raise RecipeRatingManagerException(ErrorCodes.INTERNAL_SERVER_ERROR.value, status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
-async def get_ratings(parent_id: str, start: int, count: int, user_id: str) -> RatingListResponse:
+
+from fastapi import FastAPI, HTTPException, Query
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+
+
+app = FastAPI()
+
+
+async def get_ratings_microservice(parent_id: str, start: int, count: int) -> RatingListResponse:
     try:
-        url = f"{RATING_MANAGER_API_URL}/rating/{parent_id}/replies"
-        headers = {
-            "user_id": user_id,
-        }
+        formatted_url = f"{RATING_MANAGER_API_URL}/{parent_id}/replies?start={start}&count={count}"
 
         async with httpx.AsyncClient() as client:
-            response = await client.get(url, params={"start": start, "count": count}, headers=headers)
+            response = await client.get(url=formatted_url)
             if response.status_code != status.HTTP_200_OK:
                 error = response.json()
                 raise RecipeRatingManagerException(error.get("errorCode", ErrorCodes.INTERNAL_SERVER_ERROR),
                                                    error.get("message", "An error occurred with the Rating Manager"))
-            response_json = response.json()
-            return RatingListResponse(**response_json)
+
+            parsed_response = RatingListResponse.model_validate(response.json(), strict=True)
+            return parsed_response
     except Exception:
         raise RecipeRatingManagerException(ErrorCodes.INTERNAL_SERVER_ERROR.value, status.HTTP_503_SERVICE_UNAVAILABLE)
+
+
+@app.get("/rating/{parent_id}/replies", response_model=RatingListResponse, response_description="Successful operation")
+async def get_ratings_route(parent_id: str, start: int = Query(0),
+                            count: int = Query(10)) -> RatingListResponse | JSONResponse:
+    return await get_ratings_microservice(parent_id, start, count)
+
+if __name__ == "__main__":
+    import uvicorn
+    PORT = 2233
+    uvicorn.run(app, host=HOST, port=PORT)

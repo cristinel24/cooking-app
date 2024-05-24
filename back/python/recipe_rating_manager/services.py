@@ -1,12 +1,12 @@
 from api import *
 from repository import *
 
-client = MongoCollection
+client = MongoCollection()
 
 user_collection = UserCollection(client.get_connection())
 recipe_collection = RecipeCollection(client.get_connection())
 
-async def put_recipe_service(recipe_id: str, rating_data: RatingCreateRequest):
+async def put_recipe_services(recipe_id: str, rating_data: RatingCreateRequest):
     try:
         # Call Rating Manager to create the rating
         response = await update_recipe_rating(recipe_id, rating_data.authorId, rating_data)
@@ -19,10 +19,10 @@ async def put_recipe_service(recipe_id: str, rating_data: RatingCreateRequest):
     except Exception as e:
         raise RecipeRatingManagerException(ErrorCodes.INTERNAL_SERVER_ERROR.value, str(e))
 
-async def patch_recipe_service(recipe_id: str, rating_id: str, rating_data: RatingUpdateRequest):
+async def patch_recipe_services(recipe_id: str, rating_id: str, rating_data: RatingUpdateRequest):
     try:
         # Get previous rating value from Rating Manager
-        previous_rating_response = await get_ratings(rating_id, start=0, count=1, user_id="")
+        previous_rating_response = await get_ratings_microservice(rating_id, start=0, count=1, user_id="")
         previous_rating_value = previous_rating_response.ratings[0].rating
 
         # Adjust ratingSum and ratingCount for the recipe and user rating
@@ -37,11 +37,11 @@ async def patch_recipe_service(recipe_id: str, rating_id: str, rating_data: Rati
     except Exception as e:
         raise RecipeRatingManagerException(ErrorCodes.INTERNAL_SERVER_ERROR.value, str(e))
 
-async def delete_recipe_service(recipe_id: str, rating_id: str):
+async def delete_recipe_services(recipe_id: str, rating_id: str):
     try:
         # Get previous rating value from Rating Manager
-        previous_rating_response = await get_ratings(rating_id, start=0, count=1, user_id="")
-        previous_rating_value = previous_rating_response.ratings[0].rating
+        rating_list_response = await get_ratings_microservice(rating_id, start=0, count=1)
+        previous_rating_value = rating_list_response.ratings[0].rating
 
         # Remove rating value from the recipe and user rating
         user_collection.remove_user_rating(rating_id, previous_rating_value)

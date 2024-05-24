@@ -1,23 +1,23 @@
 from typing import List
 from pydantic import BaseModel, Field
-from datetime import datetime
 
-class Rating(BaseModel):
-    id: str
-    authorId: str
+class RatingDataCard(BaseModel):
+    parentId: str
+    parentType: str
+    author: dict
+    updatedAt: str
+    rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")
     description: str
-    rating: int
-    createdAt: datetime
-    updatedAt: datetime
+
+
+class RatingListResponse(BaseModel):
+    ratings: List[RatingDataCard]
+    total: int
 
 class RatingCreateRequest(BaseModel):
     authorId: str
     description: str
     rating: int = Field(..., ge=1, le=5, description="Rating value between 1 and 5")
-
-class RatingListResponse(BaseModel):
-    ratings: List[Rating]
-    total: int
 
 class RatingCreateResponse(BaseModel):
     message: str = "Rating created successfully"

@@ -6,12 +6,8 @@ from exceptions import RecipeRatingManagerException
 
 
 class MongoCollection:
-
     def __init__(self, connection: MongoClient | None = None):
-        if connection is not None:
-            self._connection = connection
-        else:
-            self.connection = MongoClient(os.getenv("MONGO_URI", "mongodb""://localhost:27017/?directConnection=true"))
+        self._connection = connection if connection is not None else MongoClient(MONGO_URI)
 
     def get_connection(self) -> MongoClient:
         return self._connection

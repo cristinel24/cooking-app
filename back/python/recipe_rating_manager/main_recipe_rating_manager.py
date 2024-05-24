@@ -2,6 +2,7 @@ import services
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
 from exceptions import *
+from constants import PORT, HOST
 from recipe_rating_manager.constants import ErrorCodes
 from schemas import RatingCreateRequest, RatingUpdateRequest
 
@@ -43,3 +44,7 @@ async def remove_rating(recipe_id: str, rating_id: str) -> JSONResponse | None:
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             content={"errorCode": ErrorCodes.UNKNOWN_ERROR.value, "message": str(e)})
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host=HOST, port=PORT)

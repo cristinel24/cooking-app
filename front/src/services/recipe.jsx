@@ -2,6 +2,42 @@ import axios from 'axios'
 
 const API_URL = import.meta.env.VITE_API_URL
 
+export const getRecipeCard = async (recipeId) => {
+    const placeholderRecipeCard = {
+        id: '7a',
+        author: {
+            id: '40',
+            username: 'davisann',
+            displayName: 'Justin Howard',
+            icon: 'https://woodard-hernandez.com/',
+            roles: 0,
+            ratingAvg: 3,
+        },
+        title: 'Philadelphia maki',
+        description:
+            'Compare executive future kitchen watch party least. Bring toward conference more need day hard.\nItself fill speech social million less few production. Necessary newspaper make section.',
+        prepTime: 1385,
+        tags: ['pineapple', 'coriander leaf', 'blueberries'],
+        allergens: [
+            'sweet basil',
+            'cumquat',
+            'bean shoots',
+            'sprouts',
+            'aubergine',
+            'honeydew melon',
+            'pears',
+            'bay leaves',
+            'dried chinese broccoli',
+            'orange zest',
+        ],
+        thumbnail: 'default-img.png',
+        viewCount: 32483,
+    }
+    const delay = (ms) => new Promise((res) => setTimeout(res, ms))
+    await delay(1200)
+    return placeholderRecipeCard
+}
+
 export const getRecipe = async (recipeId) => {
     const placeholderRecipe = {
         updatedAt: {

@@ -33,11 +33,10 @@ export default function Recipe() {
     return (
         <>
             <ClipLoader
-                // color={'blue'}
                 className="loading"
                 cssOverride={{
-                    borderColor: 'var(--color-white)',
-                    color: 'var(--color-white)',
+                    borderColor: 'var(--text-color)',
+                    color: 'var(--text-color)',
                     alignSelf: 'center',
                 }}
                 width={'100%'}

@@ -4,26 +4,38 @@ import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../context'
 import { ClipLoader } from 'react-spinners'
 
+import { getProfile } from '../../services/profile'
+import Sidebar from './Sidebar'
+
 export default function Profile() {
     const navigate = useNavigate()
-    const { pathname } = useLocation()
 
-    const [loading, setLoading] = useState(false)
-
+    const [loading, setLoading] = useState(true)
     const [profileData, setProfileData] = useState({})
+
     const profileId = 21
 
-    useEffect(() => {}, [])
+    useEffect(() => {
+        const fetch = async () => {
+            // temporary; TODO: proper error handling with actual error message
+            try {
+                const profile = await getProfile(profileId)
+                setProfileData(profile)
 
-    const links = [
-        {
-            link: `/profile/${profileId}/description`,
-            display: 'Descriere',
-            alt: [`/profile/${profileId}`],
-        },
-        { link: `/profile/${profileId}/favorites`, display: 'Favorite' },
-        { link: `/profile/${profileId}/recipes`, display: 'Rețete' },
-    ]
+                // const followers = await getFollowersCount(profileId)
+                // setProfileData((data) => ({ ...data, followers }))
+
+                // const following = await getFollowingCount(profileId)
+                // setProfileData((data) => ({ ...data, following }))
+
+                setLoading(false)
+            } catch (e) {
+                navigate('/not-found')
+            }
+        }
+
+        fetch()
+    }, [])
 
     // const onLogout = () => {
     //     logout()
@@ -33,11 +45,10 @@ export default function Profile() {
     return (
         <>
             <ClipLoader
-                // color={'blue'}
                 className="loading"
                 cssOverride={{
-                    borderColor: 'var(--color-white)',
-                    color: 'var(--color-white)',
+                    borderColor: 'var(--text-color)',
+                    color: 'var(--text-color)',
                     alignSelf: 'center',
                 }}
                 width={'100%'}
@@ -47,8 +58,8 @@ export default function Profile() {
             />
             {!loading && (
                 <div className="profile">
-                    <div className="profile-sidebar"></div>
-                    <Outlet />
+                    <Sidebar profileData={profileData} />
+                    <Outlet context={{ profileData }} />
                 </div>
             )}
         </>

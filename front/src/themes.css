@@ -5,6 +5,7 @@
 
 [data-theme='light'] {
     --color-primary: #ff5348;
+
     --body-bg-color: #f0f0f0;
     --text-color: #0c1821;
     --neutral-bg-color: #828282;
@@ -34,6 +35,7 @@
 
 [data-theme='dark'] {
     --color-primary: #ff5348;
+
     --body-bg-color: #1c1c1c;
     --text-color: #eeeeee;
     --neutral-bg-color: #828282;

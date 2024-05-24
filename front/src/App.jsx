@@ -16,14 +16,13 @@ import {
     Notifications,
     Profile,
     ProfileDescription,
-    // ProfileRecipes,
+    ProfileRecipes,
     ProfileFavorites,
     ProfileSettings,
     Recipe,
     Register,
     Search,
     Settings,
-    Test,
     Verified,
 } from './pages'
 import { AdminRoute, Page, ProtectedRoute, UnprotectedRoute } from './components'
@@ -134,14 +133,18 @@ function App() {
                                     path="/profile/:profileId"
                                     element={<ProfileDescription />}
                                 />
-                                {/* <Route
+                                <Route
                                     path="/profile/:profileId/description"
                                     element={<ProfileDescription />}
                                 />
                                 <Route
                                     path="/profile/:profileId/favorites"
                                     element={<ProfileFavorites />}
-                                /> */}
+                                />
+                                <Route
+                                    path="/profile/:profileId/recipes"
+                                    element={<ProfileRecipes />}
+                                />
                             </Route>
 
                             {/* unprotected routes */}

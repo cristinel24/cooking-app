@@ -21,17 +21,23 @@ class UserCollection(MongoCollection):
             with pymongo.timeout(MONGO_TIMEOUT):
                 user = self._collection.find_one({"id": user_id}, projection=projection_arg)
                 if user is None:
-                    raise UserRetrieverException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
+                    raise UserRetrieverException(status.HTTP_status.HTTP_404_NOT_FOUND_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
                 return user
-        except errors.PyMongoError:
-            raise UserRetrieverException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR)
+        except errors.PyMongoError as e:
+            if e.timeout:
+                raise UserRetrieverException(status.HTTP_504_GATEWAY_TIMEOUT, ErrorCodes.DATABASE_TIMEOUT.value)
+            else:
+                raise UserRetrieverException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)
 
     def get_users_by_id(self, user_ids: list[str], projection_arg: dict) -> list[dict]:
         try:
             with pymongo.timeout(MONGO_TIMEOUT):
                 users_list = list(self._collection.find({"id": {"$in": user_ids}}, projection=projection_arg))
                 if not users_list:
-                    raise UserRetrieverException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND)
+                    raise UserRetrieverException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
                 return users_list
-        except errors.PyMongoError:
-            raise UserRetrieverException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR)
+        except errors.PyMongoError as e:
+            if e.timeout:
+                raise UserRetrieverException(status.HTTP_504_GATEWAY_TIMEOUT, ErrorCodes.DATABASE_TIMEOUT.value)
+            else:
+                raise UserRetrieverException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)

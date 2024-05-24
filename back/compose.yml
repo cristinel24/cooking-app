@@ -1,0 +1,325 @@
+name: cooking-app
+
+services:
+  ai:
+    build:
+      context: ./python/ai
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $AI_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - AI_API_KEY=$AI_API_KEY
+      - MESSAGE_HISTORY_MANAGER_API_URL=http://message_history_manager
+    volumes:
+      - ./python/ai:/app
+
+  allergen_manager:
+    build: 
+      context: ./python/allergen_manager
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $ALLERGEN_MANAGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/allergen_manager:/app
+    
+  email_system:
+    build: 
+      context: ./python/email_system
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $EMAIL_SYSTEM_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - FRONTEND_URL=
+      - SMTP_ROOT_EMAIL=
+      - SMTP_SERVER=
+      - SMTP_PORT=
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+    volumes:
+      - ./python/email_system:/app
+    
+  follow_manager:
+    build: 
+      context: ./python/follow_manager
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $FOLLOW_MANAGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - USER_RETRIEVER_API_URL=http://user_retriever
+    volumes:
+      - ./python/follow_manager:/app
+    
+  hasher:
+    build: 
+      context: ./python/hasher
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $HASHER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/hasher:/app
+
+  id_generator:
+    build:
+      context: ./python/id_generator
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $ID_GENERATOR_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/id_generator:/app
+
+  image_storage:
+    build: 
+      context: ./python/image_storage
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $IMAGE_STORAGE_PORT:80
+    environment:
+      - PORT=80
+      - GATEWAY_API_URL=$GATEWAY_API_URL
+      - ID_GENERATOR_API_URL=http://id_generator
+    volumes:
+      - ./python/image_storage:/app
+    
+  message_history_manager:
+    build: 
+      context: ./python/message_history_manager
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $MESSAGE_HISTORY_MANAGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - USER_RETRIEVER_API_URL=http://user_retriever
+    volumes:
+      - ./python/message_history_manager:/app
+    
+  profile_data_changer:
+    build: 
+      context: ./python/profile_data_changer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $PROFILE_DATA_CHANGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - ALLERGEN_MANAGER_API_URL=http://allergen_manager
+    volumes:
+      - ./python/profile_data_changer:/app
+    
+  rating_manager:
+    build: 
+      context: ./python/rating_manager
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $RATING_MANAGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - USER_RETRIEVER_API_URL=http://user_retriever
+      - ID_GENERATOR_API_URL=http://id_generator
+    volumes:
+      - ./python/rating_manager:/app
+
+  recipe_creator:
+    build: 
+      context: ./python/recipe_creator
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $RECIPE_CREATOR_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - ALLERGEN_MANAGER_API_URL=http://allergen_manager
+      - TAG_MANAGER_API_URL=http://tag_manager
+      - ID_GENERATOR_API_URL=http://id_generator
+      - AI_API_URL=http://ai
+    volumes:
+      - ./python/recipe_creator:/app
+    
+  recipe_retriever:
+    build: 
+      context: ./python/recipe_retriever
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $RECIPE_RETRIEVER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - USER_RETRIEVER_API_URL=http://user_retriever
+    volumes:
+      - ./python/recipe_retriever:/app
+    
+  recipe_saver:
+    build: 
+      context: ./python/recipe_saver
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $RECIPE_SAVER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/recipe_saver:/app
+
+  search_history_manager:
+    build: 
+      context: ./python/search_history_manager
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $SEARCH_HISTORY_MANAGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - USER_RETRIEVER_API_URL=http://user_retriever
+    volumes:
+      - ./python/search_history_manager:/app
+    
+  tag_manager:
+    build: 
+      context: ./python/tag_manager
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $TAG_MANAGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/tag_manager:/app
+
+  token_destroyer:
+    build:
+      context: ./python/token_destroyer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $TOKEN_DESTROYER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/token_destroyer:/app
+
+  token_generator:
+    build: 
+      context: ./python/token_generator
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $TOKEN_GENERATOR_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/token_generator:/app
+    
+  token_validator:
+    build: 
+      context: ./python/token_validator
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $TOKEN_VALIDATOR_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/token_validator:/app
+    
+  user_destroyer:
+    build: 
+      context: ./python/user_destroyer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $USER_DESTROYER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/user_destroyer:/app
+    
+  user_retriever:
+    build: 
+      context: ./python/user_retriever
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $USER_RETRIEVER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - FOLLOW_MANAGER_API_URL=http://follow_manager
+    volumes:
+      - ./python/user_retriever:/app
+    
+networks:
+  ca:
+    driver: bridge

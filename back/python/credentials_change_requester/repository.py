@@ -20,8 +20,7 @@ class UserCollection(MongoCollection):
         try:
             with pymongo.timeout(MONGO_TIMEOUT):
                 user = self._collection.find_one({"email": email}, projection=projection_arg)
-                if user is None:
-                    raise CredentialChangeRequesterException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
                 return user
         except errors.PyMongoError:
-            raise CredentialChangeRequesterException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)
+            raise CredentialChangeRequesterException(status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                                     ErrorCodes.DATABASE_ERROR.value)

@@ -5,6 +5,7 @@ from repository import UserCollection
 from constants import USER_DATA_PROJECTION
 from api import *
 from utils import *
+
 user_collection = UserCollection()
 
 
@@ -13,8 +14,6 @@ async def create_request(request: CredentialChangeRequest) -> None:
         user = user_collection.get_user_by_email(request.email, USER_DATA_PROJECTION)
     else:
         raise CredentialChangeRequesterException(status.HTTP_400_BAD_REQUEST, ErrorCodes.INVALID_EMAIL.value)
-    if not user:
-        raise CredentialChangeRequesterException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
     try:
         token = await request_token(user["id"], request.changeType + "Change")
     except httpx.ConnectError:

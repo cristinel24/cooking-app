@@ -23,6 +23,7 @@ import {
     Register,
     Search,
     Settings,
+    Test,
     Verified,
 } from './pages'
 import { AdminRoute, Page, ProtectedRoute, UnprotectedRoute } from './components'

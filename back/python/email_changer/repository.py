@@ -27,3 +27,12 @@ class DBWrapper:
                                                                       {"$set": {"login.newEmail": email}})
         except Exception:
             raise Exception(ErrorCodes.FAILED_TO_UPDATE_EMAIL.value)
+
+    def check_unique_email(self, email: str) -> bool:
+        try:
+            with timeout(TIMEOUT_LIMIT):
+                query_result = self.connection.get_database(DB_NAME).user.find_one({"$or": [{"email": email},
+                                                                                            {"login.newEmail": email}]})
+        except Exception:
+            raise Exception(ErrorCodes.FAILED_TO_CHECK_UNIQUE_EMAIL.value)
+        return query_result is None

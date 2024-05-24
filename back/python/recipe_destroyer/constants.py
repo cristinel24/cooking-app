@@ -3,27 +3,30 @@ from dotenv import load_dotenv
 from enum import Enum
 
 load_dotenv()
-
-
-RECIPE_RETRIEVER_ALLERGENS_API_URL = "http://localhost:4009"
-if RECIPE_RETRIEVER_ALLERGENS_API_URL is None:
-    raise ValueError("Environment variable 'RECIPE_RETRIEVER_ALLERGENS_API_URL' is not set")
-
-RECIPE_RETRIEVER_RATINGS_API_URL = "http://localhost:4011"
-if RECIPE_RETRIEVER_RATINGS_API_URL is None:
-    raise ValueError("Environment variable 'USER_RETRIEVER_API_URL' is not set")
-
-RECIPE_RETRIEVER_TAGS_API_URL = "http://localhost:4008"
-if RECIPE_RETRIEVER_TAGS_API_URL is None:
-    raise ValueError("Environment variable 'RECIPE_RETRIEVER_TAGS_API_URL' is not set")
-
-RECIPE_RETRIEVER_IMAGES_API_URL = os.getenv("RECIPE_RETRIEVER_IMAGES_API_URL")
-if RECIPE_RETRIEVER_IMAGES_API_URL is None:
-    raise ValueError("Environment variable 'RECIPE_RETRIEVER_IMAGES_API_URL' is not set")
-
-
+HOST= os.getenv("HOST", "localhost")
+PORT= os.getenv("PORT", 8000)
+DB_NAME=os.getenv("DB_NAME")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 MAX_TIMEOUT_TIME_SECONDS = 3
-MONGO_URI = os.getenv("MONGO_URI","mongodb://localhost:27017/?directConnection=true")
+
+ALLERGEN_MANAGER_API_URL = os.getenv("ALLERGEN_MANAGER_API_URL", "http://localhost:12319")
+if ALLERGEN_MANAGER_API_URL is None:
+    raise ValueError("Environment variable 'ALLERGEN_MANAGER_API_URL' is not set")
+DEC_ALLERGENS_ROUTE = ALLERGEN_MANAGER_API_URL + "/allergens/dec"
+
+TAG_MANAGER_API_URL = os.getenv("TAG_MANAGER_API_URL", "http://localhost:12332")
+if TAG_MANAGER_API_URL is None:
+    raise ValueError("Environment variable 'TAG_MANAGER_API_URLL' is not set")
+DEC_TAGS_ROUTE = TAG_MANAGER_API_URL + "/tags/dec"
+
+RATING_MANAGER_API_URL = os.getenv("RATING_MANAGER_API_URL", "http://localhost:12327")
+if RATING_MANAGER_API_URL is None:
+    raise ValueError("Environment variable 'RATING_MANAGER_API_URL' is not set")
+RATING_ROUTE = RATING_MANAGER_API_URL + "/rating"
+
+IMAGES_API_URL = os.getenv("IMAGES_API_URL", "http://localhost:12324")
+if IMAGES_API_URL is None:
+    raise ValueError("Environment variable 'IMAGES_API_URL' is not set")
 
 class ErrorCodes(Enum):
     SERVER_ERROR=26300
@@ -37,7 +40,4 @@ class ErrorCodes(Enum):
     NOT_RESPONSIVE_API=26307
     RECIPE_FAILED_THUMBNAIL=26308
     
-###asparagus tag
-###e3 rating
-###
 

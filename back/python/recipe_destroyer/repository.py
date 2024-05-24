@@ -1,15 +1,30 @@
 import os
+from aiohttp import ClientSession
+from httpx import Client
 from pymongo import MongoClient, errors, timeout
-from constants import MAX_TIMEOUT_TIME_SECONDS, ErrorCodes
+from constants import MAX_TIMEOUT_TIME_SECONDS, ErrorCodes, DB_NAME
 
-class RecipeCollection:
+class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
         if connection is not None:
             self._connection = connection
         else:
             self._connection = MongoClient(os.getenv("MONGO_URI"))
-        self._collection = self._connection['cooking_app']['recipe']
+
+class RecipeCollection(MongoCollection):
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).recipe
         
+    def ping_recipe(self, recipe_id:str):
+        try:
+            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                if self._collection.find_one({id: recipe_id}, {"_id": 0, "id": 1}) is not None:
+                    return True
+        except errors.PyMongoError as e:
+            return ErrorCodes.FAILED_DESTROY_RECIPE
+        return False
+   
     def delete_recipe(self, recipe_id: str):
         with timeout(MAX_TIMEOUT_TIME_SECONDS):
             try:
@@ -36,20 +51,17 @@ class RecipeCollection:
             return details
             
     
-class UserCollection:
+class UserCollection(MongoCollection):
      def __init__(self, connection: MongoClient | None = None):
-        if connection is not None:
-            self._connection = connection
-        else:
-            self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
-        self._collection = self._connection['cooking_app']['user']
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).user
     
      def delete_recipe_from_users(self, recipe_id: str, user_id: str) -> None:
         with timeout(MAX_TIMEOUT_TIME_SECONDS):    
             try:
                 result = self._collection.update_many(
                     {"id": user_id},
-                    {"$pull": {"recipes": recipe_id}}
+                    {"$pull": {"recipes": recipe_id}},
                 )
                 if result.modified_count == 0:
                     return ErrorCodes.RECIPE_NOT_FOUND_IN_USERS

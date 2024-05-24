@@ -1,23 +1,23 @@
-from fastapi import FastAPI, status, Response
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 import uvicorn
 from dotenv import load_dotenv
 from repository import *
 from services import *
+from constants import *
 
 load_dotenv()
 
-app = FastAPI()
+app = FastAPI(title="Recipe Destroyer")
 
-@app.delete("/recipe/{recipe_id}")
-async def delete_recipe(recipe_id,  response: Response):
+@app.delete("/recipe/{recipe_id}", tags=["recipe-destroyer"], response_model=None, response_description="Succesful operation")
+async def delete_recipe(recipe_id) -> None | JSONResponse:
     try:
-        res= await delete_recipe_service(recipe_id)
+        await delete_recipe_service(recipe_id)
         
-    except (Exception,) as e:
-        print(e)
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return { "errorCode": ErrorCodes.SERVER_ERROR.value }
+    except RecipeDestroyerException as e:
+        return JSONResponse(status_code= e.status_code, content={"errorCode": e.error_code.value})
         
 
 if __name__ == "__main__":
-   uvicorn.run(app, host=os.getenv("HOST", "localhost"), port=int(os.getenv("PORT", 8000)))
+   uvicorn.run(app, HOST, PORT)

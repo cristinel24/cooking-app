@@ -7,7 +7,7 @@ from fastapi import status
 async def request_user_card(user_id: str) -> dict:
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.get(url=f"{USER_RETRIEVER_API_URL}/user/{user_id}/card")
+            response = await client.get(url=f"{USER_RETRIEVER_API_URL}/{user_id}/card")
             response.raise_for_status()
             return response.json()
     except httpx.HTTPStatusError as http_exc:

@@ -6,7 +6,13 @@ class PasswordChange(BaseModel):
     token: str
 
 
-class PasswordHashRequestResponse(BaseModel):
+class HasherRequestResponse(BaseModel):
     hashAlgorithmName: str
     hash: str
     salt: str
+
+
+class TokenValidatorRequestResponse(BaseModel):
+    userId: str
+    userRoles: int | None
+    tokenType: str

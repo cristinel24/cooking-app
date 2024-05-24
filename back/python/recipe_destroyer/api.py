@@ -30,7 +30,7 @@ async def delete_tags(tags: list[str]):
     
 async def delete_ratings(rating_id: str):
     async with httpx.AsyncClient() as client:
-        response = await client.post(f"{RATING_MANAGER_API_URL}/{rating_id}")
+        response = await client.delete(RATING_MANAGER_API_URL + f"/{rating_id}")
         if response.status_code != 200:
              if response.json().get("errorCode") is None:
                 raise RecipeDestroyerException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
@@ -40,7 +40,7 @@ async def delete_ratings(rating_id: str):
     
 async def delete_image(image_id: str):
     async with httpx.AsyncClient() as client:
-        response = await client.post(f"{IMAGES_API_URL}/{image_id}")
+        response = await client.post(IMAGES_API_URL+f"/{image_id}")
 
         if response.status_code != 200:
              if response.json().get("errorCode") is None:

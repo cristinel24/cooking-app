@@ -8,6 +8,11 @@ class EmailChange(BaseModel):
 
 class TokenGeneratorRequestResponse(BaseModel):
     value: str
-    createdAt: str
     userId: str
+    tokenType: str
+
+
+class TokenValidatorRequestResponse(BaseModel):
+    userId: str
+    userRoles: int | None
     tokenType: str

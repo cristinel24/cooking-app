@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class UserData(BaseModel):
     id: str
-    username: str 
+    username: str
     displayName: str
     icon: str
     roles: int
@@ -20,6 +20,10 @@ class UserCardData(BaseModel):
     icon: str
     roles: int
     ratingAvg: float
+
+
+class UserCardDataList(BaseModel):
+    cards: list[UserCardData]
 
 
 class UserFullData(BaseModel):

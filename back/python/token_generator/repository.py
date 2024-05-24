@@ -1,75 +1,73 @@
-import os
 from datetime import datetime, timezone
 
 import pymongo
-from bson import ObjectId
-from pymongo import MongoClient, errors
+from constants import *
 from exceptions import TokenException, UserException
-from constants import Errors, MAX_TIMEOUT_SECONDS
+from pymongo import MongoClient
+from fastapi import status
 
 
 class MongoCollection:
     def __init__(self):
-        self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
+        self._connection = MongoClient(MONGO_URI)
 
 
 class UserCollection(MongoCollection):
     def __init__(self):
         super().__init__()
-        self._collection = self._connection.cooking_app.user
+        self._collection = self._connection.get_database(DB_NAME).user
 
-    def insert_token_to_user(self, user_id: str, token_id: str, token_data: dict):
-        with pymongo.timeout(MAX_TIMEOUT_SECONDS):
-            try:
-                user = self._collection.update_one({"id": user_id}, {"$push": {"sessions": {
-                    "value": token_data["value"],
-                    "tokenType": token_data["tokenType"],
-                    "_id": ObjectId(token_id)
-                }}})
-                if user.matched_count == 0:
-                    raise UserException(Errors.USER_NOT_FOUND)
-            except UserException as e:
-                raise e
-            except pymongo.errors.PyMongoError as e:
-                raise UserException(Errors.DATABASE_ERROR)
-
-
-user_db = UserCollection()
+    def exists_user(self, user_id: str):
+        try:
+            with pymongo.timeout(MAX_TIMEOUT_SECONDS):
+                return self._collection.find_one({"id": user_id}) is not None
+        except pymongo.errors.PyMongoError as e:
+            if e.timeout:
+                raise TokenException(status.HTTP_504_GATEWAY_TIMEOUT, Errors.DB_TIMEOUT)
+            else:
+                raise TokenException(status.HTTP_500_INTERNAL_SERVER_ERROR, Errors.DB_ERROR)
 
 
 class TokenCollection(MongoCollection):
     def __init__(self):
         super().__init__()
-        self._collection = self._connection.cooking_app.expiring_token
+        self._collection = self._connection.get_database(DB_NAME).expiring_token
 
-    def insert_token(self, value: str, user_id: str, type_token: str) -> dict:
-        with pymongo.timeout(MAX_TIMEOUT_SECONDS):
-            try:
-                time = datetime.now(timezone.utc)
-                item = self._collection.insert_one({
+    def insert_token(self, value: str, user_id: str, token_type: str) -> dict:
+        try:
+            with pymongo.timeout(MAX_TIMEOUT_SECONDS):
+                token = {
                     "value": value,
-                    "createdAt": time,
+                    "createdAt": datetime.now(timezone.utc),
                     "userId": user_id,
-                    "tokenType": type_token
-                })
-                token_id = item.inserted_id
-                user_db.insert_token_to_user(user_id, token_id, {
-                    "value": value,
-                    "tokenType": type_token
-                })
-                return {
-                    "value": value,
-                    "createdAt": time,
-                    "userId": user_id,
-                    "tokenType": type_token
+                    "tokenType": token_type
                 }
-            except UserException as e:
-                raise TokenException(e.error_code)
-            except pymongo.errors.PyMongoError as e:
-                raise TokenException(Errors.DATABASE_ERROR)
+
+                if token_type != "session":
+                    self._collection.update_one(
+                        {"userId": user_id, "tokenType": {"$ne": "session"}},
+                        {"$set": token},
+                        upsert=True,
+                    )
+                else:
+                    self._collection.insert_one(token)
+                    token.pop("_id")
+
+                token.pop("createdAt")
+
+                return token
+        except pymongo.errors.PyMongoError as e:
+            if e.timeout:
+                raise TokenException(status.HTTP_504_GATEWAY_TIMEOUT, Errors.DB_TIMEOUT)
+            else:
+                raise TokenException(status.HTTP_500_INTERNAL_SERVER_ERROR, Errors.DB_ERROR)
 
     def exists_token(self, value: str) -> bool:
-        with pymongo.timeout(MAX_TIMEOUT_SECONDS):
-            return self._collection.find_one({"value": value}) is not None
-
-
+        try:
+            with pymongo.timeout(MAX_TIMEOUT_SECONDS):
+                return self._collection.find_one({"value": value}) is not None
+        except pymongo.errors.PyMongoError as e:
+            if e.timeout:
+                raise TokenException(status.HTTP_504_GATEWAY_TIMEOUT, Errors.DB_TIMEOUT)
+            else:
+                raise TokenException(status.HTTP_500_INTERNAL_SERVER_ERROR, Errors.DB_ERROR)

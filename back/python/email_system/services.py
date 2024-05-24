@@ -11,7 +11,7 @@ def handle_account_verification(request_data: AccountVerification):
             email_template = fp.read()
     except Exception as e:
         raise Exception(ErrorCodes.ACCOUNT_VERIFICATION_TEMPLATE_READING_FAILED.value)
-    verification_link = f"{os.getenv('COOKING_APP_DOMAIN', 'https://cooking.app')}/{ACCOUNT_VERIFICATION_ROUTE}/{request_data.token}"
+    verification_link = f"{FRONTEND_URL}/{ACCOUNT_VERIFICATION_ROUTE}/{request_data.token}"
     try:
         email_body = email_template.format(email_address=request_data.email, verification_link=verification_link)
     except Exception as e:
@@ -27,7 +27,7 @@ def handle_change_request(request_data: ChangeRequest):
             email_template = fp.read()
     except Exception as e:
         raise Exception(ErrorCodes.REQUEST_CHANGE_TEMPLATE_READING_FAILED.value)
-    verification_link = f"{os.getenv('COOKING_APP_DOMAIN', 'https://cooking.app')}/{CHANGE_REQUEST_ROUTE}/{request_data.token}"
+    verification_link = f"{FRONTEND_URL}/{CHANGE_REQUEST_ROUTE}/{request_data.token}"
     try:
         email_body = email_template.format(email_address=request_data.email, change_resource=request_data.changeType,
                                            verification_link=verification_link)

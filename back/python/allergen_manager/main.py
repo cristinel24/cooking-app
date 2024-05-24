@@ -1,45 +1,56 @@
-import os
-from dotenv import load_dotenv
-from fastapi import FastAPI, status, Response
-import uvicorn
-import services
 import exceptions
-import constants
+from schemas import AllergensBody 
+import services
+import uvicorn
+from constants import HOST, PORT, ErrorCodes
+from fastapi import FastAPI, status
+from fastapi.responses import JSONResponse
 
-load_dotenv()
-
-app = FastAPI()
+app = FastAPI(title="Allergen Manager")
 
 
-@app.get("/allergen")
-async def get_allergens(response: Response, starting_with: str = ''):
+@app.get("/allergen", response_model=AllergensBody, response_description="Successful operation")
+async def get_allergens(starting_with: str = '') -> AllergensBody | JSONResponse:
     try:
-        return await services.get_allergens_by_starting_string(starting_with)
-    except (Exception,) as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        allergens = await services.get_allergens_by_starting_string(starting_with)
+        return AllergensBody(allergens=allergens)
+    except (Exception,):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCodes.SERVER_ERROR.value})
 
 
-@app.post("/allergen/{name}")
-async def add_allergen(name: str, response: Response):
+@app.post("/allergen/{name}/inc", response_model=None, response_description="Successful operation")
+async def inc_allergen(name: str) -> None | JSONResponse:
     try:
-        await services.add_allergen_by_name(name)
-    except (Exception,) as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        await services.inc_allergen(name)
+    except (Exception,):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCodes.SERVER_ERROR.value})
 
 
-@app.delete("/allergen/{name}")
-async def remove_allergen(name: str, response: Response):
+@app.post("/allergens/inc", response_model=None, response_description="Successful operation")
+async def inc_allergens(body: AllergensBody) -> None | JSONResponse:
     try:
-        await services.remove_allergen_by_name(name)
+        await services.inc_allergens(body.allergens)
+    except (Exception,):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCodes.SERVER_ERROR.value})
+
+
+@app.post("/allergen/{name}/dec", response_model=None, response_description="Successful operation")
+async def dec_allergen(name: str) -> None | JSONResponse:
+    try:
+        await services.dec_allergen(name)
     except exceptions.AllergenException as e:
-        response.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        return {"errorCode": e.error_code}
-    except (Exception,) as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"errorCode": e.error_code})
+    except (Exception,):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCodes.SERVER_ERROR.value})
+
+
+@app.post("/allergens/dec", response_model=None, response_description="Successful operation")
+async def dec_allergens(body: AllergensBody) -> None | JSONResponse:
+    try:
+        await services.dec_allergens(body.allergens)
+    except (Exception,):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCodes.SERVER_ERROR.value})
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=os.getenv("HOST", "localhost"), port=int(os.getenv("PORT", 8000)))
+    uvicorn.run(app, host=HOST, port=PORT)

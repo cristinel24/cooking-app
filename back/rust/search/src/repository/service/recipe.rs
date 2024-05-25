@@ -6,6 +6,7 @@ use bson::{doc, from_document, Document};
 use futures::TryStreamExt;
 use mongodb::{Client, Collection};
 use serde::Serialize;
+use tracing::info;
 
 #[derive(Clone)]
 pub struct Service {
@@ -194,6 +195,7 @@ impl Repository<Recipe> for Service {
     }
 
     async fn search(&self, params: SearchRecipesParams) -> Result<AggregationResponse<Recipe>> {
+        info!("{:?}", params.tokens);
         let mut pipeline = vec![];
 
         let mut fields = doc! {
@@ -227,7 +229,6 @@ impl Repository<Recipe> for Service {
         };
 
         if !params.tokens.is_empty() {
-            println!("{:?}", params.tokens);
             fields.insert(
                 "lowercase_tokens",
                 doc! {

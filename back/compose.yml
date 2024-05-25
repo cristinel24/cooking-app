@@ -181,6 +181,25 @@ services:
       - AI_API_URL=http://ai
     volumes:
       - ./python/recipe_creator:/app
+
+  recipe_editor:
+    build: 
+      context: ./python/recipe_editor
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $RECIPE_EDITOR_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - ALLERGEN_MANAGER_API_URL=http://allergen_manager
+      - TAG_MANAGER_API_URL=http://tag_manager
+      - ID_GENERATOR_API_URL=http://id_generator
+      - AI_API_URL=http://ai
+    volumes:
+      - ./python/recipe_editor:/app
     
   recipe_retriever:
     build: 

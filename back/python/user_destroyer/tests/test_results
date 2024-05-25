@@ -1,0 +1,11 @@
+UNIT TESTING RESULTS:
+
+- The unit tests regarding routes for user_destroyer passed successfully;
+- The unit tests covered the deletion of an invalid user
+
+Testing database:
+
+- Manually verified that the user was deleted from the database and all of his userId instances were correctly swapped with "[delete]"
+
+
+- If running without docker compose, it always returns a 500 error.

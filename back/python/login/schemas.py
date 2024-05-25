@@ -1,13 +1,7 @@
 from pydantic import BaseModel
 
 
-class State(BaseModel):
-    user_id: str
-    user_roles: int
-
-
 class LoginData(BaseModel):
-    state: State
     identifier: str
     password: str
 
@@ -30,10 +24,10 @@ class UserCardData(BaseModel):
     icon: str
     roles: int
     ratingAvg: float
-    isFollowing: bool
-    isFollowed: bool
-    followsCount: int
-    followersCount: int
+    # isFollowing: bool
+    # isFollowed: bool
+    # followsCount: int
+    # followersCount: int
 
 
 class LoginResponse(BaseModel):

@@ -5,7 +5,7 @@ load_dotenv()
 
 WAIT_ON_ERROR = 5
 MAX_TIMEOUT_SECONDS = 3
-
+BANNED_MASK = 0b1000
 
 HOST = os.getenv("HOST", "localhost")
 PORT = int(os.getenv("PORT", "5000"))
@@ -29,6 +29,7 @@ class Errors:
 USER_PROJECTION = {
     "_id": 0,
     "id": 1,
+    "roles": 1,
     "login": 1
 }
 

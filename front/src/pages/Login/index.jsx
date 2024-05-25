@@ -1,5 +1,5 @@
-import { useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useContext, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 
 import './index.css'
@@ -8,34 +8,32 @@ import photo from '/login-cover.png'
 import { UserContext } from '../../context/user-context'
 import { FormCheckbox, FormInput, FormPassword } from '../../components'
 import { length } from '../../utils/form'
+import { loginUser } from '../../services/auth'
+import { getErrorMessage } from '../../utils/api'
 
 export default function Login() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        setError,
+        formState: { errors }
     } = useForm()
+    const [loading, setLoading] = useState(false)
 
     const { login } = useContext(UserContext)
-    const navigate = useNavigate()
 
     const onSubmit = async (data) => {
-        console.log(data)
-        login(
-            '1234',
-            {
-                id: '1',
-                username: 'jimmy07_dylan04',
-            },
-            data.remember
-        )
+        setLoading(true)
+        try {
+            const { token, user } = await loginUser(data)
+            login(token, user, data.remember)
 
-        navigate('/')
-
-        // TODO: error handling for API
-
-        // const { token, user } = await login(data)
-        // loginContext(token, user, remember)
+            // if successful, user will automatically get rerouted to home page
+        } catch (e) {
+            setError('api', { message: getErrorMessage(e) })
+        } finally {
+            setLoading(false)
+        }
     }
 
     const errorCheck = (id) => {
@@ -60,7 +58,7 @@ export default function Login() {
                         {...register('identifier', {
                             required: true,
                             minLength: length('minim', 8),
-                            maxLength: length('maxim', 256),
+                            maxLength: length('maxim', 256)
                         })}
                     />
                     <FormPassword
@@ -70,7 +68,7 @@ export default function Login() {
                         {...register('password', {
                             require: true,
                             minLength: length('minim', 8),
-                            maxLength: length('maxim', 64),
+                            maxLength: length('maxim', 64)
                         })}
                     />
                     <div className="form-others">
@@ -83,8 +81,9 @@ export default function Login() {
                             Ți-ai uitat parola?
                         </Link>
                     </div>
-                    <button type="submit" className="form-submit">
-                        Conectare
+                    {errorCheck('api')}
+                    <button type="submit" className="form-submit" disabled={loading}>
+                        {loading ? 'Conectare...' : 'Conectați-vă'}
                     </button>
                 </form>
                 <div className="login-separator">

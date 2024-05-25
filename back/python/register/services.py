@@ -26,6 +26,7 @@ async def register(user_data: NewUserData) -> None:
                     ("login" in user and "newEmail" in user["login"] and user["login"]["newEmail"] == user_data.email)):
                 logging.warning(f"Email {user_data.email} already exists")
                 return None
+
         validate_user_data(vars(user_data))
         user_id = await request_generate_user_id()
         hash_response = await request_hash(user_data.password)
@@ -54,15 +55,12 @@ async def register(user_data: NewUserData) -> None:
 async def create_account_thread(new_user_data: dict, user_id: str, email: str) -> None:
     verify_token = None
     try:
-        with client.connection.start_session() as session:
-            with session.start_transaction():
-                user_collection.insert_user(new_user_data, EMPTY_USER_DATA, session)
-                verify_token = await request_generate_token(user_id, VERIFY_ACCOUNT_TOKEN_TYPE)
-                await request_send_verification_email(email, verify_token)
+        user_collection.insert_user(new_user_data, EMPTY_USER_DATA)
+        verify_token = await request_generate_token(user_id, VERIFY_ACCOUNT_TOKEN_TYPE)
+        await request_send_verification_email(email, verify_token)
     except (Exception,) as e:
-        if verify_token is not None:
-            await request_destroy_token(verify_token)
-        logging.warning(f"Error while creating account: {e}")
+        await request_destroy_user(new_user_data["id"])
+        logging.error(f"Error while creating account: {e}: {vars(e)}")
 
 
 async def destroy_data(user_id):

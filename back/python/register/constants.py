@@ -5,27 +5,27 @@ from dotenv import load_dotenv
 load_dotenv()
 
 PORT = int(os.getenv("PORT", 8000))
-HOST = os.getenv("HOST_URL", "0.0.0.0")
+HOST = os.getenv("HOST_URL", "localhost")
 MONGO_URI = os.getenv("MONGO_URL", "mongodb://localhost:27017/?directConnection=true")
-DB_NAME = os.getenv("DB_NAME")
+DB_NAME = os.getenv("DB_NAME", "cooking_app")
 MONGO_TIMEOUT = 3
 
-ID_GENERATOR_API_URL = os.getenv("ID_GENERATOR_API_URL", "http://0.0.0.0:8001")
+ID_GENERATOR_API_URL = os.getenv("ID_GENERATOR_API_URL", "http://localhost:12323")
 ID_GENERATOR_ROUTE = "/"
 
-HASHER_API_URL = os.getenv("HASHER_API_URL", "http://0.0.0.0:8002")
+HASHER_API_URL = os.getenv("HASHER_API_URL", "http://localhost:12322")
 HASHER_ROUTE = "/target"
 
-TOKEN_GENERATOR_API_URL = os.getenv("TOKEN_GENERATOR_API_URL", "http://0.0.0.0:8003")
+TOKEN_GENERATOR_API_URL = os.getenv("TOKEN_GENERATOR_API_URL", "http://localhost:12335")
 TOKEN_GENERATOR_ROUTE = "/{user_id}/{token_type}"
 
-EMAIL_SYSTEM_API_URL = os.getenv("EMAIL_SYSTEM_API_URL", "http://0.0.0.0:8004")
+EMAIL_SYSTEM_API_URL = os.getenv("EMAIL_SYSTEM_API_URL", "http://localhost:12320")
 EMAIL_SYSTEM_ROUTE = "/verify-account"
 
-TOKEN_DESTROYER_API_URL = os.getenv("TOKEN_DESTROYER_API_URL", "http://0.0.0.0:8005")
+TOKEN_DESTROYER_API_URL = os.getenv("TOKEN_DESTROYER_API_URL", "http://localhost:12334")
 TOKEN_DESTROYER_ROUTE = "/{token}"
 
-USER_DESTROYER_API_URL = os.getenv("USER_DESTROYER_API_URL", "http://0.0.0.0:8006")
+USER_DESTROYER_API_URL = os.getenv("USER_DESTROYER_API_URL", "http://localhost:12337")
 DESTROY_USER_ROUTE = "/{user_id}"
 
 VERIFY_ACCOUNT_TOKEN_TYPE = "emailChange"

@@ -14,9 +14,10 @@ async def register(user_data: NewUserData) -> None | JSONResponse:
     try:
         await services.register(user_data)
     except RegisterException as e:
-        return JSONResponse(status_code=e.status_code, content={"error_code": e.error_code})
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
     except (Exception,):
-        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"error_code": ErrorCodes.SERVER_ERROR.value})
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            content={"errorCode": ErrorCodes.SERVER_ERROR.value})
 
 
 if __name__ == "__main__":

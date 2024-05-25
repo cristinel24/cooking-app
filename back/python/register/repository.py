@@ -19,7 +19,7 @@ class UserCollection(MongoCollection):
         with pymongo.timeout(MONGO_TIMEOUT):
             return self._collection.find_one({"$or": fields})
 
-    def insert_user(self, user_data: dict, empty_fields: dict, session: ClientSession) -> None:
+    def insert_user(self, user_data: dict, empty_fields: dict) -> None:
         with pymongo.timeout(MONGO_TIMEOUT):
             new_user = {**user_data, **empty_fields}
-            self._collection.insert_one(new_user, session=session)
+            self._collection.insert_one(new_user)

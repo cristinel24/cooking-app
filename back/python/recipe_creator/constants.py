@@ -28,7 +28,7 @@ DEC_TAGS_ROUTE = TAG_MANAGER_API_URL + "/tags/dec"
 
 ALLOWED_TAGS = {"p", "ul", "li", "ol", "img", "s", "u", "strong", "em", "br"}
 ALLOWED_ATTRIBUTES = {"img": {"src"}}
-URL_SCHEMES = {"https"}
+URL_SCHEMES = {"https", "http"}
 UNSAFE_RECIPE_DATA_FIELDS = {"description", "steps"}
 
 

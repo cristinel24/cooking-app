@@ -1,28 +1,30 @@
 import Modal from 'react-modal'
 import './index.css'
 
+import { IoIosClose } from 'react-icons/io'
+
 export default function GenericModal({
+    className,
     isOpen,
     onAfterOpen,
     onRequestClose,
     contentLabel,
     children,
 }) {
+    contentLabel = 'dsfdbffss'
     return (
         <Modal
             isOpen={isOpen}
             contentLabel="Example Modal"
-            className="modal"
+            className={`modal ${className ? className : ''}`}
             overlayClassName="modal-overlay"
         >
             <div className="modal-title-bar">
-                <h1>{contentLabel}</h1>
-                {/* buton de close */}
-                <button type="button" onClick={onRequestClose}>
-                    Inchide
+                <button type="button" onClick={onRequestClose} className="modal-close-button">
+                    <IoIosClose />
                 </button>
             </div>
-            <div className="modal-content">{children}</div>
+            {children}
         </Modal>
     )
 }

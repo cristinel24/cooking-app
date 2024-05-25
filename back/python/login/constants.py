@@ -11,6 +11,7 @@ HOST = os.getenv("HOST", "localhost")
 PORT = int(os.getenv("PORT", "5000"))
 HASHER_API_URL = os.getenv("HASHER_API_URL", "http://localhost:8202")
 TOKEN_GENERATOR_API_URL = os.getenv("TOKEN_GENERATOR_API_URL", "http://localhost:8256")
+USER_RETRIEVER_API_URL = os.getenv("USER_RETRIEVER_API_URL", "http://localhost:8234")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")
 
@@ -22,16 +23,12 @@ class Errors:
     DB_TIMEOUT = 25604
     TOKEN_ERROR = 25605
     UNKNOWN = 25606
+    USER_RETRIEVER_ERROR = 25607
 
 
 USER_PROJECTION = {
     "_id": 0,
     "id": 1,
-    "login": 1,
-    "username": 1,
-    "displayName": 1,
-    "icon": 1,
-    "roles": 1,
-    "ratingAvg": 1,
+    "login": 1
 }
 

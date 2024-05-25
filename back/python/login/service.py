@@ -6,7 +6,7 @@ from constants import Errors
 from schemas import LoginData, LoginResponse
 from exceptions import LoginException
 from repository import UserCollection
-from api import request_hash, request_token
+from api import request_hash, request_token, request_user_card
 
 user_db = UserCollection()
 
@@ -36,11 +36,10 @@ async def login(data: LoginData) -> dict:
         if hasher_response["hash"] != db_password:
             raise LoginException(Errors.INVALID_CREDS, status.HTTP_401_UNAUTHORIZED)
         token_response = await request_token(user_id, "session")
-
-        user.pop("login")
+        user_card_data = await request_user_card(user_id)
         response = {
             "sessionToken": token_response.value,
-            "user": user
+            "user": user_card_data.json()
         }
         return response
 

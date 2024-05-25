@@ -30,6 +30,10 @@ class UserCardData(BaseModel):
     icon: str
     roles: int
     ratingAvg: float
+    isFollowing: bool
+    isFollowed: bool
+    followsCount: int
+    followersCount: int
 
 
 class LoginResponse(BaseModel):

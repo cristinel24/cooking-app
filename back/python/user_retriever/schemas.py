@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class UserData(BaseModel):
     id: str
-    username: str 
+    username: str
     displayName: str
     icon: str
     roles: int

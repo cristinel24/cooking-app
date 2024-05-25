@@ -1,7 +1,7 @@
 import ast
 
+import constants
 from .openai_client import openai_client
-from . import constants
 
 client = openai_client()
 
@@ -30,7 +30,6 @@ async def tokenize_user_query(query: str) -> str:
         ],
         model=constants.GPT_MODEL,
     )
-
     return chat_completion.choices[0].message.content
 
 
@@ -57,7 +56,6 @@ async def verify_generated_tokens(generated_response: str) -> dict:
         ],
         model=constants.GPT_MODEL,
     )
-
     return convert_to_dict(chat_completion.choices[0].message.content)
 
 
@@ -79,13 +77,10 @@ def convert_to_dict(text: str) -> dict:
     return dictionary
 
 
-def normalise_dict(dictionary: dict) -> dict:
+def normalise_dict(dictionary: dict) -> list[str]:
     normalised_tags = []
     for tag in dictionary["tags"]:
         if tag.lower() not in normalised_tags:
             normalised_tags.append(tag.lower())
 
-    dictionary["tags"] = normalised_tags
-    dictionary["tokens"] = dictionary["tags"]
-    dictionary.pop("tags")
-    return dictionary
+    return normalised_tags

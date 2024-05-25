@@ -25,6 +25,9 @@ async def get_followers(user_id: str, start: int, count: int) -> FollowersCardsD
     followers_cards_data = FollowersCardsData()
     request = UserCardRequestData()
     request.ids = follow_collection.get_followers(user_id, start, count)
+    if not request.ids:
+        followers_cards_data.followers = []
+        return followers_cards_data
     try:
         response = await request_user_cards(request)
     except httpx.ConnectError:
@@ -49,6 +52,9 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
     following_cards_data = FollowingCardsData()
     request = UserCardRequestData()
     request.ids = follow_collection.get_following(user_id, start, count)
+    if not request.ids:
+        following_cards_data.following = []
+        return following_cards_data
     try:
         response = await request_user_cards(request)
     except httpx.ConnectError:

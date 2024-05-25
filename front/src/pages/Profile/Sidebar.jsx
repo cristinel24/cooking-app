@@ -6,8 +6,22 @@ import SideButton from './SideButton'
 import { useNavigate } from 'react-router-dom'
 import { BsTextParagraph } from 'react-icons/bs'
 
-export default function Sidebar({ profileData }) {
-    // also add profile pic etc etc
+import { Button } from '../../components'
+
+export default function Sidebar({ profileData, setProfileData }) {
+    const toggleFollow = () => {
+        if (profileData.isFollowing !== undefined) {
+            setProfileData((data) => {
+                return {
+                    ...data,
+                    isFollowing: !data.isFollowing,
+                    followersCount: profileData.isFollowing
+                        ? data.followersCount - 1
+                        : data.followersCount + 1,
+                }
+            })
+        }
+    }
 
     const links = [
         {
@@ -27,10 +41,18 @@ export default function Sidebar({ profileData }) {
                     className="profile-sidebar-data-image"
                     alt="Poza de profil a utilizatorului"
                 />
-                <span>{profileData.displayName}</span>
-                <span>{profileData.followingCount} following</span>
-                <span>{profileData.followersCount} followers</span>
+                <p className="profile-sidebar-data-display-name">{profileData.displayName}</p>
+                <p>
+                    <span>{profileData.followingCount} following</span>
+                    <span> • </span>
+                    <span>{profileData.followersCount} followers</span>
+                </p>
+                <Button
+                    text={profileData.isFollowing ? 'Nu mai urmări' : 'Urmărește'}
+                    onClick={toggleFollow}
+                />
             </div>
+
             <div className="profile-sidebar-buttons">
                 {links.map((link, index) => (
                     <SideButton key={index} {...link} className="profile-sidebar-button" />

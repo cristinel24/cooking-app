@@ -29,6 +29,7 @@
     border-radius: 10px;
     background-color: var(--searchbar-bg-color);
     border: none;
+    font-family: inherit;
 }
 
 .form-input:focus {
@@ -60,9 +61,16 @@
 
     color: var(--text-color);
     background-color: var(--color-primary);
+    transition: background-color 0.1s ease-in-out;
 
     padding: 10px;
     margin: 0.5rem 0;
+
+    font-family: inherit;
+}
+
+.form-submit:hover {
+    background-color: var(--card-color);
 }
 
 .form-submit[disabled] {

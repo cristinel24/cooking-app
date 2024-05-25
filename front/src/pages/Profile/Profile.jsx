@@ -58,7 +58,7 @@ export default function Profile() {
             />
             {!loading && (
                 <div className="profile">
-                    <Sidebar profileData={profileData} />
+                    <Sidebar profileData={profileData} setProfileData={setProfileData} />
                     <Outlet context={{ profileData }} />
                 </div>
             )}

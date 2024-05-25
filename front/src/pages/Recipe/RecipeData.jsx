@@ -10,11 +10,10 @@ export default function RecipeData({ recipeData, setRecipeData }) {
     const [isReportVisible, setIsReportVisible] = useState(false)
     const onFavorite = () => {
         // TODO: api call. if failed; don't even update
-
         setRecipeData((prevRecipe) => {
             return {
                 ...prevRecipe,
-                favorite: !prevRecipe.favorite,
+                isFavorite: !prevRecipe.isFavorite,
             }
         })
     }
@@ -81,11 +80,17 @@ export default function RecipeData({ recipeData, setRecipeData }) {
                     <div className="recipe-page-image">
                         <img src={recipeData.thumbnail} alt="recipe image" />
                     </div>
-                    <Button
-                        className={'recipe-page-button-favorite'}
-                        text={recipeData.favorite ? 'Elimină din favorite' : 'Adaugă la favorite'}
-                        onClick={onFavorite}
-                    />
+                    {recipeData.isFavorite !== undefined && (
+                        <Button
+                            className={'recipe-page-button-favorite'}
+                            text={
+                                recipeData.isFavorite
+                                    ? 'Elimină din favorite'
+                                    : 'Adaugă la favorite'
+                            }
+                            onClick={onFavorite}
+                        />
+                    )}
                 </div>
             </div>
 

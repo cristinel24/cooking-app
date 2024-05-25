@@ -43,6 +43,7 @@ export const getRecipe = async (recipeId) => {
         updatedAt: {
             $date: '2024-05-19T14:18:39.964Z',
         },
+        isFavorite: false,
         id: '5',
         title: 'Vegetarian lasagne',
         description:

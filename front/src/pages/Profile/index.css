@@ -1,7 +1,7 @@
 /* button styling */
 
 .profile-button {
-    background-color: var(--card-color);
+    background-color: var(--color-primary);
     font-family: inherit;
     border-radius: 10px;
     font-size: 1.2rem;
@@ -29,7 +29,7 @@
 
 .profile-button:hover,
 .profile-button-active {
-    background-color: color-mix(in srgb, var(--card-color), var(--color-white) 20%);
+    background-color: color-mix(in srgb, var(--color-primary), var(--color-white) 30%);
 }
 
 .profile-button-icon {
@@ -47,17 +47,44 @@
 /* description styling */
 
 .profile-description {
-    font-size: 1.5rem;
-    .profile-description-content {
-        font-size: 1rem;
-    }
-
     display: flex;
     flex-direction: column;
     justify-content: center;
+    min-height: 100%;
+}
+
+.profile-description-username {
+    font-weight: bolder;
+    color: var(--color-primary);
+    background-color: var(--card-bg-color);
+    border-radius: 10px;
+    padding: 10px;
+    width: min-content;
+}
+
+.profile-description-display-name {
+    font-size: 3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.profile-description-title {
+    font-size: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .profile-description-content {
+    /* rich-text container */
+    img {
+        max-width: 100%;
+    }
+}
+
+/* sidebar */
+
+.profile-sidebar p {
+    margin: 0;
 }
 
 .profile-sidebar {
@@ -67,25 +94,36 @@
     position: -webkit-sticky;
     position: sticky;
     top: calc(var(--nav-height) + 2rem);
+
+    gap: 20px;
 }
 
 .profile-sidebar-data {
-    .profile-sidebar-data-image {
-        aspect-ratio: 1;
-        background-size: cover;
-        background-position: center;
-        object-fit: cover;
-        border-radius: 100%;
-        width: 100%;
-    }
-
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    gap: 20px;
+}
+.profile-sidebar-data-image {
+    aspect-ratio: 1;
+    background-size: cover;
+    background-position: center;
+    object-fit: cover;
+    border-radius: 100%;
+    width: 100%;
+}
+
+.profile-sidebar-data-display-name {
+    font-size: 1.4rem;
+    font-weight: bold;
 }
 
 .profile-sidebar-buttons {
     width: max-content;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .profile-sidebar-button {
@@ -95,5 +133,17 @@
 .profile {
     display: grid;
     grid-template-columns: 1fr 2fr;
+    gap: 40px;
     align-items: start;
+}
+
+@media only screen and (max-width: 480px) {
+    .profile {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-sidebar {
+        position: relative;
+        top: 0;
+    }
 }

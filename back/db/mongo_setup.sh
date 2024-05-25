@@ -19,7 +19,7 @@ if [ "$?" -ne 0 ]; then
 fi
 
 echo "Letting it cook..."
-sleep 10
+sleep 20
 
 mongosh --host mongo1 --eval "rs.status()"
 

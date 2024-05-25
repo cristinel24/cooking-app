@@ -252,7 +252,21 @@ services:
       - USER_DESTROYER_API_URL=http://user_destroyer
     volumes:
       - ./python/register:/app
-    
+      
+  search:
+    build: ./rust/search
+    networks:
+      - ca
+    ports:
+      - $SEARCH_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - AI_API_URL=http://ai
+    volumes:
+      - ./rust/search:/app
+
 
   search_history_manager:
     build: 

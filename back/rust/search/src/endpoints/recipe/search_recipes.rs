@@ -1,32 +1,31 @@
 use crate::{
     context::get_global_context,
-    endpoints::{common::normalize_recipe, EndpointResponse, ErrorCodes, ErrorResponse},
+    endpoints::{
+        common::normalize_recipe, recipe::SearchRecipesPayload, EndpointResponse, ErrorCodes,
+        ErrorResponse,
+    },
     get_endpoint_context,
     repository::{models::recipe::Recipe, service::recipe::Repository as RecipeRepository},
 };
 use salvo::{
     http::StatusCode,
-    prelude::{endpoint, Json},
-    Request, Response,
+    oapi::extract::JsonBody,
+    prelude::{endpoint, Json, Writer},
+    Response,
 };
 use tracing::error;
 
-#[endpoint(
-    parameters(
-        ("title" = String, description = "Titlul retetei pe care o cauti")
-    )
-)]
-pub async fn search_fuzz_title(
-    req: &mut Request,
+#[endpoint]
+pub async fn search_recipes(
+    payload: JsonBody<SearchRecipesPayload>,
     res: &mut Response,
 ) -> Json<EndpointResponse<Recipe>> {
-    let title = req.param::<String>("title").unwrap_or_default();
     let context = get_endpoint_context!(res);
 
-    return match context
+    match context
         .repository
         .recipe_collection
-        .find_by_title(title)
+        .search(payload.into_inner().into_params())
         .await
     {
         Ok(mut value) => {
@@ -48,5 +47,5 @@ pub async fn search_fuzz_title(
                 error_code: ErrorCodes::DbError as u32,
             }))
         }
-    };
+    }
 }

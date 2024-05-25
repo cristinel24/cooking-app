@@ -1,12 +1,13 @@
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
-pub mod search_users;
+use super::common::{Filters, SearchRecipesParams};
+
+pub mod search_ai;
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct SearchUsersPayload {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub query: Option<String>,
+pub struct SearchAiPayload {
+    pub query: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sort: Option<String>,
@@ -14,31 +15,27 @@ pub struct SearchUsersPayload {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filters: Option<Filters>,
+
     pub start: u32,
     pub count: u32,
 }
 
-impl SearchUsersPayload {
-    pub fn into_params(self) -> SearchUsersParams {
-        SearchUsersParams {
-            query: self.query.unwrap_or("".to_string()),
+impl SearchAiPayload {
+    pub fn into_params(self, tokens: Vec<String>) -> SearchRecipesParams {
+        SearchRecipesParams {
+            query: self.query,
             sort: self.sort.unwrap_or("_id".to_string()),
             order: if self.order.unwrap_or("asc".to_string()).eq("asc") {
                 1
             } else {
                 -1
             },
+            filters: self.filters,
             start: self.start,
             count: self.count,
+            tokens,
         }
     }
 }
-
-pub struct SearchUsersParams {
-    pub query: String,
-    pub sort: String,
-    pub order: i32,
-    pub start: u32,
-    pub count: u32,
-}
-

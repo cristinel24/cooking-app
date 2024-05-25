@@ -1,4 +1,4 @@
-use crate::endpoints::{ErrorResponse, INTERNAL_SERVER_ERROR};
+use crate::endpoints::{ErrorCodes, ErrorResponse};
 use salvo::{
     handler,
     http::{ResBody, StatusCode},
@@ -17,9 +17,9 @@ pub async fn error_handler(
     info!("{} {}", req.method(), req.uri());
 
     if ctrl.call_next(req, depot, res).await {
-        if let ResBody::Error(error) = &res.body {
+        if let ResBody::Error(_) = &res.body {
             let error = ErrorResponse {
-                message: error.brief.clone(),
+                error_code: ErrorCodes::BadData as u32,
             };
             error!("{error:?}");
             res.status_code(StatusCode::BAD_REQUEST);
@@ -27,7 +27,7 @@ pub async fn error_handler(
         }
     } else {
         let error = ErrorResponse {
-            message: INTERNAL_SERVER_ERROR.to_string(),
+            error_code: ErrorCodes::Unknown as u32,
         };
         error!("{error:?}");
     }

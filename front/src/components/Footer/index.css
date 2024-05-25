@@ -1,24 +1,25 @@
-:root{
-    --footer-height:3rem;
+:root {
+    --footer-height: 3rem;
 }
 .footer {
     display: flex;
     align-items: center;
-    background-color: var(--footercolor);
+    background-color: var(--footer-bg-color);
     width: 100%;
     box-sizing: border-box;
     height: var(--footer-height);
 }
 
-.footer-brand,.footer-bug {
+.footer-brand,
+.footer-bug {
     display: flex;
     flex-grow: 1;
     align-items: center;
     justify-content: center;
-    color: var(--body);
+    color: var(--body-bg-color);
 }
 
-.footer-brand{
+.footer-brand {
     font-size: 0.875rem;
     font-weight: bold;
     text-decoration: none;
@@ -26,7 +27,7 @@
 
 .footer-brand a {
     font-weight: bolder;
-    color: var(--body);
+    color: var(--body-bg-color);
     text-decoration: none;
 }
 
@@ -37,13 +38,13 @@
 }
 
 .footer-bug a {
-    color: var(--body);
+    color: var(--body-bg-color);
     text-decoration: none;
 }
 
 .footer-brand a:hover,
 .footer-bug a:hover {
-    color: var(--bkgcolor);
+    color: var(--color-primary);
 }
 
 @media screen and (max-width: 600px) {
@@ -60,7 +61,8 @@
         font-size: 0.625rem;
     }
 
-    .footer-brand,.footer-bug {
+    .footer-brand,
+    .footer-bug {
         text-align: center;
     }
 }

@@ -62,7 +62,7 @@
     font-weight: bold;
     display: flex;
     align-items: center;
-    color: var(--bkgcolor);
+    color: var(--color-primary);
 }
 
 @media (min-width: 481px) and (max-width: 767px) {

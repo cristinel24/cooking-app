@@ -1,7 +1,7 @@
 from repository import MongoCollection
 from schemas import *
 
-def update_roles_in_db(user_id: str, roles: Dict[str, int]):
+def update_roles_in_db(user_id: str, roles: RoleData):
     db = MongoCollection()
     return db.update_roles(user_id, roles)
 

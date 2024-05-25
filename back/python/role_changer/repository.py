@@ -8,10 +8,10 @@ class MongoCollection:
         if connection is not None:
             self._connection = connection
         else:
-            self._connection = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
-        self._collection = self._connection['cooking_app']['user']
+            self._connection = MongoClient(MONGO_URI)
+        self._collection = self._connection[DB_NAME]['user']
 
-    def update_roles(self, user_id: str, roles: Dict[str, int]) -> None:
+    def update_roles(self, user_id: str, roles: RoleData) -> None:
         with timeout(MAX_TIMEOUT_TIME_SECONDS):
             try:
                 user = self._collection.find_one({"id": user_id})

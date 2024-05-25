@@ -15,7 +15,7 @@ async def register(user_data: NewUserData) -> None | JSONResponse:
         await services.register(user_data)
     except RegisterException as e:
         return JSONResponse(status_code=e.status_code, content={"error_code": e.error_code})
-    except (Exception,) as e:
+    except (Exception,):
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"error_code": ErrorCodes.SERVER_ERROR.value})
 
 

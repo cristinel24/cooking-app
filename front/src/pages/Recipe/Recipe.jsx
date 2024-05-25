@@ -6,6 +6,7 @@ import { getRecipe } from '../../services/recipe'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { ClipLoader } from 'react-spinners'
+import FormStars from '../../components/Form/FormStars'
 
 export default function Recipe() {
     const [recipeData, setRecipeData] = useState({})
@@ -46,9 +47,20 @@ export default function Recipe() {
             />
             {error !== '' && <span>{error}</span>}
             {!recipeLoading && error === '' && (
-                <div className="recipe-page-container">
-                    <RecipeData recipeData={recipeData} setRecipeData={setRecipeData} />
-                </div>
+                <>
+                    <div className="recipe-page-container">
+                        <RecipeData recipeData={recipeData} setRecipeData={setRecipeData} />
+                    </div>
+
+                    <div className="recipe-page-comments">
+                        <h3>Comentarii</h3>
+                        <FormStars
+                            onChange={(change) => {
+                                console.log(change)
+                            }}
+                        />
+                    </div>
+                </>
             )}
         </>
     )

@@ -129,6 +129,11 @@
     padding: 0.3rem 0.5rem;
 }
 
+.form-stars {
+    color: var(--stars-color);
+    cursor: pointer;
+}
+
 @media screen and (max-width: 820px) {
     .form-row {
         flex-direction: column;

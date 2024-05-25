@@ -24,6 +24,8 @@
     --body-bg-color-dimmed: #f3f3f3;
     --text-color-dimmed: #b4b4b4;
 
+    --stars-color: #ecc838;
+
     --input-color: #646464;
     --input-bg-color: #ffffff;
 
@@ -53,6 +55,8 @@
     --filter-bg-color: #303233;
     --body-bg-color-dimmed: #303233;
     --text-color-dimmed: #b4b4b4;
+
+    --stars-color: #ecc838;
 
     --input-color: #c0c0c0;
     --input-bg-color: #444444;

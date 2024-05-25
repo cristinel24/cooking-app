@@ -1,19 +1,14 @@
 import os
-from enum import Enum
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
+PORT = int(os.getenv("PORT", 8003))
 HOST = os.getenv("HOST", "localhost")
-PORT = int(os.getenv("PORT", 8001))
+
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")
+AI_API_KEY = str(os.getenv("AI_API_KEY", ""))
 
-MAX_TIMEOUT_TIME_SECONDS = 3
-NO_OF_RETURNED_ITEMS = 5
-
-
-class ErrorCodes(Enum):
-    SERVER_ERROR = 20700
-    NONEXISTENT_TAG = 20701
+GPT_MODEL = "gpt-3.5-turbo"

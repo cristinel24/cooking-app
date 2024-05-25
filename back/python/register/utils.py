@@ -1,3 +1,5 @@
+import asyncio
+import threading
 from pymongo import errors
 from exception import RegisterException
 from constants import *
@@ -30,3 +32,16 @@ def validate_str(value: str, checks: dict) -> None:
         raise RegisterException(status.HTTP_400_BAD_REQUEST, checks["too_long"])
     if "pattern" in checks and not re.fullmatch(checks["pattern"]["regex"], value):
         raise RegisterException(status.HTTP_400_BAD_REQUEST, checks["pattern"]["error"])
+
+
+def thread_target(loop, async_func, *args, **kwargs):
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(async_func(*args, **kwargs))
+    loop.run_until_complete(loop.shutdown_asyncgens())
+    loop.close()
+
+
+def run_async_in_thread(async_func, *args, **kwargs):
+    loop = asyncio.new_event_loop()
+    thread = threading.Thread(target=thread_target, args=(loop, async_func) + args, kwargs=kwargs)
+    thread.start()

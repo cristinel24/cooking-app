@@ -1,8 +1,6 @@
 import uvicorn
-
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
-
 from constants import HOST, PORT, ErrorCodes
 from exception import RegisterException
 from schemas import NewUserData

@@ -14,9 +14,9 @@ app = FastAPI(title="Recipe Destroyer")
 async def delete_recipe(recipe_id) -> None | JSONResponse:
     try:
         await delete_recipe_service(recipe_id)
-        
+        print("test")
     except RecipeDestroyerException as e:
-        return JSONResponse(status_code= e.status_code, content={"errorCode": e.error_code.value})
+        return JSONResponse(status_code= e.status_code, content={"errorCode": e.error_code})
         
 
 if __name__ == "__main__":

@@ -40,7 +40,7 @@ async def delete_ratings(rating_id: str):
     
 async def delete_image(image_id: str):
     async with httpx.AsyncClient() as client:
-        response = await client.post(IMAGES_API_URL+f"/{image_id}")
+        response = await client.delete(IMAGES_API_URL+f"/{image_id}")
 
         if response.status_code != 200:
              if response.json().get("errorCode") is None:

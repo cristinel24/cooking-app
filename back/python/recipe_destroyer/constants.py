@@ -9,22 +9,22 @@ DB_NAME=os.getenv("DB_NAME")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 MAX_TIMEOUT_TIME_SECONDS = 3
 
-ALLERGEN_MANAGER_API_URL = os.getenv("ALLERGEN_MANAGER_API_URL", "http://localhost:12319")
+ALLERGEN_MANAGER_API_URL = os.getenv("ALLERGEN_MANAGER_API_URL")
 if ALLERGEN_MANAGER_API_URL is None:
     raise ValueError("Environment variable 'ALLERGEN_MANAGER_API_URL' is not set")
 DEC_ALLERGENS_ROUTE = ALLERGEN_MANAGER_API_URL + "/allergens/dec"
 
-TAG_MANAGER_API_URL = os.getenv("TAG_MANAGER_API_URL", "http://localhost:12332")
+TAG_MANAGER_API_URL = os.getenv("TAG_MANAGER_API_URL")
 if TAG_MANAGER_API_URL is None:
     raise ValueError("Environment variable 'TAG_MANAGER_API_URLL' is not set")
 DEC_TAGS_ROUTE = TAG_MANAGER_API_URL + "/tags/dec"
 
-RATING_MANAGER_API_URL = os.getenv("RATING_MANAGER_API_URL", "http://localhost:12327")
+RATING_MANAGER_API_URL = os.getenv("RATING_MANAGER_API_URL")
 if RATING_MANAGER_API_URL is None:
     raise ValueError("Environment variable 'RATING_MANAGER_API_URL' is not set")
 RATING_ROUTE = RATING_MANAGER_API_URL + "/rating"
 
-IMAGES_API_URL = os.getenv("IMAGES_API_URL", "http://localhost:12324")
+IMAGES_API_URL = os.getenv("IMAGES_API_URL")
 if IMAGES_API_URL is None:
     raise ValueError("Environment variable 'IMAGES_API_URL' is not set")
 

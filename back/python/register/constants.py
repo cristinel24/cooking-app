@@ -22,9 +22,6 @@ TOKEN_GENERATOR_ROUTE = "/{user_id}/{token_type}"
 EMAIL_SYSTEM_API_URL = os.getenv("EMAIL_SYSTEM_API_URL", "http://localhost:12320")
 EMAIL_SYSTEM_ROUTE = "/verify-account"
 
-TOKEN_DESTROYER_API_URL = os.getenv("TOKEN_DESTROYER_API_URL", "http://localhost:12334")
-TOKEN_DESTROYER_ROUTE = "/{token}"
-
 USER_DESTROYER_API_URL = os.getenv("USER_DESTROYER_API_URL", "http://localhost:12337")
 DESTROY_USER_ROUTE = "/{user_id}"
 

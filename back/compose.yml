@@ -41,15 +41,16 @@ services:
       - ca
     ports:
       - $EMAIL_SYSTEM_PORT:80
+      - $SMTP_PORT:$SMTP_PORT
     environment:
       - PORT=80
       - MONGO_URI=$MONGO_URI
-      - FRONTEND_URL=
-      - SMTP_ROOT_EMAIL=
-      - SMTP_SERVER=
-      - SMTP_PORT=
-      - SMTP_USERNAME=
-      - SMTP_PASSWORD=
+      - FRONTEND_URL=FRONT
+      - SMTP_ROOT_EMAIL=$SMTP_ROOT_EMAIL
+      - SMTP_SERVER=$SMTP_SERVER
+      - SMTP_PORT=$SMTP_PORT
+      - SMTP_USERNAME=$SMTP_USERNAME
+      - SMTP_PASSWORD=$SMTP_PASSWORD
     volumes:
       - ./python/email_system:/app
     
@@ -231,6 +232,27 @@ services:
       - DB_NAME=$DB_NAME
     volumes:
       - ./python/recipe_saver:/app
+
+  register:
+    build:
+      context: ./python/register
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $REGISTER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - ID_GENERATOR_API_URL=http://id_generator
+      - HASHER_API_URL=http://hasher
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+      - EMAIL_SYSTEM_API_URL=http://email_system
+      - USER_DESTROYER_API_URL=http://user_destroyer
+    volumes:
+      - ./python/register:/app
+    
 
   search_history_manager:
     build: 

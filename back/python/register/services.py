@@ -25,7 +25,7 @@ async def register(user_data: NewUserData) -> None:
             if (("email" in user and user["email"] == user_data.email) or
                     ("login" in user and "newEmail" in user["login"] and user["login"]["newEmail"] == user_data.email)):
                 logging.warning(f"Email {user_data.email} already exists")
-                return None
+                return
 
         validate_user_data(vars(user_data))
         user_id = await request_generate_user_id()

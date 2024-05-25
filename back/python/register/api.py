@@ -51,14 +51,6 @@ async def request_destroy_user(user_id: str) -> None:
             handle_request_exception(response)
 
 
-async def request_destroy_token(token: str) -> None:
-    async with httpx.AsyncClient() as client:
-        url = f"{TOKEN_DESTROYER_API_URL}{TOKEN_DESTROYER_ROUTE.format(token=token)}"
-        response = await client.delete(url)
-        if response.status_code != status.HTTP_200_OK:
-            handle_request_exception(response)
-
-
 def handle_request_exception(response) -> None:
     response_json = response.json()
     if "errorCode" in response_json:

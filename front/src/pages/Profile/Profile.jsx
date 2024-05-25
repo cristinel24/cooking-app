@@ -7,6 +7,8 @@ import { ClipLoader } from 'react-spinners'
 import { getProfile } from '../../services/profile'
 import Sidebar from './Sidebar'
 
+import { GenericModal } from '../../components'
+
 export default function Profile() {
     const navigate = useNavigate()
 
@@ -21,12 +23,6 @@ export default function Profile() {
             try {
                 const profile = await getProfile(profileId)
                 setProfileData(profile)
-
-                // const followers = await getFollowersCount(profileId)
-                // setProfileData((data) => ({ ...data, followers }))
-
-                // const following = await getFollowingCount(profileId)
-                // setProfileData((data) => ({ ...data, following }))
 
                 setLoading(false)
             } catch (e) {

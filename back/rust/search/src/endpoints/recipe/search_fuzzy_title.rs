@@ -1,7 +1,6 @@
-use crate::endpoints::common::normalize_recipe;
 use crate::{
     context::get_global_context,
-    endpoints::{EndpointResponse, ErrorResponse, INTERNAL_SERVER_ERROR},
+    endpoints::{common::normalize_recipe, EndpointResponse, ErrorCodes, ErrorResponse},
     get_endpoint_context,
     repository::{models::recipe::Recipe, service::recipe::Repository as RecipeRepository},
 };
@@ -36,7 +35,7 @@ pub async fn search_fuzz_title(
                     error!("Error: {e}");
                     res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
                     return Json(EndpointResponse::Error(ErrorResponse {
-                        message: INTERNAL_SERVER_ERROR.to_string(),
+                        error_code: ErrorCodes::DbError as u32,
                     }));
                 }
             }
@@ -46,7 +45,7 @@ pub async fn search_fuzz_title(
             error!("Error: {e}");
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
             Json(EndpointResponse::Error(ErrorResponse {
-                message: e.to_string(),
+                error_code: ErrorCodes::DbError as u32,
             }))
         }
     };

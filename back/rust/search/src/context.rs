@@ -18,10 +18,14 @@ pub struct EnvironmentVariables {
 impl EnvironmentVariables {
     pub fn get_env() -> Self {
         Self {
-            mongo_uri: std::env::var(MONGO_URI).unwrap_or("mongodb://localhost:27017/?directConnection=true".into()),
+            mongo_uri: std::env::var(MONGO_URI)
+                .unwrap_or("mongodb://localhost:27017/?directConnection=true".into()),
             ai_api_url: std::env::var(AI_API_URL).unwrap_or("http://localhost:8912".into()),
             host: std::env::var(HOST).unwrap_or("0.0.0.0".into()),
-            port: std::env::var(PORT).unwrap_or("3000".into()).parse::<u32>().unwrap_or(3000),
+            port: std::env::var(PORT)
+                .unwrap_or("3000".into())
+                .parse::<u32>()
+                .unwrap_or(3000),
         }
     }
 }
@@ -50,7 +54,7 @@ macro_rules! get_endpoint_context {
                 error!("Error: {e}");
                 $res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
                 return Json(EndpointResponse::Error(ErrorResponse {
-                    message: e.to_string(),
+                    error_code: ErrorCodes::Unknown as u32,
                 }));
             }
         }

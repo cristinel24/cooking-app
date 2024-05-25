@@ -1,6 +1,6 @@
 use crate::{
     context::get_global_context,
-    endpoints::{EndpointResponse, ErrorResponse},
+    endpoints::{EndpointResponse, ErrorCodes, ErrorResponse},
     get_endpoint_context,
     repository::{models::user::User, service::user::Repository as UserRepository},
 };
@@ -33,7 +33,7 @@ pub async fn search_users(
             error!("Error: {e}");
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
             Json(EndpointResponse::Error(ErrorResponse {
-                message: e.to_string(),
+                error_code: ErrorCodes::DbError as u32,
             }))
         }
     }

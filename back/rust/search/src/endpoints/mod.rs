@@ -6,8 +6,6 @@ pub mod common;
 pub mod recipe;
 pub mod user;
 
-pub const INTERNAL_SERVER_ERROR: &str = "Internal Server Error!";
-
 #[derive(Deserialize, ToSchema)]
 pub enum EndpointResponse<T: Serialize> {
     Success(AggregationResponse<T>),
@@ -32,15 +30,25 @@ pub struct AggregationResponse<T: Serialize> {
     pub data: Vec<T>,
 }
 
+#[repr(u32)]
+pub enum ErrorCodes {
+    DbError = 5300,
+    AiUnresponsive = 5301,
+    Unauthorized = 5302,
+    BadData = 5303,
+    Unknown = 5304,
+}
+
 #[derive(Serialize, Deserialize, Debug, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct ErrorResponse {
-    pub message: String,
+    pub error_code: u32,
 }
 
 impl Default for ErrorResponse {
     fn default() -> Self {
         Self {
-            message: "Error".to_string(),
+            error_code: ErrorCodes::Unknown as u32,
         }
     }
 }

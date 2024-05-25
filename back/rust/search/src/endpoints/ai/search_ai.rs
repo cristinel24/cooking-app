@@ -1,8 +1,7 @@
 use crate::{
     context::get_global_context,
     endpoints::{
-        ai::SearchAiPayload, common::normalize_recipe, EndpointResponse, ErrorResponse,
-        INTERNAL_SERVER_ERROR,
+        ai::SearchAiPayload, common::normalize_recipe, EndpointResponse, ErrorCodes, ErrorResponse,
     },
     get_endpoint_context,
     repository::{models::recipe::Recipe, service::recipe::Repository as RecipeRepository},
@@ -30,9 +29,9 @@ pub async fn search_ai(
         Ok(value) => value,
         Err(e) => {
             error!("Error: {e}");
-            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            res.status_code(StatusCode::GATEWAY_TIMEOUT);
             return Json(EndpointResponse::Error(ErrorResponse {
-                message: INTERNAL_SERVER_ERROR.to_string(),
+                error_code: ErrorCodes::AiUnresponsive as u32,
             }));
         }
     };
@@ -49,7 +48,7 @@ pub async fn search_ai(
                     error!("Error: {e}");
                     res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
                     return Json(EndpointResponse::Error(ErrorResponse {
-                        message: INTERNAL_SERVER_ERROR.to_string(),
+                        error_code: ErrorCodes::DbError as u32,
                     }));
                 }
             }
@@ -59,7 +58,7 @@ pub async fn search_ai(
             error!("Error: {e}");
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
             Json(EndpointResponse::Error(ErrorResponse {
-                message: e.to_string(),
+                error_code: ErrorCodes::DbError as u32,
             }))
         }
     }

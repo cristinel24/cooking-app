@@ -3,7 +3,7 @@ import pymongo.errors
 from fastapi import status
 
 from constants import Errors
-from schemas import LoginData
+from schemas import LoginData, LoginResponse
 from exceptions import LoginException
 from repository import UserCollection
 from api import request_hash, request_token
@@ -36,9 +36,14 @@ async def login(data: LoginData) -> dict:
         if hasher_response["hash"] != db_password:
             raise LoginException(Errors.INVALID_CREDS, status.HTTP_401_UNAUTHORIZED)
         token_response = await request_token(user_id, "session")
-        return {
-            "sessionToken": token_response.value
+
+        user.pop("login")
+        response = {
+            "sessionToken": token_response.value,
+            "user": user
         }
+        return response
+
     except pymongo.errors.ExecutionTimeout:
         raise LoginException(Errors.DB_TIMEOUT, status.HTTP_500_INTERNAL_SERVER_ERROR)
     except LoginException as e:

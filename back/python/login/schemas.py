@@ -23,5 +23,15 @@ class TokenResponse(BaseModel):
     tokenType: str
 
 
+class UserCardData(BaseModel):
+    id: str
+    username: str
+    displayName: str
+    icon: str
+    roles: int
+    ratingAvg: float
+
+
 class LoginResponse(BaseModel):
     sessionToken: str
+    user: UserCardData

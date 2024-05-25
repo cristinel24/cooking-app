@@ -27,6 +27,11 @@ class Errors:
 USER_PROJECTION = {
     "_id": 0,
     "id": 1,
-    "login": 1
+    "login": 1,
+    "username": 1,
+    "displayName": 1,
+    "icon": 1,
+    "roles": 1,
+    "ratingAvg": 1,
 }
 

@@ -1,10 +1,10 @@
 from constants import ErrorCodes, UserRoles
 from exceptions import RoleChangerException
 from fastapi import status
-from repository import MongoCollection
+from repository import UserCollection
 from schemas import *
 
-user_collection = MongoCollection()
+user_collection = UserCollection()
 
 
 def update_user_roles(user_id: str, role_data: RoleData):

@@ -7,11 +7,24 @@ from schemas import *
 
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
-        if connection is not None:
-            self._connection = connection
-        else:
+        if connection is None:
             self._connection = MongoClient(MONGO_URI)
+        else:
+            self._connection = connection
+        try:
+            self._connection.admin.command("ping")
+        except ConnectionError:
+            raise RoleChangerException(
+                ErrorCodes.DB_CONNECTION_FAILURE.value,
+                status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+class UserCollection(MongoCollection):
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
         self._collection = self._connection.get_database(DB_NAME).user
+
 
     def get_user_roles(self, user_id: str) -> int:
         try:

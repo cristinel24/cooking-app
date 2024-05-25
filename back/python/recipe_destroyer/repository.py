@@ -1,5 +1,3 @@
-from aiohttp import ClientSession
-from httpx import Client
 from pymongo import MongoClient, errors, timeout
 from constants import MAX_TIMEOUT_TIME_SECONDS, MONGO_URI, ErrorCodes, DB_NAME
 
@@ -37,17 +35,17 @@ class RecipeCollection(MongoCollection):
     def get_recipe_details(self, recipe_id: str):
         with timeout(MAX_TIMEOUT_TIME_SECONDS):
             try:
-                details = {}
+                details_rating = {}
                 recipe = self._collection.find_one({"id": recipe_id}, {"tags": 1, "allergens": 1, "ratings": 1, "authorId": 1, "thumbnail": 1})
-                details["tags"] = recipe.get("tags", [])
-                details["allergens"] = recipe.get("allergens", [])
-                details["ratings"] = recipe.get("ratings", [])
-                details["authorId"] = recipe.get("authorId", "")
-                details["thumbnail"] = recipe.get("thumbnail", "")
+                details_rating["tags"] = recipe.get("tags", [])
+                details_rating["allergens"] = recipe.get("allergens", [])
+                details_rating["ratings"] = recipe.get("ratings", [])
+                details_rating["authorId"] = recipe.get("authorId", "")
+                details_rating["thumbnail"] = recipe.get("thumbnail", "")
 
             except errors.PyMongoError as e:
                 return ErrorCodes.RECIPE_NOT_FOUND
-            return details
+            return details_rating
             
     
 class UserCollection(MongoCollection):
@@ -67,3 +65,20 @@ class UserCollection(MongoCollection):
             except errors.PyMongoError as e:
                 return ErrorCodes.FAILED_DESTROY_RECIPE
             
+class RatingCollection(MongoCollection):
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).rating
+    def get_rating_data(self, rating_id: str):
+        with timeout(MAX_TIMEOUT_TIME_SECONDS):
+            try:
+                details={}
+                rating = self._collection.find_one({"id": rating_id}, {"authorId": 1, "rating": 1, "description": 1, "parentType": 1})
+                details["authorId"] = rating.get("authorId", "")
+                details["rating"] = rating.get("rating", 0)
+                details["description"] = rating.get("description", "")
+                details["parentType"] = rating.get("parentType", "")
+
+            except errors.PyMongoError as e:
+                return ErrorCodes.RATING_NOT_FOUND
+            return details

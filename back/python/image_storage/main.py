@@ -4,15 +4,15 @@ import os.path
 from fastapi import FastAPI, UploadFile, status
 from fastapi.responses import FileResponse, JSONResponse
 
-from schemas import UrlResponse
 import services
 from constants import HOST, PORT, IMAGE_DIRECTORY_PATH, ErrorCodes
 from exception import ImageStorageException
+from schemas import UrlResponse
 
 app = FastAPI(title="Image Storage")
 
 
-@app.put("/", response_model=UrlResponse, response_description="Successful operation")
+@app.post("/", response_model=UrlResponse, response_description="Successful operation")
 async def add_image(file: UploadFile) -> UrlResponse | JSONResponse:
     try:
         image_url = await services.add_image(file)

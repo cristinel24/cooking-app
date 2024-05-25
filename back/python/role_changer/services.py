@@ -4,10 +4,11 @@ from fastapi import status
 from repository import MongoCollection
 from schemas import *
 
+user_collection = MongoCollection()
+
 
 def update_user_roles(user_id: str, role_data: RoleData):
-    db = MongoCollection()
-    roles = db.get_user_roles(user_id)
+    roles = user_collection.get_user_roles(user_id)
 
     for role, value in role_data.__dict__.items():
         if value == 0:
@@ -26,7 +27,7 @@ def update_user_roles(user_id: str, role_data: RoleData):
         else:
             roles &= ~role_bit
 
-    db.update_roles(user_id, roles)
+    user_collection.update_roles(user_id, roles)
     return RoleData(
         verified=roles & UserRoles.VERIFIED > 0,
         admin=roles & UserRoles.ADMIN > 0,

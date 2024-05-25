@@ -13,7 +13,7 @@ async def request_hash(target: str, alg_name: str, salt: str):
             formated_url = f"{HASHER_API_URL}/{alg_name}/{target}?salt={salt}"
             response = await client.get(url=formated_url)
             resp_dict = response.json()
-            if resp_dict["errorCode"] is not None:
+            if resp_dict.get("errorCode") is not None:
                 raise LoginException(resp_dict["errorCode"], status.HTTP_503_SERVICE_UNAVAILABLE)
             parsed_response = HasherResponse.model_validate(resp_dict, strict=True)
             return parsed_response  # object of type HasherResponse

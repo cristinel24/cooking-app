@@ -45,7 +45,7 @@ services:
     environment:
       - PORT=80
       - MONGO_URI=$MONGO_URI
-      - FRONTEND_URL=FRONT
+      - FRONTEND_URL=$FRONTEND_URL
       - SMTP_ROOT_EMAIL=$SMTP_ROOT_EMAIL
       - SMTP_SERVER=$SMTP_SERVER
       - SMTP_PORT=$SMTP_PORT

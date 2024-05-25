@@ -1,12 +1,13 @@
 import logging
 from pymongo import errors
 from schemas import NewUserData
-from repository import UserCollection
+from repository import UserCollection, MongoCollection
 from utils import match_collection_error, validate_user_data, run_async_in_thread
 from api import *
 from datetime import datetime
 
-user_db = UserCollection()
+client = MongoCollection()
+user_collection = UserCollection(client.connection)
 
 
 async def register(user_data: NewUserData) -> None:
@@ -17,7 +18,7 @@ async def register(user_data: NewUserData) -> None:
             {"email": user_data.email},
             {"login.newEmail": user_data.email}
         ]
-        user = user_db.user_exists_by_fields(fields)
+        user = user_collection.user_exists_by_fields(fields)
         if user is not None:
             if "username" in user and user["username"] == user_data.username:
                 raise RegisterException(status.HTTP_400_BAD_REQUEST, ErrorCodes.USERNAME_EXISTS.value)
@@ -51,11 +52,16 @@ async def register(user_data: NewUserData) -> None:
 
 
 async def create_account_thread(new_user_data: dict, user_id: str, email: str) -> None:
+    verify_token = None
     try:
-        user_db.insert_user(new_user_data, EMPTY_USER_DATA)
-        verify_token = await request_generate_token(user_id, VERIFY_ACCOUNT_TOKEN_TYPE)
-        await request_send_verification_email(email, verify_token)
+        with client.connection.start_session() as session:
+            with session.start_transaction():
+                user_collection.insert_user(new_user_data, EMPTY_USER_DATA, session)
+                verify_token = await request_generate_token(user_id, VERIFY_ACCOUNT_TOKEN_TYPE)
+                await request_send_verification_email(email, verify_token)
     except (Exception,) as e:
+        if verify_token is not None:
+            await request_destroy_token(verify_token)
         logging.warning(f"Error while creating account: {e}")
 
 

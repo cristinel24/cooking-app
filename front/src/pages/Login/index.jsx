@@ -2,9 +2,9 @@ import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 
-import photo from '/autentificare.png'
-
 import './index.css'
+import photo from '/login-cover.png'
+
 import { UserContext } from '../../context/user-context'
 import { FormCheckbox, FormInput, FormPassword } from '../../components'
 import { length } from '../../utils/form'

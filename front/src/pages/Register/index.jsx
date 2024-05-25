@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 
 import './index.css'
+import photo from '/register-cover.png'
 
-import photo from '/register.png'
 import { FormInput, FormPassword } from '../../components'
 import { registerUser } from '../../services/auth'
 import { length } from '../../utils/form'

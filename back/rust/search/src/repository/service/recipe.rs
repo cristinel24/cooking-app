@@ -1,5 +1,5 @@
 use super::{super::models::recipe::Recipe, CollectionName, DATABASE_NAME};
-use crate::endpoints::{AggregationResponse, InputPayload};
+use crate::endpoints::{common::SearchRecipesParams, AggregationResponse};
 use anyhow::Result;
 use async_trait::async_trait;
 use bson::{doc, from_document, Document};
@@ -27,7 +27,7 @@ impl Service {
 pub trait Repository<T: Serialize> {
     async fn find_by_tokens(&self, array: &[String]) -> Result<AggregationResponse<T>>;
     async fn find_by_title(&self, title: String) -> Result<AggregationResponse<T>>;
-    async fn search(&self, payload: InputPayload) -> Result<AggregationResponse<T>>;
+    async fn search(&self, payload: SearchRecipesParams) -> Result<AggregationResponse<T>>;
 }
 
 #[async_trait]
@@ -52,7 +52,7 @@ impl Repository<Recipe> for Service {
                 "$lookup": {
                     "from": "user",
                     "localField": "authorId",
-                    "foreignField": "_id",
+                    "foreignField": "id",
                     "as": "author"
                 }
             },
@@ -60,18 +60,35 @@ impl Repository<Recipe> for Service {
             doc! {
                 "$project": {
                     "_id": 0,
+                    "id": 1,
                     "author": {
+                        "id": "$author.id",
                         "icon": "$author.icon",
-                        "username": "$author.username",
                         "displayName": "$author.displayName",
-                        "roles": "$author.roles"
+                        "username": "$author.username",
+                        "roles": "$author.roles",
+                        "ratingAvg": {
+                            "$cond": {
+                                "if": { "$eq": ["$ratingCount", 0] },
+                                "then": 0,
+                                "else": { "$divide": ["$ratingSum", "$ratingCount"] }
+                            }
+                        }
                     },
                     "title": 1,
+                    "ratingAvg": {
+                        "$cond": {
+                            "if": { "$eq": ["$ratingCount", 0] },
+                            "then": 0,
+                            "else": { "$divide": ["$ratingSum", "$ratingCount"] }
+                        }
+                    },
                     "description": { "$substrCP": ["$description", 0, 100] },
-                    "mainImage": 1,
                     "prepTime": 1,
                     "allergens": 1,
-                    "tags": 1
+                    "tags": 1,
+                    "thumbnail": 1,
+                    "viewCount": 1
                 }
             },
             doc! {
@@ -112,7 +129,7 @@ impl Repository<Recipe> for Service {
                 "$lookup": {
                     "from": "user",
                     "localField": "authorId",
-                    "foreignField": "_id",
+                    "foreignField": "id",
                     "as": "author"
                 }
             },
@@ -120,18 +137,35 @@ impl Repository<Recipe> for Service {
             doc! {
                 "$project": {
                     "_id": 0,
+                    "id": 1,
                     "author": {
+                        "id": "$author.id",
                         "icon": "$author.icon",
-                        "username": "$author.username",
                         "displayName": "$author.displayName",
-                        "roles": "$author.roles"
+                        "username": "$author.username",
+                        "roles": "$author.roles",
+                        "ratingAvg": {
+                            "$cond": {
+                                "if": { "$eq": ["$ratingCount", 0] },
+                                "then": 0,
+                                "else": { "$divide": ["$ratingSum", "$ratingCount"] }
+                            }
+                        }
                     },
                     "title": 1,
+                    "ratingAvg": {
+                        "$cond": {
+                            "if": { "$eq": ["$ratingCount", 0] },
+                            "then": 0,
+                            "else": { "$divide": ["$ratingSum", "$ratingCount"] }
+                        }
+                    },
                     "description": { "$substrCP": ["$description", 0, 100] },
-                    "mainImage": 1,
                     "prepTime": 1,
                     "allergens": 1,
-                    "tags": 1
+                    "tags": 1,
+                    "thumbnail": 1,
+                    "viewCount": 1
                 }
             },
             doc! {
@@ -159,44 +193,63 @@ impl Repository<Recipe> for Service {
         Ok(AggregationResponse::default())
     }
 
-    async fn search(&self, payload: InputPayload) -> Result<AggregationResponse<Recipe>> {
-        let mut pipeline = vec![doc! {
-            "$addFields": {
-                "ingredients": {
+    async fn search(&self, params: SearchRecipesParams) -> Result<AggregationResponse<Recipe>> {
+        let mut pipeline = vec![];
+
+        let mut fields = doc! {
+            "ingredients": {
+                "$map": {
+                    "input": "$ingredients",
+                    "as": "ingredients",
+                    "in": {
+                        "$toLower": "$$ingredients",
+                    }
+                }
+            },
+            "tags": {
+                "$map": {
+                    "input": "$tags",
+                    "as": "tags",
+                    "in": {
+                        "$toLower": "$$tags",
+                    }
+                }
+            },
+            "allergens": {
+                "$map": {
+                    "input": "$allergens",
+                    "as": "allergens",
+                    "in": {
+                        "$toLower": "$$allergens",
+                    }
+                }
+            },
+        };
+
+        if !params.tokens.is_empty() {
+            println!("{:?}", params.tokens);
+            fields.insert(
+                "lowercase_tokens",
+                doc! {
                     "$map": {
-                        "input": "$ingredients",
-                        "as": "ingredients",
-                        "in": {
-                            "$toLower": "$$ingredients",
-                        }
+                        "input": "$tokens",
+                        "as": "token",
+                        "in": { "$toLower": "$$token" }
                     }
                 },
-                "tags": {
-                    "$map": {
-                        "input": "$tags",
-                        "as": "tags",
-                        "in": {
-                            "$toLower": "$$tags",
-                        }
-                    }
-                },
-                "allergens": {
-                    "$map": {
-                        "input": "$allergens",
-                        "as": "allergens",
-                        "in": {
-                            "$toLower": "$$allergens",
-                        }
-                    }
-                },
-            }
-        }];
+            );
+        }
+
+        pipeline.push(doc! { "$addFields": fields });
 
         let mut matched_authors: Option<Document> = None;
+        let mut match_doc = doc! {};
 
-        if let Some(filters) = payload.filters {
-            let mut match_doc = doc! {};
+        if !params.tokens.is_empty() {
+            match_doc.insert("lowercase_tokens", doc! { "$in": params.tokens });
+        }
 
+        if let Some(filters) = params.filters {
             if let Some(ingredients) = filters.ingredients {
                 match_doc.insert("ingredients", doc! { "$all": ingredients });
             }
@@ -243,12 +296,12 @@ impl Repository<Recipe> for Service {
         }
 
         pipeline.append(&mut vec![
-            doc! { "$sort": { "updatedAt": -1 } },
+            doc! { "$sort": { params.sort: params.order } },
             doc! {
                 "$lookup": {
                     "from": "user",
                     "localField": "authorId",
-                    "foreignField": "_id",
+                    "foreignField": "id",
                     "as": "author"
                 }
             },
@@ -263,25 +316,25 @@ impl Repository<Recipe> for Service {
                     "$or": [
                         {
                             "author.displayName": {
-                                "$regex": &payload.data,
+                                "$regex": &params.query,
                                 "$options": "i",
                             },
                         },
                         {
                             "author.username": {
-                                "$regex": &payload.data,
+                                "$regex": &params.query,
                                 "$options": "i",
                             },
                         },
                         {
                             "title": {
-                                "$regex": &payload.data,
+                                "$regex": &params.query,
                                 "$options": "i",
                             },
                         },
                         {
                             "description": {
-                                "$regex": payload.data,
+                                "$regex": params.query,
                                 "$options": "i",
                             },
                         },
@@ -298,25 +351,42 @@ impl Repository<Recipe> for Service {
             doc! {
                 "$project": {
                     "_id": 0,
+                    "id": 1,
                     "author": {
+                        "id": "$author.id",
                         "icon": "$author.icon",
-                        "username": "$author.username",
                         "displayName": "$author.displayName",
-                        "roles": "$author.roles"
+                        "username": "$author.username",
+                        "roles": "$author.roles",
+                        "ratingAvg": {
+                            "$cond": {
+                                "if": { "$eq": ["$ratingCount", 0] },
+                                "then": 0,
+                                "else": { "$divide": ["$ratingSum", "$ratingCount"] }
+                            }
+                        }
                     },
                     "title": 1,
+                    "ratingAvg": {
+                        "$cond": {
+                            "if": { "$eq": ["$ratingCount", 0] },
+                            "then": 0,
+                            "else": { "$divide": ["$ratingSum", "$ratingCount"] }
+                        }
+                    },
                     "description": { "$substrCP": ["$description", 0, 100] },
-                    "mainImage": 1,
                     "prepTime": 1,
                     "allergens": 1,
-                    "tags": 1
+                    "tags": 1,
+                    "thumbnail": 1,
+                    "viewCount": 1
                 }
             },
             doc! {
                 "$facet": {
                     "data": [
-                        { "$skip": payload.page * payload.results_per_page },
-                        { "$limit": payload.results_per_page },
+                        { "$skip": params.start * params.count },
+                        { "$limit": params.count },
                     ],
                     "total": [
                         { "$count": "count" }

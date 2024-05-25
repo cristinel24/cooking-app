@@ -2,28 +2,26 @@ use crate::repository::cooking_app::CookingAppRepository;
 use anyhow::Result;
 use once_cell::sync::OnceCell;
 
-pub const MONGO_URI_VAR: &str = "MONGO_SERVER";
-pub const AI_SERVER_VAR: &str = "AI_SERVER";
-pub const AUTH_SERVER_VAR: &str = "AUTH_SERVER";
-pub const SERVER: &str = "SERVER";
+pub const MONGO_URI: &str = "MONGO_URI";
+pub const AI_API_URL: &str = "AI_API_URL";
+pub const HOST: &str = "HOST";
 pub const PORT: &str = "PORT";
 
+#[derive(Debug)]
 pub struct EnvironmentVariables {
-    pub mongo_server: String,
-    pub ai_server: String,
-    pub auth_server: String,
-    pub server: String,
+    pub mongo_uri: String,
+    pub ai_api_url: String,
+    pub host: String,
     pub port: u32,
 }
 
-impl Default for EnvironmentVariables {
-    fn default() -> Self {
+impl EnvironmentVariables {
+    pub fn get_env() -> Self {
         Self {
-            mongo_server: "mongodb://localhost:27017".to_owned(),
-            ai_server: "http://127.0.0.1:8000".to_owned(),
-            auth_server: "http://localhost:8082".to_owned(),
-            server: "0.0.0.0".to_owned(),
-            port: 3000,
+            mongo_uri: std::env::var(MONGO_URI).unwrap_or("mongodb://localhost:27017/?directConnection=true".into()),
+            ai_api_url: std::env::var(AI_API_URL).unwrap_or("http://localhost:8912".into()),
+            host: std::env::var(HOST).unwrap_or("0.0.0.0".into()),
+            port: std::env::var(PORT).unwrap_or("3000".into()).parse::<u32>().unwrap_or(3000),
         }
     }
 }

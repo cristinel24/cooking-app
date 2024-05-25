@@ -3,14 +3,11 @@ use serde::{Deserialize, Serialize};
 
 use super::common::{Filters, SearchRecipesParams};
 
-pub mod search_ai_tokens;
-pub mod search_fuzzy_title;
-pub mod search_recipes;
+pub mod search_ai;
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct SearchRecipesPayload {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub query: Option<String>,
+pub struct SearchAiPayload {
+    pub query: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sort: Option<String>,
@@ -25,10 +22,10 @@ pub struct SearchRecipesPayload {
     pub count: u32,
 }
 
-impl SearchRecipesPayload {
-    pub fn to_params(self) -> SearchRecipesParams {
+impl SearchAiPayload {
+    pub fn to_params(self, tokens: Vec<String>) -> SearchRecipesParams {
         SearchRecipesParams {
-            query: self.query.unwrap_or("".to_string()),
+            query: self.query,
             sort: self.sort.unwrap_or("_id".to_string()),
             order: if self.order.unwrap_or("asc".to_string()).eq("asc") {
                 1
@@ -38,12 +35,7 @@ impl SearchRecipesPayload {
             filters: self.filters,
             start: self.start,
             count: self.count,
-            tokens: Vec::new(),
+            tokens,
         }
     }
-}
-
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct AiTokensPayload {
-    pub tokens: Vec<String>,
 }

@@ -2,24 +2,15 @@ use crate::repository::service::CollectionName;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
-#[serde(rename_all = "camelCase")]
-pub struct Author {
-    pub icon: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub username: Option<String>,
-    pub display_name: String,
-    pub roles: i32,
-}
-
 #[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
+    pub id: String,
     pub icon: String,
     pub display_name: String,
     pub username: String,
     pub roles: i32,
-    pub rating: f32,
+    pub rating_avg: f32,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug)]

@@ -18,6 +18,10 @@ DISPLAY_NAME_MIN_LENGTH = 4
 DISPLAY_NAME_MAX_LENGTH = 64
 DESCRIPTION_MAX_LENGTH = 10000
 
+ALLOWED_TAGS = {"p", "ul", "li", "ol", "img", "s", "u", "strong", "em", "br"}
+ALLOWED_ATTRIBUTES = {"img": {"src"}}
+URL_SCHEMES = {"https", "http"}
+
 
 class ErrorCodes(Enum):
     USER_NOT_FOUND = 21800

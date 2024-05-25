@@ -1,13 +1,12 @@
-from constants import ICON_VALIDATION, DISPLAY_NAME_VALIDATION, DESCRIPTION_VALIDATION, ErrorCodes
+from constants import ICON_VALIDATION, DISPLAY_NAME_VALIDATION, DESCRIPTION_VALIDATION, ErrorCodes, ALLOWED_TAGS, ALLOWED_ATTRIBUTES, \
+    URL_SCHEMES
 from exception import ProfileDataChangerException
 from fastapi import status
-from html_sanitizer import Sanitizer
-
-sanitizer = Sanitizer()
+import nh3
 
 
 def is_string_sanitized(string: str) -> bool:
-    return sanitizer.sanitize(string) == string
+    return nh3.clean(html=string, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES, url_schemes=URL_SCHEMES) == string
 
 
 def validate_user_profile_data(data: dict[str, str]) -> None:

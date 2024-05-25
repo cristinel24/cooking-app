@@ -14,7 +14,8 @@ class UserData:
         self.icon = data.icon
         self.displayName = data.displayName
         self.description = data.description
-        self.allergens_to_add = self.allergens_to_remove = []
+        self.allergens_to_add = []
+        self.allergens_to_remove = []
         if data.allergens is not None:
             for action, allergen in data.allergens:
                 match action:

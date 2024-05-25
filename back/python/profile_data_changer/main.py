@@ -1,8 +1,6 @@
 from typing import Annotated
-
 from fastapi import FastAPI, Header, status
 from fastapi.responses import JSONResponse
-
 from constants import HOST, PORT, ErrorCodes
 from exception import ProfileDataChangerException
 import services

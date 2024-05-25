@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-class UserRoles(int):
+class UserRoles:
     VERIFIED = 0b1
     ADMIN = 0b10
     PREMIUM = 0b100
@@ -12,9 +12,10 @@ class UserRoles(int):
     ACTIVE = 0b0
 
 HOST = os.getenv("HOST","localhost")
-PORT = os.getenv("PORT","8000")
+PORT = int(os.getenv("PORT",8000))
 DB_NAME = os.getenv("DB_NAME")
-MONGO_URI = os.getenv("MONGO_URI")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
+
 MAX_TIMEOUT_TIME_SECONDS = 3
 
 class ErrorCodes(Enum):
@@ -22,3 +23,5 @@ class ErrorCodes(Enum):
     NONEXISTENT_USER = 21401
     NONEXISTENT_ROLES = 21402
     FAILED_ROLES = 21403
+    DB_TIMEOUT = 21404
+    DB_ERROR = 21405

@@ -1,5 +1,8 @@
 from pydantic import BaseModel
-from typing import Dict
+
 
 class RoleData(BaseModel):
-    roles: Dict[str, int]
+    verified: int = 0
+    admin: int = 0
+    premium: int = 0
+    banned: int = 0

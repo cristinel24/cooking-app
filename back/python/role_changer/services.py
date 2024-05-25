@@ -1,9 +1,35 @@
+from constants import ErrorCodes, UserRoles
+from exceptions import RoleChangerException
+from fastapi import status
 from repository import MongoCollection
 from schemas import *
 
-def update_roles_in_db(user_id: str, roles: RoleData):
-    db = MongoCollection()
-    return db.update_roles(user_id, roles)
 
-def update_user_roles_logic(user_id: str, role_data: RoleData):
-    return update_roles_in_db(user_id, role_data.roles)
+def update_user_roles(user_id: str, role_data: RoleData):
+    db = MongoCollection()
+    roles = db.get_user_roles(user_id)
+
+    for role, value in role_data.__dict__.items():
+        if value == 0:
+            continue
+
+        if not hasattr(UserRoles, role.upper()):
+            raise RoleChangerException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                error_code=ErrorCodes.NONEXISTENT_ROLES.value,
+            )
+
+        role_bit = getattr(UserRoles, role.upper())
+
+        if value > 0:
+            roles |= role_bit
+        else:
+            roles &= ~role_bit
+
+    db.update_roles(user_id, roles)
+    return RoleData(
+        verified=roles & UserRoles.VERIFIED > 0,
+        admin=roles & UserRoles.ADMIN > 0,
+        premium=roles & UserRoles.PREMIUM > 0,
+        banned=roles & UserRoles.BANNED > 0,
+    )

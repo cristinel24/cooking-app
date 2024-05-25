@@ -1,15 +1,14 @@
-import os
 from aiohttp import ClientSession
 from httpx import Client
 from pymongo import MongoClient, errors, timeout
-from constants import MAX_TIMEOUT_TIME_SECONDS, ErrorCodes, DB_NAME
+from constants import MAX_TIMEOUT_TIME_SECONDS, MONGO_URI, ErrorCodes, DB_NAME
 
 class MongoCollection:
     def __init__(self, connection: MongoClient | None = None):
         if connection is not None:
             self._connection = connection
         else:
-            self._connection = MongoClient(os.getenv("MONGO_URI"))
+            self._connection = MongoClient(MONGO_URI)
 
 class RecipeCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):

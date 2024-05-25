@@ -4,7 +4,7 @@ from enum import Enum
 
 load_dotenv()
 HOST= os.getenv("HOST", "localhost")
-PORT= os.getenv("PORT", 8000)
+PORT= int(os.getenv("PORT", 8000))
 DB_NAME=os.getenv("DB_NAME")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 MAX_TIMEOUT_TIME_SECONDS = 3

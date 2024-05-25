@@ -12,6 +12,24 @@ class MongoCollection:
     def get_connection(self) -> MongoClient:
         return self._connection
 
+class RatingCollection(MongoCollection):
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).rating
+
+    def get_author_id_from_rating_id(self, rating_identifier: str) -> str:
+        with pymongo.timeout(MAX_TIMEOUT_SECONDS):
+            try:
+                # Find the document with the given rating_id
+                document = self._collection.find_one({"id": rating_identifier}, {"authorId": 1, "_id": 0})
+
+                if document:
+                    return document.get("authorId")
+                else:
+                    raise RecipeRatingManagerException(ErrorCodes.USER_NOT_FOUND.value, "AuthorId not found")
+            except errors.PyMongoError as e:
+                raise RecipeRatingManagerException(ErrorCodes.DB_ERROR.value, f"Database error: {str(e)}")
+
 
 class UserCollection(MongoCollection):
     def __init__(self, connection: MongoClient | None = None):
@@ -29,7 +47,7 @@ class UserCollection(MongoCollection):
                 if not user:
                     raise RecipeRatingManagerException(ErrorCodes.USER_NOT_FOUND.value, "User not found")
 
-                # Update ratingSum and ratingCount
+                # update ratingSum and ratingCount
                 self._collection.update_one(
                     {"id": author_id},
                     {

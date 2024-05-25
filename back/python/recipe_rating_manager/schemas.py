@@ -18,6 +18,7 @@ class RatingCreateRequest(BaseModel):
     authorId: str
     description: str
     rating: int = Field(..., ge=1, le=5, description="Rating value between 1 and 5")
+    parentType: str = "recipe"
 
 class RatingCreateResponse(BaseModel):
     message: str = "Rating created successfully"

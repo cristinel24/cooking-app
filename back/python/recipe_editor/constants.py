@@ -23,6 +23,11 @@ TAG_MANAGER_API_URL = os.getenv("TAG_MANAGER_API_URL", "http://localhost:8001")
 INC_TAGS_ROUTE = TAG_MANAGER_API_URL + "/tags/inc"
 DEC_TAGS_ROUTE = TAG_MANAGER_API_URL + "/tags/dec"
 
+ALLOWED_TAGS = {"p", "ul", "li", "ol", "img", "s", "u", "strong", "em", "br"}
+ALLOWED_ATTRIBUTES = {"img": {"src"}}
+URL_SCHEMES = {"https", "http"}
+UNSAFE_RECIPE_DATA_FIELDS = {"description", "steps"}
+
 
 @unique
 class ErrorCodes(Enum):
@@ -39,5 +44,4 @@ class ErrorCodes(Enum):
     INVALID_THUMBNAIL_URL_SIZE = 26210
     NONEXISTENT_RECIPE = 26211
     ACCESS_UNAUTHORIZED = 26212
-    MALFORMED_DESCRIPTION = 26213
-    MALFORMED_STEPS = 26214
+    MALFORMED_HTML = 26213

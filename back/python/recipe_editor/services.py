@@ -1,18 +1,22 @@
 import datetime
 
 from fastapi import status
+
 import api
+from constants import ErrorCodes, UNSAFE_RECIPE_DATA_FIELDS
 from exception import RecipeEditorException
 from repository import MongoCollection, RecipeCollection
 from schemas import RecipeData, Recipe
-from utils import validate_recipe_data, check_flags
-from constants import ErrorCodes
+from utils import validate_recipe_data, check_flags, sanitize_html
 
 client = MongoCollection()
 recipe_collection = RecipeCollection(client.get_connection())
 
 
 async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
+    sanitized_fields = sanitize_html(recipe_data.model_dump(include=UNSAFE_RECIPE_DATA_FIELDS))
+    for key, value in sanitized_fields.items():
+        setattr(recipe_data, key, value)
     validate_recipe_data(recipe_data)
     recipe = Recipe(recipe_data)
 
@@ -29,7 +33,9 @@ async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
             with session.start_transaction():
                 # regenerate tokens
                 fields_needed = ["title", "prepTime", "tags", "allergens", "description", "ingredients", "steps"]
-                ans = await api.tokenize_recipe({key: (recipe_dict[key] if not hasattr(recipe, key) else getattr(recipe, key)) for key in fields_needed})
+                ans = await api.tokenize_recipe(
+                    {key: (recipe_dict[key] if not hasattr(recipe, key) else getattr(recipe, key)) for key in
+                     fields_needed})
                 if ans is not None:
                     recipe.tokens = ans
 

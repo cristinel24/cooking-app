@@ -47,7 +47,7 @@ def sanitize_html(fields: dict[str, str | list[str]]) -> dict[str, str | list[st
                     raise RecipeEditorException(ErrorCodes.MALFORMED_HTML.value, status.HTTP_400_BAD_REQUEST)
 
             clean_fields[key] = clean_htmls
-        else:
+        elif isinstance(value, str):
             clean_fields[key] = nh3.clean(html=value, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES,
                                           url_schemes=URL_SCHEMES)
             if not clean_fields[key]:

@@ -45,7 +45,7 @@ async def request_token(user_id: str, token_type: str):
             formated_url = f"{TOKEN_GENERATOR_API_URL}/{user_id}/{token_type}"
             response = await client.get(url=formated_url)
             resp_dict = response.json()
-            if resp_dict["errorCode"] is not None:
+            if resp_dict.get("errorCode") is not None:
                 raise LoginException(resp_dict["errorCode"], status.HTTP_503_SERVICE_UNAVAILABLE)
             parsed_response = TokenResponse.model_validate(resp_dict, strict=True)
             return parsed_response  # object of type TokenResponse

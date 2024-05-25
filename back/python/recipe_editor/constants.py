@@ -13,7 +13,7 @@ DB_NAME = os.getenv("DB_NAME")
 MAX_TIMEOUT_TIME_SECONDS = 3
 
 AI_API_URL = os.getenv("AI_API_URL", "http://localhost:8003")
-AI_RECIPE_TOKENIZER_ROUTE = AI_API_URL + "/api/tokenize/recipe"
+AI_RECIPE_TOKENIZER_ROUTE = AI_API_URL + "/tokenize/recipe"
 
 ALLERGEN_MANAGER_API_URL = os.getenv("ALLERGEN_MANAGER_API_URL", "http://localhost:8000")
 INC_ALLERGENS_ROUTE = ALLERGEN_MANAGER_API_URL + "/allergens/inc"

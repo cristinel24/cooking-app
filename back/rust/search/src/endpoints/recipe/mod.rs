@@ -26,7 +26,7 @@ pub struct SearchRecipesPayload {
 }
 
 impl SearchRecipesPayload {
-    pub fn to_params(self) -> SearchRecipesParams {
+    pub fn into_params(self) -> SearchRecipesParams {
         SearchRecipesParams {
             query: self.query.unwrap_or("".to_string()),
             sort: self.sort.unwrap_or("_id".to_string()),

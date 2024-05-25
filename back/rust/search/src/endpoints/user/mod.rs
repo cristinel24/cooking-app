@@ -19,7 +19,7 @@ pub struct SearchUsersPayload {
 }
 
 impl SearchUsersPayload {
-    pub fn to_params(self) -> SearchUsersParams {
+    pub fn into_params(self) -> SearchUsersParams {
         SearchUsersParams {
             query: self.query.unwrap_or("".to_string()),
             sort: self.sort.unwrap_or("_id".to_string()),

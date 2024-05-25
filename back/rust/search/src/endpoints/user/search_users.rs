@@ -25,7 +25,7 @@ pub async fn search_users(
     match context
         .repository
         .user_collection
-        .search(payload.into_inner().to_params())
+        .search(payload.into_inner().into_params())
         .await
     {
         Ok(value) => Json(EndpointResponse::Success(value)),

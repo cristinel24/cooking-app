@@ -39,7 +39,7 @@ pub async fn search_ai(
     match context
         .repository
         .recipe_collection
-        .search(payload.into_inner().to_params(tokens))
+        .search(payload.into_inner().into_params(tokens))
         .await
     {
         Ok(mut value) => {

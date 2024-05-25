@@ -25,7 +25,7 @@ pub async fn search_recipes(
     match context
         .repository
         .recipe_collection
-        .search(payload.into_inner().to_params())
+        .search(payload.into_inner().into_params())
         .await
     {
         Ok(mut value) => {

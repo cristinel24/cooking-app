@@ -23,7 +23,7 @@ pub struct SearchAiPayload {
 }
 
 impl SearchAiPayload {
-    pub fn to_params(self, tokens: Vec<String>) -> SearchRecipesParams {
+    pub fn into_params(self, tokens: Vec<String>) -> SearchRecipesParams {
         SearchRecipesParams {
             query: self.query,
             sort: self.sort.unwrap_or("_id".to_string()),

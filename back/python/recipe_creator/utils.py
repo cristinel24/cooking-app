@@ -27,7 +27,7 @@ def check_flags(flags: int, n: int) -> bool:
 
 def match_collection_error(e: errors.PyMongoError) -> RecipeCreatorException:
     if e.timeout:
-        return RecipeCreatorException(ErrorCodes.DB_CONNECTION_TIMEOUT.value, status.HTTP_504_INTERNAL_SERVER_ERROR)
+        return RecipeCreatorException(ErrorCodes.DB_CONNECTION_TIMEOUT.value, status.HTTP_504_GATEWAY_TIMEOUT)
     else:
         return RecipeCreatorException(ErrorCodes.DB_CONNECTION_NONTIMEOUT.value, status.HTTP_500_INTERNAL_SERVER_ERROR)
 

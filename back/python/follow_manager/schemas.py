@@ -14,6 +14,11 @@ class UserCardData(BaseModel):
     ratingAvg: float | None = None
 
 
+class FollowResponse(BaseModel):
+    following: bool
+    followed: bool
+
+
 class FollowersCountData(BaseModel):
     followersCount: int | None = None
 

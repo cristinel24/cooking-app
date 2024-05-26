@@ -39,9 +39,16 @@ use crate::endpoints::verifier::verify;
 use crate::graceful_shutdown::GracefulShutdown;
 use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
+use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
-use salvo::{logging::Logger, oapi::{Info, OpenApi}, prelude::{Router, RouterExt, SwaggerUi, TcpListener}, Listener, Server};
+use salvo::Service;
+use salvo::{
+    logging::Logger,
+    oapi::{Info, OpenApi},
+    prelude::{Router, RouterExt, SwaggerUi, TcpListener},
+    Listener, Server,
+};
 use tracing::info;
 use crate::endpoints::search::{ai_endpoint, recipes_endpoint, users_endpoint};
 
@@ -53,6 +60,12 @@ async fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .with_max_level(tracing_core::Level::TRACE)
         .init();
+
+    let cors = Cors::new()
+        .allow_origin(AllowOrigin::any())
+        .allow_methods(AllowMethods::any())
+        .allow_headers(AllowHeaders::any())
+        .into_handler();
 
     let config = get_configuration().context("Invalid configuration file!")?;
     let auth_scheme = SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new(AUTH_HEADER)));
@@ -120,7 +133,8 @@ async fn main() -> Result<()> {
     let server = Server::new(acceptor);
 
     GracefulShutdown::listen(server.handle());
-    server.serve(router).await;
+    let service = Service::new(router).hoop(cors);
+    server.serve(service).await;
     Ok(())
 }
 
@@ -128,12 +142,9 @@ fn setup_search_routes() -> Router {
     Router::with_path("/search")
         .oapi_tag("SEARCH")
         .append(&mut vec![
-            Router::with_path("/ai")
-                .post(ai_endpoint),
-            Router::with_path("/recipes")
-                .post(recipes_endpoint),
-            Router::with_path("/users")
-                .post(users_endpoint),
+            Router::with_path("/ai").post(ai_endpoint),
+            Router::with_path("/recipes").post(recipes_endpoint),
+            Router::with_path("/users").post(users_endpoint),
         ])
 }
 
@@ -281,6 +292,6 @@ fn setup_misc_routes() -> Router {
             .patch(edit_recipe),
         Router::with_path("/verify")
             .oapi_tag("VERIFIER")
-            .post(verify),
+            .patch(verify),
     ])
 }

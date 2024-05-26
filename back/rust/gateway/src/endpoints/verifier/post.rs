@@ -34,10 +34,7 @@ pub async fn verify(
     res: &mut Response,
     token_value: QueryParam<String, true>,
 ) -> Json<EndpointResponse<String>> {
-    let uri = req.uri().path();
-    let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[3..].join("/");
-    let url: String = format!("localhost:12350/");
+    let url: String = SERVICE.to_string();
 
     return match get_response::<[(&str, String); 1], String, String>(
         Method::POST,

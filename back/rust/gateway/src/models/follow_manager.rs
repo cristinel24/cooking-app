@@ -10,8 +10,20 @@ pub struct FollowCount {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
+pub struct FollowingCount {
+    pub following_count: u32,
+}
+
+#[derive(Serialize, Deserialize, Default, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct Follow {
     pub followers: Vec<CardData>,
+}
+
+#[derive(Serialize, Deserialize, Default, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct Following {
+    pub following: Vec<CardData>,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]

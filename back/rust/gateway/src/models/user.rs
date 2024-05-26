@@ -10,9 +10,6 @@ pub struct User {
     pub icon: String,
     pub roles: u32,
     pub rating_avg: f32,
-    pub description: String,
-    pub recipes: Vec<String>,
-    pub ratings: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]

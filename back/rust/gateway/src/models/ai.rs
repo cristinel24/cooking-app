@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct TokenizeRequest {
     pub ingredient: String,
+    pub user_id: String,
+    pub recipe_id: String,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]

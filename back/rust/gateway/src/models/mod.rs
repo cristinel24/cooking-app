@@ -16,6 +16,7 @@ pub mod search;
 pub mod search_history;
 pub mod tags;
 pub mod user;
+pub mod token_validator;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]

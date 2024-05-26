@@ -12,7 +12,7 @@ pub struct Recipe {
     pub ingredients: Vec<String>,
     pub allergens: Vec<String>,
     pub tags: Vec<String>,
-    pub thumbnail: Vec<String>,
+    pub thumbnail: String,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]

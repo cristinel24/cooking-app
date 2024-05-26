@@ -15,7 +15,6 @@ class AuthorCardData(BaseModel):
 
 class Rating(BaseModel):
     updatedAt: datetime
-    createdAt: datetime
     id: str
     authorId: str
     rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")

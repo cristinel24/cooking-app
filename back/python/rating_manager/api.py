@@ -26,8 +26,7 @@ class ExternalDataProvider:
 
         if isinstance(response, dict) and response.get(ERROR_FIELD):
             raise ExternalError()
-
-        return response
+        return response["id"]
 
     @async_retry(request_errors)
     async def get_user(self, user_id: str | None) -> AuthorCardData:

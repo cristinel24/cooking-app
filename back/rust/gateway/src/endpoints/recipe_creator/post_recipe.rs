@@ -1,9 +1,7 @@
-use crate::config::get_global_context;
 use crate::endpoints::recipe_creator::SERVICE;
 use crate::endpoints::{
-    get_response, redirect, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
+    get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
 };
-use crate::get_redirect_url;
 use crate::models::recipe::Recipe;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
@@ -35,13 +33,13 @@ pub async fn post_recipe_item(
     res: &mut Response,
     data: JsonBody<Recipe>,
 ) -> Json<EndpointResponse<String>> {
-    let uri = req.uri().to_string();
+    let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[2..].join("/");
-    let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
+    let new_url = parts[3..].join("/");
+    let url: String = format!("{SERVICE}/{new_url}");
 
     return (get_response::<&str, _, String>(
-        Method::PATCH,
+        Method::POST,
         url,
         None,
         Some(data.into_inner()),
@@ -50,7 +48,8 @@ pub async fn post_recipe_item(
     )
     .await)
         .map_or_else(
-            |_| {
+            |e| {
+                error!("{e}");
                 res.status_code(StatusCode::BAD_REQUEST);
                 Json(EndpointResponse::Error(ErrorResponse::default()))
             },

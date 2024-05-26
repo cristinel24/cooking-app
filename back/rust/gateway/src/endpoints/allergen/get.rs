@@ -35,7 +35,7 @@ pub async fn get_allergen_item(
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[2..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
-    return (get_response::<[(&str, String); 1], &str, Allergens>(
+    return match get_response::<[(&str, String); 1], &str, Allergens>(
         Method::GET,
         url,
         Some(&[("starting_with", starting_with.into_inner())]),
@@ -43,13 +43,19 @@ pub async fn get_allergen_item(
         Some(req.headers().clone()),
         false,
     )
-    .await)
-        .map_or_else(
-            |e| {
-                error!("{e}");
-                res.status_code(StatusCode::BAD_REQUEST);
-                Json(EndpointResponse::Error(ErrorResponse::default()))
-            },
-            Json,
-        );
+    .await {
+        Ok(item) => {
+            if let EndpointResponse::Error((error_code, status_code)) = item {
+                res.status_code(StatusCode::from_u16(status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR));
+                Json(EndpointResponse::ServerError(error_code))
+            } else {
+                Json(item)
+            }
+        },
+        Err(e) => {
+            error!("{e}");
+            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            Json(EndpointResponse::default())
+        }
+    }
 }

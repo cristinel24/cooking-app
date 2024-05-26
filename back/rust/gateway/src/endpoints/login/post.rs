@@ -33,7 +33,7 @@ pub async fn request_login_endpoint(
 ) -> Json<EndpointResponse<Success>> {
     let url: String = SERVICE.to_string();
 
-    return (get_response::<&str, Body, Success>(
+    return match get_response::<&str, Body, Success>(
         Method::POST,
         url,
         None,
@@ -41,13 +41,19 @@ pub async fn request_login_endpoint(
         Some(req.headers().clone()),
         false,
     )
-    .await)
-        .map_or_else(
-            |e| {
-                error!("{e}");
-                res.status_code(StatusCode::BAD_REQUEST);
-                Json(EndpointResponse::Error(ErrorResponse::default()))
-            },
-            Json,
-        );
+    .await {
+        Ok(item) => {
+            if let EndpointResponse::Error((error_code, status_code)) = item {
+                res.status_code(StatusCode::from_u16(status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR));
+                Json(EndpointResponse::ServerError(error_code))
+            } else {
+                Json(item)
+            }
+        },
+        Err(e) => {
+            error!("{e}");
+            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            Json(EndpointResponse::default())
+        }
+    }
 }

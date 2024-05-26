@@ -43,7 +43,7 @@ pub async fn get_all_followers(
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return (get_response::<[(&str, i64)], &str, Follow>(
+    return match get_response::<[(&str, i64)], &str, Follow>(
         Method::GET,
         url,
         Some(&[("start", start.into_inner()), ("count", count.into_inner())]),
@@ -51,13 +51,19 @@ pub async fn get_all_followers(
         Some(req.headers().clone()),
         false,
     )
-    .await)
-        .map_or_else(
-            |e| {
-                error!("{e}");
-                res.status_code(StatusCode::BAD_REQUEST);
-                Json(EndpointResponse::Error(ErrorResponse::default()))
-            },
-            Json,
-        );
+    .await {
+        Ok(item) => {
+            if let EndpointResponse::Error((error_code, status_code)) = item {
+                res.status_code(StatusCode::from_u16(status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR));
+                Json(EndpointResponse::ServerError(error_code))
+            } else {
+                Json(item)
+            }
+        },
+        Err(e) => {
+            error!("{e}");
+            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            Json(EndpointResponse::default())
+        }
+    }
 }

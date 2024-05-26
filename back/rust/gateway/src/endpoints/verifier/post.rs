@@ -37,9 +37,9 @@ pub async fn verify(
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
-    let url: String = format!("{SERVICE}/{new_url}");
+    let url: String = format!("localhost:12350/");
 
-    return (get_response::<[(&str, String); 1], String, String>(
+    return match get_response::<[(&str, String); 1], String, String>(
         Method::POST,
         url,
         Some(&[("token_value", token_value.into_inner())]),
@@ -47,13 +47,19 @@ pub async fn verify(
         Some(req.headers().clone()),
         true,
     )
-    .await)
-        .map_or_else(
-            |e| {
-                error!("{e}");
-                res.status_code(StatusCode::BAD_REQUEST);
-                Json(EndpointResponse::Error(ErrorResponse::default()))
-            },
-            Json,
-        );
+    .await {
+        Ok(item) => {
+            if let EndpointResponse::Error((error_code, status_code)) = item {
+                res.status_code(StatusCode::from_u16(status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR));
+                Json(EndpointResponse::ServerError(error_code))
+            } else {
+                Json(item)
+            }
+        },
+        Err(e) => {
+            error!("{e}");
+            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            Json(EndpointResponse::default())
+        }
+    }
 }

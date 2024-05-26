@@ -1,8 +1,6 @@
-use anyhow::anyhow;
 use crate::models::ErrorResponse;
 use reqwest::header::HeaderMap;
 use reqwest::{Client, Method, Response};
-use salvo::http::StatusCode;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 use tracing::debug;

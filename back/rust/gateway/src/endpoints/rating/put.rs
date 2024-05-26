@@ -43,7 +43,7 @@ pub async fn post_rating_endpoint(
     let url: String = format!("{SERVICE}/{new_url}");
     let parent_id = req.param::<String>("parent_id").unwrap_or_default();
 
-    return (get_response::<[(&str, String); 1], Create, String>(
+    return match get_response::<[(&str, String); 1], Create, String>(
         Method::PUT,
         url,
         Some(&[("parent_id", parent_id)]),
@@ -51,13 +51,19 @@ pub async fn post_rating_endpoint(
         Some(req.headers().clone()),
         true,
     )
-    .await)
-        .map_or_else(
-            |e| {
-                error!("{e}");
-                res.status_code(StatusCode::BAD_REQUEST);
-                Json(EndpointResponse::Error(ErrorResponse::default()))
-            },
-            Json,
-        );
+    .await {
+        Ok(item) => {
+            if let EndpointResponse::Error((error_code, status_code)) = item {
+                res.status_code(StatusCode::from_u16(status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR));
+                Json(EndpointResponse::ServerError(error_code))
+            } else {
+                Json(item)
+            }
+        },
+        Err(e) => {
+            error!("{e}");
+            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            Json(EndpointResponse::default())
+        }
+    }
 }

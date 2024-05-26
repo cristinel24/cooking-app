@@ -1,8 +1,6 @@
-use crate::config::get_global_context;
 use crate::endpoints::history_manager::SERVICE;
 use crate::endpoints::{get_response, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::endpoints::{redirect, EndpointResponse};
-use crate::get_redirect_url;
+use crate::endpoints::{EndpointResponse};
 use crate::models::search::Query;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
@@ -37,10 +35,10 @@ pub async fn put_in_search_history(
     res: &mut Response,
     search: JsonBody<Query>,
 ) -> Json<EndpointResponse<String>> {
-    let uri = req.uri().to_string();
+    let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[2..].join("/");
-    let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
+    let new_url = parts[3..].join("/");
+    let url: String = format!("{SERVICE}/{new_url}");
 
     return (get_response::<&str, Query, String>(
         Method::PUT,
@@ -48,11 +46,12 @@ pub async fn put_in_search_history(
         None,
         Some(search.into_inner()),
         Some(req.headers().clone()),
-        false,
+        true,
     )
     .await)
         .map_or_else(
-            |_| {
+            |e| {
+                error!("{e}");
                 res.status_code(StatusCode::BAD_REQUEST);
                 Json(EndpointResponse::Error(ErrorResponse::default()))
             },

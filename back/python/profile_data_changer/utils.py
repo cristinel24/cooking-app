@@ -5,8 +5,22 @@ from fastapi import status
 import nh3
 
 
-def is_string_sanitized(string: str) -> bool:
-    return nh3.clean(html=string, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES, url_schemes=URL_SCHEMES) == string
+def sanitize_html(fields: dict[str, str | list[str]]) -> dict[str, str | list[str]]:
+    clean_fields = dict()
+    for key, value in fields.items():
+        if isinstance(value, list):
+            clean_htmls = list()
+            for item in value:
+                clean_htmls.append(
+                    nh3.clean(html=item, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES, url_schemes=URL_SCHEMES))
+                if not clean_htmls[-1]:
+                    raise ProfileDataChangerException(status.HTTP_400_BAD_REQUEST, ErrorCodes.MALFORMED_HTML.value)
+            clean_fields[key] = clean_htmls
+        elif isinstance(value, str):
+            clean_fields[key] = nh3.clean(html=value, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES, url_schemes=URL_SCHEMES)
+            if not clean_fields[key]:
+                raise ProfileDataChangerException(status.HTTP_400_BAD_REQUEST, ErrorCodes.MALFORMED_HTML.value)
+    return clean_fields
 
 
 def validate_user_profile_data(data: dict[str, str]) -> None:
@@ -16,8 +30,6 @@ def validate_user_profile_data(data: dict[str, str]) -> None:
         validate_str(data["displayName"], DISPLAY_NAME_VALIDATION)
     if "description" in data:
         validate_str(data["description"], DESCRIPTION_VALIDATION)
-        if not is_string_sanitized(data["description"]):
-            raise ProfileDataChangerException(status.HTTP_400_BAD_REQUEST, ErrorCodes.MALFORMED_DESCRIPTION.value)
 
 
 def validate_str(value: str, checks: dict[str, int]) -> None:

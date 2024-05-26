@@ -1,6 +1,8 @@
+use anyhow::anyhow;
 use crate::models::ErrorResponse;
 use reqwest::header::HeaderMap;
 use reqwest::{Client, Method, Response};
+use salvo::http::StatusCode;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 use tracing::debug;
@@ -32,16 +34,18 @@ pub mod search;
 const SUCCESSFUL_RESPONSE: &str = "Successful operation response";
 const FAILED_RESPONSE: &str = "Failed operation response";
 
-#[derive(Deserialize, ToSchema)]
+#[derive(Deserialize, ToSchema, Debug)]
 pub(crate) enum EndpointResponse<T: Serialize> {
     Ok(T),
     Null(String),
-    Error(ErrorResponse),
+    Error((ErrorResponse, u16)),
+
+    ServerError(ErrorResponse),
 }
 
 impl<T: Serialize> Default for EndpointResponse<T> {
     fn default() -> Self {
-        Self::Error(ErrorResponse::default())
+        Self::ServerError(ErrorResponse::default())
     }
 }
 
@@ -54,6 +58,7 @@ impl<T: Serialize> Serialize for EndpointResponse<T> {
             Self::Ok(ok_response) => ok_response.serialize(serializer),
             Self::Null(ok_response) => ok_response.serialize(serializer),
             Self::Error(err) => err.serialize(serializer),
+            Self::ServerError(err) => err.serialize(serializer),
         }
     }
 }
@@ -87,6 +92,7 @@ pub(crate) async fn get_response<
     }
 
     let response: Response = req_builder.send().await?;
+    let code = response.status().as_u16();
 
     if response.status().is_success() {
         if is_null {
@@ -96,7 +102,7 @@ pub(crate) async fn get_response<
         }
     } else {
         Ok(EndpointResponse::Error(
-            response.json::<ErrorResponse>().await?,
+            (response.json::<ErrorResponse>().await?, code),
         ))
     }
 }

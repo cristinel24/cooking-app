@@ -41,12 +41,7 @@ use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
-use salvo::{
-    logging::Logger,
-    oapi::{Info, OpenApi},
-    prelude::{Router, RouterExt, SwaggerUi, TcpListener},
-    Listener, Server,
-};
+use salvo::{logging::Logger, oapi::{Info, OpenApi}, prelude::{Router, RouterExt, SwaggerUi, TcpListener}, Listener, Server};
 use tracing::info;
 use crate::endpoints::search::{ai_endpoint, recipes_endpoint, users_endpoint};
 

@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 
-const FormInput = forwardRef(function FormInput(
+const FormTextarea = forwardRef(function FormTextarea(
     { className, label, id, errorCheck, ...other },
     ref
 ) {
@@ -11,10 +11,10 @@ const FormInput = forwardRef(function FormInput(
                     {label}
                 </label>
             )}
-            <input className="form-input" id={id} ref={ref} {...other} />
+            <textarea className="form-textarea" id={id} ref={ref} {...other} />
             {errorCheck && errorCheck(id)}
         </div>
     )
 })
 
-export default FormInput
+export default FormTextarea

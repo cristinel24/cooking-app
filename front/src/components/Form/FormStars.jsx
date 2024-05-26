@@ -11,15 +11,17 @@ const FormStars = ({ value = 0, onChange }) => {
 
     return (
         <div className="form-stars">
-            {[1, 2, 3, 4, 5].map((star) =>
+            {[1, 2, 3, 4, 5].map((star, index) =>
                 star <= rating ? (
                     <FaStar
+                        key={index}
                         onClick={() => {
                             handleClick(star)
                         }}
                     />
                 ) : (
                     <FaRegStar
+                        key={index}
                         onClick={() => {
                             handleClick(star)
                         }}

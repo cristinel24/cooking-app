@@ -24,7 +24,8 @@
 }
 
 .form-input {
-    width: calc(100% - 20px);
+    box-sizing: border-box;
+    width: 100%;
     padding: 10px;
     border-radius: 10px;
     background-color: var(--searchbar-bg-color);

@@ -9,7 +9,7 @@ export const getRecipeCard = async (recipeId) => {
             id: '40',
             username: 'davisann',
             displayName: 'Justin Howard',
-            icon: 'https://woodard-hernandez.com/',
+            icon: 'https://thispersondoesnotexist.com/',
             roles: 0,
             ratingAvg: 3,
         },

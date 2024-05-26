@@ -1,8 +1,9 @@
 import httpx
+from fastapi import status
+
 from constants import (HASHER_API_URL, TOKEN_GENERATOR_API_URL,
                        USER_RETRIEVER_API_URL, Errors)
 from exceptions import LoginException
-from fastapi import status
 from schemas import HasherResponse, TokenResponse, UserCardData
 
 
@@ -30,7 +31,7 @@ async def request_user_card(user_id: str):
             resp_dict = response.json()
             if response.status_code != status.HTTP_200_OK:
                 raise LoginException(resp_dict.get("errorCode"), response.status_code)
-            parsed_response = UserCardData.model_validate(resp_dict, strict=True)
+            parsed_response = UserCardData.model_validate(resp_dict)
             return parsed_response
     except LoginException as e:
         raise e

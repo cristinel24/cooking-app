@@ -14,7 +14,7 @@ USER_CARDS_ROUTE = "/user-cards"
 
 MAX_TIMEOUT_TIME_SECONDS = 3
 
-HISTORY_MAX_SIZE = 10
+HISTORY_MAX_SIZE = 100
 
 
 class ErrorCodes(Enum):

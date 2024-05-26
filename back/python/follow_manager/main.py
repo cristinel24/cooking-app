@@ -46,8 +46,8 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
         return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
 
 
-@app.put("/{user_id}/following", tags=["auth", "following"], response_model=None,
-         response_description="Successful operation")
+@app.post("/{user_id}/follow", tags=["auth", "follow"], response_model=None,
+          response_description="Successful operation")
 async def add_follow(user_id: str, body: FollowData,
                      x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
     if not x_user_id or user_id != x_user_id:
@@ -59,7 +59,16 @@ async def add_follow(user_id: str, body: FollowData,
         return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
 
 
-@app.delete("/{user_id}/following", tags=["auth", "following"], response_model=None,
+@app.get("/{user_id}/follow", tags=["follow"], response_model=FollowResponse,
+         response_description="Successful operation")
+async def get_follow(user_id: str, follows_id: str) -> FollowResponse | JSONResponse:
+    try:
+        return await services.get_follow(user_id, follows_id)
+    except FollowManagerException as e:
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
+
+
+@app.delete("/{user_id}/follow", tags=["auth", "follow"], response_model=None,
             response_description="Successful operation")
 async def delete_follow(user_id: str, body: FollowData,
                         x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:

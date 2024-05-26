@@ -1,8 +1,8 @@
-import pymongo.errors
+from fastapi import status
+
 from api import request_hash, request_token, request_user_card
 from constants import BANNED_MASK, Errors
 from exceptions import LoginException
-from fastapi import status
 from repository import UserCollection
 from schemas import LoginData
 
@@ -22,9 +22,9 @@ async def login(data: LoginData) -> dict:
     # since no further information was provided on how to handle it
     # im doing this
     if (
-        user["login"] is None
-        or user["login"]["emailStatus"] != "Confirmed"
-        or user["roles"] & BANNED_MASK
+            user["login"] is None
+            or user["login"]["emailStatus"] != "Confirmed"
+            or user["roles"] & BANNED_MASK
     ):
         raise LoginException(Errors.INVALID_CREDS, status.HTTP_401_UNAUTHORIZED)
 

@@ -12,9 +12,6 @@ use crate::endpoints::follow_manager::{
     delete_following_user, get_all_followers, get_all_following, get_followers_count,
     get_user_following_count, put_new_following_user,
 };
-use crate::endpoints::search_history_manager::{
-    delete_item_search_history, get_search_history_endpoint, post_in_search_history,
-};
 use crate::endpoints::image_storage::{get_image, post_image};
 use crate::endpoints::login::request_login_endpoint;
 use crate::endpoints::message_history_manager::{delete_history, get_history, put_history};
@@ -29,6 +26,10 @@ use crate::endpoints::recipe_retriever::{get_card_recipe, get_full_recipe};
 use crate::endpoints::recipe_saver::{delete_recipe, put_recipe};
 use crate::endpoints::register::request_register_user;
 use crate::endpoints::role_changer::change_role;
+use crate::endpoints::search::{ai_endpoint, recipes_endpoint, users_endpoint};
+use crate::endpoints::search_history_manager::{
+    delete_item_search_history, get_search_history_endpoint, post_in_search_history,
+};
 use crate::endpoints::tag::get_tag_item;
 use crate::endpoints::user_destroyer::delete_user;
 use crate::endpoints::user_retriever::{
@@ -39,8 +40,10 @@ use crate::endpoints::verifier::verify;
 use crate::graceful_shutdown::GracefulShutdown;
 use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
+use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
+use salvo::Service;
 use salvo::{
     logging::Logger,
     oapi::{Info, OpenApi},
@@ -48,7 +51,6 @@ use salvo::{
     Listener, Server,
 };
 use tracing::info;
-use crate::endpoints::search::{ai_endpoint, recipes_endpoint, users_endpoint};
 
 #[endpoint]
 async fn test() {}
@@ -58,6 +60,12 @@ async fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .with_max_level(tracing_core::Level::TRACE)
         .init();
+
+    let cors = Cors::new()
+        .allow_origin(AllowOrigin::any())
+        .allow_methods(AllowMethods::any())
+        .allow_headers(AllowHeaders::any())
+        .into_handler();
 
     let config = get_configuration().context("Invalid configuration file!")?;
     let auth_scheme = SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new(AUTH_HEADER)));
@@ -125,7 +133,8 @@ async fn main() -> Result<()> {
     let server = Server::new(acceptor);
 
     GracefulShutdown::listen(server.handle());
-    server.serve(router).await;
+    let service = Service::new(router).hoop(cors);
+    server.serve(service).await;
     Ok(())
 }
 
@@ -133,12 +142,9 @@ fn setup_search_routes() -> Router {
     Router::with_path("/search")
         .oapi_tag("SEARCH")
         .append(&mut vec![
-            Router::with_path("/ai")
-                .post(ai_endpoint),
-            Router::with_path("/recipes")
-                .post(recipes_endpoint),
-            Router::with_path("/users")
-                .post(users_endpoint),
+            Router::with_path("/ai").post(ai_endpoint),
+            Router::with_path("/recipes").post(recipes_endpoint),
+            Router::with_path("/users").post(users_endpoint),
         ])
 }
 

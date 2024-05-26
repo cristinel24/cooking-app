@@ -18,8 +18,9 @@ class UserData:
         self.allergens_to_remove = []
         if data.allergens is not None:
             for action, allergen in data.allergens:
-                match action:
-                    case 1:
-                        self.allergens_to_add.append(allergen)
-                    case -1:
-                        self.allergens_to_remove.append(allergen)
+                if allergen:
+                    match action:
+                        case 1:
+                            self.allergens_to_add.append(allergen)
+                        case -1:
+                            self.allergens_to_remove.append(allergen)

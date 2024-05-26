@@ -1,17 +1,16 @@
-use crate::config::get_global_context;
-use crate::endpoints::follow_manager::SERVICE;
-use crate::endpoints::{
-    get_response, redirect, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
-};
-use crate::get_redirect_url;
-use crate::models::follow_manager::Follow;
-use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
+use salvo::{Request, Response, Writer};
 use salvo::oapi::endpoint;
 use salvo::oapi::extract::QueryParam;
 use salvo::prelude::Json;
-use salvo::{Request, Response, Writer};
 use tracing::error;
+
+use crate::endpoints::{
+    EndpointResponse, FAILED_RESPONSE, get_response, SUCCESSFUL_RESPONSE,
+};
+use crate::endpoints::follow_manager::SERVICE;
+use crate::models::ErrorResponse;
+use crate::models::follow_manager::Follow;
 
 #[endpoint(
     parameters(
@@ -41,10 +40,10 @@ pub async fn get_all_followers(
     start: QueryParam<i64, true>,
     count: QueryParam<i64, true>,
 ) -> Json<EndpointResponse<Follow>> {
-    let uri = req.uri().to_string();
+    let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[2..].join("/");
-    let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
+    let new_url = parts[3..].join("/");
+    let url: String = format!("{SERVICE}/{new_url}");
 
     return (get_response::<[(&str, i64)], &str, Follow>(
         Method::GET,
@@ -52,11 +51,12 @@ pub async fn get_all_followers(
         Some(&[("start", start.into_inner()), ("count", count.into_inner())]),
         None,
         Some(req.headers().clone()),
-        true,
+        false,
     )
     .await)
         .map_or_else(
-            |_| {
+            |e| {
+                error!("{e}");
                 res.status_code(StatusCode::BAD_REQUEST);
                 Json(EndpointResponse::Error(ErrorResponse::default()))
             },

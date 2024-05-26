@@ -1,7 +1,13 @@
+use reqwest::{Method, StatusCode};
 use salvo::{handler, Depot, FlowCtrl, Request, Response};
+use salvo::http::HeaderValue;
+use salvo::prelude::Json;
+use crate::endpoints::{EndpointResponse, get_response};
+use crate::models::ErrorResponse;
+use crate::models::token_validator::Success;
+
 
 pub const AUTH_HEADER: &str = "Authorization";
-pub const HEADER_KEYS: [&str; 2] = ["X-User-Id", "X-User-Roles"];
 
 #[handler]
 pub async fn auth_middleware(
@@ -11,10 +17,38 @@ pub async fn auth_middleware(
     ctrl: &mut FlowCtrl,
 ) {
     let headers = req.headers_mut();
-    let _authorization = headers.get::<String>(AUTH_HEADER.to_string());
     headers.remove("Content-length");
-    // let headers = HEADER_KEYS.iter()
-    //     .map(|header| (header, None)) // TODO: call some serice to get user_id/roles
-    //     .collect::<Vec<_>>();
+    let authorization = headers.get::<String>(AUTH_HEADER.to_string());
+
+    if let Some(authorization) = authorization {
+        let authorization = authorization.to_str().unwrap_or_default();
+        let Ok(response) = get_response::<&str, &str, Success>(
+            Method::GET,
+            format!("localhost:12341/session/{authorization}"),
+            None,
+            None,
+            None,
+            false,
+        )
+            .await else {
+                res.status_code(StatusCode::UNAUTHORIZED);
+                res.render(Json(ErrorResponse { error_code: u32::from(StatusCode::UNAUTHORIZED.as_u16()) }));
+                return;
+            };
+        let EndpointResponse::Ok(response) = response else {
+                res.status_code(StatusCode::UNAUTHORIZED);
+                res.render(Json(ErrorResponse { error_code: u32::from(StatusCode::UNAUTHORIZED.as_u16()) }));
+                return;
+            };
+        let x_user_id = HeaderValue::from_str(&*response.user_id);
+        if let Ok(x_user_id) = x_user_id {
+            headers.append("X-User-Id", x_user_id);
+        }
+        headers.append("X-User-Roles", HeaderValue::from(response.user_roles));
+    };
+
+    println!("{headers:?}");
+
     ctrl.call_next(req, depot, res).await;
 }
+

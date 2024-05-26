@@ -2,6 +2,7 @@ from constants import ICON_VALIDATION, DISPLAY_NAME_VALIDATION, DESCRIPTION_VALI
     URL_SCHEMES
 from exception import ProfileDataChangerException
 from fastapi import status
+from pymongo import errors
 import nh3
 
 
@@ -40,3 +41,9 @@ def validate_str(value: str, checks: dict[str, int]) -> None:
         raise ProfileDataChangerException(status.HTTP_400_BAD_REQUEST, checks["too_short"])
     if "max_length" in checks and length > checks["max_length"]:
         raise ProfileDataChangerException(status.HTTP_400_BAD_REQUEST, checks["too_long"])
+
+
+def match_collection_error(e: errors.PyMongoError) -> ProfileDataChangerException:
+    if e.timeout:
+        return ProfileDataChangerException(status.HTTP_504_GATEWAY_TIMEOUT, ErrorCodes.DATABASE_TIMEOUT.value)
+    return ProfileDataChangerException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.DATABASE_ERROR.value)

@@ -62,9 +62,9 @@ async fn main() -> Result<()> {
         .init();
 
     let cors = Cors::new()
-        .allow_origin(AllowOrigin::any()) // Allow all origins (use specific origins in production)
-        .allow_methods(AllowMethods::any()) // Allow specific methods
-        .allow_headers(AllowHeaders::any()) // Allow specific headers
+        .allow_origin(AllowOrigin::any())
+        .allow_methods(AllowMethods::any())
+        .allow_headers(AllowHeaders::any())
         .into_handler();
 
     let config = get_configuration().context("Invalid configuration file!")?;

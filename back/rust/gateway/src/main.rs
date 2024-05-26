@@ -48,6 +48,7 @@ use salvo::{
     Listener, Server,
 };
 use tracing::info;
+use crate::endpoints::search::{ai_endpoint, recipes_endpoint, users_endpoint};
 
 #[endpoint]
 async fn test() {}
@@ -55,7 +56,6 @@ async fn test() {}
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt()
-        .with_ansi(false)
         .with_max_level(tracing_core::Level::TRACE)
         .init();
 
@@ -75,6 +75,7 @@ async fn main() -> Result<()> {
                 setup_user_routes(),
                 setup_profile_routes(),
                 setup_misc_routes(),
+                setup_search_routes(),
                 setup_email_changer(),
                 setup_ai_routes(),
                 setup_password_changer(),
@@ -128,6 +129,19 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
+fn setup_search_routes() -> Router {
+    Router::with_path("/search")
+        .oapi_tag("SEARCH")
+        .append(&mut vec![
+            Router::with_path("/ai")
+                .post(ai_endpoint),
+            Router::with_path("/recipes")
+                .post(recipes_endpoint),
+            Router::with_path("/users")
+                .post(users_endpoint),
+        ])
+}
+
 fn setup_email_changer() -> Router {
     Router::with_path("/user/email")
         .oapi_tag("EMAIL CHANGER")
@@ -143,7 +157,7 @@ fn setup_password_changer() -> Router {
 fn setup_login() -> Router {
     Router::with_path("/login")
         .oapi_tag("LOGIN")
-        .put(request_login_endpoint)
+        .post(request_login_endpoint)
 }
 
 fn setup_register() -> Router {

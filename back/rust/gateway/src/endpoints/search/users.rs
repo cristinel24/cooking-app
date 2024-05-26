@@ -1,7 +1,4 @@
-use crate::endpoints::recipe_editor::SERVICE;
-use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::models::login::Success;
-use crate::models::recipe::Recipe;
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE, search::SERVICE};
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -9,18 +6,16 @@ use salvo::oapi::extract::JsonBody;
 use salvo::prelude::Json;
 use salvo::{Request, Response, Writer};
 use tracing::error;
+use crate::models::search::{DataResponse, UserBody};
 
 #[endpoint(
-    parameters(
-        ("recipe_id" = String, description = "Recipe Id")
-    ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = Success,
-            example = json!(Success::default())
+            body = DataResponse,
+            example = json!(DataResponse::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -30,25 +25,25 @@ use tracing::error;
         ),
     )
 )]
-pub async fn edit_recipe(
+pub async fn users_endpoint(
     req: &mut Request,
     res: &mut Response,
-    data: JsonBody<Recipe>,
-) -> Json<EndpointResponse<String>> {
+    data: JsonBody<UserBody>,
+) -> Json<EndpointResponse<DataResponse>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[3..].join("/");
+    let new_url = parts[2..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return (get_response::<&str, Recipe, String>(
-        Method::PATCH,
+    return (get_response::<&str, UserBody, DataResponse>(
+        Method::POST,
         url,
         None,
         Some(data.into_inner()),
         Some(req.headers().clone()),
-        true,
+        false,
     )
-    .await)
+        .await)
         .map_or_else(
             |e| {
                 error!("{e}");

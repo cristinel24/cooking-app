@@ -27,6 +27,7 @@ pub mod user_destroyer;
 pub mod user_retriever;
 pub mod username_changer;
 pub mod verifier;
+pub mod search;
 
 const SUCCESSFUL_RESPONSE: &str = "Successful operation response";
 const FAILED_RESPONSE: &str = "Failed operation response";

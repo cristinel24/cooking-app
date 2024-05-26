@@ -16,9 +16,7 @@ class UserData(BaseModel):
     updatedAt: datetime
     createdAt: datetime
     followsCount: int
-    followsCount: int
-    following: bool | None = None
-    followed: bool | None = None
+    followersCount: int
 
 
 class UserCardData(BaseModel):
@@ -30,10 +28,6 @@ class UserCardData(BaseModel):
     ratingAvg: float
     updatedAt: datetime
     createdAt: datetime
-    followsCount: int
-    followsCount: int
-    following: bool | None = None
-    followed: bool | None = None
 
 
 class UserCardDataList(BaseModel):

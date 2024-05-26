@@ -3,6 +3,7 @@ from constants import DB_NAME, MONGO_TIMEOUT, MONGO_URI, ErrorCodes
 from exception import UserRetrieverException
 from fastapi import status
 from pymongo import MongoClient, errors
+from bson import ObjectId
 
 
 class MongoCollection:
@@ -22,6 +23,9 @@ class UserCollection(MongoCollection):
                 user = self._collection.find_one({"id": user_id}, projection=projection_arg)
                 if user is None:
                     raise UserRetrieverException(status.HTTP_status.HTTP_404_NOT_FOUND_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
+                user__id = ObjectId(user["_id"])
+                user["createdAt"] = user__id.generation_time
+                user.pop("_id")
                 return user
         except errors.PyMongoError as e:
             if e.timeout:

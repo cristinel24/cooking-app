@@ -1,8 +1,10 @@
 from datetime import datetime, timezone
+from pprint import pprint
+
 from exceptions import ExternalError, InternalError
 from repository import RatingRepository
 from api import ExternalDataProvider
-from schemas import RatingList, RatingUpdate, RatingCreate, Rating, RatingDataCard
+from schemas import RatingList, RatingUpdate, RatingCreate, Rating, RatingDataCard, AuthorCardData
 from utils import init_logger
 
 
@@ -19,7 +21,8 @@ class RatingService:
             user_id = rating.get("authorId", None)
             try:
                 user = await self.provider.get_user(user_id)
-                if isinstance(user, dict):
+
+                if isinstance(user, AuthorCardData):
                     return RatingDataCard(
                         parentId=parent_id,
                         parentType=rating["parentType"],

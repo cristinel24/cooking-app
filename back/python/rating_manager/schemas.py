@@ -9,6 +9,8 @@ class AuthorCardData(BaseModel):
     icon: str
     roles: int
     ratingAvg: float
+    updatedAt: datetime
+    createdAt: datetime
 
 
 class Rating(BaseModel):

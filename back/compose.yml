@@ -324,7 +324,9 @@ services:
       - ./python/role_changer:/app
 
   search:
-    build: ./rust/search
+    build: 
+      context: ./rust/search
+      dockerfile: ../Dockerfile
     networks:
       - ca
     ports:

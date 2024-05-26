@@ -23,3 +23,6 @@ export const getErrorMessage = (error) => {
         return 'Unexpected error'
     }
 }
+
+// for testing only
+export const delay = (ms) => new Promise((res) => setTimeout(res, ms))

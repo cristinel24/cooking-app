@@ -1,77 +1,15 @@
-use crate::repository::models::{recipe::Recipe, user::User};
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 
+pub mod ai;
 pub mod common;
 pub mod recipe;
-pub mod search_ai;
-pub mod search_general;
 pub mod user;
-
-pub const INTERNAL_SERVER_ERROR: &str = "Internal Server Error!";
-
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct InputPayload {
-    pub data: String,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub filters: Option<Filters>,
-
-    pub page: u32,
-    pub results_per_page: u32,
-}
-
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct Filters {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ingredients: Option<Vec<String>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub blacklist: Option<BlacklistedFilters>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tags: Option<Vec<String>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub authors: Option<Vec<String>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub prep_time: Option<u32>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rating: Option<u32>,
-}
-
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct BlacklistedFilters {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ingredients: Option<Vec<String>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tags: Option<Vec<String>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub allergens: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Default, ToSchema)]
-pub struct SearchResponse {
-    pub recipes: AggregationResponse<Recipe>,
-    pub users: AggregationResponse<User>,
-}
 
 #[derive(Deserialize, ToSchema)]
 pub enum EndpointResponse<T: Serialize> {
-    SuccessSearch(SearchResponse),
-
     Success(AggregationResponse<T>),
     Error(ErrorResponse),
-}
-
-impl<T: Serialize> Default for EndpointResponse<T> {
-    fn default() -> Self {
-        Self::SuccessSearch(SearchResponse::default())
-    }
 }
 
 impl<T: Serialize> Serialize for EndpointResponse<T> {
@@ -81,7 +19,6 @@ impl<T: Serialize> Serialize for EndpointResponse<T> {
     {
         match self {
             Self::Success(ok_response) => ok_response.serialize(serializer),
-            Self::SuccessSearch(ok_response) => ok_response.serialize(serializer),
             Self::Error(err) => err.serialize(serializer),
         }
     }
@@ -93,15 +30,25 @@ pub struct AggregationResponse<T: Serialize> {
     pub data: Vec<T>,
 }
 
+#[repr(u32)]
+pub enum ErrorCodes {
+    DbError = 5300,
+    AiUnresponsive = 5301,
+    Unauthorized = 5302,
+    BadData = 5303,
+    Unknown = 5304,
+}
+
 #[derive(Serialize, Deserialize, Debug, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct ErrorResponse {
-    pub message: String,
+    pub error_code: u32,
 }
 
 impl Default for ErrorResponse {
     fn default() -> Self {
         Self {
-            message: "Error".to_string(),
+            error_code: ErrorCodes::Unknown as u32,
         }
     }
 }

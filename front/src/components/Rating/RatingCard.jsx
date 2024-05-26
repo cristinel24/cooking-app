@@ -43,9 +43,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
             })
             .catch((e) => setRepliesError('error'))
 
-        return () => {
-            ignore = true
-        }
+        return ignoreTrue
     }, [])
 
     const toggleEdit = () => {
@@ -55,6 +53,20 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const handleEdit = async (data) => {
         toggleEdit()
         onEdit(data)
+    }
+
+    const editRating = async (data, id) => {
+        console.log(data)
+        setReplies((ratingData) => {
+            let newData = ratingData
+            newData.find((obj) => obj.id === id).description = data.text
+            return newData
+        })
+    }
+
+    const deleteRating = async (id) => {
+        setReplies(replies.filter((otherRating) => id !== otherRating.id))
+        console.log(id)
     }
 
     const shortRatingLength = 300
@@ -151,11 +163,24 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
             {ratingData.parentType === 'recipe' &&
                 showReplies &&
                 (repliesError === '' ? (
-                    <div className="rating-card-replies">
-                        {replies.map((reply) => {
-                            return <RatingCard key={reply.id} ratingData={reply}></RatingCard>
-                        })}
-                    </div>
+                    replies.length > 0 && (
+                        <div className="rating-card-replies">
+                            {replies.map((reply) => {
+                                return (
+                                    <RatingCard
+                                        key={reply.id}
+                                        ratingData={reply}
+                                        onEdit={(data) => {
+                                            editRating(data, reply.id)
+                                        }}
+                                        onDelete={() => {
+                                            deleteRating(reply.id)
+                                        }}
+                                    ></RatingCard>
+                                )
+                            })}
+                        </div>
+                    )
                 ) : (
                     <>{repliesError}</>
                 ))}

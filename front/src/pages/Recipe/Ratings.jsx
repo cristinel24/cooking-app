@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 
 export const Ratings = ({ recipeData }) => {
     const [ratings, setRatings] = useState([])
-    const [ratingsLoading, setRatingsLoading] = useState(true)
+    const [loadingRatings, setLoadingRatings] = useState(true)
     const navigate = useNavigate()
 
     const editRating = async (data, id) => {
@@ -26,53 +26,56 @@ export const Ratings = ({ recipeData }) => {
     }
 
     useEffect(() => {
-        // TODO: fix race-condition
+        let ignore = false
 
-        const fetchData = async () => {
-            try {
-                const ratings = await getRatings(recipeData.id)
-                setRatings(ratings)
-            } catch (e) {
-                console.log(e)
-                navigate('/not-found')
-            } finally {
-                setRatingsLoading(false)
-            }
+        // todo: paginate ratings...
+        getRatings(recipeData.id)
+            .then((ratings) => {
+                if (!ignore) {
+                    console.log(ratings)
+                    setRatings(ratings)
+                }
+            })
+            .then(() => setLoadingRatings(false))
+            .catch((e) => setRepliesError('error'))
+
+        return () => {
+            ignore = true
         }
-
-        fetchData()
     }, [])
 
     return (
         <div className="recipe-page-comments">
             <h3>Recenzii</h3>
 
-            {ratingsLoading && (
-                <ClipLoader
-                    className="loading"
-                    cssOverride={{
-                        borderColor: 'var(--text-color)',
-                        color: 'var(--text-color)',
-                        alignSelf: 'center',
-                    }}
-                    width={'100%'}
-                    loading={ratingsLoading}
-                    aria-label="Se încarcă..."
-                    data-testid="loader"
-                />
-            )}
-            {ratings.map((rating) => (
-                <RatingCard
-                    key={rating.id}
-                    ratingData={rating}
-                    onEdit={(data) => {
-                        editRating(data, rating.id)
-                    }}
-                    onDelete={() => {
-                        deleteRating(rating.id)
-                    }}
-                />
-            ))}
+            <div className="recipe-page-comments-container">
+                {loadingRatings && (
+                    <ClipLoader
+                        className="loading"
+                        cssOverride={{
+                            borderColor: 'var(--text-color)',
+                            color: 'var(--text-color)',
+                            alignSelf: 'center',
+                        }}
+                        width={'100%'}
+                        loading={loadingRatings}
+                        aria-label="Se încarcă..."
+                        data-testid="loader"
+                    />
+                )}
+                {ratings.map((rating) => (
+                    <RatingCard
+                        key={rating.id}
+                        ratingData={rating}
+                        onEdit={(data) => {
+                            editRating(data, rating.id)
+                        }}
+                        onDelete={() => {
+                            deleteRating(rating.id)
+                        }}
+                    />
+                ))}
+            </div>
         </div>
     )
 }

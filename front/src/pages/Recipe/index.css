@@ -151,6 +151,8 @@
         width: 100%;
     }
 
+    /* rich-text content;
+    manual margins are required because I don't want this to be a flex container */
     > *:nth-child(1) {
         margin-top: 0;
     }
@@ -158,6 +160,12 @@
     > *:nth-last-child(1) {
         margin-bottom: 0;
     }
+}
+
+.recipe-page-comments-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 @media screen and (max-width: 768px) {

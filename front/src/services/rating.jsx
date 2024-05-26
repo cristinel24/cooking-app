@@ -22,7 +22,7 @@ export const getRatings = async (recipeId) => {
 
     const ratings = new Array(10)
         .fill(0)
-        .map((_, index) => ({ ...placeholderRating, description: `${index}`, id: index }))
+        .map((_, index) => ({ ...placeholderRating, description: `${index}`, id: `${index}` }))
     const delay = (ms) => new Promise((res) => setTimeout(res, ms))
     await delay(1200)
     return ratings
@@ -44,7 +44,13 @@ export const getRatingReplies = async (ratingId) => {
         createdAt: '2024-05-26T05:29:06Z',
         updatedAt: '2024-05-26T05:29:06Z',
     }
+    const ratings = new Array(10).fill(0).map((_, index) => ({
+        ...placeholderRating,
+        description: `${index}`,
+        id: `${ratingId}_${index}`,
+    }))
+
     const delay = (ms) => new Promise((res) => setTimeout(res, ms))
     await delay(1200)
-    return new Array(10).fill(0).map((_) => placeholderRating)
+    return ratings
 }

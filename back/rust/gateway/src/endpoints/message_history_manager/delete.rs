@@ -1,13 +1,11 @@
-use crate::endpoints::{
-    get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
-};
+use crate::endpoints::message_history_manager::SERVICE;
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
 use salvo::prelude::Json;
 use salvo::{Request, Response};
 use tracing::error;
-use crate::endpoints::message_history_manager::SERVICE;
 
 #[endpoint(
     parameters(

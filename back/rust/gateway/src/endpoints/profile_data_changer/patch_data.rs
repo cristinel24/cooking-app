@@ -1,7 +1,5 @@
 use crate::endpoints::profile_data_changer::SERVICE;
-use crate::endpoints::{
-    get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
-};
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::patch_profile::DataChange;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};

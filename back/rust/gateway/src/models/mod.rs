@@ -7,16 +7,20 @@ pub mod allergens;
 pub mod email;
 pub mod follow_manager;
 pub mod hash;
+pub mod login;
 pub mod message_history;
+pub mod password_changer;
 pub mod patch_profile;
 pub mod rating;
 pub mod recipe;
+pub mod register;
 pub mod role_changer;
 pub mod search;
 pub mod search_history;
 pub mod tags;
-pub mod user;
 pub mod token_validator;
+pub mod user;
+pub mod username_changer;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]

@@ -1,24 +1,23 @@
-use crate::endpoints::history_manager::SERVICE;
-use crate::endpoints::{get_response, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::endpoints::{EndpointResponse};
+use crate::endpoints::register::SERVICE;
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
+use crate::models::login::Success;
+use crate::models::register::SignInBody;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
+use salvo::oapi::extract::JsonBody;
 use salvo::prelude::Json;
-use salvo::{Request, Response};
+use salvo::{Request, Response, Writer};
 use tracing::error;
 
 #[endpoint(
-    parameters(
-        ("user_id" = String, description = "Id of the user"),
-    ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = String,
-            example = json!("null")
+            body = Success,
+            example = json!(Success::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -28,20 +27,18 @@ use tracing::error;
         ),
     )
 )]
-pub async fn delete_item_search_history(
+pub async fn request_register_user(
     req: &mut Request,
     res: &mut Response,
+    data: JsonBody<SignInBody>,
 ) -> Json<EndpointResponse<String>> {
-    let uri = req.uri().path();
-    let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[3..].join("/");
-    let url: String = format!("{SERVICE}/{new_url}");
+    let url: String = SERVICE.to_string();
 
-    return (get_response::<&str, &str, String>(
-        Method::DELETE,
+    return (get_response::<&str, SignInBody, String>(
+        Method::POST,
         url,
         None,
-        None,
+        Some(data.into_inner()),
         Some(req.headers().clone()),
         true,
     )

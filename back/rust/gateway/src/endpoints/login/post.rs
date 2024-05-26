@@ -1,7 +1,6 @@
-use crate::endpoints::history_manager::SERVICE;
-use crate::endpoints::{get_response, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::endpoints::{EndpointResponse};
-use crate::models::search::Query;
+use crate::endpoints::login::SERVICE;
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
+use crate::models::login::{Body, Success};
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -11,16 +10,13 @@ use salvo::{Request, Response, Writer};
 use tracing::error;
 
 #[endpoint(
-    parameters(
-        ("user_id" = String, description = "Id of the user"),
-    ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = String,
-            example = json!("null")
+            body = Success,
+            example = json!(Success::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -30,23 +26,20 @@ use tracing::error;
         ),
     )
 )]
-pub async fn put_in_search_history(
+pub async fn request_login_endpoint(
     req: &mut Request,
     res: &mut Response,
-    search: JsonBody<Query>,
-) -> Json<EndpointResponse<String>> {
-    let uri = req.uri().path();
-    let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[3..].join("/");
-    let url: String = format!("{SERVICE}/{new_url}");
+    data: JsonBody<Body>,
+) -> Json<EndpointResponse<Success>> {
+    let url: String = SERVICE.to_string();
 
-    return (get_response::<&str, Query, String>(
-        Method::PUT,
+    return (get_response::<&str, Body, Success>(
+        Method::POST,
         url,
         None,
-        Some(search.into_inner()),
+        Some(data.into_inner()),
         Some(req.headers().clone()),
-        true,
+        false,
     )
     .await)
         .map_or_else(

@@ -1,16 +1,14 @@
 use reqwest::{Method, StatusCode};
-use salvo::{Request, Response, Writer};
 use salvo::oapi::endpoint;
 use salvo::oapi::extract::QueryParam;
 use salvo::prelude::Json;
+use salvo::{Request, Response, Writer};
 use tracing::error;
 
-use crate::endpoints::{
-    EndpointResponse, FAILED_RESPONSE, get_response, SUCCESSFUL_RESPONSE,
-};
 use crate::endpoints::follow_manager::SERVICE;
-use crate::models::ErrorResponse;
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::follow_manager::Follow;
+use crate::models::ErrorResponse;
 
 #[endpoint(
     parameters(

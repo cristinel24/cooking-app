@@ -27,7 +27,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn put_image(req: &mut Request, res: &mut Response) -> Json<ImageResponse> {
+pub async fn post_image(req: &mut Request, res: &mut Response) -> Json<ImageResponse> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
@@ -38,7 +38,7 @@ pub async fn put_image(req: &mut Request, res: &mut Response) -> Json<ImageRespo
         Err(_) => return Json(ImageResponse::Error(ErrorResponse::default())),
     };
 
-    return (get_put_image(Method::PUT, format!("http://{url}"), Some(bytes), true).await)
+    return (get_put_image(Method::POST, format!("http://{url}"), Some(bytes), true).await)
         .map_or_else(
             |e| {
                 error!("{e}");

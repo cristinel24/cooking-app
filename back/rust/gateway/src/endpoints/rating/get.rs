@@ -1,8 +1,6 @@
 use crate::endpoints::{get_response, EndpointResponse};
 use crate::{
-
     endpoints::{rating::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-
     models::{rating::List, ErrorResponse},
 };
 use reqwest::Method;

@@ -1,7 +1,5 @@
 use crate::endpoints::ai::SERVICE;
-use crate::endpoints::{
-    get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
-};
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::ai::{ChatBotRequest, ChatBotResponse};
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
@@ -28,7 +26,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn ai_talk(
+pub async fn talk(
     req: &mut Request,
     res: &mut Response,
     body: JsonBody<ChatBotRequest>,
@@ -55,4 +53,3 @@ pub async fn ai_talk(
             Json,
         );
 }
-

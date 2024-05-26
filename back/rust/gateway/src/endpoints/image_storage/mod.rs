@@ -5,8 +5,8 @@ use reqwest::{Client, Method};
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 
-pub mod put;
-pub use put::put_image;
+pub mod post;
+pub use post::post_image;
 pub mod get;
 pub use get::get_image;
 

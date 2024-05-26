@@ -1,11 +1,10 @@
+use crate::endpoints::{get_response, EndpointResponse};
+use crate::models::token_validator::Success;
+use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
-use salvo::{handler, Depot, FlowCtrl, Request, Response};
 use salvo::http::HeaderValue;
 use salvo::prelude::Json;
-use crate::endpoints::{EndpointResponse, get_response};
-use crate::models::ErrorResponse;
-use crate::models::token_validator::Success;
-
+use salvo::{handler, Depot, FlowCtrl, Request, Response};
 
 pub const AUTH_HEADER: &str = "Authorization";
 
@@ -30,25 +29,27 @@ pub async fn auth_middleware(
             None,
             false,
         )
-            .await else {
-                res.status_code(StatusCode::UNAUTHORIZED);
-                res.render(Json(ErrorResponse { error_code: u32::from(StatusCode::UNAUTHORIZED.as_u16()) }));
-                return;
-            };
+        .await
+        else {
+            res.status_code(StatusCode::UNAUTHORIZED);
+            res.render(Json(ErrorResponse {
+                error_code: u32::from(StatusCode::UNAUTHORIZED.as_u16()),
+            }));
+            return;
+        };
         let EndpointResponse::Ok(response) = response else {
-                res.status_code(StatusCode::UNAUTHORIZED);
-                res.render(Json(ErrorResponse { error_code: u32::from(StatusCode::UNAUTHORIZED.as_u16()) }));
-                return;
-            };
-        let x_user_id = HeaderValue::from_str(&*response.user_id);
+            res.status_code(StatusCode::UNAUTHORIZED);
+            res.render(Json(ErrorResponse {
+                error_code: u32::from(StatusCode::UNAUTHORIZED.as_u16()),
+            }));
+            return;
+        };
+        let x_user_id = HeaderValue::from_str(&response.user_id);
         if let Ok(x_user_id) = x_user_id {
             headers.append("X-User-Id", x_user_id);
         }
         headers.append("X-User-Roles", HeaderValue::from(response.user_roles));
     };
 
-    println!("{headers:?}");
-
     ctrl.call_next(req, depot, res).await;
 }
-

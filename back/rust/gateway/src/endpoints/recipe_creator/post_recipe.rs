@@ -1,7 +1,5 @@
 use crate::endpoints::recipe_creator::SERVICE;
-use crate::endpoints::{
-    get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
-};
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::recipe::Recipe;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};

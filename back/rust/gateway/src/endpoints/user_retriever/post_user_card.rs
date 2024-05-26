@@ -7,7 +7,6 @@ use salvo::oapi::extract::JsonBody;
 use salvo::prelude::Json;
 use salvo::{Request, Response, Writer};
 
-
 use crate::models::ErrorResponse;
 use tracing::error;
 

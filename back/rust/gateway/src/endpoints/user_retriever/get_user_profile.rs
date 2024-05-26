@@ -6,7 +6,6 @@ use salvo::oapi::endpoint;
 use salvo::prelude::Json;
 use salvo::{Request, Response};
 
-
 use crate::models::ErrorResponse;
 use tracing::error;
 

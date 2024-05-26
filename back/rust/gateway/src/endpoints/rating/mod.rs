@@ -6,6 +6,6 @@ pub use get::get_rating_endpoint;
 pub mod patch;
 pub use patch::patch_rating_endpoint;
 pub mod put;
-pub use put::put_rating_endpoint;
+pub use put::post_rating_endpoint;
 
-pub(crate) const SERVICE: &str = "rating";
+pub(crate) const SERVICE: &str = "rating_manager";

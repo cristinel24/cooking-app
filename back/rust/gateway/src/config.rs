@@ -6,7 +6,6 @@ use figment::{
 };
 use once_cell::sync::OnceCell;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::path::PathBuf;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -16,23 +15,9 @@ pub struct InputData {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Route {
-    pub source: String,
-    pub target: String,
-    pub auth: Option<bool>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Service {
-    pub url: String,
-    pub port: u16,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
 pub struct Configuration {
     pub context: String,
     pub input: InputData,
-    pub services: HashMap<String, Service>,
 }
 
 #[derive(Debug, Parser, Serialize, Default)]

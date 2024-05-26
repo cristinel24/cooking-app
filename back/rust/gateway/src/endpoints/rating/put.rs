@@ -1,9 +1,7 @@
 use super::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse};
 use crate::{
-
     endpoints::{FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-
     models::{rating::Create, ErrorResponse},
 };
 use reqwest::{Method, StatusCode};
@@ -34,7 +32,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn put_rating_endpoint(
+pub async fn post_rating_endpoint(
     rating_create: JsonBody<Create>,
     req: &mut Request,
     res: &mut Response,

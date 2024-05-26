@@ -1,6 +1,6 @@
 use crate::endpoints::user_destroyer::SERVICE;
+use crate::endpoints::EndpointResponse;
 use crate::endpoints::{get_response, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::endpoints::{EndpointResponse};
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;

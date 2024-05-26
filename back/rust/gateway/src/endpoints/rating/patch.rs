@@ -1,9 +1,7 @@
 use super::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse};
 use crate::{
-
     endpoints::{FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-
     models::{rating::Update, ErrorResponse},
 };
 use reqwest::{Method, StatusCode};

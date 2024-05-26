@@ -14,40 +14,68 @@ export default function Feed() {
     const { pathname } = useLocation()
 
     const { user, loggedIn, token } = useContext(UserContext)
-    const [feed, setFeed] = useState(pathname.substring(1))
+
+    const feeds = [
+        { name: 'popular', alias: '', params: { sort: 'viewCount', order: 'desc' } },
+        { name: 'best', params: { sort: 'ratingAvg', order: 'desc' } },
+        { name: 'new', params: { sort: 'createdAt', order: 'desc' } },
+    ].concat(
+        loggedIn()
+            ? [
+                  {
+                      name: 'followed',
+                      params: {
+                          filters: {
+                              authors: {
+                                  /* TODO: get the followed authors of the current user and put their names here */
+                              },
+                          },
+                      },
+                  },
+                  // 'recommended',
+              ]
+            : []
+    )
+
+    const [feed, setFeed] = useState(
+        feeds.find(
+            (feed) =>
+                feed.name === pathname.substring(1) ||
+                ('alias' in feed && feed.alias === pathname.substring(1))
+        )
+    )
     const [results, setResults] = useState({ count: 1, recipes: [] })
     const [error, setError] = useState('')
 
-    const feeds = ['popular', 'best', 'new'].concat(
-        loggedIn() ? ['favorite', 'followed', 'recommended'] : []
-    )
-
     useEffect(() => {
-        let ignore = false
+        if (feed.name !== pathname.substring(1)) {
+            // reset state if page changed
+            setResults({ count: 1, recipes: [] })
+            setError('')
+            navigate(`/${feed.name}`)
+        } else if (results.recipes.length == 0) {
+            // after page change, this code should get triggered
+            let ignore = false
 
-        searchRecipes({
-            query: '',
-            start: results.recipes.length,
-            count: 10,
-        })
-            .then((result) => {
-                if (!ignore) {
-                    setResults((results) => ({
-                        ...result,
-                        recipes: [...results.recipes, ...result.recipes],
-                    }))
-                }
+            searchRecipes({
+                ...feed.params,
+                query: '',
+                start: results.recipes.length,
+                count: 10,
             })
-            .catch((e) => setError(getErrorMessage(e)))
+                .then((result) => {
+                    if (!ignore) {
+                        setResults((results) => ({
+                            ...result,
+                            recipes: [...results.recipes, ...result.recipes],
+                        }))
+                    }
+                })
+                .catch((e) => setError(getErrorMessage(e)))
 
-        return () => {
-            ignore = true
-        }
-    }, [])
-
-    useEffect(() => {
-        if (feed !== pathname.substring(1)) {
-            navigate(`/${feed}`)
+            return () => {
+                ignore = true
+            }
         }
     }, [navigate, pathname, feed])
 

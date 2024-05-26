@@ -25,7 +25,7 @@ const recipeMock = {
     favorite: false,
 }
 
-export const searchRecipes = async ({ query, filters, start, count }) => {
+export const searchRecipes = async ({ query, sort, order, filters, start, count }) => {
     // return await axios
     //     .post(`${API_URL}/search`, {
     //         data: query,

@@ -22,7 +22,7 @@ DELETED_FIELD = "[deleted]"
 
 
 RATING_PROJECTION = {
-    "_id": 0,
+    "_id": 1,
     "updatedAt": 1,
     "id": 1,
     "authorId": 1,

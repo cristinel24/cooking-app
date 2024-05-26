@@ -12,7 +12,7 @@ from schemas import RecipeData
 app = FastAPI(title="Recipe Editor")
 
 
-@app.post("/", response_model=None, response_description="Successful operation")
+@app.patch("/{recipe_id}", response_model=None, response_description="Successful operation")
 async def edit_recipe(recipe_id: str, recipe_data: RecipeData,
                       x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
     if not x_user_id:

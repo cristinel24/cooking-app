@@ -8,7 +8,7 @@ from services import update_user_roles
 
 app = FastAPI(title="Role Changer")
 
-@app.patch("/{user_id}/roles", response_model=RoleData, response_description="Successful operation")
+@app.put("/{user_id}/roles", response_model=RoleData, response_description="Successful operation")
 async def update_user_roles_route(user_id: str, user_roles: RoleData) -> RoleData | JSONResponse:
     try:
         return update_user_roles(user_id, user_roles)

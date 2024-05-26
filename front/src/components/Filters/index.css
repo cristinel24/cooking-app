@@ -19,7 +19,7 @@ alergens {
 
 .filter-buttons button,
 .alergen-buttons button {
-    background-color: var(--filterbkcolor);
+    background-color: var(--filter-bg-color);
     padding-top: 4px;
     padding-bottom: 4px;
     margin: 4px;
@@ -94,7 +94,7 @@ alergens {
 
 .container1 {
     min-width: 150px;
-    background-color: var(--caseta);
+    background-color: var(--card-color);
     position: relative;
     display: flex;
     flex-direction: column;

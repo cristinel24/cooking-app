@@ -1,9 +1,8 @@
 from datetime import datetime, timezone
-from pprint import pprint
 
+from api import ExternalDataProvider
 from exceptions import ExternalError, InternalError
 from repository import RatingRepository
-from api import ExternalDataProvider
 from schemas import RatingList, RatingUpdate, RatingCreate, Rating, RatingDataCard, AuthorCardData
 from utils import init_logger
 
@@ -27,7 +26,8 @@ class RatingService:
                         parentId=parent_id,
                         parentType=rating["parentType"],
                         author=user,
-                        updatedAt=str(rating["updatedAt"]),
+                        updatedAt=rating["updatedAt"],
+                        createdAt=rating["createdAt"],
                         rating=int(rating["rating"]),
                         description=str(rating["description"])
                     )

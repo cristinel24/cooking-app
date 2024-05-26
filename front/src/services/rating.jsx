@@ -16,10 +16,16 @@ export const getRatings = async (recipeId) => {
             icon: 'https://thispersondoesnotexist.com/',
             ratingAvg: 3,
         },
+        createdAt: '2024-05-26T05:29:05Z',
+        updatedAt: '2024-05-26T05:29:06Z',
     }
+
+    const ratings = new Array(10)
+        .fill(0)
+        .map((_, index) => ({ ...placeholderRating, description: `${index}`, id: index }))
     const delay = (ms) => new Promise((res) => setTimeout(res, ms))
     await delay(1200)
-    return [placeholderRating]
+    return ratings
 }
 
 export const getRatingReplies = async (ratingId) => {
@@ -35,6 +41,8 @@ export const getRatingReplies = async (ratingId) => {
             icon: 'https://thispersondoesnotexist.com/',
             ratingAvg: 3,
         },
+        createdAt: '2024-05-26T05:29:06Z',
+        updatedAt: '2024-05-26T05:29:06Z',
     }
     const delay = (ms) => new Promise((res) => setTimeout(res, ms))
     await delay(1200)

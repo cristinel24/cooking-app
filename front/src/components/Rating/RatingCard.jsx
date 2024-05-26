@@ -4,12 +4,14 @@ import { RatingValue } from '..'
 
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 
-import { useForm } from 'react-hook-form'
+import { dateToRomanian } from '../../utils/date'
 
 import { RatingButton } from './RatingButton'
 import { getRatingReplies } from '../../services/rating'
 
-const RatingCard = ({ ratingData }) => {
+import { RatingForm } from '..'
+
+const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const [showAllText, setShowAllText] = useState(false)
     const [editing, setEditing] = useState(false)
 
@@ -39,7 +41,7 @@ const RatingCard = ({ ratingData }) => {
             .then(() => {
                 setLoadingReplies(false)
             })
-            .catch((e) => setRepliesError('mda'))
+            .catch((e) => setRepliesError('error'))
 
         return () => {
             ignore = true
@@ -48,6 +50,11 @@ const RatingCard = ({ ratingData }) => {
 
     const toggleEdit = () => {
         setEditing(!editing)
+    }
+
+    const handleEdit = async (data) => {
+        toggleEdit()
+        onEdit(data)
     }
 
     const shortRatingLength = 300
@@ -65,25 +72,32 @@ const RatingCard = ({ ratingData }) => {
                             </div>
                         )}
                         <div className="rating-card-user">
-                            <h4 className="rating-card-display-name">Sabina Prodan</h4>
-                            <span className="rating-card-username">@câtrtoj</span>
+                            <h4 className="rating-card-display-name">
+                                {ratingData.author.displayName}
+                            </h4>
+                            <span className="rating-card-username">
+                                @{ratingData.author.username}
+                            </span>
                         </div>
-                        <div className="rating-card-date">ora 123:3534 data 2335:#$ :#$@:#</div>
+                        <div className="rating-card-date">
+                            Postat pe {dateToRomanian(ratingData.createdAt)}
+                            <em>
+                                {ratingData.updatedAt !== ratingData.createdAt ? ' (editat)' : ''}
+                            </em>
+                        </div>
                     </div>
-                    <div className="rating-card-description">
-                        {!editing ? (
-                            <p>
-                                {showAllText || ratingData.description.length <= shortRatingLength
-                                    ? ratingData.description
-                                    : ratingData.description.slice(0, shortRatingLength) + '...'}
-                            </p>
-                        ) : (
-                            <form></form>
-                        )}
-                    </div>
-                    <div className="rating-card-buttons">
-                        {!editing ? (
-                            <>
+                    {!editing ? (
+                        <>
+                            <div className="rating-card-description">
+                                <p>
+                                    {showAllText ||
+                                    ratingData.description.length <= shortRatingLength
+                                        ? ratingData.description
+                                        : ratingData.description.slice(0, shortRatingLength) +
+                                          '...'}
+                                </p>
+                            </div>
+                            <div className="rating-card-buttons">
                                 {ratingData.description.length > shortRatingLength && (
                                     <RatingButton
                                         onClick={() => {
@@ -118,21 +132,28 @@ const RatingCard = ({ ratingData }) => {
                                         )}
                                     </RatingButton>
                                 )}
-                                <RatingButton>Răspunde</RatingButton>
+                                {ratingData.parentType !== 'rating' && (
+                                    <RatingButton>Răspunde</RatingButton>
+                                )}
                                 <RatingButton onClick={toggleEdit}>Editează</RatingButton>
-                            </>
-                        ) : (
-                            <>mda</>
-                        )}
-                    </div>
+                                <RatingButton onClick={onDelete}>Șterge</RatingButton>
+                            </div>
+                        </>
+                    ) : (
+                        <RatingForm
+                            onSubmit={handleEdit}
+                            defaultValue={ratingData.description}
+                            onCancel={toggleEdit}
+                        />
+                    )}
                 </div>
             </div>
             {ratingData.parentType === 'recipe' &&
                 showReplies &&
-                (repliesError !== '' ? (
+                (repliesError === '' ? (
                     <div className="rating-card-replies">
-                        {replies.map((reply, index) => {
-                            return <RatingCard key={index} ratingData={reply}></RatingCard>
+                        {replies.map((reply) => {
+                            return <RatingCard key={reply.id} ratingData={reply}></RatingCard>
                         })}
                     </div>
                 ) : (

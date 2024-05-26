@@ -5,7 +5,7 @@ import './index.css'
 export default function ErrorPage() {
     return (
         <div className="error">
-            <img src="/logo.png" />
+            <img src="/cooking-app-robot-sad.svg" />
             <h1>404</h1>
             <p>Pagina nu a fost găsită.</p>
             <PageButton path="/">Acasă</PageButton>

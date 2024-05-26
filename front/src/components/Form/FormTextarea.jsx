@@ -1,7 +1,9 @@
 import { forwardRef } from 'react'
 
-const FormTextarea = forwardRef(function FormTextarea(
-    { className, label, id, errorCheck, ...other },
+import TextareaAutosize from 'react-textarea-autosize'
+
+const FormTextarea = forwardRef(function FormInput(
+    { className, label, id, errorCheck, grow = true, resize = false, ...other },
     ref
 ) {
     return (
@@ -11,7 +13,23 @@ const FormTextarea = forwardRef(function FormTextarea(
                     {label}
                 </label>
             )}
-            <textarea className="form-textarea" id={id} ref={ref} {...other} />
+            {grow ? (
+                <TextareaAutosize
+                    style={resize ? {} : { resize: 'none' }}
+                    className="form-input"
+                    id={id}
+                    ref={ref}
+                    {...other}
+                />
+            ) : (
+                <textarea
+                    style={resize ? {} : { resize: 'none' }}
+                    className="form-input"
+                    id={id}
+                    ref={ref}
+                    {...other}
+                />
+            )}
             {errorCheck && errorCheck(id)}
         </div>
     )

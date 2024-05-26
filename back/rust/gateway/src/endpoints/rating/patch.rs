@@ -1,9 +1,9 @@
 use super::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse};
 use crate::{
-    config::get_global_context,
-    endpoints::{redirect, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-    get_redirect_url,
+
+    endpoints::{FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
+
     models::{rating::Update, ErrorResponse},
 };
 use reqwest::{Method, StatusCode};
@@ -39,10 +39,10 @@ pub async fn patch_rating_endpoint(
     req: &mut Request,
     res: &mut Response,
 ) -> Json<EndpointResponse<String>> {
-    let uri = req.uri().to_string();
+    let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[1..].join("/");
-    let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
+    let new_url = parts[3..].join("/");
+    let url: String = format!("{SERVICE}/{new_url}");
     return (get_response::<&str, Update, String>(
         Method::PATCH,
         url,
@@ -53,7 +53,8 @@ pub async fn patch_rating_endpoint(
     )
     .await)
         .map_or_else(
-            |_| {
+            |e| {
+                error!("{e}");
                 res.status_code(StatusCode::BAD_REQUEST);
                 Json(EndpointResponse::Error(ErrorResponse::default()))
             },

@@ -30,6 +30,8 @@ pub struct FullData {
     pub tags: Vec<String>,
     pub thumbnail: String,
     pub view_count: u32,
+    pub created_at: String,
+    pub updated_at: String,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
@@ -45,6 +47,8 @@ pub struct Card {
     pub tags: Vec<String>,
     pub thumbnail: String,
     pub view_count: u32,
+    pub created_at: String,
+    pub updated_at: String,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]

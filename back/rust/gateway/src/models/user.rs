@@ -17,8 +17,6 @@ pub struct User {
     pub updated_at: String,
     pub following_count: u32,
     pub followers_count: u32,
-    pub is_following: Option<bool>,
-    pub is_followed: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
@@ -32,10 +30,6 @@ pub struct CardData {
     pub rating_avg: f32,
     pub created_at: String,
     pub updated_at: String,
-    pub following_count: u32,
-    pub followers_count: u32,
-    pub is_following: Option<bool>,
-    pub is_followed: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]

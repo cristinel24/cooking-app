@@ -1,15 +1,14 @@
+use crate::models::ErrorResponse;
 use bytes::Bytes;
-use reqwest::{Client, Method};
 use reqwest::multipart::{Form, Part};
+use reqwest::{Client, Method};
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
-use crate::models::ErrorResponse;
 
 pub mod put;
 pub use put::put_image;
 pub mod get;
 pub use get::get_image;
-use crate::endpoints::EndpointResponse;
 
 pub const SERVICE: &str = "image_storage";
 
@@ -17,7 +16,7 @@ pub const SERVICE: &str = "image_storage";
 pub enum ImageResponse {
     Bytes(Vec<u8>),
     Null(String),
-    Error(ErrorResponse)
+    Error(ErrorResponse),
 }
 
 impl Default for ImageResponse {
@@ -26,10 +25,10 @@ impl Default for ImageResponse {
     }
 }
 
-impl Serialize for ImageResponse{
+impl Serialize for ImageResponse {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         match self {
             Self::Bytes(ok_response) => ok_response.serialize(serializer),
@@ -43,7 +42,7 @@ pub(crate) async fn get_put_image(
     method: Method,
     service_url: String,
     payload: Option<Bytes>,
-    is_null: bool
+    is_null: bool,
 ) -> anyhow::Result<ImageResponse> {
     let mut req_builder = Client::new().request(method, service_url);
     if let Some(bytes) = payload {

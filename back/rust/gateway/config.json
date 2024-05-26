@@ -5,125 +5,129 @@
     "port": 3000
   },
   "services": {
+    "ai": {
+      "url": "ai",
+      "port": 80
+    },
     "rating": {
-      "url": "http://127.0.0.1",
-      "port": 7000
+      "url": "rating",
+      "port": 80
     },
     "hash": {
-      "url": "http://hasher-service-url",
-      "port": 5000
+      "url": "hash",
+      "port": 80
     },
     "tag": {
-      "url": "http://tag-manager-service-url",
-      "port": 5000
+      "url": "tag",
+      "port": 80
     },
     "allergen": {
-      "url": "http://allergen-manager-service-url",
-      "port": 5000
+      "url": "allergen",
+      "port": 80
     },
     "recipe_saver": {
-      "url": "http://recipe-saver-service-url",
-      "port": 5000
+      "url": "recipe_saver",
+      "port": 80
     },
     "user_retriever": {
-      "url": "http://user-retriever-service-url",
-      "port": 5000
+      "url": "user_retriever",
+      "port": 80
     },
     "email_system": {
-      "url": "http://email-system-service-url",
-      "port": 5000
+      "url": "email_system",
+      "port": 80
     },
     "role_changer": {
-      "url": "http://role-changer-service-url",
-      "port": 5000
+      "url": "role_changer",
+      "port": 80
     },
-    "search_history_manager": {
-      "url": "http://search-history-manager-service-url",
-      "port": 5000
+    "search_history": {
+      "url": "search_history",
+      "port": 80
     },
     "follow_manager": {
-      "url": "http://follow-manager-service-url",
-      "port": 5000
+      "url": "follow_manager",
+      "port": 80
     },
-    "message_history_manager": {
-      "url": "http://message-history-manager-service-url",
-      "port": 5000
+    "message_history": {
+      "url": "message_history",
+      "port": 80
     },
     "user_destroyer": {
-      "url": "http://user-destroyer-service-url",
-      "port": 5000
+      "url": "user_destroyer",
+      "port": 80
     },
     "profile_data_changer": {
-      "url": "http://profile-data-changer-service-url",
-      "port": 5000
+      "url": "profile_data_changer",
+      "port": 80
     },
     "token_validator": {
-      "url": "http://token-validator-service-url",
-      "port": 5000
+      "url": "token_validator",
+      "port": 80
     },
     "id_generator": {
-      "url": "http://id-generator-service-url",
-      "port": 5000
+      "url": "id_generator",
+      "port": 80
     },
     "token_generator": {
-      "url": "http://token-generator-service-url",
-      "port": 5000
+      "url": "token_generator",
+      "port": 80
     },
     "image_storage": {
-      "url": "localhost",
-      "port": 7000
+      "url": "image_storage",
+      "port": 80
     },
     "register": {
-      "url": "http://register-service-url",
-      "port": 5000
+      "url": "register",
+      "port": 80
     },
     "token_destroyer": {
-      "url": "http://token-destroyer-service-url",
-      "port": 5000
+      "url": "token_destroyer",
+      "port": 80
     },
     "verifier": {
-      "url": "http://verifier-service-url",
-      "port": 5000
+      "url": "verifier",
+      "port": 80
     },
     "login": {
-      "url": "http://login-service-url",
-      "port": 5000
+      "url": "login",
+      "port": 80
     },
     "credentials_change_requester": {
-      "url": "http://credentials-change-requester-service-url",
-      "port": 5000
+      "url": "credentials_change_requester",
+      "port": 80
     },
     "username_changer": {
-      "url": "http://username-changer-service-url",
-      "port": 5000
+      "url": "username_changer",
+      "port": 80
     },
     "password_changer": {
-      "url": "http://password-changer-service-url",
-      "port": 5000
+      "url": "password_changer",
+      "port": 80
     },
     "email_changer": {
-      "url": "http://email-changer-service-url",
-      "port": 5000
+      "url": "email_changer",
+      "port": 80
     },
     "recipe_creator": {
-      "url": "http://recipe-creator-service-url",
-      "port": 5000
+      "url": "recipe_creator",
+      "port": 80
     },
     "recipe_editor": {
-      "url": "http://recipe-editor-service-url",
-      "port": 5000
+      "url": "recipe_editor",
+      "port": 80
     },
     "recipe_destroyer": {
-      "url": "http://recipe-destroyer-service-url",
-      "port": 5000
+      "url": "recipe_destroyer",
+      "port": 80
     },
     "recipe_rating_manager": {
-      "url": "http://recipe-rating-manager-service-url",
-      "port": 5000
+      "url": "recipe_rating_manager",
+      "port": 80
     },
     "recipe_retriever": {
-      "url": "http://recipe-retriever-service-url",
-      "port": 5000
+      "url": "recipe_retriever",
+      "port": 80
     }
   }
 }

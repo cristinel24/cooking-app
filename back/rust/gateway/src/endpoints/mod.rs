@@ -1,27 +1,24 @@
-use crate::config::Configuration;
 use crate::models::ErrorResponse;
-use anyhow::Context;
 use reqwest::header::HeaderMap;
 use reqwest::{Client, Method, Response};
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
+use tracing::info;
 
 pub mod ai;
 pub mod allergen;
-pub mod email;
 pub mod follow_manager;
 pub mod history_manager;
+pub mod image_storage;
 pub mod message_history_manager;
 pub mod profile_data_changer;
 pub mod rating;
 pub mod recipe_creator;
 pub mod recipe_retriever;
 pub mod recipe_saver;
-pub mod role_changer;
 pub mod tag;
 pub mod user_destroyer;
 pub mod user_retriever;
-pub mod image_storage;
 
 const SUCCESSFUL_RESPONSE: &str = "Successful operation response";
 const FAILED_RESPONSE: &str = "Failed operation response";
@@ -66,7 +63,8 @@ pub(crate) async fn get_response<
     headers: Option<HeaderMap>,
     is_null: bool,
 ) -> anyhow::Result<EndpointResponse<G>> {
-    let mut req_builder = Client::new().request(method, service_url);
+    info!("{method:?} {service_url}");
+    let mut req_builder = Client::new().request(method, format!("http://{service_url}"));
     if let Some(params) = params {
         req_builder = req_builder.query(params);
     }
@@ -92,35 +90,4 @@ pub(crate) async fn get_response<
             response.json::<ErrorResponse>().await?,
         ))
     }
-}
-
-/// # Errors
-/// * Couldn't get `service`
-pub fn redirect(context: &Configuration, url: &str, service: &str) -> anyhow::Result<String> {
-    let service = context
-        .services
-        .get(service)
-        .context("Cannot get service")?;
-    Ok(format!("{}:{}/{}", service.url, service.port, url))
-}
-
-#[macro_export]
-macro_rules! get_redirect_url {
-    ($req:expr, $res:expr, $uri:expr, $service:expr) => {{
-        let context = match get_global_context() {
-            Ok(value) => value,
-            Err(e) => {
-                error!("Error: {e}");
-                $res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                return Json(EndpointResponse::Error(ErrorResponse::default()));
-            }
-        };
-        match redirect(context, $uri, $service) {
-            Ok(value) => value,
-            Err(_) => {
-                $res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                return Json(EndpointResponse::Error(ErrorResponse::default()));
-            }
-        }
-    }};
 }

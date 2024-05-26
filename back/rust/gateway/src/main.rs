@@ -7,7 +7,6 @@ pub mod models;
 use crate::config::{get_configuration, CONTEXT};
 use crate::endpoints::ai::{ai_talk, replace_ingredient};
 use crate::endpoints::allergen::get_allergen_item;
-use crate::endpoints::email::{request_change, verify_account};
 use crate::endpoints::follow_manager::{
     delete_following_user, get_all_followers, get_all_following, get_followers_count,
     get_user_following_count, put_new_following_user,
@@ -15,6 +14,7 @@ use crate::endpoints::follow_manager::{
 use crate::endpoints::history_manager::{
     delete_item_search_history, get_search_history_endpoint, put_in_search_history,
 };
+use crate::endpoints::image_storage::{get_image, put_image};
 use crate::endpoints::message_history_manager::{delete_history, get_history, put_history};
 use crate::endpoints::profile_data_changer::patch_profile_data;
 use crate::endpoints::rating::{
@@ -23,7 +23,6 @@ use crate::endpoints::rating::{
 use crate::endpoints::recipe_creator::post_recipe_item;
 use crate::endpoints::recipe_retriever::{get_card_recipe, get_full_recipe};
 use crate::endpoints::recipe_saver::{delete_recipe, put_recipe};
-use crate::endpoints::role_changer::admin_role_changer_endpoint;
 use crate::endpoints::tag::get_tag_item;
 use crate::endpoints::user_destroyer::delete_user;
 use crate::endpoints::user_retriever::{
@@ -41,7 +40,6 @@ use salvo::{
     Listener, Server,
 };
 use tracing::info;
-use crate::endpoints::image_storage::{get_image, put_image};
 
 #[endpoint]
 async fn test() {}
@@ -69,7 +67,6 @@ async fn main() -> Result<()> {
                 setup_user_routes(),
                 setup_profile_routes(),
                 setup_misc_routes(),
-                setup_email_routes(),
                 setup_ai_routes(),
             ]),
     );
@@ -120,7 +117,7 @@ async fn main() -> Result<()> {
 }
 
 fn setup_ai_routes() -> Router {
-    Router::with_path("/ai").append(&mut vec![
+    Router::with_path("/ai").oapi_tag("AI").append(&mut vec![
         Router::with_path("/tokenize/replace_ingredient").post(replace_ingredient),
         Router::with_path("/chatbot").post(ai_talk),
     ])
@@ -164,15 +161,12 @@ fn setup_user_routes() -> Router {
                 .get(get_user_data_item)
                 .append(&mut vec![
                     Router::with_path("/card").get(get_user_card_item),
-                    Router::with_path("/profile").post(get_user_profile_item),
+                    Router::with_path("/profile").get(get_user_profile_item),
                 ]),
-            Router::with_path("/user-cards").post(post_user_card_item),
+            Router::new()
+                .oapi_tag("USER RETRIEVER")
+                .post(post_user_card_item),
         ])
-        .push(
-            Router::with_path("/<user_id>/roles")
-                .oapi_tag("ROLE CHANGER")
-                .patch(admin_role_changer_endpoint),
-        )
         .push(
             Router::with_path("/<user_id>/search-history")
                 .oapi_tag("SEARCH HISTORY")
@@ -181,17 +175,18 @@ fn setup_user_routes() -> Router {
                 .delete(delete_item_search_history),
         )
         .push(
-            Router::with_path("/<user_id>/followers")
+            Router::with_path("/<user_id>")
                 .oapi_tag("FOLLOW MANAGER")
-                .push(Router::with_path("/count").get(get_followers_count))
-                .get(get_all_followers)
-                .push(
+                .append(&mut vec![
+                    Router::with_path("/followers")
+                        .get(get_all_followers)
+                        .push(Router::with_path("/count").get(get_followers_count)),
                     Router::with_path("/following")
                         .push(Router::with_path("/count").get(get_user_following_count))
                         .get(get_all_following)
                         .put(put_new_following_user)
                         .delete(delete_following_user),
-                ),
+                ]),
         )
         .push(
             Router::with_path("/<user_id>/message-history")
@@ -227,13 +222,4 @@ fn setup_misc_routes() -> Router {
             .get(get_full_recipe)
             .push(Router::with_path("/card").get(get_card_recipe)),
     ])
-}
-
-fn setup_email_routes() -> Router {
-    Router::with_path("/email")
-        .oapi_tag("EMAIL")
-        .append(&mut vec![
-            Router::with_path("/verify-account").post(verify_account),
-            Router::with_path("/request-change").post(request_change),
-        ])
 }

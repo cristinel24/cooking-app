@@ -1,14 +1,13 @@
 use crate::endpoints::user_retriever::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::get_redirect_url;
-use crate::models::user::Cards;
+use crate::models::user::{Cards, CardsRequestData};
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
+use salvo::oapi::extract::JsonBody;
 use salvo::prelude::Json;
-use salvo::{Request, Response};
+use salvo::{Request, Response, Writer};
 
-use crate::config::get_global_context;
-use crate::endpoints::redirect;
+
 use crate::models::ErrorResponse;
 use tracing::error;
 
@@ -30,25 +29,27 @@ use tracing::error;
     )
 )]
 pub async fn post_user_card_item(
+    data: JsonBody<CardsRequestData>,
     req: &mut Request,
     res: &mut Response,
 ) -> Json<EndpointResponse<Cards>> {
-    let uri = req.uri().to_string();
+    let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[1..].join("/");
-    let url: String = get_redirect_url!(req, res, &new_url, SERVICE);
+    let new_url = parts[3..].join("/");
+    let url: String = format!("{SERVICE}/{new_url}");
 
-    return (get_response::<&str, &str, Cards>(
+    return (get_response::<&str, CardsRequestData, Cards>(
         Method::POST,
         url,
         None,
-        None,
+        Some(data.into_inner()),
         Some(req.headers().clone()),
-        true,
+        false,
     )
     .await)
         .map_or_else(
-            |_| {
+            |e| {
+                error!("{e}");
                 res.status_code(StatusCode::BAD_REQUEST);
                 Json(EndpointResponse::Error(ErrorResponse::default()))
             },

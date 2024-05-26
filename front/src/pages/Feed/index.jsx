@@ -13,8 +13,7 @@ export default function Feed() {
     const navigate = useNavigate()
     const { pathname } = useLocation()
 
-    const { user } = useContext(UserContext)
-    const { loggedIn } = useContext(UserContext)
+    const { user, loggedIn, token } = useContext(UserContext)
     const [feed, setFeed] = useState(pathname.substring(1))
     const [results, setResults] = useState({ count: 1, recipes: [] })
     const [error, setError] = useState('')
@@ -23,8 +22,38 @@ export default function Feed() {
         loggedIn() ? ['favorite', 'followed', 'recommended'] : []
     )
 
+    useEffect(() => {
+        let ignore = false
+
+        searchRecipes({
+            query: '',
+            start: results.recipes.length,
+            count: 10,
+        })
+            .then((result) => {
+                if (!ignore) {
+                    setResults((results) => ({
+                        ...result,
+                        recipes: [...results.recipes, ...result.recipes],
+                    }))
+                }
+            })
+            .catch((e) => setError(getErrorMessage(e)))
+
+        return () => {
+            ignore = true
+        }
+    }, [])
+
+    useEffect(() => {
+        if (feed !== pathname.substring(1)) {
+            navigate(`/${feed}`)
+        }
+    }, [navigate, pathname, feed])
+
     const fetchRecipes = async () => {
         try {
+            console.log('fetching...')
             const result = await searchRecipes({
                 query: '',
                 start: results.recipes.length,
@@ -34,6 +63,7 @@ export default function Feed() {
                 ...result,
                 recipes: [...results.recipes, ...result.recipes],
             }))
+            console.log('fetched')
         } catch (e) {
             // if fetching fails, set results.count to 0 so that InfiniteScroll thinks there
             // are no more results
@@ -43,7 +73,7 @@ export default function Feed() {
 
     const onFavorite = async (id) => {
         try {
-            await saveRecipe(id)
+            await saveRecipe(id, token)
 
             setResults((results) => {
                 for (const recipe of results.recipes) {
@@ -61,7 +91,7 @@ export default function Feed() {
 
     const onRemove = async (id) => {
         try {
-            await deleteRecipe(id)
+            await deleteRecipe(id, token)
 
             setResults((results) => ({
                 ...results,
@@ -72,12 +102,6 @@ export default function Feed() {
             return
         }
     }
-
-    useEffect(() => {
-        if (feed !== pathname.substring(1)) {
-            navigate(`/${feed}`)
-        }
-    }, [navigate, pathname, feed])
 
     return (
         <div>

@@ -6,10 +6,9 @@ import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 
 import { dateToRomanian } from '../../utils/date'
 
-import { RatingButton } from './RatingButton'
+import RatingButton from './RatingButton'
+import RatingEditForm from './RatingEditForm'
 import { getRatingReplies } from '../../services/rating'
-
-import { RatingForm } from '..'
 
 const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const [showAllText, setShowAllText] = useState(false)
@@ -152,7 +151,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                             </div>
                         </>
                     ) : (
-                        <RatingForm
+                        <RatingEditForm
                             onSubmit={handleEdit}
                             defaultValue={ratingData.description}
                             onCancel={toggleEdit}

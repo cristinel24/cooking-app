@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form'
-import { FormTextarea } from '../../components'
-import { RatingButton } from './RatingButton'
+import { FormTextarea } from '..'
+import RatingButton from './RatingButton'
 import { useEffect } from 'react'
 
-const RatingForm = ({ defaultValue, onSubmit, onCancel }) => {
+const RatingEditForm = ({ defaultValue, onSubmit, onCancel }) => {
     const { register, handleSubmit, formState, setValue } = useForm({
         defaultValues: {
             text: defaultValue,
@@ -29,4 +29,4 @@ const RatingForm = ({ defaultValue, onSubmit, onCancel }) => {
     )
 }
 
-export default RatingForm
+export default RatingEditForm

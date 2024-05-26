@@ -1,4 +1,4 @@
-export const RatingButton = ({ type = 'button', className, onClick, children }) => {
+const RatingButton = ({ type = 'button', className, onClick, children }) => {
     return (
         <button
             type={type}
@@ -9,3 +9,5 @@ export const RatingButton = ({ type = 'button', className, onClick, children }) 
         </button>
     )
 }
+
+export default RatingButton

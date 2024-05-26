@@ -88,6 +88,17 @@ services:
       - USER_RETRIEVER_API_URL=http://user_retriever
     volumes:
       - ./python/follow_manager:/app
+
+  gateway:
+    build: 
+      context: ./rust/search
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $GATEWAY_PORT:80
+    volumes:
+      - ./rust/gateway:/app
     
   hasher:
     build: 
@@ -324,7 +335,9 @@ services:
       - ./python/role_changer:/app
 
   search:
-    build: ./rust/search
+    build: 
+      context: ./rust/search
+      dockerfile: ../Dockerfile
     networks:
       - ca
     ports:

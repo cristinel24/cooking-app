@@ -82,3 +82,25 @@ async def create_ratings(parent_id: str, rating_data: dict):
             else:
                 raise RecipeDestroyerException(int(response.json()["errorCode"]), status.HTTP_500_INTERNAL_SERVER_ERROR)
         return response.status_code
+
+async def get_image(image_id: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(IMAGES_API_URL+f"/{image_id}")
+
+        if response.status_code != 200:
+             if response.json().get("errorCode") is None:
+                raise RecipeDestroyerException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
+             else:
+                raise RecipeDestroyerException(int(response.json()["errorCode"]), status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return response.status_code
+    
+async def create_image(image_id: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(IMAGES_API_URL)
+
+        if response.status_code != 200:
+             if response.json().get("errorCode") is None:
+                raise RecipeDestroyerException(ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
+             else:
+                raise RecipeDestroyerException(int(response.json()["errorCode"]), status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return response.status_code

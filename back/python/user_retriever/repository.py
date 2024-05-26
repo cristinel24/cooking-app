@@ -39,6 +39,10 @@ class UserCollection(MongoCollection):
                 users_list = list(self._collection.find({"id": {"$in": user_ids}}, projection=projection_arg))
                 if not users_list:
                     raise UserRetrieverException(status.HTTP_404_NOT_FOUND, ErrorCodes.USER_NOT_FOUND.value)
+                for user in users_list:
+                    user__id = ObjectId(user["_id"])
+                    user["createdAt"] = user__id.generation_time
+                    user.pop("_id")
                 return users_list
         except errors.PyMongoError as e:
             if e.timeout:

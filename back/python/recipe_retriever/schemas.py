@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -8,6 +10,8 @@ class UserCardData(BaseModel):
     icon: str
     roles: int
     ratingAvg: float
+    updatedAt: datetime
+    createdAt: datetime
 
 
 class RecipeData(BaseModel):
@@ -22,6 +26,9 @@ class RecipeData(BaseModel):
     tags: list[str]
     thumbnail: str
     viewCount: int
+    ratingAvg: float
+    updatedAt: datetime
+    createdAt: datetime
 
 
 class RecipeCardData(BaseModel):
@@ -34,3 +41,6 @@ class RecipeCardData(BaseModel):
     allergens: list[str]
     thumbnail: str
     viewCount: int
+    ratingAvg: float
+    updatedAt: datetime
+    createdAt: datetime

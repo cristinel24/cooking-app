@@ -1,20 +1,20 @@
-use crate::repository::{models::user::Author, service::CollectionName};
+use crate::repository::{models::user::User, service::CollectionName};
 use salvo::prelude::ToSchema;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Recipe {
-    pub author: Author,
+    pub id: String,
+    pub author: User,
     pub title: String,
-
-    #[serde(alias = "mainImage")]
-    pub image: String,
-
+    pub rating_avg: f32,
     pub description: String,
     pub prep_time: u32,
     pub allergens: Vec<String>,
     pub tags: Vec<String>,
+    pub thumbnail: String,
+    pub view_count: u32,
 }
 
 impl CollectionName for Recipe {

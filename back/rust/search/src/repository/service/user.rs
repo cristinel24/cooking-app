@@ -1,5 +1,5 @@
 use super::{super::models::user::User, CollectionName, DATABASE_NAME};
-use crate::endpoints::AggregationResponse;
+use crate::endpoints::{user::SearchUsersParams, AggregationResponse};
 use anyhow::Result;
 use bson::{doc, from_document};
 use futures::TryStreamExt;
@@ -23,28 +23,29 @@ impl Service {
 }
 
 pub trait Repository<T: Serialize> {
-    async fn find_by_name(&self, data: &str) -> Result<AggregationResponse<T>>;
+    async fn search(&self, params: SearchUsersParams) -> Result<AggregationResponse<T>>;
 }
 
 impl Repository<User> for Service {
-    async fn find_by_name(&self, data: &str) -> Result<AggregationResponse<User>> {
+    async fn search(&self, params: SearchUsersParams) -> Result<AggregationResponse<User>> {
         let pipeline = vec![
             doc! {
                 "$match": {
                     "$or": [
-                        { "username": { "$regex": data, "$options": "i" } },
-                        { "displayName": { "$regex": data, "$options": "i" } }
+                        { "username": { "$regex": &params.query, "$options": "i" } },
+                        { "displayName": { "$regex": params.query, "$options": "i" } }
                     ]
                 }
             },
             doc! {
                 "$project": {
                     "_id": 0,
+                    "id": 1,
                     "icon": 1,
                     "displayName": 1,
                     "username": 1,
                     "roles": 1,
-                    "rating": {
+                    "ratingAvg": {
                         "$cond": {
                             "if": { "$eq": ["$ratingCount", 0] },
                             "then": 0,
@@ -53,19 +54,23 @@ impl Repository<User> for Service {
                     }
                 }
             },
-            doc! { "$sort": { "rating": -1 } },
+            doc! { "$sort": { params.sort: params.order } },
             doc! {
-                "$group": {
-                    "_id": null,
-                    "data": { "$push": "$$ROOT" },
-                    "count": { "$sum": 1 }
+                "$facet": {
+                    "data": [
+                        { "$skip": params.start * params.count },
+                        { "$limit": params.count },
+                    ],
+                    "total": [
+                        { "$count": "count" }
+                    ]
                 }
             },
+            doc! { "$unwind": { "path": "$total" } },
             doc! {
                 "$project": {
-                    "_id": 0,
                     "data": 1,
-                    "count": 1
+                    "count": "$total.count",
                 }
             },
         ];

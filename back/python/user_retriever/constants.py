@@ -15,8 +15,9 @@ FOLLOWING_COUNT_ROUTE = "/following/count"
 MONGO_TIMEOUT = 3
 
 USER_DATA_PROJECTION = {
-    "_id": 0,
+    "_id": 1,
     "id": 1,
+    "updatedAt": 1,
     "username": 1,
     "displayName": 1,
     "icon": 1,
@@ -29,8 +30,9 @@ USER_DATA_PROJECTION = {
 }
 
 USER_CARD_DATA_PROJECTION = {
-    "_id": 0,
+    "_id": 1,
     "id": 1,
+    "updatedAt": 1,
     "username": 1,
     "displayName": 1,
     "icon": 1,
@@ -40,8 +42,9 @@ USER_CARD_DATA_PROJECTION = {
 }
 
 USER_FULL_DATA_PROJECTION = {
-    "_id": 0,
+    "_id": 1,
     "id": 1,
+    "updatedAt": 1,
     "username": 1,
     "displayName": 1,
     "icon": 1,
@@ -66,3 +69,5 @@ class ErrorCodes(Enum):
     FAILED_TO_GET_USER_FOLLOWING_COUNT = 21904
     UNAUTHORIZED = 21905
     DATABASE_ERROR = 21906
+    DATABASE_TIMEOUT = 21907
+    SERVER_ERROR = 21908

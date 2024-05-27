@@ -22,7 +22,7 @@ class MessageHistoryCollection(MongoCollection):
             with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
                 result = self._collection.find_one(
                     {"id": user_id},
-                    {"messageHistory": {"$slice": [start, count]}}
+                    {"messageHistory": {"$slice": [-start - count, count]}}
                 )
             if result is None:
                 raise exceptions.MessageHistoryException(ErrorCodes.MESSAGE_HISTORY_NOT_FOUND, status.HTTP_404_NOT_FOUND)
@@ -38,7 +38,7 @@ class MessageHistoryCollection(MongoCollection):
                     {"$push": {
                         "messageHistory": {
                             "$each": [message],
-                            "$slice": -HISTORY_MAX_SIZE  # Keeps only the last 10 entries
+                            "$slice": -HISTORY_MAX_SIZE  # Keeps only the last 100 entries
                         }
                     }}
                 )

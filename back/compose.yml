@@ -14,6 +14,7 @@ services:
       - MONGO_URI=$MONGO_URI
       - DB_NAME=$DB_NAME
       - AI_API_KEY=$AI_API_KEY
+      - MESSAGE_HISTORY_MANAGER_API_URL=http://message_history_manager
     volumes:
       - ./python/ai:/app
 
@@ -31,6 +32,42 @@ services:
       - DB_NAME=$DB_NAME
     volumes:
       - ./python/allergen_manager:/app
+
+  credentials_change_requester:
+    build: 
+      context: ./python/credentials_change_requester
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $CREDENTIALS_CHANGE_REQUESTER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - EMAIL_SYSTEM_API_URL=http://email_system
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+    volumes:
+      - ./python/credentials_change_requester:/app
+
+  email_changer:
+    build: 
+      context: ./python/email_changer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $EMAIL_CHANGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - EMAIL_SYSTEM_API_URL=http://email_system
+      - TOKEN_DESTROYER_API_URL=http://token_destroyer
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+      - TOKEN_VALIDATOR_API_URL=http://token_validator
+    volumes:
+      - ./python/email_changer:/app
     
   email_system:
     build: 
@@ -40,15 +77,16 @@ services:
       - ca
     ports:
       - $EMAIL_SYSTEM_PORT:80
+      - $SMTP_PORT:$SMTP_PORT
     environment:
       - PORT=80
       - MONGO_URI=$MONGO_URI
-      - FRONTEND_URL=
-      - SMTP_ROOT_EMAIL=
-      - SMTP_SERVER=
-      - SMTP_PORT=
-      - SMTP_USERNAME=
-      - SMTP_PASSWORD=
+      - FRONTEND_URL=$FRONTEND_URL
+      - SMTP_ROOT_EMAIL=$SMTP_ROOT_EMAIL
+      - SMTP_SERVER=$SMTP_SERVER
+      - SMTP_PORT=$SMTP_PORT
+      - SMTP_USERNAME=$SMTP_USERNAME
+      - SMTP_PASSWORD=$SMTP_PASSWORD
     volumes:
       - ./python/email_system:/app
     
@@ -67,6 +105,17 @@ services:
       - USER_RETRIEVER_API_URL=http://user_retriever
     volumes:
       - ./python/follow_manager:/app
+
+  gateway:
+    build: 
+      context: ./rust/search
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $GATEWAY_PORT:80
+    volumes:
+      - ./rust/gateway:/app
     
   hasher:
     build: 
@@ -112,6 +161,24 @@ services:
       - ID_GENERATOR_API_URL=http://id_generator
     volumes:
       - ./python/image_storage:/app
+
+  login:
+    build: 
+      context: ./python/login
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $LOGIN_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - HASHER_API_URL=http://hasher
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+      - USER_RETRIEVER_API_URL=http://user_retriever
+    volumes:
+      - ./python/login:/app
     
   message_history_manager:
     build: 
@@ -128,6 +195,25 @@ services:
       - USER_RETRIEVER_API_URL=http://user_retriever
     volumes:
       - ./python/message_history_manager:/app
+
+  password_changer:
+    build: 
+      context: ./python/password_changer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $PASSWORD_CHANGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - HASHER_API_URL=http://hasher
+      - TOKEN_DESTROYER_API_URL=http://token_destroyer
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+      - TOKEN_VALIDATOR_API_URL=http://token_validator
+    volumes:
+      - ./python/password_changer:/app
     
   profile_data_changer:
     build: 
@@ -161,6 +247,44 @@ services:
       - ID_GENERATOR_API_URL=http://id_generator
     volumes:
       - ./python/rating_manager:/app
+
+  recipe_creator:
+    build: 
+      context: ./python/recipe_creator
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $RECIPE_CREATOR_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - ALLERGEN_MANAGER_API_URL=http://allergen_manager
+      - TAG_MANAGER_API_URL=http://tag_manager
+      - ID_GENERATOR_API_URL=http://id_generator
+      - AI_API_URL=http://ai
+    volumes:
+      - ./python/recipe_creator:/app
+
+  recipe_editor:
+    build: 
+      context: ./python/recipe_editor
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $RECIPE_EDITOR_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - ALLERGEN_MANAGER_API_URL=http://allergen_manager
+      - TAG_MANAGER_API_URL=http://tag_manager
+      - ID_GENERATOR_API_URL=http://id_generator
+      - AI_API_URL=http://ai
+    volumes:
+      - ./python/recipe_editor:/app
     
   recipe_retriever:
     build: 
@@ -192,6 +316,58 @@ services:
       - DB_NAME=$DB_NAME
     volumes:
       - ./python/recipe_saver:/app
+
+  register:
+    build:
+      context: ./python/register
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $REGISTER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - ID_GENERATOR_API_URL=http://id_generator
+      - HASHER_API_URL=http://hasher
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+      - EMAIL_SYSTEM_API_URL=http://email_system
+      - USER_DESTROYER_API_URL=http://user_destroyer
+      - GATEWAY_API_URL=$GATEWAY_API_URL
+    volumes:
+      - ./python/register:/app
+      
+  role_changer:
+    build: 
+      context: ./python/role_changer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $ROLE_CHANGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/role_changer:/app
+
+  search:
+    build: 
+      context: ./rust/search
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $SEARCH_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - AI_API_URL=http://ai
+    volumes:
+      - ./rust/search:/app
 
   search_history_manager:
     build: 
@@ -300,6 +476,41 @@ services:
     volumes:
       - ./python/user_retriever:/app
     
+  username_changer:
+    build: 
+      context: ./python/username_changer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $USERNAME_CHANGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - TOKEN_DESTROYER_API_URL=http://token_destroyer
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+      - TOKEN_VALIDATOR_API_URL=http://token_validator
+    volumes:
+      - ./python/username_changer:/app
+
+  verifier:
+    build: 
+      context: ./python/verifier
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $VERIFIER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - TOKEN_DESTROYER_API_URL=http://token_destroyer
+      - TOKEN_VALIDATOR_API_URL=http://token_validator
+    volumes:
+      - ./python/verifier:/app
+
 networks:
   ca:
     driver: bridge

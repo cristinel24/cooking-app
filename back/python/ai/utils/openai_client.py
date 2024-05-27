@@ -1,14 +1,17 @@
 from openai import AsyncOpenAI
-from utils.constants import AI_API_KEY
+
+from constants import AI_API_KEY
 
 
 def function_singleton(original_function):
     instance = None
+
     def wrapper(*args, **kwargs):
         nonlocal instance
         if instance is None:
             instance = original_function(*args, **kwargs)
         return instance
+
     return wrapper
 
 

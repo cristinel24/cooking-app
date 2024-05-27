@@ -2,27 +2,42 @@ import { useForm } from 'react-hook-form'
 
 import './index.css'
 
-import { FormInput } from '../../components'
+import { FormInput, InfoModal } from '../../components'
 import { useState } from 'react'
 import { length } from '../../utils/form'
+import { credentialChange } from '../../services/auth'
+import { getErrorMessage } from '../../utils/api'
+import { useNavigate } from 'react-router-dom'
 
 export default function ForgotPassword() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        setError,
+        formState: { errors }
     } = useForm()
-    const [submit, setSubmit] = useState(false)
+
+    const navigate = useNavigate()
+
+    const [loading, setLoading] = useState(false)
+    const [showModal, setShowModal] = useState(false)
+
+    const onModalClose = () => {
+        setShowModal(false)
+        navigate('/')
+    }
 
     const onSubmit = async (data) => {
         console.log(data)
-
-        setSubmit(true)
-
-        // TODO: error handling for API
-
-        // const { token, user } = await login(data)
-        // loginContext(token, user, remember)
+        setLoading(true)
+        try {
+            await credentialChange(data.email, 'password')
+            setShowModal(true)
+        } catch (e) {
+            setError('api', { message: getErrorMessage(e) })
+        } finally {
+            setLoading(false)
+        }
     }
 
     const errorCheck = (id) => {
@@ -43,6 +58,9 @@ export default function ForgotPassword() {
                     Dacă v-ați uitat parola, completați email-ul dumneavoastră aici pentru a primi
                     un link de resetare a parolei.
                 </p>
+                <InfoModal isOpen={showModal} onClose={onModalClose}>
+                    <p>Email-ul a fost trimis, puteți închide această pagină acum.</p>
+                </InfoModal>
                 <form id="form" className="form" onSubmit={handleSubmit(onSubmit)}>
                     <FormInput
                         label="Email"
@@ -51,17 +69,12 @@ export default function ForgotPassword() {
                         errorCheck={errorCheck}
                         {...register('identifier', {
                             required: true,
-                            maxLength: length('maxim', 256),
+                            maxLength: length('maxim', 256)
                         })}
                     />
-                    <button
-                        {...(submit ? { disabled: true } : {})}
-                        type="submit"
-                        className="form-submit"
-                    >
-                        Trimitere email
+                    <button type="submit" className="form-submit" disabled={loading}>
+                        {loading ? 'Trimitere email...' : 'Trimiteți email'}
                     </button>
-                    {submit && <p>Email-ul a fost trimis, puteți închide această pagină acum.</p>}
                 </form>
             </div>
         </div>

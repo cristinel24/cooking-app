@@ -1,11 +1,25 @@
 .search-page {
     display: flex;
+    gap: 1rem;
 }
 
-.search-page-filters {
+.search-page-options {
     width: 200px;
+}
+
+.search-page-section {
+    h3 {
+        color: red;
+    }
 }
 
 .search-page-results {
     flex: 1;
 }
+
+.search-page-results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+

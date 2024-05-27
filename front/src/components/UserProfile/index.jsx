@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './index.css'
-import profile_img from '../../../public/ProfileImage.avif'
+import profile_img from '../../../public/avatar.avif'
 import { FaAngleRight, FaUserAlt, FaHeart, FaAppStoreIos } from 'react-icons/fa'
 import { BsFillGridFill } from 'react-icons/bs'
 import { GoDotFill } from 'react-icons/go'

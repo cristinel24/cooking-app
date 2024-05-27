@@ -74,6 +74,7 @@
     color: red;
     margin: 0;
     margin-top: 0.5rem;
+    overflow-wrap: break-word;
 }
 
 .form-selector {
@@ -108,6 +109,10 @@
 
 .form-selector-dropdown-item:hover {
     background-color: var(--neutral-bg-color);
+}
+
+.form-selector-dropdown-item:last-child {
+    border-radius: 0 0 5px 5px;
 }
 
 .form-selector-items {

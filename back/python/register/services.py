@@ -35,6 +35,7 @@ async def register(user_data: NewUserData) -> None:
             "id": user_id,
             "username": user_data.username,
             "displayName": user_data.displayName or user_data.username,
+            "icon": DEFAULT_ICON_URL,
             "login": {
                 "emailStatus": "Pending",
                 "hashAlgName": hash_response["hashAlgorithmName"],

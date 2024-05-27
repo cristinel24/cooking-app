@@ -1,5 +1,5 @@
-from credentials_change_requester.constants import ErrorCodes
-from credentials_change_requester.exceptions import CredentialChangeRequesterException
+from constants import ErrorCodes
+from exceptions import CredentialChangeRequesterException
 from schemas import CredentialChangeRequest
 from repository import UserCollection
 from constants import USER_DATA_PROJECTION
@@ -21,7 +21,7 @@ async def create_request(request: CredentialChangeRequest) -> None:
                                                  ErrorCodes.TOKEN_GENERATION_ERROR.value)
     email_request = ChangeRequest(
         email=request.email,
-        token=token["value"],
+        token=token,
         changeType=request.changeType
     )
     try:

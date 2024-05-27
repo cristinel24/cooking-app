@@ -6,7 +6,7 @@ load_dotenv()
 
 PORT = int(os.getenv("PORT", 8000))
 HOST = os.getenv("HOST_URL", "localhost")
-MONGO_URI = os.getenv("MONGO_URL", "mongodb://localhost:27017/?directConnection=true")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")
 MONGO_TIMEOUT = 3
 
@@ -14,7 +14,7 @@ ID_GENERATOR_API_URL = os.getenv("ID_GENERATOR_API_URL", "http://localhost:12323
 ID_GENERATOR_ROUTE = "/"
 
 HASHER_API_URL = os.getenv("HASHER_API_URL", "http://localhost:12322")
-HASHER_ROUTE = "/target"
+HASHER_ROUTE = "/{target}"
 
 TOKEN_GENERATOR_API_URL = os.getenv("TOKEN_GENERATOR_API_URL", "http://localhost:12335")
 TOKEN_GENERATOR_ROUTE = "/{user_id}/{token_type}"
@@ -24,6 +24,9 @@ EMAIL_SYSTEM_ROUTE = "/verify-account"
 
 USER_DESTROYER_API_URL = os.getenv("USER_DESTROYER_API_URL", "http://localhost:12337")
 DESTROY_USER_ROUTE = "/{user_id}"
+
+GATEWAY_API_URL = os.getenv("GATEWAY_API_URL", "http://localhost:12345")
+DEFAULT_ICON_URL = f"{GATEWAY_API_URL}/api/images/default.png"
 
 VERIFY_ACCOUNT_TOKEN_TYPE = "emailChange"
 

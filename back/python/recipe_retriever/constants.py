@@ -13,7 +13,7 @@ USER_RETRIEVER_API_URL = os.getenv("USER_RETRIEVER_API_URL", "http://localhost:7
 MAX_TIMEOUT_TIME_SECONDS = 3
 
 RECIPE_DATA_PROJECTION = {
-    "_id": 0,
+    "_id": 1,
     "id": 1,
     "authorId": 1,
     "title": 1,
@@ -24,11 +24,14 @@ RECIPE_DATA_PROJECTION = {
     "allergens": 1,
     "tags": 1,
     "thumbnail": 1,
-    "viewCount": 1
+    "viewCount": 1,
+    "ratingSum": 1,
+    "ratingCount": 1,
+    "updatedAt": 1,
 }
 
 RECIPE_DATA_CARD_PROJECTION = {
-    "_id": 0,
+    "_id": 1,
     "id": 1,
     "authorId": 1,
     "title": 1,
@@ -37,7 +40,10 @@ RECIPE_DATA_CARD_PROJECTION = {
     "allergens": 1,
     "tags": 1,
     "thumbnail": 1,
-    "viewCount": 1
+    "viewCount": 1,
+    "ratingSum": 1,
+    "ratingCount": 1,
+    "updatedAt": 1,
 }
 
 
@@ -45,5 +51,4 @@ class ErrorCodes(Enum):
     SERVER_ERROR = 20900
     NONEXISTENT_RECIPE = 20901
     FAILED_TO_GET_USER_CARD = 20902
-    USER_NOT_FOUND = 20903
     USER_NOT_FOUND = 20903

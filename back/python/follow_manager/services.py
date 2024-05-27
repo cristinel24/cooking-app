@@ -1,8 +1,9 @@
 import httpx
+from fastapi import status
+
 from api import request_user_cards
 from constants import ErrorCodes
 from exception import FollowManagerException
-from fastapi import status
 from repository import FollowCollection, UserCollection
 from schemas import *
 
@@ -16,7 +17,7 @@ async def get_followers_count(user_id: str) -> FollowersCountData:
             ErrorCodes.INVALID_USER.value, status.HTTP_404_NOT_FOUND
         )
     follower_count_data = FollowersCountData()
-    follower_count_data.followers_count = follow_collection.get_followers_count(user_id)
+    follower_count_data.followersCount = follow_collection.get_followers_count(user_id)
     return follower_count_data
 
 
@@ -24,6 +25,9 @@ async def get_followers(user_id: str, start: int, count: int) -> FollowersCardsD
     followers_cards_data = FollowersCardsData()
     request = UserCardRequestData()
     request.ids = follow_collection.get_followers(user_id, start, count)
+    if not request.ids:
+        followers_cards_data.followers = []
+        return followers_cards_data
     try:
         response = await request_user_cards(request)
     except httpx.ConnectError:
@@ -40,9 +44,7 @@ async def get_following_count(user_id: str) -> FollowingCountData:
             ErrorCodes.INVALID_USER.value, status.HTTP_404_NOT_FOUND
         )
     following_count_data = FollowingCountData()
-    following_count_data.following_count = follow_collection.get_following_count(
-        user_id
-    )
+    following_count_data.followingCount = follow_collection.get_following_count(user_id)
     return following_count_data
 
 
@@ -50,6 +52,9 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
     following_cards_data = FollowingCardsData()
     request = UserCardRequestData()
     request.ids = follow_collection.get_following(user_id, start, count)
+    if not request.ids:
+        following_cards_data.following = []
+        return following_cards_data
     try:
         response = await request_user_cards(request)
     except httpx.ConnectError:
@@ -61,6 +66,11 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
 
 
 async def add_follow(user_id: str, follows_id: str):
+    if user_id == follows_id:
+        raise FollowManagerException(
+            ErrorCodes.INVALID_FOLLOWS.value,
+            status.HTTP_400_BAD_REQUEST
+        )
     if user_collection.ping_user(follows_id) is False:
         raise FollowManagerException(
             ErrorCodes.INVALID_USER.value, status.HTTP_404_NOT_FOUND
@@ -72,6 +82,18 @@ async def add_follow(user_id: str, follows_id: str):
             raise FollowManagerException(
                 ErrorCodes.DUPLICATE_FOLLOW.value, status.HTTP_400_BAD_REQUEST
             )
+
+
+async def get_follow(user_id: str, follows_id: str) -> FollowResponse:
+    if user_id == follows_id:
+        raise FollowManagerException(
+            ErrorCodes.INVALID_FOLLOWS.value,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    following = True if follow_collection.get_follow(user_id, follows_id) is not None else False
+    followed = True if follow_collection.get_follow(follows_id, user_id) is not None else False
+    return FollowResponse(following=following, followed=followed)
 
 
 async def delete_follow(user_id: str, follows_id: str):

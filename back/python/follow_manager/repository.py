@@ -1,7 +1,8 @@
-from constants import DB_NAME, MAX_TIMEOUT_TIME_SECONDS, MONGO_URI, ErrorCodes
-from exception import FollowManagerException
 from fastapi import status
 from pymongo import MongoClient, errors, timeout
+
+from constants import DB_NAME, MAX_TIMEOUT_TIME_SECONDS, MONGO_URI, ErrorCodes
+from exception import FollowManagerException
 from utils import match_collection_error
 
 

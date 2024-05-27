@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-HOST = os.getenv("TOKEN_VALIDATOR_URL", "localhost")
+HOST = os.getenv("HOST", "localhost")
 PORT = int(os.getenv("PORT", 8090))
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")

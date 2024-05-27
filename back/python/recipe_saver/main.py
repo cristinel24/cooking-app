@@ -1,41 +1,37 @@
+from typing import Annotated
+from fastapi.responses import JSONResponse
 import uvicorn
-from dotenv import load_dotenv
-from fastapi import status, FastAPI, Request, Response
+from fastapi import Header, status, FastAPI
 
-from recipe_saver import services, constants, exceptions
+import services, constants, exceptions
 
-load_dotenv()
-app = FastAPI()
+app = FastAPI(title="Recipe Saver")
 
 
-@app.put("/user/{user_id}/saved-recipes", tags=["user-actions"])
-async def save_recipe(request: Request, user_id: str, recipe_id: str, response: Response):
+@app.put("/{user_id}/saved-recipes/{recipe_id}", tags=["user-actions"], response_model=None, response_description="Successful operation")
+async def save_recipe(user_id: str, recipe_id: str, x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
+    if x_user_id != user_id:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"errorCode": constants.ErrorCodes.WRONG_USER_ID.value})
+
     try:
-        if not request.state.user_id == user_id:
-            response.status_code = status.HTTP_400_BAD_REQUEST
-            return {"errorCode": constants.ErrorCodes.WRONG_USER_ID.value}
         services.save_recipe(user_id, recipe_id)
     except (exceptions.RecipeSaverException,) as e:
-        response.status_code = e.status_code
-        return {"errorCode": e.error_code.value}
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
     except (Exception,) as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": constants.ErrorCodes.SERVER_ERROR.value})
 
 
-@app.delete("/user/{user_id}/saved-recipes", tags=["user-actions"])
-async def remove_recipe_from_saved(request: Request, user_id: str, recipe_id: str, response: Response):
+@app.delete("/{user_id}/saved-recipes/{recipe_id}", tags=["user-actions"], response_model=None, response_description="Successful operation")
+async def remove_recipe_from_saved(user_id: str, recipe_id: str, x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
+    if x_user_id != user_id:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"errorCode": constants.ErrorCodes.WRONG_USER_ID.value})
+
     try:
-        if not request.state.user_id == user_id:
-            response.status_code = status.HTTP_400_BAD_REQUEST
-            return {"errorCode": constants.ErrorCodes.WRONG_USER_ID.value}
-        services.remove_recipe_from_saved(request.state.user_id, recipe_id)
+        services.remove_recipe_from_saved(user_id, recipe_id)
     except (exceptions.RecipeSaverException,) as e:
-        response.status_code = e.status_code
-        return {"errorCode": e.error_code.value}
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
     except (Exception,) as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {"errorCode": constants.ErrorCodes.SERVER_ERROR.value}
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": constants.ErrorCodes.SERVER_ERROR.value})
 
 
 if __name__ == "__main__":

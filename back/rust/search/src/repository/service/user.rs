@@ -51,7 +51,9 @@ impl Repository<User> for Service {
                             "then": 0,
                             "else": { "$divide": ["$ratingSum", "$ratingCount"] }
                         }
-                    }
+                    },
+                    "createdAt": { "$dateToString": { "date": { "$toDate": "$_id" } } },
+                    "updatedAt": { "$dateToString": { "date": "$updatedAt" } }
                 }
             },
             doc! { "$sort": { params.sort: params.order } },

@@ -15,6 +15,7 @@ export default function GenericModal({
     return (
         <Modal
             isOpen={isOpen}
+            onAfterOpen={onAfterOpen}
             contentLabel="Example Modal"
             className={`modal ${className ? className : ''}`}
             overlayClassName="modal-overlay"

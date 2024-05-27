@@ -20,13 +20,18 @@ export default function RecipeData({ recipeData }) {
         })
     }
 
+    const onSendReport = () => {
+        // TODO: api call
+        setIsReportVisible(!isReportVisible)
+    }
+
     const toggleReport = () => {
         setIsReportVisible(!isReportVisible)
     }
 
     return (
         <div className="recipe-page-data">
-            {isReportVisible && <Report onSend={toggleReport} onCancel={toggleReport} />}
+            {isReportVisible && <Report onSend={onSendReport} onCancel={toggleReport} />}
             <div className="recipe-page-grid-container">
                 <div className="recipe-page-data">
                     <h1>{data.title}</h1>

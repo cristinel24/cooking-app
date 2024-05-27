@@ -26,7 +26,7 @@ function Report(props) {
     }
 
     return (
-        <GenericModal className="report" isOpen={true}>
+        <GenericModal className="report" isOpen={true} onRequestClose={props.onCancel}>
             <div className="report-wrapper">
                 <p className="report-wrapper-title">Raportează</p>
                 <form className="report-input-wrapper">

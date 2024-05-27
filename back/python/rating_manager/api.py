@@ -1,9 +1,9 @@
 from aiohttp import ClientSession, ClientTimeout, ClientError, ClientResponseError
 
-from schemas import AuthorCardData
-from utils import singleton, init_logger, async_retry
 from constants import ID_GENERATOR_API_URL, USER_RETRIEVER_API_URL
 from exceptions import InternalError, ExternalError
+from schemas import AuthorCardData
+from utils import singleton, init_logger, async_retry
 
 REQUEST_TIMEOUT: int = 5
 ERROR_FIELD: str = 'errorCode'

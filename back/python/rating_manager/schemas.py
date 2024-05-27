@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
 from datetime import datetime
+
+from pydantic import BaseModel, Field
 
 
 class AuthorCardData(BaseModel):
@@ -15,6 +16,7 @@ class AuthorCardData(BaseModel):
 
 class Rating(BaseModel):
     updatedAt: datetime
+    createdAt: datetime
     id: str
     authorId: str
     rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")
@@ -38,6 +40,22 @@ class RatingDataCard(BaseModel):
     createdAt: datetime
     rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")
     description: str
+    childrenCount: int
+
+
+async def card_from_rating(rating: Rating) -> RatingDataCard:
+    from api import ExternalDataProvider
+
+    return RatingDataCard(
+        parentId=rating.parentId,
+        parentType=rating.parentType,
+        author=await ExternalDataProvider().get_user(rating.authorId),
+        updatedAt=rating.updatedAt,
+        createdAt=rating.createdAt,
+        rating=rating.rating if rating.parentType == "recipe" else 0,
+        description=rating.description,
+        childrenCount=len(rating.children)
+    )
 
 
 class RatingList(BaseModel):

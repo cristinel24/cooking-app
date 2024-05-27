@@ -1,42 +1,28 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
+import { AiOutlineUserAdd } from 'react-icons/ai'
 import { FaRegHeart, FaRegUser, FaRegMoon, FaBars } from 'react-icons/fa6'
 import { IoSettingsOutline, IoSearch, IoLogOutOutline } from 'react-icons/io5'
-import { AiOutlineUserAdd } from 'react-icons/ai'
 import { FaTimes } from 'react-icons/fa'
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { LuLogIn } from 'react-icons/lu'
+import { Link, useNavigate } from 'react-router-dom'
 
 import './index.css'
 import { ThemeContext, UserContext } from '../../context'
-import { LuLogIn } from 'react-icons/lu'
+import { useSearch } from '../../hooks/useSearch'
 
 const Navbar = () => {
-    const location = useLocation()
-    const [params, setParams] = useSearchParams()
+    const { query, goToSearch } = useSearch()
+    const [inputValue, setInputValue] = useState(query || '')
+
     const navigate = useNavigate()
 
     const { logout, loggedIn } = useContext(UserContext)
     const { toggleTheme } = useContext(ThemeContext)
 
-    const [inputValue, setInputValue] = useState('')
     const [activeDropdown, setActiveDropdown] = useState('nav-dropdown')
 
-    useEffect(() => {
-        ;(() => {
-            const query = params.get('query')
-
-            if (query) {
-                setInputValue(query)
-            }
-        })()
-    }, [params, navigate])
-
     const search = () => {
-        if (location.pathname == '/search') {
-            const filters = params.get('filters')
-            navigate(`/search?query=${inputValue}&${filters ? `filters=${filters}` : ''}`)
-        } else {
-            navigate(`/search?query=${inputValue}`)
-        }
+        goToSearch(inputValue)
     }
 
     const handleKeyUp = (event) => {

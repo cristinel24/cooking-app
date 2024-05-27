@@ -4,7 +4,7 @@ const FormCheckbox = forwardRef(function FormCheckbox({ label, id, ...other }, r
     return (
         <div>
             <input type="checkbox" id={id} ref={ref} {...other} />
-            <label htmlFor="remember">{label}</label>
+            <label htmlFor={id}>{label}</label>
         </div>
     )
 })

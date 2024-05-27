@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 import './index.css'
 import { Dropdown, RecipeCard } from '../../components'
 import { UserContext } from '../../context'
-import { useLocation, useNavigate } from 'react-router-dom'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { searchRecipes } from '../../services/search'
 import { getErrorMessage } from '../../utils/api'
 import { deleteRecipe, saveRecipe } from '../../services/recipe'
@@ -16,14 +16,24 @@ export default function Feed() {
     const { user, loggedIn, token } = useContext(UserContext)
 
     const feeds = [
-        { name: 'popular', alias: '', params: { sort: 'viewCount', order: 'desc' } },
-        { name: 'best', params: { sort: 'ratingAvg', order: 'desc' } },
-        { name: 'new', params: { sort: 'createdAt', order: 'desc' } },
+        {
+            name: 'cele mai vizualizate',
+            path: 'popular',
+            alias: '',
+            params: { sort: 'viewCount', order: 'desc' },
+        },
+        {
+            name: 'cu cele mai bune recenzii',
+            path: 'best',
+            params: { sort: 'ratingAvg', order: 'desc' },
+        },
+        { name: 'cele mai recente', path: 'new', params: { sort: 'createdAt', order: 'desc' } },
     ].concat(
         loggedIn()
             ? [
                   {
-                      name: 'followed',
+                      name: 'de la cei urmăriți',
+                      path: 'followed',
                       params: {
                           filters: {
                               authors: {
@@ -40,7 +50,7 @@ export default function Feed() {
     const [feed, setFeed] = useState(
         feeds.find(
             (feed) =>
-                feed.name === pathname.substring(1) ||
+                feed.path === pathname.substring(1) ||
                 ('alias' in feed && feed.alias === pathname.substring(1))
         )
     )
@@ -48,31 +58,35 @@ export default function Feed() {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        if (feed.name !== pathname.substring(1)) {
+        if (feed.path !== pathname.substring(1)) {
             // reset state if page changed
             setResults({ count: 1, recipes: [] })
             setError('')
-            navigate(`/${feed.name}`)
+            navigate(`/${feed.path}`)
         } else if (results.recipes.length == 0) {
             // after page change, this code should get triggered
-            let ignore = false
-
-            searchRecipes({
-                ...feed.params,
-                query: '',
-                start: results.recipes.length,
-                count: 10,
-            })
-                .then((result) => {
+            const fetch = async () => {
+                try {
+                    const result = await searchRecipes({
+                        query: '',
+                        start: results.recipes.length,
+                        count: 10,
+                    })
                     if (!ignore) {
                         setResults((results) => ({
                             ...result,
                             recipes: [...results.recipes, ...result.recipes],
                         }))
                     }
-                })
-                .catch((e) => setError(getErrorMessage(e)))
+                } catch (e) {
+                    // if fetching fails, set results.count to 0 so that InfiniteScroll thinks there
+                    // are no more results
+                    setError(getErrorMessage(e))
+                }
+            }
 
+            let ignore = false
+            fetch()
             return () => {
                 ignore = true
             }
@@ -81,17 +95,17 @@ export default function Feed() {
 
     const fetchRecipes = async () => {
         try {
-            console.log('fetching...')
             const result = await searchRecipes({
                 query: '',
                 start: results.recipes.length,
                 count: 10,
             })
-            setResults((results) => ({
-                ...result,
-                recipes: [...results.recipes, ...result.recipes],
-            }))
-            console.log('fetched')
+            if (!ignore) {
+                setResults((results) => ({
+                    ...result,
+                    recipes: [...results.recipes, ...result.recipes],
+                }))
+            }
         } catch (e) {
             // if fetching fails, set results.count to 0 so that InfiniteScroll thinks there
             // are no more results

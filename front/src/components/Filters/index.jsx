@@ -4,9 +4,7 @@ import './index.css'
 
 import { FormInput, FormSelector } from '../Form'
 import { Button } from '..'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { decodeBase64ToObject, encodeObjectToBase64 } from '../../utils/base64'
-import { useEffect } from 'react'
+import { useSearch } from '../../hooks/useSearch'
 
 /*
 example filters
@@ -26,11 +24,8 @@ const filters = {
 }
 */
 
-// TODO: hook for search params
-
 export default function Filters() {
-    const [params, setParams] = useSearchParams()
-    const navigate = useNavigate()
+    const { filters, setParam } = useSearch()
 
     const {
         register,
@@ -39,22 +34,13 @@ export default function Filters() {
         reset,
         setError,
         formState: { errors },
-    } = useForm()
-
-    useEffect(() => {
-        ;(() => {
-            const filters = params.get('filters')
-
-            if (filters) {
-                console.log(filters)
-                try {
-                    reset(decodeBase64ToObject(filters))
-                } catch (e) {
-                    navigate('/search')
-                }
-            }
-        })()
-    }, [params, navigate, reset])
+    } = useForm({
+        defaultValues: async () => ({
+            ...filters,
+            prepTime: "prepTime" in filters ? filters.prepTime.toString() : '',
+            rating: "rating" in filters ? filters.rating.toString() : '',
+        }),
+    })
 
     const onSuggest = (value) => {
         return [
@@ -108,11 +94,7 @@ export default function Filters() {
             delete data.rating
         }
 
-        setParams((params) =>
-            params.get('query')
-                ? `?${params.get('query')}&${new URLSearchParams({ filters: encodeObjectToBase64(data) })}`
-                : `?&${new URLSearchParams({ query: '', filters: encodeObjectToBase64(data) })}`
-        )
+        setParam('filters', data)
     }
 
     const errorCheck = (id) => {
@@ -122,7 +104,7 @@ export default function Filters() {
     }
 
     return (
-        <div>
+        <div className="search-page-section">
             <h3>Filtre</h3>
             <form id="form" className="form" onSubmit={(e) => e.preventDefault()}>
                 <Controller

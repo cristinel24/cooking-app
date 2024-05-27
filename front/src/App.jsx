@@ -17,10 +17,11 @@ import {
     Profile,
     ProfileSettings,
     Recipe,
+    RecipesSearch,
     Register,
     Search,
     Settings,
-    Test,
+    UsersSearch,
     Verified,
 } from './pages'
 import { AdminRoute, Page, ProtectedRoute, UnprotectedRoute } from './components'
@@ -124,7 +125,11 @@ function App() {
                             <Route path="/forgot-password" element={<ForgotPassword />} />
                             <Route path="/profile/:userId" element={<Profile />} />
                             <Route path="/recipe/:recipeId" element={<Recipe />} />
-                            <Route path="/search" element={<Search />} />
+
+                            <Route element={<Search />}>
+                                <Route path="/search/users" element={<UsersSearch />} />
+                                <Route path="/search/recipes" element={<RecipesSearch />} />
+                            </Route>
 
                             {/* unprotected routes */}
                             <Route element={<UnprotectedRoute />}>

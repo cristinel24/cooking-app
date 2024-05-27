@@ -1,6 +1,6 @@
-// import axios from 'axios'
-//
-// const API_URL = import.meta.env.VITE_API_URL
+import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_API_URL
 
 import { delay } from '../utils/api'
 
@@ -25,29 +25,58 @@ const recipeMock = {
     favorite: false,
 }
 
-export const searchRecipes = async ({ query, sort, order, filters, start, count }) => {
+export const searchRecipes = async (params) => {
     // return await axios
-    //     .post(`${API_URL}/search`, {
-    //         data: query,
-    //         filters,
-    //         page: start,
-    //         results_per_page: count
+    //     .post(`${API_URL}/search/recipes`, params)
+    //     .then((response) => {
+    //         console.log(response)
+    //         return response.data
     //     })
-    //     .then((response) => response.data)
     //     .catch((err) => console.log(err))
     await delay(2000) // in ms
 
     return {
         count: 100,
-        recipes: [...Array(count).keys()].map((id) => {
+        recipes: [...Array(params.count).keys()].map((id) => {
             return {
                 ...recipeMock,
-                title: `${recipeMock.title} #${start + id}`,
+                title: `${recipeMock.title} #${params.start + id}`,
                 author: {
                     ...recipeMock.author,
-                    id: (start + id) % 4 == 0 ? '1' : '21',
+                    id: (params.start + id) % 4 == 0 ? '1' : '21',
                 },
-                id: start + id,
+                id: params.start + id,
+            }
+        }),
+    }
+}
+
+const userMock = {
+    id: '21',
+    username: 'matthew49',
+    displayName: 'Kimberly Shaw',
+    icon: 'https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png',
+    roles: 0,
+    ratingAvg: 1.5,
+}
+
+export const searchUsers = async (params) => {
+    // return await axios
+    //     .post(`${API_URL}/search`, params)
+    //     .then((response) => {
+    //         console.log(response)
+    //         return response.data
+    //     })
+    //     .catch((err) => console.log(err))
+    await delay(2000) // in ms
+
+    return {
+        count: 100,
+        users: [...Array(params.count).keys()].map((id) => {
+            return {
+                ...userMock,
+                id: params.start + id,
+                username: `${userMock.username} #${params.start + id}`,
             }
         }),
     }

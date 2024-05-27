@@ -111,6 +111,10 @@
     background-color: var(--neutral-bg-color);
 }
 
+.form-selector-dropdown-item:last-child {
+    border-radius: 0 0 5px 5px;
+}
+
 .form-selector-items {
     display: flex;
     flex-wrap: wrap;

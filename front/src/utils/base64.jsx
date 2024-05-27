@@ -32,7 +32,6 @@ export const fileToBase64 = (file) => {
 
 export function encodeObjectToBase64(obj) {
     const jsonString = JSON.stringify(obj);
-    console.log(jsonString)
     const base64String = btoa(encodeURIComponent(jsonString));
     return base64String;
 }

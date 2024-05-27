@@ -292,6 +292,6 @@ fn setup_misc_routes() -> Router {
             .patch(edit_recipe),
         Router::with_path("/verify")
             .oapi_tag("VERIFIER")
-            .patch(verify),
+            .post(verify),
     ])
 }

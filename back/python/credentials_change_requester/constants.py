@@ -8,7 +8,7 @@ load_dotenv()
 PORT = int(os.getenv("PORT", 8000))
 HOST = os.getenv("HOST", "0.0.0.0")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
-DB_NAME = os.getenv('DB_NAME', 'cooking_app')
+DB_NAME = os.getenv('DB_NAME')
 EMAIL_SYSTEM_API_URL = os.getenv("EMAIL_SYSTEM_API_URL", "http://localhost:8001")
 TOKEN_GENERATOR_API_URL = os.getenv("TOKEN_GENERATOR_API_URL", "http://localhost:8002")
 MONGO_TIMEOUT = 3

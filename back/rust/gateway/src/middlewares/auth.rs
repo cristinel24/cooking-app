@@ -6,7 +6,9 @@ use salvo::http::HeaderValue;
 use salvo::prelude::Json;
 use salvo::{handler, Depot, FlowCtrl, Request, Response};
 
+
 pub const AUTH_HEADER: &str = "Authorization";
+const AUTH_SERVICE: &str = "token_validator";
 
 #[handler]
 pub async fn auth_middleware(
@@ -23,7 +25,7 @@ pub async fn auth_middleware(
         let authorization = authorization.to_str().unwrap_or_default();
         let Ok(response) = get_response::<&str, &str, Success>(
             Method::GET,
-            format!("localhost:12341/session/{authorization}"),
+            format!("{AUTH_SERVICE}/session/{authorization}"),
             None,
             None,
             None,

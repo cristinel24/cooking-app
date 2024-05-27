@@ -1,4 +1,4 @@
 pub mod post;
-pub use post::change_username;
+pub use post::username_change;
 
 pub const SERVICE: &str = "username_changer";

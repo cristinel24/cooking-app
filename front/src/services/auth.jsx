@@ -1,21 +1,19 @@
-import axios from "axios"
+import axios from 'axios'
 
 const API_URL = import.meta.env.VITE_API_URL
 
-export const register = async (data) => {
-    await axios.post(`${API_URL}/auth/register`, data)
-        .then(response => console.log(response))
-        .catch(err => console.log(err))
+export const registerUser = async (user) => {
+    await axios.post(`${API_URL}/register`, user)
 }
 
-export const verify = async (token) => {
-    await axios.post(`${API_URL}/auth/verify?token=${token}`)
-        .then(response => console.log(response))
-        .catch(err => console.log(err))
+export const verifyAccount = async (token) => {
+    await axios.post(`${API_URL}/verify?token_value=${token}`)
 }
 
-export const login = async (data) => {
-    await axios.post(`${API_URL}/auth/login`, data)
-        .then(response => console.log(response))
-        .catch(err => console.log(err))
+export const loginUser = async (data) => {
+    return (await axios.post(`${API_URL}/login`, data)).data
+}
+
+export const credentialChange = async (email, type) => {
+    // return await axios.post(`${API_URL}/TODO`, { email, type })
 }

@@ -1,28 +1,23 @@
-import './index.css'
-import Rating from '../Rating'
+import { Link } from 'react-router-dom'
 
-export default function UserCard({
-    displayName,
-    username,
-    rating,
-    link,
-    profilePicture,
-}) {
+import './index.css'
+
+import { RatingValue } from '..'
+
+export default function UserCard({ user }) {
     return (
-        <a href={link} className="user-card-link">
+        <Link to={`/profile/${user.id}`} className="user-card-link">
             <div className="user-card">
-                <img src={profilePicture} className="user-card-image"></img>
+                <img src={user.icon} className="user-card-image"></img>
                 <div className="user-card-details">
-                    <p className="user-card-details-display-name">
-                        {displayName}
-                    </p>
+                    <p className="user-card-details-display-name">{user.displayName}</p>
                     <p className="user-card-details-user-name">
                         <i className="fa-solid fa-at"></i>
-                        {username}
+                        {user.username}
                     </p>
-                    <Rating ratingValue={rating} />
+                    <RatingValue value={user.ratingAvg} />
                 </div>
             </div>
-        </a>
+        </Link>
     )
 }

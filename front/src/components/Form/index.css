@@ -1,0 +1,147 @@
+.form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.form-item {
+    position: relative;
+    flex: 1;
+}
+
+.form-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.form-input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--searchbar-bg-color);
+    border: none;
+    font-family: inherit;
+}
+
+.form-input:focus {
+    outline: none;
+}
+
+.form-password-button {
+    background: var(--searchbar-bg-color);
+    border: none;
+
+    position: absolute;
+    right: 0.3rem;
+    top: 38px;
+    cursor: pointer;
+}
+
+.form-password-button-icon {
+    font-size: 1.2rem;
+}
+
+.form-submit {
+    cursor: pointer;
+
+    font-weight: 500;
+    font-size: 1rem;
+
+    border: none;
+    border-radius: 5px;
+
+    color: var(--text-color);
+    background-color: var(--color-primary);
+    transition: background-color 0.1s ease-in-out;
+
+    padding: 10px;
+    margin: 0.5rem 0;
+
+    font-family: inherit;
+}
+
+.form-submit:hover {
+    background-color: var(--card-color);
+}
+
+.form-submit[disabled] {
+    background-color: var(--neutral-bg-color);
+}
+
+.form-error {
+    font-size: 0.8rem;
+    color: red;
+    margin: 0;
+    margin-top: 0.5rem;
+    overflow-wrap: break-word;
+}
+
+.form-selector {
+    position: relative;
+}
+
+.form-selector-active {
+    border-radius: 5px 5px 0 0;
+}
+
+.form-selector-dropdown {
+    z-index: 1;
+    background-color: var(--searchbar-bg-color);
+    width: 100%;
+    position: absolute;
+    color: var(--color-black);
+    border-radius: 0 0 5px 5px;
+}
+
+.form-selector-dropdown-sep {
+    box-sizing: border-box;
+    height: 1px;
+    background-color: var(--color-black);
+}
+
+.form-selector-dropdown-item {
+    margin: 0;
+    padding: 0 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.form-selector-dropdown-item:hover {
+    background-color: var(--neutral-bg-color);
+}
+
+.form-selector-dropdown-item:last-child {
+    border-radius: 0 0 5px 5px;
+}
+
+.form-selector-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+}
+
+.form-selector-item {
+    padding: 0.3rem 0.5rem;
+}
+
+.form-stars {
+    color: var(--stars-color);
+    cursor: pointer;
+}
+
+@media screen and (max-width: 820px) {
+    .form-row {
+        flex-direction: column;
+    }
+}

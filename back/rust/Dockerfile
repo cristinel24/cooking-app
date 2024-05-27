@@ -8,7 +8,7 @@ RUN apt update --quiet --assume-yes && \
     apt upgrade --quiet --assume-yes && \
     apt install pkg-config libssl-dev --quiet --assume-yes && \
     cargo install cargo-watch && \
-    cargo build --release
+    cargo build
 
 # CMD ["./target/release/search_cooking_app"]
 CMD cargo watch -x run

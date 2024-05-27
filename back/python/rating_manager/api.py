@@ -26,8 +26,7 @@ class ExternalDataProvider:
 
         if isinstance(response, dict) and response.get(ERROR_FIELD):
             raise ExternalError()
-
-        return response
+        return response["id"]
 
     @async_retry(request_errors)
     async def get_user(self, user_id: str | None) -> AuthorCardData:
@@ -35,7 +34,7 @@ class ExternalDataProvider:
             raise InternalError()
 
         async with ClientSession(timeout=self.timeout) as session:
-            url = f'{USER_RETRIEVER_API_URL}/user/{user_id}/card'
+            url = f'{USER_RETRIEVER_API_URL}/{user_id}/card'
             async with session.get(url) as response:
                 self.logger.info(f'Request {url}')
                 response = await response.json()
@@ -43,4 +42,4 @@ class ExternalDataProvider:
         if isinstance(response, dict) and response.get(ERROR_FIELD):
             raise ExternalError()
 
-        return response
+        return AuthorCardData(**response)

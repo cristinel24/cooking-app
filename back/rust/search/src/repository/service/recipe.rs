@@ -6,7 +6,6 @@ use bson::{doc, from_document, Document};
 use futures::TryStreamExt;
 use mongodb::{Client, Collection};
 use serde::Serialize;
-use tracing::info;
 
 #[derive(Clone)]
 pub struct Service {
@@ -195,7 +194,6 @@ impl Repository<Recipe> for Service {
     }
 
     async fn search(&self, params: SearchRecipesParams) -> Result<AggregationResponse<Recipe>> {
-        info!("{:?}", params.tokens);
         let mut pipeline = vec![];
 
         let mut fields = doc! {
@@ -365,7 +363,9 @@ impl Repository<Recipe> for Service {
                                 "then": 0,
                                 "else": { "$divide": ["$ratingSum", "$ratingCount"] }
                             }
-                        }
+                        },
+                        "createdAt": { "$dateToString": { "date": { "$toDate": "$_id" } } },
+                        "updatedAt": { "$dateToString": { "date": "$updatedAt" } }
                     },
                     "title": 1,
                     "ratingAvg": {
@@ -380,7 +380,9 @@ impl Repository<Recipe> for Service {
                     "allergens": 1,
                     "tags": 1,
                     "thumbnail": 1,
-                    "viewCount": 1
+                    "viewCount": 1,
+                    "createdAt": { "$dateToString": { "date": { "$toDate": "$_id" } } },
+                    "updatedAt": { "$dateToString": { "date": "$updatedAt" } }
                 }
             },
             doc! {

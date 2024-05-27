@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -8,10 +10,17 @@ class FollowData(BaseModel):
 class UserCardData(BaseModel):
     id: str
     username: str
-    displayName: str | None = None
-    icon: str | None = None
-    roles: int | None = None
-    ratingAvg: float | None = None
+    displayName: str
+    icon: str
+    roles: int
+    ratingAvg: float
+    updatedAt: datetime
+    createdAt: datetime
+
+
+class FollowResponse(BaseModel):
+    following: bool
+    followed: bool
 
 
 class FollowersCountData(BaseModel):

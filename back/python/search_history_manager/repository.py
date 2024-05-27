@@ -1,8 +1,9 @@
-import exceptions
 import pymongo
-from constants import *
 from fastapi import status
 from pymongo import MongoClient, errors
+
+import exceptions
+from constants import *
 from utils import match_collection_error
 
 
@@ -21,7 +22,7 @@ class SearchHistoryCollection(MongoCollection):
             with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
                 result = self._collection.find_one(
                     {"id": user_id},
-                    {"searchHistory": {"$slice": [start, count]}}
+                    {"searchHistory": {"$slice": [-start - count, count]}}
                 )
             if result is None:
                 raise exceptions.SearchHistoryException(ErrorCodes.USER_NOT_FOUND, status.HTTP_404_NOT_FOUND)

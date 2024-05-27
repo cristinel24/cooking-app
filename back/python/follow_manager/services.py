@@ -84,5 +84,17 @@ async def add_follow(user_id: str, follows_id: str):
             )
 
 
+async def get_follow(user_id: str, follows_id: str) -> FollowResponse:
+    if user_id == follows_id:
+        raise FollowManagerException(
+            ErrorCodes.INVALID_FOLLOWS.value,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    following = True if follow_collection.get_follow(user_id, follows_id) is not None else False
+    followed = True if follow_collection.get_follow(follows_id, user_id) is not None else False
+    return FollowResponse(following=following, followed=followed)
+
+
 async def delete_follow(user_id: str, follows_id: str):
     follow_collection.delete_follow(user_id, follows_id)

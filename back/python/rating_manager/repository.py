@@ -1,4 +1,6 @@
 import asyncio
+
+from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 from schemas import Rating, RatingUpdate
 from constants import MONGO_URI, DB_NAME, MONGO_COLLECTION, RATING_PROJECTION, DELETED_FIELD
@@ -31,9 +33,13 @@ class RatingRepository:
 
             cursor = self.collection.aggregate(pipeline, allowDiskUse=True)
             ratings = await asyncio.wait_for(cursor.to_list(length=count), timeout=OPERATION_TIMEOUT)
-
             if not ratings:
                 return ratings, 0
+
+            for rating in ratings:
+                rating__id = ObjectId(rating["_id"])
+                rating["createdAt"] = rating__id.generation_time
+                rating.pop("_id")
 
             total_pipeline = [{"$match": {"parentId": parent_id}}, {"$count": "total"}]
             total_result = await asyncio.wait_for(self.collection.aggregate(total_pipeline).next(),

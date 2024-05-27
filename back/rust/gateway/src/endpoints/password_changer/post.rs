@@ -35,7 +35,7 @@ pub async fn pass_change(
     let url: String = SERVICE.to_string();
 
     return match get_response::<&str, PassChange, String>(
-        Method::PUT,
+        Method::POST,
         url,
         None,
         Some(data.into_inner()),

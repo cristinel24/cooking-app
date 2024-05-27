@@ -26,7 +26,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn put_email_change(
+pub async fn email_change(
     req: &mut Request,
     res: &mut Response,
     data: JsonBody<VerifyAccount>,
@@ -34,7 +34,7 @@ pub async fn put_email_change(
     let url: String = SERVICE.to_string();
 
     return match get_response::<&str, VerifyAccount, String>(
-        Method::PUT,
+        Method::POST,
         url,
         None,
         Some(data.into_inner()),

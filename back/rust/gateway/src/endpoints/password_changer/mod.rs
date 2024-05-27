@@ -1,4 +1,4 @@
-pub mod put;
-pub use put::pass_change;
+pub mod post;
+pub use post::pass_change;
 
 pub const SERVICE: &str = "password_changer";

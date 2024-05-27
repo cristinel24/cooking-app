@@ -7,7 +7,7 @@ pub mod models;
 use crate::config::{get_configuration, CONTEXT};
 use crate::endpoints::ai::{replace_ingredient, talk};
 use crate::endpoints::allergen::get_allergen_item;
-use crate::endpoints::email_changer::put_email_change;
+use crate::endpoints::email_changer::email_change;
 use crate::endpoints::follow_manager::{
     delete_following_user, get_all_followers, get_all_following, get_followers_count,
     get_user_following_count, put_new_following_user,
@@ -34,7 +34,7 @@ use crate::endpoints::user_destroyer::delete_user;
 use crate::endpoints::user_retriever::{
     get_user_card_item, get_user_data_item, get_user_profile_item, post_user_card_item,
 };
-use crate::endpoints::username_changer::change_username;
+use crate::endpoints::username_changer::username_change;
 use crate::endpoints::verifier::verify;
 use crate::graceful_shutdown::GracefulShutdown;
 use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
@@ -151,13 +151,13 @@ fn setup_search_routes() -> Router {
 fn setup_email_changer() -> Router {
     Router::with_path("/user/email")
         .oapi_tag("EMAIL CHANGER")
-        .put(put_email_change)
+        .post(email_change)
 }
 
 fn setup_password_changer() -> Router {
     Router::with_path("/user/password")
         .oapi_tag("PASSWORD CHANGER")
-        .put(pass_change)
+        .post(pass_change)
 }
 
 fn setup_login() -> Router {
@@ -264,7 +264,7 @@ fn setup_user_routes() -> Router {
         .push(
             Router::with_path("/username")
                 .oapi_tag("USERNAME CHANGER")
-                .put(change_username),
+                .put(username_change),
         )
 }
 

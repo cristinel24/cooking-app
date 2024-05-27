@@ -26,7 +26,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn change_username(
+pub async fn username_change(
     req: &mut Request,
     res: &mut Response,
     data: JsonBody<ChangeName>,

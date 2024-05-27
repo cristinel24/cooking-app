@@ -11,7 +11,7 @@ def handle_account_verification(request_data: AccountVerification):
             email_template = fp.read()
     except Exception as e:
         raise Exception(ErrorCodes.ACCOUNT_VERIFICATION_TEMPLATE_READING_FAILED.value)
-    verification_link = f"{FRONTEND_URL}/{ACCOUNT_VERIFICATION_ROUTE}/{request_data.token}"
+    verification_link = f"{FRONTEND_URL}/{ACCOUNT_VERIFICATION_ROUTE}?token={request_data.token}"
     try:
         email_body = email_template.format(email_address=request_data.email, verification_link=verification_link)
     except Exception as e:

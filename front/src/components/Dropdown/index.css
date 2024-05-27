@@ -1,4 +1,7 @@
 .dropdown-item {
+    max-width: 100%;
+    text-overflow: ellipsis;
+
     background-color: transparent;
     font: inherit;
     font-weight: bold;

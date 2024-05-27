@@ -1,34 +1,54 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 
 import './index.css'
+import photo from '/register-cover.png'
 
-import photo from '/register.png'
-import { FormInput, FormPassword } from '../../components'
+import { FormInput, FormPassword, InfoModal } from '../../components'
 import { registerUser } from '../../services/auth'
 import { length } from '../../utils/form'
+import { getErrorMessage } from '../../utils/api'
 
 export default function Register() {
     const {
         register,
         handleSubmit,
+        watch,
         setError,
+        clearErrors,
         formState: { errors },
     } = useForm()
+    const password = watch('password')
+
+    const navigate = useNavigate()
+
+    const [loading, setLoading] = useState(false)
+    const [showModal, setShowModal] = useState(false)
+
+    const toggleModal = () => setShowModal((state) => !state)
+
+    const onModalClose = () => {
+        setShowModal(false)
+        navigate('/login')
+    }
+
+    const onErrorModalClose = () => {
+        clearErrors('api')
+    }
 
     const onSubmit = async (data) => {
-        console.log(data)
+        delete data.confirmPassword // remove field
 
-        // Validate input fields
-        if (data.password !== data.confirmPassword) {
-            setError('submit', { message: 'Parola și confirmarea parolei nu se potrivesc.' })
-            return
+        setLoading(true)
+        try {
+            await registerUser(data)
+            toggleModal()
+        } catch (e) {
+            setError('api', { message: getErrorMessage(e) })
+        } finally {
+            setLoading(false)
         }
-
-        data.confirmPassword = undefined
-        await registerUser(data)
-
-        // TODO: error handling for API
     }
 
     const errorCheck = (id) => {
@@ -45,6 +65,12 @@ export default function Register() {
         <div className="page">
             <div className="form-container">
                 <h2>Înregistrare</h2>
+                <InfoModal isOpen={showModal} onClose={onModalClose}>
+                    <p>
+                        Veți primi un email de confirmare la adresa furnizată. Vă rugăm să vă
+                        verificați email-ul și să continuați de acolo.
+                    </p>
+                </InfoModal>
                 <form id="form" className="form" onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-row">
                         <FormInput
@@ -96,12 +122,19 @@ export default function Register() {
                             errorCheck={errorCheck}
                             {...register('confirmPassword', {
                                 required: true,
+                                validate: (v) =>
+                                    v == password ||
+                                    'Parola și confirmarea parolei nu se potrivesc.',
                             })}
                         />
                     </div>
-                    {errorCheck('submit')}
-                    <button type="submit" className="form-submit">
-                        Înregistrare
+                    {errors['api'] && (
+                        <InfoModal isOpen={Boolean(errors['api'])} onClose={onErrorModalClose}>
+                            <p className="form-error">{errors['api'].message}</p>
+                        </InfoModal>
+                    )}
+                    <button type="submit" className="form-submit" disabled={loading}>
+                        {loading ? 'Înregistrare...' : 'Înregistrați-vă'}
                     </button>
                 </form>
                 <span>

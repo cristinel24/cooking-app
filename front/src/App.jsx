@@ -20,9 +20,11 @@ import {
     ProfileFavorites,
     ProfileSettings,
     Recipe,
+    RecipesSearch,
     Register,
     Search,
     Settings,
+    UsersSearch,
     Verified,
 } from './pages'
 import { AdminRoute, Page, ProtectedRoute, UnprotectedRoute } from './components'
@@ -125,7 +127,7 @@ function App() {
                             <Route path="/reset/:type" element={<CredentialsChange />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
                             <Route path="/recipe/:recipeId" element={<Recipe />} />
-                            <Route path="/search" element={<Search />} />
+                              
                             {/* <Route path="/profile/:profileId" element={<ProfileDescription />} /> */}
 
                             <Route element={<Profile />}>
@@ -145,6 +147,11 @@ function App() {
                                     path="/profile/:profileId/recipes"
                                     element={<ProfileRecipes />}
                                 />
+                            </Route>
+
+                            <Route element={<Search />}>
+                                <Route path="/search/users" element={<UsersSearch />} />
+                                <Route path="/search/recipes" element={<RecipesSearch />} />
                             </Route>
 
                             {/* unprotected routes */}

@@ -1,0 +1,37 @@
+[package]
+name = "gateway"
+authors = [
+    "Cristian Andrei <cristianandrei987@gmail.com>"
+]
+version = "0.1.0"
+edition = "2021"
+
+[lints.rust]
+unsafe_code = "deny"
+
+[lints.clippy]
+enum_glob_use = "deny"
+pedantic = "deny"
+nursery = "deny"
+unwrap_used = "deny"
+
+[dependencies]
+tokio = { version = "1.37.0", features = ["rt-multi-thread", "macros", "signal"]}
+
+serde = { version = "1.0.202", features = ["derive"]}
+serde_json = {version = "1.0.117", default-features = true}
+
+tracing = { version = "0.1.40", default-features = true}
+tracing-subscriber = { version = "0.3.18", default-features = true}
+tracing-core = { version = "0.1.32", default-features = true}
+
+clap = { version = "4.5.4", features = ["derive"]}
+figment = { version = "0.10.18", features = ["env", "json"]}
+url = {version = "2.5.0", default-features = true}
+
+salvo = { version = "0.67.2", features = ["oapi", "logging", "anyhow", "cors"]}
+reqwest = { version = "0.12.4", features = ["json", "multipart"]}
+once_cell = {version = "1.19.0", default-features = true }
+dotenv = {version = "0.15.0", default-features = true }
+anyhow = {version = "1.0.83", default-features = true}
+bytes = {version = "1.6.0", features = ["serde"]}

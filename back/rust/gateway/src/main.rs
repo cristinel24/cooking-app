@@ -169,7 +169,7 @@ fn setup_login() -> Router {
 fn setup_register() -> Router {
     Router::with_path("/register")
         .oapi_tag("REGISTER")
-        .put(request_register_user)
+        .post(request_register_user)
 }
 
 fn setup_ai_routes() -> Router {

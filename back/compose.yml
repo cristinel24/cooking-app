@@ -108,7 +108,7 @@ services:
 
   gateway:
     build: 
-      context: ./rust/search
+      context: ./rust/gateway
       dockerfile: ../Dockerfile
     networks:
       - ca

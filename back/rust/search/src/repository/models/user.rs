@@ -11,6 +11,8 @@ pub struct User {
     pub username: String,
     pub roles: i32,
     pub rating_avg: f32,
+    pub created_at: String,
+    pub updated_at: String,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug)]

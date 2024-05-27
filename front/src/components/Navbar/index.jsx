@@ -45,11 +45,11 @@ const Navbar = () => {
 
     return (
         <nav className="nav" id="nav">
-            <a href="/" className="nav-brand">
+            <Link to="/" className="nav-brand">
                 <span className="nav-brand-span">Cooking</span>
                 <span className="nav-brand-span">App</span>
-                <img className="nav-brand-img" src="/logo.png" alt="brand" />
-            </a>
+                <img className="nav-brand-img" src="/cooking-app-robot.svg" alt="brand" />
+            </Link>
 
             <div className="nav-search" id="search">
                 <IoSearch className="nav-search-icon" onClick={search} />

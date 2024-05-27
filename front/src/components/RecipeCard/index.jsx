@@ -17,21 +17,14 @@ export default function RecipeCard({ recipe, owned, onFavorite, onRemove }) {
 
     return (
         <div className="recipe-card">
-            <a href={`/recipe/${recipe.id}`}>
-                <img
-                    src={`${recipe.thumbnail}`}
-                    className="recipe-card-image"
-                    alt="recipe"
-                />
-            </a>
+            <Link to={`/recipe/${recipe.id}`}>
+                <img src={`${recipe.thumbnail}`} className="recipe-card-image" alt="recipe" />
+            </Link>
             <div className="recipe-card-details">
                 <div className="recipe-card-details-title-and-options">
-                    <a
-                        className="recipe-card-details-title"
-                        href={`/recipe/${recipe.id}`}
-                    >
+                    <Link className="recipe-card-details-title" to={`/recipe/${recipe.id}`}>
                         {recipe.title}
-                    </a>
+                    </Link>
                     <div className="recipe-card-details-options">
                         {owned && onRemove && (
                             <FaTrash
@@ -49,9 +42,7 @@ export default function RecipeCard({ recipe, owned, onFavorite, onRemove }) {
                 <div className="recipe-card-details-author-time-rating">
                     <p className="recipe-card-details-author">
                         Autor:{' '}
-                        <a href={`/profile/${recipe.author.id}`}>
-                            {recipe.author.displayName}
-                        </a>
+                        <Link to={`/profile/${recipe.author.id}`}>{recipe.author.displayName}</Link>
                     </p>
                     <div className="recipe-card-details-time-and-rating">
                         <p className="recipe-card-details-time">
@@ -73,11 +64,7 @@ export default function RecipeCard({ recipe, owned, onFavorite, onRemove }) {
                                     : 'recipe-card-heart-icon-not-favorite'
                             }
                         />
-                        <p>
-                            {favorite
-                                ? 'Elimină din favorite'
-                                : 'Adaugă la favorite'}
-                        </p>
+                        <p>{favorite ? 'Elimină din favorite' : 'Adaugă la favorite'}</p>
                     </button>
                 )}
             </div>

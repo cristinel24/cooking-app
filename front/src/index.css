@@ -6,6 +6,12 @@
     --max-content-width: 1200px;
     --nav-height: 80px;
     --footer-height: 60px;
+
+    --page-padding-y: 2rem;
+
+    --min-page-content-height: calc(
+        100vh - var(--nav-height) - var(--footer-height) - 2 * var(--page-padding-y)
+    );
 }
 
 body {

@@ -6,9 +6,11 @@ const FormInput = forwardRef(function FormInput(
 ) {
     return (
         <div className={`form-item ${className ? className : ''}`}>
-            <label htmlFor={id} className="form-label">
-                {label}
-            </label>
+            {label && (
+                <label htmlFor={id} className="form-label">
+                    {label}
+                </label>
+            )}
             <input className="form-input" id={id} ref={ref} {...other} />
             {errorCheck && errorCheck(id)}
         </div>

@@ -9,6 +9,7 @@
     max-width: 100%;
     cursor: pointer;
     gap: 0.5rem;
+    font-family: inherit;
 }
 
 .button:hover {
@@ -21,7 +22,7 @@
 
 .button-text {
     font-size: 0.8rem;
-    color: var(--text-color);
+    color: var(--color-white);
     font-weight: bold;
     overflow: hidden;
     text-overflow: ellipsis;

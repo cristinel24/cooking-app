@@ -1,7 +1,7 @@
 import './index.css'
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa'
 
-export default function RatingValue({ value, className }) {
+export default function RatingValue({ value, className, showValue = true }) {
     const getStars = (value) => {
         const fullStars = Math.floor(value)
         const stars = []
@@ -21,7 +21,7 @@ export default function RatingValue({ value, className }) {
     return (
         <div className={`rating-value-container ${className ? className : ''}`}>
             {getStars(value)}
-            <div className="rating-value">{value}</div>
+            {showValue && <div className="rating-value">{value}</div>}
         </div>
     )
 }

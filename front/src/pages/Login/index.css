@@ -19,7 +19,8 @@
     color: var(--navbar-color-primary);
     font-weight: bold;
 
-    width: calc(100% - 4rem);
+    box-sizing: border-box;
+    width: 100%;
     padding: 1rem 2rem;
     margin: 0.5rem 0;
     text-align: center;

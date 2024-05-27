@@ -4,7 +4,7 @@ import { MdOutlineCancel } from 'react-icons/md'
 
 import './index.css'
 
-import { Button } from '../../components'
+import { Button, GenericModal } from '../../components'
 
 function Report(props) {
     const [formVariants, setFormVariants] = useState([
@@ -20,52 +20,46 @@ function Report(props) {
     const handleVariantChange = (id) => {
         setFormVariants((prevVariants) =>
             prevVariants.map((variant) =>
-                variant.id === id
-                    ? { ...variant, checked: !variant.checked }
-                    : variant
+                variant.id === id ? { ...variant, checked: !variant.checked } : variant
             )
         )
     }
 
     return (
-        <div className="report-wrapper">
-            <p className="report-wrapper-title">Raportează</p>
-            <form className="report-input-wrapper">
-                {formVariants.map((variant) => (
-                    <div className="report-inputs" key={variant.id}>
-                        <input
-                            type="checkbox"
-                            id={`variant-${variant.id}`}
-                            checked={variant.checked}
-                            onChange={() => handleVariantChange(variant.id)}
-                        />
-                        <label htmlFor={`variant-${variant.id}`}>
-                            {variant.text}
-                        </label>
-                    </div>
-                ))}
-            </form>
-            <div className="report-buttons">
-                <Button
-                    className="report-button-cancel"
-                    text="Renunță"
-                    Icon={MdOutlineCancel}
-                    onClick={props.onCancel}
-                />
-                <Button
-                    className="report-send-button"
-                    text="Trimite"
-                    Icon={LuSend}
-                    onClick={() => {
-                        props.onSend(
-                            formVariants.filter(
-                                (variant) => variant.checked === true
-                            )
-                        )
-                    }}
-                />
+        <GenericModal className="report" isOpen={true} onRequestClose={props.onCancel}>
+            <div className="report-wrapper">
+                <p className="report-wrapper-title">Raportează</p>
+                <form className="report-input-wrapper">
+                    {formVariants.map((variant) => (
+                        <div className="report-inputs" key={variant.id}>
+                            <input
+                                type="checkbox"
+                                id={`variant-${variant.id}`}
+                                checked={variant.checked}
+                                onChange={() => handleVariantChange(variant.id)}
+                            />
+                            <label htmlFor={`variant-${variant.id}`}>{variant.text}</label>
+                        </div>
+                    ))}
+                </form>
+                <div className="report-buttons">
+                    <Button
+                        className="report-button-cancel"
+                        text="Renunță"
+                        Icon={MdOutlineCancel}
+                        onClick={props.onCancel}
+                    />
+                    <Button
+                        className="report-send-button"
+                        text="Trimite"
+                        Icon={LuSend}
+                        onClick={() => {
+                            props.onSend(formVariants.filter((variant) => variant.checked === true))
+                        }}
+                    />
+                </div>
             </div>
-        </div>
+        </GenericModal>
     )
 }
 

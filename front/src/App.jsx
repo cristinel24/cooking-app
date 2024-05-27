@@ -15,6 +15,9 @@ import {
     Login,
     Notifications,
     Profile,
+    ProfileDescription,
+    ProfileRecipes,
+    ProfileFavorites,
     ProfileSettings,
     Recipe,
     RecipesSearch,
@@ -123,8 +126,28 @@ function App() {
 
                             <Route path="/reset/:type" element={<CredentialsChange />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
-                            <Route path="/profile/:userId" element={<Profile />} />
                             <Route path="/recipe/:recipeId" element={<Recipe />} />
+                              
+                            {/* <Route path="/profile/:profileId" element={<ProfileDescription />} /> */}
+
+                            <Route element={<Profile />}>
+                                <Route
+                                    path="/profile/:profileId"
+                                    element={<ProfileDescription />}
+                                />
+                                <Route
+                                    path="/profile/:profileId/description"
+                                    element={<ProfileDescription />}
+                                />
+                                <Route
+                                    path="/profile/:profileId/favorites"
+                                    element={<ProfileFavorites />}
+                                />
+                                <Route
+                                    path="/profile/:profileId/recipes"
+                                    element={<ProfileRecipes />}
+                                />
+                            </Route>
 
                             <Route element={<Search />}>
                                 <Route path="/search/users" element={<UsersSearch />} />

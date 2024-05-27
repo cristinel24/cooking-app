@@ -6,7 +6,7 @@ import './index.css'
 import photo from '/login-cover.png'
 
 import { UserContext } from '../../context/user-context'
-import { FormCheckbox, FormInput, FormPassword } from '../../components'
+import { FormCheckbox, FormInput, FormPassword, InfoModal } from '../../components'
 import { length } from '../../utils/form'
 import { loginUser } from '../../services/auth'
 import { getErrorMessage } from '../../utils/api'
@@ -16,17 +16,22 @@ export default function Login() {
         register,
         handleSubmit,
         setError,
-        formState: { errors }
+        clearErrors,
+        formState: { errors },
     } = useForm()
     const [loading, setLoading] = useState(false)
 
     const { login } = useContext(UserContext)
 
+    const onErrorModalClose = () => {
+        clearErrors('api')
+    }
+
     const onSubmit = async (data) => {
         setLoading(true)
         try {
-            const { token, user } = await loginUser(data)
-            login(token, user, data.remember)
+            const { sessionToken, user } = await loginUser(data)
+            login(sessionToken, user, data.remember)
 
             // if successful, user will automatically get rerouted to home page
         } catch (e) {
@@ -58,7 +63,7 @@ export default function Login() {
                         {...register('identifier', {
                             required: true,
                             minLength: length('minim', 8),
-                            maxLength: length('maxim', 256)
+                            maxLength: length('maxim', 256),
                         })}
                     />
                     <FormPassword
@@ -68,7 +73,7 @@ export default function Login() {
                         {...register('password', {
                             require: true,
                             minLength: length('minim', 8),
-                            maxLength: length('maxim', 64)
+                            maxLength: length('maxim', 64),
                         })}
                     />
                     <div className="form-others">
@@ -81,7 +86,11 @@ export default function Login() {
                             Ți-ai uitat parola?
                         </Link>
                     </div>
-                    {errorCheck('api')}
+                    {errors['api'] && (
+                        <InfoModal isOpen={Boolean(errors['api'])} onClose={onErrorModalClose}>
+                            <p className="form-error">{errors['api'].message}</p>
+                        </InfoModal>
+                    )}
                     <button type="submit" className="form-submit" disabled={loading}>
                         {loading ? 'Conectare...' : 'Conectați-vă'}
                     </button>

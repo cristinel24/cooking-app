@@ -1,9 +1,3 @@
-export const deleteRecipe = async (id) => {
-    
-}
+export const deleteRecipe = async (id, token) => {}
 
-export const saveRecipe = async (id) => {
-    
-}
-
-
+export const saveRecipe = async (id, token) => {}

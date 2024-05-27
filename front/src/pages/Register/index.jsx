@@ -16,7 +16,8 @@ export default function Register() {
         handleSubmit,
         watch,
         setError,
-        formState: { errors }
+        clearErrors,
+        formState: { errors },
     } = useForm()
     const password = watch('password')
 
@@ -30,6 +31,10 @@ export default function Register() {
     const onModalClose = () => {
         setShowModal(false)
         navigate('/login')
+    }
+
+    const onErrorModalClose = () => {
+        clearErrors('api')
     }
 
     const onSubmit = async (data) => {
@@ -75,7 +80,7 @@ export default function Register() {
                             {...register('username', {
                                 required: true,
                                 minLength: length('minim', 8),
-                                maxLength: length('maxim', 64)
+                                maxLength: length('maxim', 64),
                             })}
                         />
                         <FormInput
@@ -84,7 +89,7 @@ export default function Register() {
                             errorCheck={errorCheck}
                             {...register('displayName', {
                                 minLength: length('minim', 4),
-                                maxLength: length('maxim', 64)
+                                maxLength: length('maxim', 64),
                             })}
                         />
                     </div>
@@ -96,7 +101,7 @@ export default function Register() {
                             errorCheck={errorCheck}
                             {...register('email', {
                                 required: true,
-                                maxLength: length('maxim', 256)
+                                maxLength: length('maxim', 256),
                             })}
                         />
                     </div>
@@ -108,7 +113,7 @@ export default function Register() {
                             {...register('password', {
                                 required: true,
                                 minLength: length('minim', 8),
-                                maxLength: length('maxim', 64)
+                                maxLength: length('maxim', 64),
                             })}
                         />
                         <FormPassword
@@ -119,12 +124,15 @@ export default function Register() {
                                 required: true,
                                 validate: (v) =>
                                     v == password ||
-                                    'Parola și confirmarea parolei nu se potrivesc.'
+                                    'Parola și confirmarea parolei nu se potrivesc.',
                             })}
                         />
                     </div>
-                    {errorCheck('submit')}
-                    {errorCheck('api')}
+                    {errors['api'] && (
+                        <InfoModal isOpen={Boolean(errors['api'])} onClose={onErrorModalClose}>
+                            <p className="form-error">{errors['api'].message}</p>
+                        </InfoModal>
+                    )}
                     <button type="submit" className="form-submit" disabled={loading}>
                         {loading ? 'Înregistrare...' : 'Înregistrați-vă'}
                     </button>

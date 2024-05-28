@@ -31,16 +31,16 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
 
         setLoadingReplies(true)
 
-        getRatingReplies(ratingData.id)
-            .then((result) => {
-                if (!ignore) {
-                    setReplies(result)
-                }
-            })
-            .then(() => {
-                setLoadingReplies(false)
-            })
-            .catch((e) => setRepliesError('error'))
+        // getRatingReplies(ratingData.id)
+        //     .then((result) => {
+        //         if (!ignore) {
+        //             setReplies(result)
+        //         }
+        //     })
+        //     .then(() => {
+        //         setLoadingReplies(false)
+        //     })
+        //     .catch((e) => setRepliesError('error'))
 
         return ignoreTrue
     }, [])

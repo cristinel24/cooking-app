@@ -40,7 +40,7 @@ function PopUpChat() {
 
     return (
         <>
-            {loggedIn() ? (
+            {!loggedIn() ? (
                 <div className="pop-up-chat-container">
                     <img
                         src={botLogo}

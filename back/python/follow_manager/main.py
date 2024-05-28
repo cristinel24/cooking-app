@@ -50,9 +50,14 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
           response_description="Successful operation")
 async def add_follow(user_id: str, body: FollowData,
                      x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
-    if not x_user_id or user_id != x_user_id:
+    if not x_user_id:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"errorCode": ErrorCodes.UNAUTHORIZED_REQUEST.value})
+
+    if user_id != x_user_id:
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
-                            content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})
+                            content={"errorCode": ErrorCodes.FORBIDDEN_REQUEST.value})
+
     try:
         await services.add_follow(user_id, body.followsId)
     except FollowManagerException as e:
@@ -72,9 +77,14 @@ async def get_follow(user_id: str, follows_id: str) -> FollowResponse | JSONResp
             response_description="Successful operation")
 async def delete_follow(user_id: str, body: FollowData,
                         x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
-    if not x_user_id or user_id != x_user_id:
+    if not x_user_id:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"errorCode": ErrorCodes.UNAUTHORIZED_REQUEST.value})
+
+    if user_id != x_user_id:
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
-                            content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})
+                            content={"errorCode": ErrorCodes.FORBIDDEN_REQUEST.value})
+    
     try:
         await services.delete_follow(user_id, body.followsId)
     except FollowManagerException as e:

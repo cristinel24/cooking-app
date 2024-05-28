@@ -8,7 +8,7 @@ from services import handle_change_email
 app = FastAPI(title="Email Changer")
 
 
-@app.put("/", response_model=None, response_description="Successful operation")
+@app.post("/", response_model=None, response_description="Successful operation")
 async def change_email(email_change: EmailChange) -> None | JSONResponse:
     try:
         await handle_change_email(email_change)

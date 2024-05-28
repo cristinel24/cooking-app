@@ -1,9 +1,9 @@
-from datetime import datetime, timezone
+from datetime import timezone
 
 from api import ExternalDataProvider
-from exceptions import ExternalError, InternalError
+from exceptions import *
 from repository import RatingRepository
-from schemas import RatingList, RatingUpdate, RatingCreate, Rating, RatingDataCard, AuthorCardData
+from schemas import *
 from utils import init_logger
 
 
@@ -29,11 +29,14 @@ class RatingService:
                         updatedAt=rating["updatedAt"],
                         createdAt=rating["createdAt"],
                         rating=int(rating["rating"]),
-                        description=str(rating["description"])
+                        description=str(rating["description"]),
+                        childrenCount=len(rating["children"])
                     )
+
+                return None
+
             except (ExternalError, InternalError) as e:
                 self.logger.error(f"Error fetching user {user_id}. Error: {e}")
-            return None
 
         ratings = [await fetch_user_rating(rating) for rating in rating_list]
         return RatingList(ratings=[r for r in ratings if r is not None], total=total)
@@ -45,18 +48,22 @@ class RatingService:
 
         rating = Rating(
             updatedAt=datetime.now(timezone.utc),
+            createdAt=datetime.now(timezone.utc),
             id=rating_id,
-            authorId=rating_data.authorId,
+            authorId=rating_data.author_id,
             description=rating_data.description,
-            rating=rating_data.rating if rating_data.parentType == 'recipe' else 0,
+            rating=rating_data.rating,
             children=[],
             parentId=parent_id,
             parentType=rating_data.parentType
         )
+
         await self.repository.add_rating(parent_id, rating)
+        return await card_from_rating(rating)
 
     async def update_rating(self, rating_id: str, rating_data: RatingUpdate):
-        await self.repository.update_rating(rating_id, rating_data)
+        rating = Rating(**(await self.repository.update_rating(rating_id, rating_data)))
+        return await card_from_rating(rating)
 
     async def delete_rating(self, rating_id: str):
         await self.repository.delete_rating(rating_id)

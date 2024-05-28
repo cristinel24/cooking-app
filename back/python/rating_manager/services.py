@@ -14,6 +14,7 @@ async def get_ratings(
 ) -> RatingList:
 
     parent_type = parent_type.removesuffix("s")
+    filter_query = filter_query.removesuffix("s")
     if parent_type not in [RECIPE, RATING]:
         raise RecipeRatingManagerException(
             error_code=ErrorCodes.INVALID_PARENT_TYPE, status_code=status.HTTP_404_NOT_FOUND

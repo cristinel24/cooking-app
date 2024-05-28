@@ -30,7 +30,7 @@ use crate::endpoints::search::{ai_endpoint, recipes_endpoint, users_endpoint};
 use crate::endpoints::search_history_manager::{
     delete_item_search_history, get_search_history_endpoint, post_in_search_history,
 };
-use crate::endpoints::tag::get_tags;
+use crate::endpoints::tag_manager::get_tags;
 use crate::endpoints::user_destroyer::delete_user;
 use crate::endpoints::user_retriever::{
     get_user_card_item, get_user_data_item, get_user_profile_item, post_user_card_item,

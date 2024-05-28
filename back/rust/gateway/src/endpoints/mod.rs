@@ -24,7 +24,7 @@ pub mod register;
 pub mod role_changer;
 pub mod search;
 pub mod search_history_manager;
-pub mod tag;
+pub mod tag_manager;
 pub mod user_destroyer;
 pub mod user_retriever;
 pub mod username_changer;

@@ -1,4 +1,4 @@
-use crate::endpoints::tag::SERVICE;
+use crate::endpoints::tag_manager::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::tags::Tags;
 use crate::models::ErrorResponse;

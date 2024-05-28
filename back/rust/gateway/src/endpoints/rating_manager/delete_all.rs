@@ -1,6 +1,6 @@
 use crate::endpoints::{get_response, EndpointResponse};
 use crate::{
-    endpoints::{rating::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
+    endpoints::{rating_manager::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
     models::ErrorResponse,
 };
 use reqwest::Method;
@@ -9,7 +9,7 @@ use tracing::error;
 
 #[endpoint(
     parameters(
-        ("rating_id" = String, description = "Rating id")
+        ("recipe_id" = String, description = "Recipe id")
     ),
     responses
     (
@@ -27,13 +27,13 @@ use tracing::error;
         ),
     )
 )]
-pub async fn delete_rating_endpoint(
+pub async fn delete_recipe_ratings_endpoint(
     req: &mut Request,
     res: &mut Response,
 ) -> Json<EndpointResponse<String>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[3..].join("/");
+    let new_url = parts[2..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
     return match get_response::<&str, &str, String>(

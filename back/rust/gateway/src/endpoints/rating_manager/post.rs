@@ -41,12 +41,11 @@ pub async fn post_rating_endpoint(
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
-    let parent_id = req.param::<String>("parent_id").unwrap_or_default();
 
     return match get_response::<[(&str, String); 1], Create, String>(
-        Method::PUT,
+        Method::POST,
         url,
-        Some(&[("parent_id", parent_id)]),
+        None,
         Some(rating_create.into_inner()),
         Some(req.headers().clone()),
         true,

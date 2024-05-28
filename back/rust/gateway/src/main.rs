@@ -17,8 +17,8 @@ use crate::endpoints::login::request_login_endpoint;
 use crate::endpoints::message_history_manager::{delete_history, get_history, post_history};
 use crate::endpoints::password_changer::pass_change;
 use crate::endpoints::profile_data_changer::patch_profile_data;
-use crate::endpoints::rating::{
-    delete_rating_endpoint, get_rating_endpoint, patch_rating_endpoint, post_rating_endpoint,
+use crate::endpoints::rating_manager::{
+    delete_rating_endpoint, get_ratings_endpoint, patch_rating_endpoint, post_rating_endpoint,
 };
 use crate::endpoints::recipe_creator::post_recipe_item;
 use crate::endpoints::recipe_editor::edit_recipe;
@@ -41,6 +41,7 @@ use crate::graceful_shutdown::GracefulShutdown;
 use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
 use endpoints::credentials_change_requester::request_credentials_change;
+use endpoints::rating_manager::delete_recipe_ratings_endpoint;
 use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
@@ -224,16 +225,20 @@ fn profile_data_changer_router() -> Router {
 }
 
 fn rating_manager_router() -> Router {
-    Router::with_path("/rating")
-        .oapi_tag("RATING")
-        .append(&mut vec![
-            Router::with_path("/<parent_id>/replies")
-                .get(get_rating_endpoint)
-                .post(post_rating_endpoint),
-            Router::with_path("/<rating_id>")
-                .patch(patch_rating_endpoint)
-                .delete(delete_rating_endpoint),
-        ])
+    Router::new().oapi_tag("RATING MANAGER").append(&mut vec![
+        Router::with_path("/ratings")
+            .post(post_rating_endpoint)
+            .push(
+                Router::with_path("/<rating_id>")
+                    .push(Router::with_path("/comments").get(get_ratings_endpoint))
+                    .patch(patch_rating_endpoint)
+                    .delete(delete_rating_endpoint),
+            ),
+        Router::with_path("/recipes/<recipe_id>").append(&mut vec![
+            Router::with_path("/comments").get(get_ratings_endpoint),
+            Router::with_path("/ratings").delete(delete_recipe_ratings_endpoint),
+        ]),
+    ])
 }
 
 fn recipe_creator_router() -> Router {

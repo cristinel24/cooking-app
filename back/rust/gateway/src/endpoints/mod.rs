@@ -15,7 +15,7 @@ pub mod login;
 pub mod message_history_manager;
 pub mod password_changer;
 pub mod profile_data_changer;
-pub mod rating;
+pub mod rating_manager;
 pub mod recipe_creator;
 pub mod recipe_editor;
 pub mod recipe_retriever;

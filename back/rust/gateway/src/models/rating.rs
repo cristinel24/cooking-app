@@ -1,4 +1,4 @@
-use crate::models::user::User;
+use crate::models::user::CardData;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
@@ -7,10 +7,12 @@ use serde::{Deserialize, Serialize};
 pub struct DataCard {
     pub parent_id: String,
     pub parent_type: String,
-    pub author: User,
+    pub author: CardData,
     pub updated_at: String,
+    pub created_at: String,
     pub rating: usize,
     pub description: String,
+    pub children_count: usize,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
@@ -23,10 +25,10 @@ pub struct List {
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct Create {
-    pub author_id: String,
     pub description: String,
     pub rating: usize,
     pub parent_type: String,
+    pub parent_id: String,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]

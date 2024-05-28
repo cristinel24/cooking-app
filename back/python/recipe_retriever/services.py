@@ -1,3 +1,5 @@
+import httpx
+
 from api import *
 from repository import *
 
@@ -44,7 +46,12 @@ async def get_recipe_cards(recipe_ids: list[str]) -> list[RecipeCardData]:
         return []
 
     author_ids = [recipe_card["authorId"] for recipe_card in recipe_cards]
-    user_cards = (await request_user_cards(UserCardRequestData(ids=author_ids))).cards
+
+    try:
+        user_cards = (await request_user_cards(UserCardRequestData(ids=author_ids))).cards
+    except httpx.ConnectError:
+        raise RecipeException(ErrorCodes.NON_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
+
     for recipe_card in recipe_cards:
         recipe_card["author"] = (
             next((user_card for user_card in user_cards if user_card.id == recipe_card["authorId"]), None))

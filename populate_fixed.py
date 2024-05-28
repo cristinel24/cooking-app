@@ -269,21 +269,20 @@ rating3 = {
     "description": "Thank you!",
     "children": [],
 }
+recipe1["ratings"] = [rating1["id"], rating2["id"]]
 rating1["children"].append(rating3["id"])
 user1["ratings"].append(rating3["id"])
 user2["ratings"].append(rating1["id"])
 user3["ratings"].append(rating2["id"])
 user2["savedRecipes"].append(recipe1["id"])
 
-allergen_collection.insert_many(
-    [
-        {
-            "allergen": get_allergen(i)[0],
-            "counter": get_allergen(i)[1]
-        }
-        for i in range(0, 5)
-    ]
-)
+allergen_collection.insert_many([
+    {
+        "allergen": get_allergen(i)[0],
+        "counter": get_allergen(i)[1]
+    }
+    for i in range(0, 5)
+])
 
 report1 = {
     "id": generate_id(counters_collection),

@@ -1,10 +1,14 @@
+import os
 import bson
 import pymongo
 from pymongo import MongoClient, IndexModel
+from dotenv import load_dotenv
+
+load_dotenv()
 
 print("Connecting to kitchen db...".ljust(36, '.'), end="")
-client = MongoClient("mongodb://localhost:27017/?directConnection=true")
-db = client["cooking_app"]
+client = MongoClient(os.getenv("MONGO_URI"))
+db = client.get_database(os.getenv("DB_NAME"))
 print("Done")
 
 print("Cleaning the tables...".ljust(36, '.'), end="")
@@ -341,6 +345,7 @@ rating_collection.create_indexes([
         unique=True,
         partialFilterExpression={
             "parentType": "recipe",
+            "id": {"$lt": "«deleted»"}
         },
     ),
     IndexModel(["id"], unique=True),

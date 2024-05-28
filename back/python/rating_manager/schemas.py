@@ -1,9 +1,17 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
 
-class AuthorCardData(BaseModel):
+class RatingCreate(BaseModel):
+    description: str = Field(max_length=10_000)
+    rating: int = Field(ge=0, le=5)
+    parentType: Literal["recipe", "rating"]
+    parentId: str
+
+
+class UserCardData(BaseModel):
     id: str
     username: str
     displayName: str
@@ -14,28 +22,14 @@ class AuthorCardData(BaseModel):
     createdAt: datetime
 
 
-class Rating(BaseModel):
-    updatedAt: datetime
-    createdAt: datetime
-    id: str
-    authorId: str
-    rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")
-    description: str
-    children: list[str]
-    parentId: str
-    parentType: str
-
-
-class RatingChildren(BaseModel):
-    children: list[str]
-    parentId: str
-    parentType: str
+class UserCardDataList(BaseModel):
+    cards: list[UserCardData]
 
 
 class RatingDataCard(BaseModel):
     parentId: str
-    parentType: str
-    author: AuthorCardData
+    parentType: Literal["recipe", "rating"]
+    author: UserCardData
     updatedAt: datetime
     createdAt: datetime
     rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")
@@ -43,31 +37,9 @@ class RatingDataCard(BaseModel):
     childrenCount: int
 
 
-async def card_from_rating(rating: Rating) -> RatingDataCard:
-    from api import ExternalDataProvider
-
-    return RatingDataCard(
-        parentId=rating.parentId,
-        parentType=rating.parentType,
-        author=await ExternalDataProvider().get_user(rating.authorId),
-        updatedAt=rating.updatedAt,
-        createdAt=rating.createdAt,
-        rating=rating.rating if rating.parentType == "recipe" else 0,
-        description=rating.description,
-        childrenCount=len(rating.children)
-    )
-
-
 class RatingList(BaseModel):
-    ratings: list[RatingDataCard]
+    data: list[RatingDataCard]
     total: int
-
-
-class RatingCreate(BaseModel):
-    authorId: str
-    description: str
-    rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")
-    parentType: str
 
 
 class RatingUpdate(BaseModel):

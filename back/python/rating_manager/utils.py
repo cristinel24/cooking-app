@@ -1,57 +1,47 @@
-import logging
-import time
-from functools import wraps
+from fastapi import status
+from fastapi.responses import JSONResponse
+from pymongo import errors
+
+from constants import ErrorCodes, RatingInc
+from exception import RecipeRatingManagerException
 
 
-def async_retry(exceptions: tuple, max_attempts: int = 3, raise_exc: bool = False, delay: int = 1, show=True):
-    def decorator_retry(func):
-        @wraps(func)
-        async def inner(self, *args, **kwargs):
-            tries = max_attempts
-            while tries:
-                try:
-                    return await func(self, *args, **kwargs)
-                except exceptions as e:
-                    time.sleep(delay)
-                    if show:
-                        self.logger.warning(e) if self is not None else print(f"Attempt failed: {str(e)}")
+def transform_exception(e: Exception) -> RecipeRatingManagerException:
 
-                    tries -= 1
-                    if raise_exc and not tries:
-                        raise e
+    if isinstance(e, RecipeRatingManagerException):
+        return e
 
-                except Exception as e:
-                    if show:
-                        self.logger.exception(str(e)) if self is not None else print(f"Attempt failed: {str(e)}")
-                    if raise_exc:
-                        raise e
-                    break
-            return None
+    if isinstance(e, errors.PyMongoError):
 
-        return inner
+        if e.timeout:
+            return RecipeRatingManagerException(
+                error_code=ErrorCodes.DB_TIMEOUT.value,
+                status_code=status.HTTP_504_GATEWAY_TIMEOUT
+            )
 
-    return decorator_retry
+        return RecipeRatingManagerException(
+            error_code=ErrorCodes.DB_NON_TIMEOUT.value,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    return RecipeRatingManagerException(
+        error_code=ErrorCodes.UNKNOWN,
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+    )
 
 
-def init_logger(name: str) -> logging.Logger:
-    logger = logging.getLogger(name)
-    if logger.hasHandlers() is False:
-        logger.setLevel(logging.DEBUG)
-        channel = logging.StreamHandler()
-        channel.setFormatter(logging.Formatter(
-            '[%(asctime)s | %(levelname)s] '
-            '## [EXTRA: %(filename)s | %(funcName)s | %(lineno)s] ## - %(name)s - %(message)s'))
-        channel.setLevel(logging.DEBUG)
-        logger.addHandler(channel)
-
-    return logger
+def build_response_from_exception(exception: RecipeRatingManagerException) -> JSONResponse:
+    return build_response_from_values(exception.status_code, exception.error_code)
 
 
-def singleton(cls):
-    instances = {}
+def build_response_from_values(status_code: int, error_code: int) -> JSONResponse:
+    return JSONResponse(status_code=status_code, content={"errorCode": error_code})
 
-    def get_instance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
-    return get_instance
+
+def get_modify_rating_dict(inc: RatingInc, diff: int) -> dict:
+    return {
+        "$inc": {
+            "ratingCount": inc.value,
+            "ratingSum": diff
+        }
+    }

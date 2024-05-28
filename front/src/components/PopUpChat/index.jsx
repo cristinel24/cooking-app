@@ -26,7 +26,7 @@ function PopUpChat() {
                 const msg = await getResponse(message)
                 console.log(msg)
             } catch (e) {
-                setError('api', { message: getErrorMessage(e) })
+                setError(getErrorMessage(e))
             } finally {
                 setLoading(false)
             }
@@ -58,7 +58,10 @@ function PopUpChat() {
                         <div className="pop-up-chat-title">
                             <h2>Chat</h2>
                         </div>
+
                         <div className="pop-up-chat-conversation">
+                            {error && <div className="pop-up-chat-conversation-error">{error}</div>}
+
                             <input
                                 className="pop-up-chat-conversation-input"
                                 type="text"

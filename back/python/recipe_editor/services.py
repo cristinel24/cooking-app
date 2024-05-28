@@ -26,7 +26,7 @@ async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
     recipe_dict = await recipe_collection.get_recipe_by_id(recipe_id)
 
     if recipe_dict["authorId"] != x_user_id:
-        raise RecipeEditorException(ErrorCodes.ACCESS_UNAUTHORIZED.value, status.HTTP_403_FORBIDDEN)
+        raise RecipeEditorException(ErrorCodes.FORBIDDEN_USER.value, status.HTTP_403_FORBIDDEN)
 
     try:
         with client.get_connection().start_session() as session:

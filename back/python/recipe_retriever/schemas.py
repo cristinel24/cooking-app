@@ -44,3 +44,19 @@ class RecipeCardData(BaseModel):
     ratingAvg: float
     updatedAt: datetime
     createdAt: datetime
+
+
+class RecipeCardsRequest(BaseModel):
+    ids: list[str]
+
+
+class RecipeCardsResponse(BaseModel):
+    recipeCards: list[RecipeCardData | None]
+
+
+class UserCardRequestData(BaseModel):
+    ids: list[str] | None = None
+
+
+class UserCardResponseData(BaseModel):
+    cards: list[UserCardData]

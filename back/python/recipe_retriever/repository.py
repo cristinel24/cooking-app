@@ -1,9 +1,10 @@
-import exceptions
 import pymongo
-from constants import DB_NAME, MAX_TIMEOUT_TIME_SECONDS, MONGO_URI, ErrorCodes
+from bson import ObjectId
 from fastapi import status
 from pymongo import errors
-from bson import ObjectId
+
+import exceptions
+from constants import DB_NAME, MAX_TIMEOUT_TIME_SECONDS, MONGO_URI, ErrorCodes
 
 
 class MongoCollection:
@@ -29,7 +30,19 @@ class RecipeCollection(MongoCollection):
                 if is_viewed:
                     self._collection.update_one({"id": recipe_id}, {"$inc": {"viewCount": 1}})
                 return item
-        except errors.PyMongoError as e:
-            print(e)
+        except errors.PyMongoError:
             raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR)
 
+    def get_recipes(self, recipe_ids: list[str], projection: dict):
+        try:
+            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+                result = self._collection.find({"id": {"$in": recipe_ids}}, projection)
+                recipe_cards = list()
+                for recipe_card in result:
+                    recipe__id = ObjectId(recipe_card["_id"])
+                    recipe_card["createdAt"] = recipe__id.generation_time
+                    recipe_card.pop("_id")
+                    recipe_cards.append(recipe_card)
+                return recipe_cards
+        except errors.PyMongoError:
+            raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR)

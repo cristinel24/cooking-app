@@ -44,7 +44,7 @@ async def replace_ingredient(
     try:
         if x_user_id is None:
             raise AIException(
-                status_code=status.HTTP_403_FORBIDDEN,
+                status_code=status.HTTP_401_UNAUTHORIZED,
                 error_code=ErrorCodes.UNAUTHORIZED,
             )
         # TODO: DECIDE IF WE'LL IMPLEMENT IT OR NOT
@@ -96,7 +96,7 @@ async def process_chatbot_query(
     try:
         if x_user_id is None:
             raise AIException(
-                status_code=status.HTTP_403_FORBIDDEN,
+                status_code=status.HTTP_401_UNAUTHORIZED,
                 error_code=ErrorCodes.UNAUTHORIZED,
             )
 

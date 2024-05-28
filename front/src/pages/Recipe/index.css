@@ -162,7 +162,8 @@
     }
 }
 
-.recipe-page-ratings-container {
+.recipe-page-ratings-container,
+.recipe-page-ratings-with-form {
     display: flex;
     flex-direction: column;
     gap: 20px;

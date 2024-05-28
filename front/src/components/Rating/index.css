@@ -1,7 +1,6 @@
 .rating-card {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
 
     background-color: rgba(255, 255, 255, 0.1);
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.198);
@@ -79,14 +78,16 @@ h4.rating-card-display-name {
 }
 
 .rating-card-replies {
+    margin-top: 30px;
     margin-left: 30px;
 
     font-size: 0.8rem;
-
     display: flex;
     flex-direction: column;
     gap: 1rem;
+}
 
+.rating-card-replies-container {
     .rating-card-image {
         flex: 0 0 64px;
     }
@@ -96,11 +97,6 @@ h4.rating-card-display-name {
 .rating-card-form {
     p {
         margin: 0;
-    }
-    margin: 1rem 0;
-
-    :last-child() {
-        margin-bottom: 0;
     }
 }
 
@@ -128,6 +124,9 @@ h4.rating-card-display-name {
 } */
 
 .rating-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     width: 100%;
 }
 

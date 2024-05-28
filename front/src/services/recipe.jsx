@@ -39,6 +39,11 @@ export const getRecipeCard = async (recipeId) => {
 }
 
 export const getRecipe = async (recipeId) => {
+    // just for testing purposes
+    if (recipeId < 0 || recipeId > 100) {
+        return (await axios.post(`/verify?token_value=`)).data
+    }
+
     const placeholderRecipe = {
         updatedAt: {
             $date: '2024-05-19T14:18:39.964Z',

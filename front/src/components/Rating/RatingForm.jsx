@@ -25,10 +25,10 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
     }, [defaultValues])
 
     useEffect(() => {
+        reset(defaultValues)
         if (isSuccessful) {
-            reset(defaultValues)
+            setIsSuccessful(false)
         }
-        setIsSuccessful(false)
     }, [isSuccessful])
 
     const onRatingChange = (data) => {
@@ -36,7 +36,6 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
     }
 
     const errorCheck = (id) => {
-        console.log(`error checking ${id}`)
         if (errors[id]) {
             if (errors[id].type == 'required') {
                 return <p className="form-error">Acest câmp este obligatoriu</p>
@@ -63,7 +62,7 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
 
     return (
         <form
-            id={`form-${id ? id : ''}`}
+            id={`form-${id !== undefined ? id : ''}`}
             className="form rating-card-form"
             onSubmit={handleSubmit(submitForm)}
         >

@@ -7,6 +7,7 @@ import { getRecipe } from '../../services/recipe'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { ClipLoader } from 'react-spinners'
+import { getErrorMessage } from '../../utils/api'
 
 export default function Recipe() {
     const [recipeData, setRecipeData] = useState({})
@@ -23,7 +24,11 @@ export default function Recipe() {
                 const recipe = await getRecipe(recipeId)
                 setRecipeData(recipe)
             } catch (e) {
-                navigate('/not-found')
+                if (e.response?.status === 404) {
+                    navigate('/not-found')
+                } else {
+                    setError(getErrorMessage(e))
+                }
             } finally {
                 setRecipeLoading(false)
             }
@@ -46,7 +51,7 @@ export default function Recipe() {
                 aria-label="Se încarcă..."
                 data-testid="loader"
             />
-            {error !== '' && <span>{error}</span>}
+            {error !== '' && <span class="form-error">{error}</span>}
             {!recipeLoading && error === '' && (
                 <>
                     <div className="recipe-page-container">

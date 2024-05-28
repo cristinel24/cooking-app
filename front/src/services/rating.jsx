@@ -65,3 +65,5 @@ export const getRatingReplies = async ({ ratingId, start, count }) => {
     await delay(1200)
     return { count: 100, replies: ratings }
 }
+
+export const deleteRating = async (id, token) => {}

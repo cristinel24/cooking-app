@@ -85,7 +85,8 @@ export const Ratings = ({ recipeData }) => {
     }
 
     const addRating = async (data) => {
-        // todo: API call to add comment + call to get most recent comment and add it to the list
+        // todo: API call to add comment + call to get most recent comment and add it to the list..
+        // they don't have to be *perfectly* up to datee
         // throw new Error('mda')
         console.log(data)
     }
@@ -110,6 +111,10 @@ export const Ratings = ({ recipeData }) => {
 
     const deleteRating = async (id) => {
         // TODO: API CALL
+        try {
+        } catch (e) {
+            setError(getErrorMessage(e))
+        }
 
         setResults((newResults) => ({
             ...newResults,
@@ -128,49 +133,54 @@ export const Ratings = ({ recipeData }) => {
             <InfoModal isOpen={Boolean(error)} onClose={onModalClose} text={error}>
                 <p>{error}</p>
             </InfoModal>
-            <h3>Recenzii</h3>
-            <RatingForm
-                onSubmit={addRating}
-                confirmText="Adaugă recenzie"
-                defaultValues={{
-                    text: '',
-                    rating: 0,
-                }}
-            />
+            <h2>Recenzii</h2>
+            <h4>Adaugă o recenzie...</h4>
+
             {
-                <InfiniteScroll
-                    className="recipe-page-ratings-container"
-                    dataLength={results.ratings.length}
-                    next={fetchMoreRatings}
-                    hasMore={fetchError.length > 0 ? false : results.start < results.count}
-                    loader={<h4 style={{ textAlign: 'center' }}>Se încarcă...</h4>}
-                    endMessage={
-                        fetchError.length > 0 ? (
-                            <p style={{ textAlign: 'center' }}>
-                                <b>{fetchError}</b>
-                            </p>
-                        ) : (
-                            <p style={{ textAlign: 'center' }}>
-                                <b>Toate recenziile au fost încărcate.</b>
-                            </p>
-                        )
-                    }
-                >
-                    {results.ratings.map((rating) => {
-                        return (
-                            <RatingCard
-                                key={rating.id}
-                                ratingData={rating}
-                                onEdit={(data) => {
-                                    editRating(data, rating.id)
-                                }}
-                                onDelete={() => {
-                                    deleteRating(rating.id)
-                                }}
-                            />
-                        )
-                    })}
-                </InfiniteScroll>
+                <div className="recipe-page-ratings-with-form">
+                    <RatingForm
+                        id={`${recipeData.id}-add-rating`}
+                        onSubmit={addRating}
+                        confirmText="Adaugă recenzie"
+                        defaultValues={{
+                            text: '',
+                            rating: 0,
+                        }}
+                    />
+                    <InfiniteScroll
+                        className="recipe-page-ratings-container"
+                        dataLength={results.ratings.length}
+                        next={fetchMoreRatings}
+                        hasMore={fetchError.length > 0 ? false : results.start < results.count}
+                        loader={<h4 style={{ textAlign: 'center' }}>Se încarcă...</h4>}
+                        endMessage={
+                            fetchError.length > 0 ? (
+                                <p style={{ textAlign: 'center' }}>
+                                    <b>{fetchError}</b>
+                                </p>
+                            ) : (
+                                <p style={{ textAlign: 'center' }}>
+                                    <b>Toate recenziile au fost încărcate.</b>
+                                </p>
+                            )
+                        }
+                    >
+                        {results.ratings.map((rating) => {
+                            return (
+                                <RatingCard
+                                    key={rating.id}
+                                    ratingData={rating}
+                                    onEdit={(data) => {
+                                        editRating(data, rating.id)
+                                    }}
+                                    onDelete={() => {
+                                        deleteRating(rating.id)
+                                    }}
+                                />
+                            )
+                        })}
+                    </InfiniteScroll>
+                </div>
             }
         </div>
     )

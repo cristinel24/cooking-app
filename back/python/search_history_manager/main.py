@@ -28,7 +28,7 @@ async def get_search_history(user_id: str, start: int, count: int,
         return get_error_json_response(e.status_code, e.error_code)
 
 
-@app.put("/{user_id}/search-history", response_model=None, response_description="Successful operation")
+@app.post("/{user_id}/search-history", response_model=None, response_description="Successful operation")
 async def add_search_history(user_id: str, body: Search,
                              x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
     if not x_user_id:

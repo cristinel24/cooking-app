@@ -22,15 +22,6 @@ class TagCollection(MongoCollection):
 
             return [item["tag"] for item in result]
 
-    async def inc_tag(self, name: str) -> None:
-        with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
-            result = self._collection.find_one({"tag": name})
-
-            if result:
-                self._collection.update_one(result, {"$inc": {"counter": 1}})
-            else:
-                self._collection.insert_one({"tag": name, "counter": 1})
-
     async def inc_tags(self, names: list[str]) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             results = [result["tag"] for result in self._collection.find({"tag": {"$in": names}})]
@@ -39,19 +30,6 @@ class TagCollection(MongoCollection):
             new_tags = [{"tag": tag, "counter": 1} for tag in names if tag not in results]
             if new_tags:
                 self._collection.insert_many(new_tags)
-
-    async def dec_tag(self, name: str) -> None:
-        with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
-            result = self._collection.find_one({"tag": name})
-
-            if not result:
-                raise exceptions.TagException(ErrorCodes.NONEXISTENT_TAG.value)
-
-            if result["counter"] == 1:
-                self._collection.delete_one(result)
-            else:
-                self._collection.update_one(result, {"$inc": {"counter": -1}})
-                self._collection.update_one(result, {"$inc": {"counter": -1}})
 
     async def dec_tags(self, names: list[str]) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):

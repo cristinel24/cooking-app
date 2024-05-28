@@ -1,60 +1,38 @@
-from fastapi.responses import JSONResponse
 import uvicorn
 from fastapi import FastAPI, status
+from fastapi.responses import JSONResponse
 
-import exceptions
-from schemas import TagsBody
 import services
 from constants import HOST, PORT, ErrorCodes
+from schemas import TagsBody
 
 app = FastAPI(title="Tag Manager")
 
 
-@app.get("/tag", response_model=TagsBody, response_description="Successful operation")
+@app.get("/", response_model=TagsBody, response_description="Successful operation")
 async def get_tags(starting_with: str = '') -> TagsBody | JSONResponse:
     try:
         tags = await services.get_tags_by_starting_string(starting_with)
         return TagsBody(tags=tags)
-    except (Exception,) as e:
-        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCodes.SERVER_ERROR.value})
+    except (Exception,):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            content={"errorCode": ErrorCodes.SERVER_ERROR.value})
 
 
-@app.post("/tag/{name}/inc", response_model=None, response_description="Successful operation")
-async def inc_tag(name: str) -> None | JSONResponse:
+@app.post("/", response_model=None, response_description="Successful operation")
+async def update_tags(action: int, body: TagsBody) -> None | JSONResponse:
     try:
-        await services.inc_tag(name)
-    except (Exception,) as e:
-        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCodes.SERVER_ERROR.value})
-
-
-
-@app.post("/tags/inc", response_model=None, response_description="Successful operation")
-async def inc_tags(body: TagsBody) -> None | JSONResponse:
-    try:
-        await services.inc_tags(body.tags)
-    except (Exception,) as e:
-        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCodes.SERVER_ERROR.value})
-
-
-
-@app.post("/tag/{name}/dec", response_model=None, response_description="Successful operation")
-async def dec_tag(name: str) -> None | JSONResponse:
-    try:
-        await services.dec_tag(name)
-    except exceptions.TagException as e:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"errorCode": e.error_code})
-    except (Exception,) as e:
-        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCodes.SERVER_ERROR.value})
-
-
-
-@app.post("/tags/dec", response_model=None, response_description="Successful operation")
-async def dec_tags(body: TagsBody) -> None | JSONResponse:
-    try:
-        await services.dec_tags(body.tags)
-    except (Exception,) as e:
-        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"errorCode": ErrorCodes.SERVER_ERROR.value})
-
+        match action:
+            case 1:
+                await services.inc_tags(body.tags)
+            case -1:
+                await services.dec_tags(body.tags)
+            case _:
+                return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                                    content={"errorCode": ErrorCodes.BAD_ACTION.value})
+    except (Exception,):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            content={"errorCode": ErrorCodes.SERVER_ERROR.value})
 
 
 if __name__ == "__main__":

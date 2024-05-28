@@ -18,6 +18,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
 
     const [results, setResults] = useState({ start: 0, count: 1, replies: [] })
     const [error, setError] = useState('')
+    const [formError, setFormError] = useState('')
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false)
 

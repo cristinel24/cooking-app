@@ -116,15 +116,16 @@ h4.rating-card-display-name {
 
 .rating-card-form-stars {
     display: flex;
+    flex-direction: column;
     gap: 1rem;
-    align-items: center;
+    /* align-items: center; */
 }
-
+/* 
 .rating-card-textarea textarea {
     border-radius: 10px;
     width: 100%;
     font-size: inherit;
-}
+} */
 
 .rating-card-content {
     width: 100%;

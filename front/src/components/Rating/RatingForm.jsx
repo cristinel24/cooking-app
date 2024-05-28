@@ -1,27 +1,77 @@
 import { useForm, Controller } from 'react-hook-form'
-import { FormStars, FormTextarea } from '..'
+import { FormStars, FormTextarea, InfoModal } from '..'
 import RatingButton from './RatingButton'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { getErrorMessage } from '../../utils/api'
 
 const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Confirmă' }) => {
-    const { register, handleSubmit, formState, reset, setValue, control } = useForm({
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setValue,
+        control,
+        setError,
+        clearErrors,
+        formState: { errors },
+    } = useForm({
         defaultValues: defaultValues,
     })
+
+    const [isSuccessful, setIsSuccessful] = useState(false)
 
     useEffect(() => {
         reset(defaultValues)
     }, [defaultValues])
 
+    useEffect(() => {
+        if (isSuccessful) {
+            reset(defaultValues)
+        }
+        setIsSuccessful(false)
+    }, [isSuccessful])
+
     const onRatingChange = (data) => {
         setValue('rating', data)
+    }
+
+    const errorCheck = (id) => {
+        console.log(`error checking ${id}`)
+        if (errors[id]) {
+            if (errors[id].type == 'required') {
+                return <p className="form-error">Acest câmp este obligatoriu</p>
+            }
+
+            return <p className="form-error">{errors[id].message}</p>
+        }
+    }
+
+    const submitForm = async (data) => {
+        try {
+            await onSubmit(data)
+            setIsSuccessful(true)
+        } catch (e) {
+            setError('api', {
+                message: getErrorMessage(e),
+            })
+        }
+    }
+
+    const onCloseModal = () => {
+        clearErrors('api')
     }
 
     return (
         <form
             id={`form-${id ? id : ''}`}
             className="form rating-card-form"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(submitForm)}
         >
+            {errors['api'] && (
+                <InfoModal isOpen={Boolean(errors['api'])} onClose={onCloseModal}>
+                    <p className="form-error">{errors['api'].message}</p>
+                </InfoModal>
+            )}
             {defaultValues.rating !== undefined && (
                 <>
                     <div className="rating-card-form-stars">
@@ -29,7 +79,13 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
                             control={control}
                             name="rating"
                             render={({ field: { onChange, value } }) => (
-                                <FormStars onChange={onChange} value={value} />
+                                <FormStars
+                                    key={`rating-${id ? id : ''}`}
+                                    id="rating"
+                                    onChange={onChange}
+                                    errorCheck={errorCheck}
+                                    value={value}
+                                />
                             )}
                         />
                         <RatingButton
@@ -47,19 +103,21 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
                 </>
             )}
 
-            <div className="text-sth">
-                {defaultValues?.text && (
-                    <FormTextarea
-                        className="rating-card-textarea"
-                        {...register('text')}
-                        placeholder="Editează comentariul..."
-                    />
-                )}
-            </div>
+            {defaultValues.text !== undefined && (
+                <FormTextarea
+                    id="text"
+                    className="rating-card-textarea"
+                    {...register('text')}
+                    errorCheck={errorCheck}
+                    placeholder="Scrie comentariul..."
+                />
+            )}
             <div className="rating-card-buttons">
-                <RatingButton type="button" onClick={onCancel}>
-                    Anulează
-                </RatingButton>
+                {onCancel && (
+                    <RatingButton type="button" onClick={onCancel}>
+                        Anulează
+                    </RatingButton>
+                )}
                 <RatingButton type="submit">{confirmText}</RatingButton>
             </div>
         </form>

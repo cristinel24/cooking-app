@@ -1,4 +1,4 @@
-import { RatingCard } from '../../components'
+import { InfoModal, RatingCard, RatingForm } from '../../components'
 import { getRatings } from '../../services/rating'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
@@ -12,36 +12,8 @@ export const Ratings = ({ recipeData }) => {
         count: 1,
         ratings: [],
     })
+    const [fetchError, setFetchError] = useState('')
     const [error, setError] = useState('')
-
-    const editRating = async (data, id) => {
-        // TODO: API CALL
-
-        console.log(data)
-        setResults((ratingData) => {
-            let newData = { ...ratingData }
-            let index = newData.ratings.findIndex((obj) => obj.id === id)
-            if (index !== -1) {
-                newData.ratings[index] = {
-                    ...newData.ratings[index],
-                    description: data.text,
-                    rating: data.rating,
-                }
-            }
-            return newData
-        })
-    }
-
-    const deleteRating = async (id) => {
-        // TODO: API CALL
-
-        setResults((newResults) => ({
-            ...newResults,
-            count: newResults.count - 1,
-            ratings: newResults.ratings.filter((otherRating) => id !== otherRating.id),
-        }))
-        console.log(id)
-    }
 
     const initialFetchCount = 40
     const fetchCount = 20
@@ -69,7 +41,7 @@ export const Ratings = ({ recipeData }) => {
                 }
             } catch (e) {
                 setResults((results) => ({ ...results, count: 0 }))
-                setError(getErrorMessage(e))
+                setFetchError(getErrorMessage(e))
             }
         }
         fetch()
@@ -108,28 +80,78 @@ export const Ratings = ({ recipeData }) => {
             }))
         } catch (e) {
             setResults((results) => ({ ...results, count: 0 }))
-            setError(getErrorMessage(e))
+            setFetchError(getErrorMessage(e))
         }
+    }
+
+    const addRating = async (data) => {
+        // todo: API call to add comment + call to get most recent comment and add it to the list
+        // throw new Error('mda')
+        console.log(data)
+    }
+
+    const editRating = async (data, id) => {
+        // TODO: API CALL
+
+        console.log(data)
+        setResults((ratingData) => {
+            let newData = { ...ratingData }
+            let index = newData.ratings.findIndex((obj) => obj.id === id)
+            if (index !== -1) {
+                newData.ratings[index] = {
+                    ...newData.ratings[index],
+                    description: data.text,
+                    rating: data.rating,
+                }
+            }
+            return newData
+        })
+    }
+
+    const deleteRating = async (id) => {
+        // TODO: API CALL
+
+        setResults((newResults) => ({
+            ...newResults,
+            count: newResults.count - 1,
+            ratings: newResults.ratings.filter((otherRating) => id !== otherRating.id),
+        }))
+        console.log(id)
+    }
+
+    const onModalClose = () => {
+        setError('')
     }
 
     return (
         <div className="recipe-page-ratings">
+            <InfoModal isOpen={Boolean(error)} onClose={onModalClose} text={error}>
+                <p>{error}</p>
+            </InfoModal>
             <h3>Recenzii</h3>
+            <RatingForm
+                onSubmit={addRating}
+                confirmText="Adaugă recenzie"
+                defaultValues={{
+                    text: '',
+                    rating: 0,
+                }}
+            />
             {
                 <InfiniteScroll
                     className="recipe-page-ratings-container"
                     dataLength={results.ratings.length}
                     next={fetchMoreRatings}
-                    hasMore={error.length > 0 ? false : results.start < results.count}
+                    hasMore={fetchError.length > 0 ? false : results.start < results.count}
                     loader={<h4 style={{ textAlign: 'center' }}>Se încarcă...</h4>}
                     endMessage={
-                        error.length > 0 ? (
+                        fetchError.length > 0 ? (
                             <p style={{ textAlign: 'center' }}>
-                                <b>{error}</b>
+                                <b>{fetchError}</b>
                             </p>
                         ) : (
                             <p style={{ textAlign: 'center' }}>
-                                <b>Toate comentariile au fost încărcate.</b>
+                                <b>Toate recenziile au fost încărcate.</b>
                             </p>
                         )
                     }

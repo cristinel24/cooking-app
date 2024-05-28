@@ -26,7 +26,7 @@ async def execute_api(method: str, uri: str, json_data: dict | None = None) -> d
 
             return response.json()
 
-    except RecipeRatingManagerException as e:
+    except RecipeRatingManagerException:
         raise e
     except (Exception,) as e:
         raise RecipeRatingManagerException(

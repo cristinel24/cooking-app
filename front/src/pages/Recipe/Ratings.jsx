@@ -15,6 +15,8 @@ export const Ratings = ({ recipeData }) => {
     const [error, setError] = useState('')
 
     const editRating = async (data, id) => {
+        // TODO: API CALL
+
         console.log(data)
         setResults((ratingData) => {
             let newData = { ...ratingData }
@@ -31,7 +33,13 @@ export const Ratings = ({ recipeData }) => {
     }
 
     const deleteRating = async (id) => {
-        setResults(results.ratings.filter((otherRating) => id !== otherRating.id))
+        // TODO: API CALL
+
+        setResults((newResults) => ({
+            ...newResults,
+            count: newResults.count - 1,
+            ratings: newResults.ratings.filter((otherRating) => id !== otherRating.id),
+        }))
         console.log(id)
     }
 
@@ -49,9 +57,9 @@ export const Ratings = ({ recipeData }) => {
                 })
                 if (!ignore) {
                     setResults((newResults) => ({
-                        ...results,
+                        ...newResults,
                         fetchedInitial: true,
-                        start: results.start + initialFetchCount,
+                        start: newResults.start + initialFetchCount,
                         count: result.count,
                         ratings: reduceRatingsToUniqueIds([
                             ...newResults.ratings,

@@ -16,20 +16,23 @@ const FormPassword = forwardRef(function FormPassword(
             <label className="form-label" htmlFor="password">
                 {label}
             </label>
-            <input
-                className="form-input"
-                id={id}
-                type={showPassword ? 'text' : 'password'}
-                ref={ref}
-                {...other}
-            ></input>
-            <button type="submit" className="form-password-button" onClick={handleShowPassword}>
-                {showPassword ? (
-                    <AiOutlineEyeInvisible  className="form-password-button-icon" />
-                ) : (
-                    <AiOutlineEye  className="form-password-button-icon" />
-                )}
-            </button>
+            <div className="form-password">
+                <input
+                    className="form-input"
+                    id={id}
+                    type={showPassword ? 'text' : 'password'}
+                    ref={ref}
+                    {...other}
+                ></input>
+                <button type="submit" className="form-password-button" onClick={handleShowPassword}>
+                    {showPassword ? (
+                        <AiOutlineEyeInvisible className="form-password-button-icon" />
+                    ) : (
+                        <AiOutlineEye className="form-password-button-icon" />
+                    )}
+                </button>
+            </div>
+
             {errorCheck && errorCheck(id)}
         </div>
     )

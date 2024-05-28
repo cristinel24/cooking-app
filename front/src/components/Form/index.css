@@ -28,7 +28,9 @@
     width: 100%;
     padding: 10px;
     border-radius: 10px;
-    background-color: var(--searchbar-bg-color);
+    /* background-color: var(--searchbar-bg-color); */
+    background-color: var(--input-bg-color);
+    color: var(--input-color);
     border: none;
     font-family: inherit;
 }
@@ -37,13 +39,26 @@
     outline: none;
 }
 
-.form-password-button {
-    background: var(--searchbar-bg-color);
-    border: none;
+.form-password {
+    position: relative;
+    background-color: var(--input-bg-color);
 
-    position: absolute;
-    right: 0.3rem;
-    top: 38px;
+    display: flex;
+    border-radius: 10px;
+}
+
+.form-password input {
+    background: transparent;
+    padding-right: 0;
+}
+
+.form-password-button {
+    background: transparent;
+    color: var(--input-color);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
 }
 

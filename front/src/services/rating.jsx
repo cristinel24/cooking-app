@@ -63,5 +63,5 @@ export const getRatingReplies = async ({ ratingId, start, count }) => {
 
     const delay = (ms) => new Promise((res) => setTimeout(res, ms))
     await delay(1200)
-    return ratings
+    return { count: 100, replies: ratings }
 }

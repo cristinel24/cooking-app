@@ -1,6 +1,5 @@
 import { RatingCard } from '../../components'
 import { getRatings } from '../../services/rating'
-import { useNavigate, useParams } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { getErrorMessage } from '../../utils/api'
@@ -14,22 +13,19 @@ export const Ratings = ({ recipeData }) => {
         ratings: [],
     })
     const [error, setError] = useState('')
-    const [hasMore, setHasMore] = useState(true)
-
-    // useEffect(() => {
-    //     console.log(results.start + ' - ' + results.count)
-    //     setHasMore(
-    //         error.length > 0
-    //             ? false
-    //             : results.fetchedInitial === false || results.start < results.count
-    //     )
-    // }, [error, results])
 
     const editRating = async (data, id) => {
         console.log(data)
         setResults((ratingData) => {
-            let newData = ratingData
-            newData.ratings.find((obj) => obj.id === id).description = data.text
+            let newData = { ...ratingData }
+            let index = newData.ratings.findIndex((obj) => obj.id === id)
+            if (index !== -1) {
+                newData.ratings[index] = {
+                    ...newData.ratings[index],
+                    description: data.text,
+                    rating: data.rating,
+                }
+            }
             return newData
         })
     }
@@ -111,7 +107,6 @@ export const Ratings = ({ recipeData }) => {
     return (
         <div className="recipe-page-ratings">
             <h3>Recenzii</h3>
-
             {
                 <InfiniteScroll
                     className="recipe-page-ratings-container"

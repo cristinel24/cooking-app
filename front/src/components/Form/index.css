@@ -136,8 +136,16 @@
 }
 
 .form-stars {
+    width: fit-content;
     color: var(--stars-color);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.form-stars:disabled,
+.form-stars[disabled] {
+    color: color-mix(in srgb, var(--stars-color) 80%, rgb(118, 118, 118) 20%);
 }
 
 @media screen and (max-width: 820px) {

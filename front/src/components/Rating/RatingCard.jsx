@@ -5,19 +5,27 @@ import { RatingValue } from '..'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 
 import { dateToRomanian } from '../../utils/date'
+import { getErrorMessage } from '../../utils/api'
 
 import RatingButton from './RatingButton'
-import RatingEditForm from './RatingEditForm'
+import RatingForm from './RatingForm'
 import { getRatingReplies } from '../../services/rating'
 
 const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const [showAllText, setShowAllText] = useState(false)
+    const [showReplies, setShowReplies] = useState(false)
     const [editing, setEditing] = useState(false)
 
-    const [replies, setReplies] = useState([])
-    const [showReplies, setShowReplies] = useState(false)
-    const [repliesError, setRepliesError] = useState('')
-    const [loadingReplies, setLoadingReplies] = useState(false)
+    const [results, setResults] = useState({ start: 0, count: 1, replies: [] })
+    const [error, setError] = useState('')
+    const [hasMore, setHasMore] = useState(true)
+    const [loading, setLoading] = useState(false)
+
+    const fetchCount = 20
+
+    useEffect(() => {
+        setHasMore(error.length > 0 ? false : results.start < results.count)
+    }, [results, error])
 
     useEffect(() => {
         let ignore = false
@@ -29,18 +37,29 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
             return ignoreTrue
         }
 
-        setLoadingReplies(true)
+        setLoading(true)
 
-        // getRatingReplies(ratingData.id)
-        //     .then((result) => {
-        //         if (!ignore) {
-        //             setReplies(result)
-        //         }
-        //     })
-        //     .then(() => {
-        //         setLoadingReplies(false)
-        //     })
-        //     .catch((e) => setRepliesError('error'))
+        const fetch = async () => {
+            try {
+                const result = await getRatingReplies({
+                    ratingId: ratingData.id,
+                    start: results.start,
+                    count: fetchCount,
+                })
+                if (!ignore) {
+                    setResults((newResults) => ({
+                        ...results,
+                        start: results.start + fetchCount,
+                        count: result.count,
+                        replies: [...newResults.replies, ...result.replies],
+                    }))
+                }
+            } catch (e) {
+                setError(getErrorMessage(e))
+            }
+        }
+
+        fetch()
 
         return ignoreTrue
     }, [])
@@ -56,15 +75,18 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
 
     const editRating = async (data, id) => {
         console.log(data)
-        setReplies((ratingData) => {
-            let newData = ratingData
-            newData.find((obj) => obj.id === id).description = data.text
+        setResults((newResults) => {
+            let newData = newResults
+            newData.replies.find((obj) => obj.id === id).description = data.text
             return newData
         })
     }
 
     const deleteRating = async (id) => {
-        setReplies(replies.filter((otherRating) => id !== otherRating.id))
+        setResults((newResults) => ({
+            ...newResults,
+            replies: newResults.replies.filter((otherRating) => id !== otherRating.id),
+        }))
         console.log(id)
     }
 
@@ -77,11 +99,6 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                 </div>
                 <div className="rating-card-content">
                     <div className="rating-card-data">
-                        {ratingData.rating && ratingData.rating > 0 && (
-                            <div className="rating-card-rating">
-                                <RatingValue value={ratingData.rating} showValue={false} />
-                            </div>
-                        )}
                         <div className="rating-card-user">
                             <h4 className="rating-card-display-name">
                                 {ratingData.author.displayName}
@@ -100,6 +117,11 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                     {!editing ? (
                         <>
                             <div className="rating-card-description">
+                                {ratingData?.rating > 0 && (
+                                    <div className="rating-card-rating">
+                                        <RatingValue value={ratingData.rating} showValue={false} />
+                                    </div>
+                                )}
                                 <p>
                                     {showAllText ||
                                     ratingData.description.length <= shortRatingLength
@@ -126,7 +148,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                         )}
                                     </RatingButton>
                                 )}
-                                {replies.length > 0 && (
+                                {results.replies.length > 0 && (
                                     <RatingButton
                                         onClick={() => {
                                             setShowReplies(!showReplies)
@@ -151,9 +173,15 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                             </div>
                         </>
                     ) : (
-                        <RatingEditForm
+                        <RatingForm
+                            id={ratingData.id}
                             onSubmit={handleEdit}
-                            defaultValue={ratingData.description}
+                            defaultValues={{
+                                text: ratingData.description,
+                                ...(ratingData?.rating !== undefined
+                                    ? { rating: ratingData.rating }
+                                    : {}),
+                            }}
                             onCancel={toggleEdit}
                         />
                     )}
@@ -161,10 +189,10 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
             </div>
             {ratingData.parentType === 'recipe' &&
                 showReplies &&
-                (repliesError === '' ? (
-                    replies.length > 0 && (
+                (error === '' ? (
+                    results.replies.length > 0 && (
                         <div className="rating-card-replies">
-                            {replies.map((reply) => {
+                            {results.replies.map((reply) => {
                                 return (
                                     <RatingCard
                                         key={reply.id}
@@ -181,7 +209,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                         </div>
                     )
                 ) : (
-                    <>{repliesError}</>
+                    <>{error}</>
                 ))}
         </div>
     )

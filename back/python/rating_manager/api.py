@@ -29,7 +29,6 @@ async def execute_api(method: str, uri: str, json_data: dict | None = None) -> d
     except RecipeRatingManagerException as e:
         raise e
     except (Exception,) as e:
-        (e)
         raise RecipeRatingManagerException(
             error_code=ErrorCodes.UNKNOWN,
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR

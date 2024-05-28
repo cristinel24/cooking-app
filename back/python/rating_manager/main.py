@@ -8,7 +8,7 @@ from constants import HOST, PORT
 from schemas import *
 from utils import *
 
-app = FastAPI(title="Recipe Rating Manager")
+app = FastAPI(title="Rating Manager")
 
 
 @app.get("/{parent_type}/{parent_id}/comments", response_model=RatingList, response_description="Successful operation")

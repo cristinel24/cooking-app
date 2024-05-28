@@ -26,7 +26,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn get_tag_item(
+pub async fn get_tags(
     req: &mut Request,
     res: &mut Response,
     starting_with: QueryParam<String, true>,

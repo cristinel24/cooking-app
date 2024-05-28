@@ -29,7 +29,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn put_history(
+pub async fn post_history(
     req: &mut Request,
     res: &mut Response,
     message: JsonBody<Message>,

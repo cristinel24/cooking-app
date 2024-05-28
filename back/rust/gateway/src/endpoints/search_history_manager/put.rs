@@ -41,7 +41,7 @@ pub async fn post_in_search_history(
     let url: String = format!("{SERVICE}/{new_url}");
 
     return match get_response::<&str, Query, String>(
-        Method::PUT,
+        Method::POST,
         url,
         None,
         Some(search.into_inner()),

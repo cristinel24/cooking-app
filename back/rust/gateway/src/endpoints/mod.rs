@@ -6,10 +6,10 @@ use serde::{Deserialize, Serialize, Serializer};
 use tracing::debug;
 
 pub mod ai;
-pub mod allergen;
+pub mod allergen_manager;
+pub mod credentials_change_requester;
 pub mod email_changer;
 pub mod follow_manager;
-pub mod search_history_manager;
 pub mod image_storage;
 pub mod login;
 pub mod message_history_manager;
@@ -22,12 +22,13 @@ pub mod recipe_retriever;
 pub mod recipe_saver;
 pub mod register;
 pub mod role_changer;
+pub mod search;
+pub mod search_history_manager;
 pub mod tag;
 pub mod user_destroyer;
 pub mod user_retriever;
 pub mod username_changer;
 pub mod verifier;
-pub mod search;
 
 const SUCCESSFUL_RESPONSE: &str = "Successful operation response";
 const FAILED_RESPONSE: &str = "Failed operation response";

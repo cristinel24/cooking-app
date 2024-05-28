@@ -1,6 +1,6 @@
-use crate::endpoints::ai::SERVICE;
+use crate::endpoints::follow_manager::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::models::ai::{ChatBotRequest, ChatBotResponse};
+use crate::models::follow_manager::Follows;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -10,13 +10,16 @@ use salvo::{Request, Response, Writer};
 use tracing::error;
 
 #[endpoint(
+    parameters(
+        ("user_id" = String, description = "Id of the user")
+    ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = ChatBotResponse,
-            example = json!(ChatBotResponse::default())
+            body = String,
+            example = json!("null")
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -26,20 +29,21 @@ use tracing::error;
         ),
     )
 )]
-pub async fn chatbot_route(
+pub async fn post_new_following_user(
     req: &mut Request,
     res: &mut Response,
-    body: JsonBody<ChatBotRequest>,
-) -> Json<EndpointResponse<ChatBotResponse>> {
+    follows: JsonBody<Follows>,
+) -> Json<EndpointResponse<String>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
-    return match get_response::<&str, ChatBotRequest, ChatBotResponse>(
+
+    return match get_response::<&str, _, String>(
         Method::POST,
         url,
         None,
-        Some(body.into_inner()),
+        Some(follows.into_inner()),
         Some(req.headers().clone()),
         false,
     )

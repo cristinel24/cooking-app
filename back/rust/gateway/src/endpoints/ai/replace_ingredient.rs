@@ -1,6 +1,6 @@
-use crate::endpoints::follow_manager::SERVICE;
+use crate::endpoints::ai::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::models::follow_manager::Follows;
+use crate::models::ai::{TokenizeRequest, TokenizeResponse};
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -10,16 +10,13 @@ use salvo::{Request, Response, Writer};
 use tracing::error;
 
 #[endpoint(
-    parameters(
-        ("user_id" = String, description = "Id of the user")
-    ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = String,
-            example = json!("null")
+            body = TokenizeResponse,
+            example = json!(TokenizeResponse::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -29,21 +26,20 @@ use tracing::error;
         ),
     )
 )]
-pub async fn put_new_following_user(
+pub async fn replace_ingredient_route(
     req: &mut Request,
     res: &mut Response,
-    follows: JsonBody<Follows>,
-) -> Json<EndpointResponse<String>> {
+    body: JsonBody<TokenizeRequest>,
+) -> Json<EndpointResponse<TokenizeResponse>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
-
-    return match get_response::<&str, _, String>(
-        Method::PUT,
+    return match get_response::<&str, TokenizeRequest, TokenizeResponse>(
+        Method::POST,
         url,
         None,
-        Some(follows.into_inner()),
+        Some(body.into_inner()),
         Some(req.headers().clone()),
         false,
     )

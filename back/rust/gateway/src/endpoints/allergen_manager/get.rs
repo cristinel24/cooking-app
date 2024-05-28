@@ -1,4 +1,4 @@
-use crate::endpoints::allergen::SERVICE;
+use crate::endpoints::allergen_manager::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::allergens::Allergens;
 use crate::models::ErrorResponse;
@@ -26,7 +26,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn get_allergen_item(
+pub async fn get_allergens_route(
     req: &mut Request,
     res: &mut Response,
     starting_with: QueryParam<String, true>,

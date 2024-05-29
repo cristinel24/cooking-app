@@ -33,6 +33,8 @@
     --input-bg-color-inverted: #444444;
     --body-bg-color-inverted: #1c1c1c;
     --text-color-inverted: #eeeeee;
+
+    --chatbot-color: #ff9d9d;
 }
 
 [data-theme='dark'] {
@@ -65,4 +67,6 @@
     --input-bg-color-inverted: #ffffff;
     --body-bg-color-inverted: #f0f0f0;
     --text-color-inverted: #0c1821;
+
+    --chatbot-color: #1c1c1c;
 }

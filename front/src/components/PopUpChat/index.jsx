@@ -28,7 +28,8 @@ function PopUpChat() {
                     {message}
                     <img
                         className="pop-up-image"
-                        src="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                        src={user.icon}
+                        //src="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
                     ></img>
                 </div>,
             ])
@@ -40,12 +41,10 @@ function PopUpChat() {
                 console.log(msg)
                 setConversation((prevConversation) => [
                     ...prevConversation,
-                    <>
-                        <div className="pop-up-chat-message" key={prevConversation.length}>
-                            <img className="pop-up-image" src="../public/logo.png"></img>
-                            {msg}
-                        </div>
-                    </>,
+                    <div className="pop-up-chat-message" key={prevConversation.length}>
+                        <img className="pop-up-image" src="../public/logo.png"></img>
+                        {msg}
+                    </div>,
                 ])
             } catch (e) {
                 setError(getErrorMessage(e))

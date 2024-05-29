@@ -35,6 +35,7 @@ class RatingDataCard(BaseModel):
     rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")
     description: str
     childrenCount: int
+    id: str
 
 
 class RatingList(BaseModel):

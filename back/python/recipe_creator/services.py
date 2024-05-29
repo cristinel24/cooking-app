@@ -7,7 +7,7 @@ import api
 from constants import ErrorCodes, UNSAFE_RECIPE_DATA_FIELDS
 from exception import RecipeCreatorException
 from repository import MongoCollection, UserCollection, RecipeCollection
-from schemas import RecipeData, Recipe
+from schemas import RecipeCreationData, Recipe
 from utils import validate_recipe_data, check_flags, sanitize_html
 
 client = MongoCollection()
@@ -15,7 +15,7 @@ user_collection = UserCollection(client.get_connection())
 recipe_collection = RecipeCollection(client.get_connection())
 
 
-async def create_recipe(user_id: str, recipe_data: RecipeData):
+async def create_recipe(user_id: str, recipe_data: RecipeCreationData):
     recipe_data_dict = recipe_data.model_dump()
     sanitized_fields = sanitize_html(recipe_data.model_dump(include=UNSAFE_RECIPE_DATA_FIELDS))
     for key, value in sanitized_fields.items():

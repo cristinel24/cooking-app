@@ -148,6 +148,7 @@
 .profile-user-list-modal {
     background-color: var(--body-bg-color);
     border-radius: 10px;
+    width: 600px;
 }
 
 .profile-user-list-container {
@@ -158,7 +159,18 @@
     gap: 10px;
 }
 
+@media only screen and (max-width: 768px) {
+    .profile-user-list-modal {
+        /* intentional!! */
+        width: 75vw;
+    }
+}
+
 @media only screen and (max-width: 480px) {
+    .profile-user-list-modal {
+        /* intentional!! */
+        width: 90vw;
+    }
     .profile {
         grid-template-columns: 1fr;
     }

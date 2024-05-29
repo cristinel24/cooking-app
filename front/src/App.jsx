@@ -5,7 +5,9 @@ import { UserContext, ThemeContext } from './context'
 import {
     AccountSettings,
     AddRecipe,
-    CredentialsChange,
+    ChangeEmail,
+    ChangePassword,
+    ChangeUsername,
     Dashboard,
     EditRecipe,
     ErrorPage,
@@ -124,7 +126,9 @@ function App() {
                             <Route path="/best" element={<Feed />} />
                             <Route path="/new" element={<Feed />} />
 
-                            <Route path="/reset/:type" element={<CredentialsChange />} />
+                            <Route path="/reset/email" element={<ChangeEmail />} />
+                            <Route path="/reset/username" element={<ChangeUsername />} />
+                            <Route path="/reset/password" element={<ChangePassword />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
                             <Route path="/recipe/:recipeId" element={<Recipe />} />
 

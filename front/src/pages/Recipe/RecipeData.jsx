@@ -1,28 +1,43 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { RatingValue, Tag, Button, Report } from '../../components'
+import { RatingValue, Tag, Button, Report, InfoModal } from '../../components'
 import './index.css'
 import { prepTimeDisplayText, ratingToNumber } from '../../utils/recipeData'
 import { IoIosTime } from 'react-icons/io'
 import { FaUser, FaEye } from 'react-icons/fa'
+import { getErrorMessage } from '../../utils/api'
 
-export default function RecipeData({ recipeData }) {
+export default function RecipeData({ recipeData, onFavorite }) {
     const [isReportVisible, setIsReportVisible] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
-    const [data, setData] = useState(recipeData)
-    const onFavorite = () => {
-        // TODO: api call. if failed; don't even update
-        setData((prevRecipe) => {
-            return {
-                ...prevRecipe,
-                isFavorite: !prevRecipe.isFavorite,
-            }
-        })
+    const onPressFavorite = async () => {
+        if (loading) {
+            return
+        }
+        try {
+            setLoading(true)
+            await onFavorite()
+        } catch (e) {
+            setError(getErrorMessage(e))
+        } finally {
+            setLoading(false)
+        }
     }
 
-    const onSendReport = () => {
-        // TODO: api call
-        setIsReportVisible(!isReportVisible)
+    const onCloseModal = () => {
+        setError('')
+    }
+
+    const onSendReport = async () => {
+        try {
+            // TODO: api call
+        } catch (e) {
+            setError(getErrorMessage(e))
+        } finally {
+            setIsReportVisible(!isReportVisible)
+        }
     }
 
     const toggleReport = () => {
@@ -31,33 +46,38 @@ export default function RecipeData({ recipeData }) {
 
     return (
         <div className="recipe-page-data">
+            <InfoModal onClose={onCloseModal} isOpen={error.length > 0}>
+                <p className="form-error">{error}</p>
+            </InfoModal>
             {isReportVisible && <Report onSend={onSendReport} onCancel={toggleReport} />}
             <div className="recipe-page-grid-container">
                 <div className="recipe-page-data">
-                    <h1>{data.title}</h1>
+                    <h1>{recipeData.title}</h1>
 
                     <div className="recipe-page-metadata">
                         <div className="recipe-page-icon-data">
                             <IoIosTime />
-                            <span>{prepTimeDisplayText(data.prepTime)}</span>
+                            <span>{prepTimeDisplayText(recipeData.prepTime)}</span>
                         </div>
                         <div className="recipe-page-icon-data">
                             <FaUser />
-                            <Link to={data.author.id ? `/profile/${data.author.id}` : '/'}>
-                                {data.author.displayName}
+                            <Link
+                                to={recipeData.author.id ? `/profile/${recipeData.author.id}` : '/'}
+                            >
+                                {recipeData.author.displayName}
                             </Link>
                         </div>
-                        {data.viewCount !== undefined && (
+                        {recipeData.viewCount !== undefined && (
                             <div className="recipe-page-icon-data">
                                 <FaEye />
 
-                                {data.viewCount}
+                                {recipeData.viewCount}
                             </div>
                         )}
 
                         <RatingValue
                             className="recipe-page-rating-stars"
-                            value={ratingToNumber(data.ratingSum, data.ratingCount)}
+                            value={ratingToNumber(recipeData.ratingSum, recipeData.ratingCount)}
                         />
 
                         <button
@@ -68,11 +88,11 @@ export default function RecipeData({ recipeData }) {
                             Raportează
                         </button>
                     </div>
-                    <div>{data.description}</div>
+                    <div>{recipeData.description}</div>
                     <div className="recipe-page-tags">
                         Tag-uri:
                         <div className="recipe-page-tags-container">
-                            {data.tags.map((tag, index) => (
+                            {recipeData.tags.map((tag, index) => (
                                 <Tag className="recipe-page-tag" key={index} text={tag} />
                             ))}
                         </div>
@@ -81,7 +101,7 @@ export default function RecipeData({ recipeData }) {
                     <div className="recipe-page-tags">
                         Alergeni:
                         <div className="recipe-page-tags-container">
-                            {data.allergens.map((tag, index) => (
+                            {recipeData.allergens.map((tag, index) => (
                                 <Tag className="recipe-page-tag" key={index} text={tag} />
                             ))}
                         </div>
@@ -90,13 +110,17 @@ export default function RecipeData({ recipeData }) {
 
                 <div className="recipe-page-image-container">
                     <div className="recipe-page-image">
-                        <img src={data.thumbnail} alt="recipe image" />
+                        <img src={recipeData.thumbnail} alt="recipe image" />
                     </div>
-                    {data.isFavorite !== undefined && (
+                    {recipeData.isFavorite !== undefined && (
                         <Button
                             className={'recipe-page-button-favorite'}
-                            text={data.isFavorite ? 'Elimină din favorite' : 'Adaugă la favorite'}
-                            onClick={onFavorite}
+                            text={
+                                recipeData.isFavorite
+                                    ? 'Elimină din favorite'
+                                    : 'Adaugă la favorite'
+                            }
+                            onClick={onPressFavorite}
                         />
                     )}
                 </div>
@@ -106,7 +130,7 @@ export default function RecipeData({ recipeData }) {
                 <div className="recipe-page-ingredients">
                     <h2>Ingrediente</h2>
                     <div className="recipe-page-ingredients-container">
-                        {data.ingredients.map((ingredient, index) => (
+                        {recipeData.ingredients.map((ingredient, index) => (
                             <p key={index}>{ingredient}</p>
                         ))}
                     </div>
@@ -115,7 +139,7 @@ export default function RecipeData({ recipeData }) {
                 <div className="recipe-page-steps">
                     <h2>Mod de preparare </h2>
                     <div className="recipe-page-steps-container">
-                        {data.steps.map((step, index) => (
+                        {recipeData.steps.map((step, index) => (
                             <div key={index} className="recipe-page-step">
                                 <div className="recipe-page-step-index">
                                     <span>{index}</span>

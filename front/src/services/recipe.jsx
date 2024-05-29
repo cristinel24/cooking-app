@@ -137,3 +137,5 @@ export const getRecipe = async (recipeId) => {
 export const deleteRecipe = async (id, token) => {}
 
 export const saveRecipe = async (id, token) => {}
+
+export const unsaveRecipe = async (id, token) => {}

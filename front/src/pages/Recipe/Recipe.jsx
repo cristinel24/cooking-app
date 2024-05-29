@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react'
+import { UserContext } from '../../context'
 
 import RecipeData from './RecipeData'
 import { Ratings } from './Ratings'
@@ -8,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { ClipLoader } from 'react-spinners'
 import { getErrorMessage } from '../../utils/api'
+import { saveRecipe as apiSaveRecipe, unsaveRecipe as apiUnsaveRecipe } from '../../services/recipe'
 
 export default function Recipe() {
     const [recipeData, setRecipeData] = useState({})
@@ -17,6 +19,8 @@ export default function Recipe() {
 
     const { recipeId } = useParams()
     const navigate = useNavigate()
+
+    const { token } = useContext(UserContext)
 
     useEffect(() => {
         const fetch = async () => {
@@ -37,6 +41,20 @@ export default function Recipe() {
         fetch()
     }, [])
 
+    const onFavorite = async () => {
+        if (recipeData.isFavorite) {
+            await apiSaveRecipe(recipeData.id, token)
+        } else {
+            await apiUnsaveRecipe(recipeData.id, token)
+        }
+        setRecipeData((recipeData) => {
+            return {
+                ...recipeData,
+                isFavorite: !recipeData.isFavorite,
+            }
+        })
+    }
+
     return (
         <>
             <ClipLoader
@@ -55,7 +73,7 @@ export default function Recipe() {
             {!recipeLoading && error === '' && (
                 <>
                     <div className="recipe-page-container">
-                        <RecipeData recipeData={recipeData} setRecipeData={setRecipeData} />
+                        <RecipeData recipeData={recipeData} onFavorite={onFavorite} />
                         <Ratings recipeData={recipeData} />
                     </div>
                 </>

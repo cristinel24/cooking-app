@@ -134,7 +134,8 @@ def delete_top_level_comment(rating: dict, session: ClientSession):
     if rating["authorId"] == DELETED_FIELD:  # rating was previously deleted, now being pruned by child deletion
         if rating["childrenCount"] == 0:
             rating_collection.delete_rating(rating["id"], session)
-
+            recipe_collection.modify_recipe(rating["parentId"], {"$pull": {"ratings": rating["id"]}}, session)
+            
         return  # None
 
     recipe_mod = {}

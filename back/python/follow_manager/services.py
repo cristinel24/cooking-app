@@ -29,7 +29,7 @@ async def get_followers(user_id: str, start: int, count: int) -> FollowersCardsD
         followers_cards_data.followers = []
         return followers_cards_data
     try:
-        response = await request_user_cards(request)
+        response = await request_user_cards(request, user_id)
     except httpx.ConnectError:
         raise FollowManagerException(
             ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE
@@ -56,7 +56,7 @@ async def get_following(user_id: str, start: int, count: int) -> FollowingCardsD
         following_cards_data.following = []
         return following_cards_data
     try:
-        response = await request_user_cards(request)
+        response = await request_user_cards(request, user_id)
     except httpx.ConnectError:
         raise FollowManagerException(
             ErrorCodes.NOT_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE

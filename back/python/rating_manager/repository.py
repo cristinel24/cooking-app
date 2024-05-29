@@ -109,7 +109,7 @@ class RatingCollection(MongoCollection):
             raise transform_exception(e)
 
     def create_rating(
-        self, x_user_id: str, generated_id: str, rating_data: RatingCreate, session: ClientSession = None
+        self, user_id: str, generated_id: str, rating_data: RatingCreate, session: ClientSession = None
     ) -> None:
 
         try:

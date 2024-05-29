@@ -238,7 +238,7 @@ recipe1 = {
     "ratingCount": 2,
     "ratingSum": 7,
 }
-
+user1["recipes"].append(recipe1["id"])
 rating1 = {
     "id": generate_id(counters_collection),
     "updatedAt": datetime.datetime.now(datetime.timezone.utc),
@@ -288,8 +288,9 @@ report1 = {
     "id": generate_id(counters_collection),
     "authorId": user1["id"],
     "reportedId": rating2["id"],
-    "content": "Why am I getting a bad rating because the user is allergic?!?!",
+    "description": "Why am I getting a bad rating because the user is allergic?!?!",
     "reportedType": "rating",
+    "reportedEntity": rating2
 }
 
 report_collection.insert_one(report1)

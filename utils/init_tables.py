@@ -500,7 +500,7 @@ db.command(
     validator={
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["_id", "id", "authorId", "reportedId", "content", "reportedType"],
+            "required": ["_id", "id", "authorId", "reportedId", "reportedType", "description", "reportedEntity"],
             "properties": {
                 "_id": {
                     "bsonType": "objectId",
@@ -525,14 +525,24 @@ db.command(
                     "enum": ["user", "rating", "recipe"],
                     "description": "must be one of: [\"user\", \"rating\", \"recipe\"]",
                 },
-                "content": {
+                "description": {
                     "bsonType": "string",
                     "maxLength": 10_000,
-                    "description": "must be a string of minimum 10 and maximum 10_000 characters and is required",
+                    "description": "must be a string of at most 10_000 characters and is required",
                 },
-                "solver": {
+                "image": {
+                    "bsonType": "string",
+                },
+                "solverId": {
                     "bsonType": "string",
                     "description": "must be the id of the solver",
+                },
+                "solveDate": {
+                    "bsonType": "date",
+                    "description": "must be a date"
+                },
+                "reportedEntity": {
+                    "bsonType": "object",
                 },
             },
             "additionalProperties": False,

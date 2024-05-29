@@ -32,6 +32,14 @@ async def get(
         return build_response_from_exception(transform_exception(e))
 
 
+@app.get("/{rating_id}", response_model=RatingDataCard, response_description="Successful operation")
+async def get_rating(rating_id: str) -> RatingDataCard | JSONResponse:
+    try:
+        return await services.get_rating(rating_id)
+    except Exception as e:
+        return build_response_from_exception(transform_exception(e))
+
+
 @app.post("/", response_model=None, response_description="Successful operation")
 async def post_rating(body: RatingCreate, x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
     if not x_user_id:

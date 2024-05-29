@@ -225,3 +225,11 @@ def delete_all(x_user_id, recipe_id):
                 rating_collection.delete_many(ratings, session)
                 user_collection.remove_ratings_from_many(authors, ratings)
                 data = rating_collection.get_children({"parentId": {"$in": ratings}})
+
+
+async def get_rating(rating_id: str) -> RatingDataCard:
+    rating = rating_collection.find_rating_by_id(rating_id)
+    rating["author"] = await get_user_card(rating["authorId"])
+    rating.pop("authorId")
+    return RatingDataCard.model_validate(rating)
+

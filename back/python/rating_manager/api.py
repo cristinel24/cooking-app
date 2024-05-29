@@ -26,9 +26,9 @@ async def execute_api(method: str, uri: str, json_data: dict | None = None) -> d
 
             return response.json()
 
-    except RecipeRatingManagerException:
+    except RecipeRatingManagerException as e:
         raise e
-    except (Exception,) as e:
+    except (Exception,):
         raise RecipeRatingManagerException(
             error_code=ErrorCodes.UNKNOWN,
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -40,6 +40,14 @@ async def fetch_user_list(user_ids: list[str]) -> UserCardDataList:
         await execute_api(
             POST_METHOD, USER_RETRIEVER_API_URL + "/",
             {"ids": user_ids}
+        )
+    )
+
+
+async def get_user_card(user_id: str) -> UserCardData:
+    return UserCardData.model_validate(
+        await execute_api(
+            GET_METHOD, USER_RETRIEVER_API_URL + f"/{user_id}/card"
         )
     )
 

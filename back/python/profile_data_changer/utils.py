@@ -1,9 +1,13 @@
-from constants import ICON_VALIDATION, DISPLAY_NAME_VALIDATION, DESCRIPTION_VALIDATION, ErrorCodes, ALLOWED_TAGS, ALLOWED_ATTRIBUTES, \
-    URL_SCHEMES
+from constants import *
 from exception import ProfileDataChangerException
 from fastapi import status
 from pymongo import errors
 import nh3
+
+
+class Actions:
+    INCREMENT = 1
+    DECREMENT = -1
 
 
 def sanitize_html(fields: dict[str, str | list[str]]) -> dict[str, str | list[str]]:
@@ -18,7 +22,8 @@ def sanitize_html(fields: dict[str, str | list[str]]) -> dict[str, str | list[st
                     raise ProfileDataChangerException(status.HTTP_400_BAD_REQUEST, ErrorCodes.MALFORMED_HTML.value)
             clean_fields[key] = clean_htmls
         elif isinstance(value, str):
-            clean_fields[key] = nh3.clean(html=value, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES, url_schemes=URL_SCHEMES)
+            clean_fields[key] = nh3.clean(html=value, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES,
+                                          url_schemes=URL_SCHEMES)
             if not clean_fields[key]:
                 raise ProfileDataChangerException(status.HTTP_400_BAD_REQUEST, ErrorCodes.MALFORMED_HTML.value)
     return clean_fields

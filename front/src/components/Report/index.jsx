@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import ActionButton from '../ActionButton'
-import './index.css'
-import { LuSend } from "react-icons/lu";
-import { MdOutlineCancel } from "react-icons/md";
-function Report(props) {
-    localStorage.setItem('theme', 'light')
+import { useState } from 'react'
+import { LuSend } from 'react-icons/lu'
+import { MdOutlineCancel } from 'react-icons/md'
 
+import './index.css'
+
+import { Button, GenericModal } from '../../components'
+
+function Report(props) {
     const [formVariants, setFormVariants] = useState([
         { id: 1, text: 'Conținut sexual', checked: false },
         { id: 2, text: 'Conținut respingător/violent', checked: false },
@@ -19,63 +20,46 @@ function Report(props) {
     const handleVariantChange = (id) => {
         setFormVariants((prevVariants) =>
             prevVariants.map((variant) =>
-                variant.id === id
-                    ? { ...variant, checked: !variant.checked }
-                    : variant
+                variant.id === id ? { ...variant, checked: !variant.checked } : variant
             )
         )
     }
 
-    const fuctionForButton = ()=>{}
     return (
-        <div>
+        <GenericModal className="report" isOpen={true} onRequestClose={props.onCancel}>
             <div className="report-wrapper">
-                <div className="report-wrapper-title">
-                    <p>Raportează</p>
-                </div>
-                <div className="report-content">
-                    <form className="report-form">
-                        {formVariants.map((variant) => (
-                            <div className="report-inputs" key={variant.id}>
-                                <input
-                                    type="checkbox"
-                                    id={`variant-${variant.id}`}
-                                    checked={variant.checked}
-                                    onChange={() =>
-                                        handleVariantChange(variant.id)
-                                    }
-                                />
-                                <label htmlFor={`variant-${variant.id}`}>
-                                    {variant.text}
-                                </label>
-                            </div>
-                        ))}
-                    </form>
-                </div>
+                <p className="report-wrapper-title">Raportează</p>
+                <form className="report-input-wrapper">
+                    {formVariants.map((variant) => (
+                        <div className="report-inputs" key={variant.id}>
+                            <input
+                                type="checkbox"
+                                id={`variant-${variant.id}`}
+                                checked={variant.checked}
+                                onChange={() => handleVariantChange(variant.id)}
+                            />
+                            <label htmlFor={`variant-${variant.id}`}>{variant.text}</label>
+                        </div>
+                    ))}
+                </form>
                 <div className="report-buttons">
-                    <div className="report-send-button">
-                        <ActionButton
-                            text="Trimite"
-                            Icon={LuSend}
-                            onClick={() => {
-                                props.onSend(
-                                    formVariants.filter(
-                                        (variant) => variant.checked == true
-                                    )
-                                )
-                            }}
-                        />
-                    </div>
-                    <div className="report-give-up-button">
-                        <ActionButton
-                            text="Renunță"
-                            Icon={MdOutlineCancel}
-                            onClick={props.onGiveUp}
-                        />
-                    </div>
+                    <Button
+                        className="report-button-cancel"
+                        text="Renunță"
+                        Icon={MdOutlineCancel}
+                        onClick={props.onCancel}
+                    />
+                    <Button
+                        className="report-send-button"
+                        text="Trimite"
+                        Icon={LuSend}
+                        onClick={() => {
+                            props.onSend(formVariants.filter((variant) => variant.checked === true))
+                        }}
+                    />
                 </div>
             </div>
-        </div>
+        </GenericModal>
     )
 }
 

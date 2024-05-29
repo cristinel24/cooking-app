@@ -1,7 +1,6 @@
-import React from 'react'
 import './index.css'
-import PageButton from '../PageButton'
-import ActionButton from '../ActionButton'
+
+import { Button, PageButton } from '../../components'
 
 function Admin({
     userName,
@@ -12,8 +11,6 @@ function Admin({
     pathPage,
     handleClick,
 }) {
-    let read = 'Citit'
-
     return (
         <div className="admin-box">
             <div className="admin-header">
@@ -41,11 +38,11 @@ function Admin({
                     </div>
                     <div className="customButtons">
                         <div>
-                            <ActionButton
+                            <Button
                                 onClick={handleClick}
                                 text={
                                     <>
-                                        <span>{read}</span>{' '}
+                                        <span>Citit</span>{' '}
                                         <img src="./read.png" alt="Read ph" />
                                     </>
                                 }

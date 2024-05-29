@@ -6,7 +6,7 @@ load_dotenv()
 
 PORT = int(os.getenv("PORT", 8000))
 HOST = os.getenv("HOST_URL", "0.0.0.0")
-MONGO_URI = os.getenv("MONGO_URL", "mongodb://localhost:27017/?directConnection=true")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")
 MONGO_TIMEOUT = 3
 TOKEN_VALIDATOR_API_URL = os.getenv("TOKEN_VALIDATOR_API_URL", "http://0.0.0.0:8001")

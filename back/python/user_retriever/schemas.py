@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -11,6 +13,10 @@ class UserData(BaseModel):
     description: str
     recipes: list[str]
     ratings: list[str]
+    updatedAt: datetime
+    createdAt: datetime
+    followsCount: int
+    followersCount: int
 
 
 class UserCardData(BaseModel):
@@ -20,6 +26,8 @@ class UserCardData(BaseModel):
     icon: str
     roles: int
     ratingAvg: float
+    updatedAt: datetime
+    createdAt: datetime
 
 
 class UserCardDataList(BaseModel):
@@ -43,6 +51,8 @@ class UserFullData(BaseModel):
     searchHistory: list[str]
     messageHistory: list[str]
     savedRecipes: list[str]
+    updatedAt: datetime
+    createdAt: datetime
 
 
 class UserCardsRequestData(BaseModel):

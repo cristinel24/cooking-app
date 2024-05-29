@@ -16,7 +16,7 @@ SMTP_PORT=os.getenv("SMTP_PORT", 2061)
 SMTP_USERNAME=os.getenv("SMTP_USERNAME", "")
 SMTP_PASSWORD=os.getenv("SMTP_PASSWORD", "")
 
-ACCOUNT_VERIFICATION_ROUTE = "verify_account"
+ACCOUNT_VERIFICATION_ROUTE = "verify"
 CHANGE_REQUEST_ROUTE = "verify_change"
 
 TEMPLATES_DIR_PATH = os.path.join(os.path.dirname(__file__), "templates")

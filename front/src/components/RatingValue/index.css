@@ -1,0 +1,8 @@
+.rating-value-container {
+    display: flex;
+}
+
+.rating-value {
+    padding: 0;
+    margin: 0 6px;
+}

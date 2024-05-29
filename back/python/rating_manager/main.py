@@ -37,7 +37,7 @@ async def get_ratings(parent_id: str, start: int = Query(0), count: int = Query(
     return await rating_service.get_ratings(parent_id, start, count)
 
 
-@app.put("/{parent_id}/replies", response_model=None, response_description="Successful operation")
+@app.post("/{parent_id}/replies", response_model=None, response_description="Successful operation")
 async def create_rating(parent_id: str, rating_data: RatingCreate) -> None | JSONResponse:
     await rating_service.create_rating(parent_id, rating_data)
 

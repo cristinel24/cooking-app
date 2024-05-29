@@ -13,7 +13,7 @@ async def verify(token_value: str) -> None | JSONResponse:
     try:
         await services.verify(token_value)
     except VerifierException as e:
-        return JSONResponse(status_code=e.status_code, content={"error_code": e.error_code})
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
 
 
 if __name__ == "__main__":

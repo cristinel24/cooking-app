@@ -13,7 +13,7 @@ app = FastAPI(title="Recipe Retriever")
 async def get_recipe_by_id(recipe_id: str) -> RecipeData | JSONResponse:
     try:
         recipe = await services.get_recipe_by_id(recipe_id)
-        return RecipeData(**recipe)
+        return recipe
     except (exceptions.RecipeException, exceptions.UserRetrieverException,) as e:
         return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code.value})
 
@@ -22,7 +22,7 @@ async def get_recipe_by_id(recipe_id: str) -> RecipeData | JSONResponse:
 async def get_recipe_card_by_id(recipe_id: str) -> RecipeCardData | JSONResponse:
     try:
         recipe_card = await services.get_recipe_card_by_id(recipe_id)
-        return RecipeCardData(**recipe_card)
+        return recipe_card
     except (exceptions.RecipeException, exceptions.UserRetrieverException,) as e:
         return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code.value})
 

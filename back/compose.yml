@@ -32,6 +32,42 @@ services:
       - DB_NAME=$DB_NAME
     volumes:
       - ./python/allergen_manager:/app
+
+  credentials_change_requester:
+    build: 
+      context: ./python/credentials_change_requester
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $CREDENTIALS_CHANGE_REQUESTER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - EMAIL_SYSTEM_API_URL=http://email_system
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+    volumes:
+      - ./python/credentials_change_requester:/app
+
+  email_changer:
+    build: 
+      context: ./python/email_changer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $EMAIL_CHANGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - EMAIL_SYSTEM_API_URL=http://email_system
+      - TOKEN_DESTROYER_API_URL=http://token_destroyer
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+      - TOKEN_VALIDATOR_API_URL=http://token_validator
+    volumes:
+      - ./python/email_changer:/app
     
   email_system:
     build: 
@@ -69,6 +105,17 @@ services:
       - USER_RETRIEVER_API_URL=http://user_retriever
     volumes:
       - ./python/follow_manager:/app
+
+  gateway:
+    build: 
+      context: ./rust/gateway
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $GATEWAY_PORT:80
+    volumes:
+      - ./rust/gateway:/app
     
   hasher:
     build: 
@@ -148,6 +195,25 @@ services:
       - USER_RETRIEVER_API_URL=http://user_retriever
     volumes:
       - ./python/message_history_manager:/app
+
+  password_changer:
+    build: 
+      context: ./python/password_changer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $PASSWORD_CHANGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - HASHER_API_URL=http://hasher
+      - TOKEN_DESTROYER_API_URL=http://token_destroyer
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+      - TOKEN_VALIDATOR_API_URL=http://token_validator
+    volumes:
+      - ./python/password_changer:/app
     
   profile_data_changer:
     build: 
@@ -268,11 +334,29 @@ services:
       - TOKEN_GENERATOR_API_URL=http://token_generator
       - EMAIL_SYSTEM_API_URL=http://email_system
       - USER_DESTROYER_API_URL=http://user_destroyer
+      - GATEWAY_API_URL=$GATEWAY_API_URL
     volumes:
       - ./python/register:/app
       
+  role_changer:
+    build: 
+      context: ./python/role_changer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $ROLE_CHANGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+    volumes:
+      - ./python/role_changer:/app
+
   search:
-    build: ./rust/search
+    build: 
+      context: ./rust/search
+      dockerfile: ../Dockerfile
     networks:
       - ca
     ports:
@@ -284,7 +368,6 @@ services:
       - AI_API_URL=http://ai
     volumes:
       - ./rust/search:/app
-
 
   search_history_manager:
     build: 
@@ -393,6 +476,41 @@ services:
     volumes:
       - ./python/user_retriever:/app
     
+  username_changer:
+    build: 
+      context: ./python/username_changer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $USERNAME_CHANGER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - TOKEN_DESTROYER_API_URL=http://token_destroyer
+      - TOKEN_GENERATOR_API_URL=http://token_generator
+      - TOKEN_VALIDATOR_API_URL=http://token_validator
+    volumes:
+      - ./python/username_changer:/app
+
+  verifier:
+    build: 
+      context: ./python/verifier
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $VERIFIER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - TOKEN_DESTROYER_API_URL=http://token_destroyer
+      - TOKEN_VALIDATOR_API_URL=http://token_validator
+    volumes:
+      - ./python/verifier:/app
+
 networks:
   ca:
     driver: bridge

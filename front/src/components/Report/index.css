@@ -1,113 +1,61 @@
+.report {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    color: var(--text-color-inverted);
+    background-color: var(--body-bg-color-inverted);
+    width: 400px;
+}
+
+.report,
+.report * {
+    box-sizing: border-box;
+}
+
 .report-wrapper {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    right: 0;
     display: flex;
     flex-direction: column;
-    color: var(--body-bg-color);
-    background-color: var(--report-bg-color);
-    width: 400px;
-    height: 100vh;
     justify-content: center;
     align-items: center;
+
+    padding: 30px;
+    gap: 60px;
 }
 
 .report-wrapper-title {
-    margin-top: 5rem;
-    margin-bottom: 60px;
+    font-size: 2.25rem;
     font-weight: bolder;
     text-align: center;
     width: 100%;
+    margin: 0;
 }
 
-.report-wrapper-title p {
-    font-size: 2.25rem;
-    font-weight: bolder;
-    margin: auto;
-}
-
-.report-form .report-inputs {
+.report-input-wrapper {
     display: flex;
-    align-items: center;
-    padding: 10px;
-}
+    gap: 1rem;
+    flex-direction: column;
 
-.report-inputs label {
-    margin-left: 5px;
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
-    text-align: left;
+    p {
+        margin: 0;
+    }
+
+    input[type='checkbox'] {
+        margin-right: 12px;
+    }
 }
 
 .report-buttons {
     display: flex;
-    flex-direction: row;
-    margin: auto;
-    align-self: center;
+    gap: 30px;
+    * {
+        color: var(--color-white);
+    }
 }
 
-.report-give-up-button .action-button-icon,
-.report-send-button .action-button-icon {
-    display: none;
-}
-
-.report-send-button .action-button {
-    background-color: var(--body-bg-color);
-    margin-bottom: 20px;
-    padding: 15px;
-    width: 7rem;
-}
-
-.report-send-button .action-button-text {
-    font-size: 0.7rem;
-    text-align: center;
-    margin: auto;
-}
-
-.report-give-up-button .action-button {
+.report-button-cancel {
     background-color: var(--neutral-bg-color);
-    padding: 15px;
-    width: 7rem;
-    margin-left: 50px;
-    border: none;
 }
 
-.report-give-up-button .action-button-text {
-    font-size: 0.7rem;
-    text-align: center;
-    margin: auto;
-}
-
-.report-send-button .action-button:hover {
-    background-color: var(--color-primary);
-}
-
-.report-give-up-button .action-button:hover {
-    background-color: var(--color-primary);
-}
-
-@media screen and (max-width: 600px) and (min-width: 481px) {
-    .report-wrapper {
-        width: 100vw;
-    }
-
-    .report-inputs label {
-        font-size: 1.15rem;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .report-wrapper {
-        width: 100vw;
-    }
-
-    .report-wrapper-title p {
-        font-size: 1.75rem;
-    }
-
-    .report-inputs label {
-        font-size: 1rem;
+@media screen and (max-width: 768px) {
+    .report {
+        width: 300px;
     }
 }

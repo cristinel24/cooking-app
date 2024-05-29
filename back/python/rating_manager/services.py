@@ -24,7 +24,7 @@ async def get_ratings(
     sort_aggregate = SORT_DICT.get(sort_query, DEFAULT_SORT)
 
     total, data = rating_collection.find_ratings(parent_id, start, count, filter_aggregate, sort_aggregate)
-    user_cards = await fetch_user_list([rating["authorId"] for rating in data])
+    user_cards = await fetch_user_list(list(set([rating["authorId"] for rating in data])))
 
     for rating in data:
         for user in user_cards.cards:

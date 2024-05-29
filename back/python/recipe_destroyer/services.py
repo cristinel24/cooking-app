@@ -21,7 +21,7 @@ async def delete(recipe_id: str, x_user_id: str):
             with session.start_transaction():
 
                 await delete_tags(recipe["tags"])
-                flag &= 0b01
+                flag |= 0b01
 
                 await delete_allergens(recipe["allergens"])
                 flag &= 0b10

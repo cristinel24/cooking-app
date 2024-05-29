@@ -118,7 +118,7 @@ class RatingCollection(MongoCollection):
                     document={
                         "id": generated_id,
                         "updatedAt": datetime.datetime.now(datetime.timezone.utc),
-                        "authorId": x_user_id,
+                        "authorId": user_id,
                         "parentType": rating_data.parentType,
                         "parentId": rating_data.parentId,
                         "rating": rating_data.rating,

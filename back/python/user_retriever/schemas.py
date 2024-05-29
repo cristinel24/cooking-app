@@ -17,6 +17,8 @@ class UserData(BaseModel):
     createdAt: datetime
     followsCount: int
     followersCount: int
+    isFollowing: bool | None = None
+    isFollowedBy: bool | None = None
 
 
 class UserCardData(BaseModel):
@@ -26,6 +28,8 @@ class UserCardData(BaseModel):
     icon: str
     roles: int
     ratingAvg: float
+    isFollowing: bool | None
+    isFollowedBy: bool | None
     updatedAt: datetime
     createdAt: datetime
 
@@ -57,3 +61,9 @@ class UserFullData(BaseModel):
 
 class UserCardsRequestData(BaseModel):
     ids: list[str]
+
+
+class FollowResponse(BaseModel):
+    following: bool
+    followed: bool
+

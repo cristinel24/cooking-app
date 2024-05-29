@@ -1,5 +1,3 @@
-import os
-
 from fastapi import status
 from pymongo import MongoClient, errors, timeout
 from pymongo.client_session import ClientSession
@@ -10,6 +8,7 @@ from utils import match_collection_error
 
 
 class MongoCollection:
+
     def __init__(self, connection: MongoClient | None = None):
         if connection is not None:
             self._connection = connection
@@ -21,6 +20,7 @@ class MongoCollection:
 
 
 class RecipeCollection(MongoCollection):
+
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
         self._collection = self._connection.get_database(DB_NAME).recipe
@@ -30,8 +30,10 @@ class RecipeCollection(MongoCollection):
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 result = self._collection.delete_one({"id": recipe_id}, session=session)
                 if result.deleted_count == 0:
-                    raise RecipeDestroyerException(error_code=ErrorCodes.RECIPE_NOT_FOUND,
-                                                   status_code=status.HTTP_404_NOT_FOUND)
+                    raise RecipeDestroyerException(
+                        error_code=ErrorCodes.RECIPE_NOT_FOUND,
+                        status_code=status.HTTP_404_NOT_FOUND
+                    )
         except RecipeDestroyerException as e:
             raise e
         except errors.PyMongoError as e:
@@ -39,6 +41,7 @@ class RecipeCollection(MongoCollection):
 
 
 class UserCollection(MongoCollection):
+
     def __init__(self, connection: MongoClient | None = None):
         super().__init__(connection)
         self._collection = self._connection.get_database(DB_NAME).user
@@ -52,8 +55,10 @@ class UserCollection(MongoCollection):
                     session=session
                 )
                 if result.modified_count == 0:
-                    raise RecipeDestroyerException(error_code=ErrorCodes.RECIPE_NOT_FOUND_IN_USERS,
-                                                   status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                    raise RecipeDestroyerException(
+                        error_code=ErrorCodes.RECIPE_NOT_FOUND_IN_USERS,
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
         except RecipeDestroyerException as e:
             raise e
         except errors.PyMongoError as e:

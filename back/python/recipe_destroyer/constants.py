@@ -1,7 +1,11 @@
 import os
+import re
 from enum import Enum
+from logging import getLogger
 
 from dotenv import load_dotenv
+
+logger = getLogger("[Recipe Destroyer]")
 
 load_dotenv()
 HOST = os.getenv("HOST", "localhost")
@@ -25,20 +29,26 @@ INC_TAGS_ROUTE = TAG_MANAGER_API_URL + "/tags/inc"
 RATING_MANAGER_API_URL = os.getenv("RATING_MANAGER_API_URL")
 if RATING_MANAGER_API_URL is None:
     raise ValueError("Environment variable 'RATING_MANAGER_API_URL' is not set")
-RATING_ROUTE = RATING_MANAGER_API_URL + "/rating"
+DELETE_RATINGS_ROUTE = RATING_MANAGER_API_URL + "/recipes/{id}/ratings"
 
 IMAGE_STORAGE_API_URL = os.getenv("IMAGE_STORAGE_API_URL")
 if IMAGE_STORAGE_API_URL is None:
-    raise ValueError("Environment variable 'IMAGES_API_URL' is not set")
+    logger.warning("Missing IMAGE_STORAGE_API_URL env variable: Will not be able to delete images")
 
 RECIPE_RETRIEVER_API_URL = os.getenv("RECIPE_RETRIEVER_API_URL")
 if RECIPE_RETRIEVER_API_URL is None:
     raise ValueError("Environment variable 'RECIPE_RETRIEVER_API_URL' is not set")
 RECIPE_RETRIEVE_ROUTE = RECIPE_RETRIEVER_API_URL + "/{recipe_id}"
 
+GATEWAY_API_URL = os.getenv("GATEWAY_API_URL")
+if GATEWAY_API_URL is None:
+    logger.warning("Missing GATEWAY_API_URL env variable: Will not be able to delete images")
+
 POST_METHOD = "post"
 DELETE_METHOD = "delete"
 GET_METHOD = "get"
+
+SRC_URL_FROM_IMG_TAG_REGEX = re.compile(rf"<img[^>]*src=[\"']{GATEWAY_API_URL}(?:/[^>]*)*/images/([^\"]*)[\"'][^>]*>")
 
 
 class ErrorCodes(Enum):

@@ -15,3 +15,6 @@ class RecipeDestroyerException(Exception):
 
     def __repr__(self):
         return f"RecipeDestroyerException(status_code={self.status_code}, error_code={self.error_code})"
+
+    def __str__(self):
+        return repr(self)

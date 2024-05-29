@@ -50,7 +50,6 @@ export const Ratings = ({ recipeData }) => {
                     }))
                 }
             } catch (e) {
-                console.log(e)
                 setResults((results) => ({ ...results, total: 0 }))
                 setFetchError(getErrorMessage(e))
             }
@@ -91,7 +90,6 @@ export const Ratings = ({ recipeData }) => {
                 data: reduceRatingsToUniqueIds([...newResults.data, ...result.data]),
             }))
         } catch (e) {
-            console.log(e)
             setResults((results) => ({ ...results, total: 0 }))
             setFetchError(getErrorMessage(e))
         }
@@ -140,7 +138,6 @@ export const Ratings = ({ recipeData }) => {
                 data: newResults.data.filter((otherRating) => id !== otherRating.id),
             }))
         } catch (e) {
-            console.log(e)
             setError(getErrorMessage(e))
         }
     }

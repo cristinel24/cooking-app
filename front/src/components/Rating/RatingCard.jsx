@@ -118,8 +118,6 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
         // raw async callback; to be passed to RatingForm
         await apiEditRating(id, token)
 
-        console.log(data)
-
         setReplyResults((results) => {
             let newData = { ...results }
             let index = newData.data.findIndex((obj) => obj.id === id)
@@ -151,7 +149,6 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
             ...newResults,
             data: newResults.data.filter((otherRating) => id !== otherRating.id),
         }))
-        console.log(id)
     }
 
     const handleAddReply = async (data) => {

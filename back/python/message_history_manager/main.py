@@ -29,14 +29,7 @@ async def get_message_history(user_id: str, start: int, count: int,
 
 
 @app.post("/{user_id}/message-history", response_model=None, response_description="Successful operation")
-async def add_message_history(user_id: str, body: Message,
-                              x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
-    if not x_user_id:
-        return get_error_json_response(status.HTTP_401_UNAUTHORIZED, ErrorCodes.UNAUTHORIZED_REQUEST)
-
-    if x_user_id != user_id:
-        return get_error_json_response(status.HTTP_403_FORBIDDEN, ErrorCodes.FORBIDDEN_REQUEST)
-
+async def add_message_history(user_id: str, body: Message) -> None | JSONResponse:
     try:
         await services.add_message_history(user_id, body.message)
     except exceptions.MessageHistoryException as e:

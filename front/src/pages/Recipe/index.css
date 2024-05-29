@@ -162,6 +162,10 @@
     }
 }
 
+.recipe-page-ratings-container {
+    padding: 4px;
+}
+
 .recipe-page-ratings-container,
 .recipe-page-ratings-with-form {
     display: flex;

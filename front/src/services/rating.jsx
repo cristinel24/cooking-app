@@ -28,6 +28,7 @@ export const getRatings = async ({ recipeId, start, count }) => {
     )
     const ratings = new Array(count).fill(0).map((_, index) => ({
         ...placeholderRating,
+        parentType: 'recipe',
         description: `${index + start}`,
         id: `${index + start}`,
     }))

@@ -44,7 +44,7 @@ export default function Sidebar({ profileData, setProfileData }) {
     ]
 
     const fetchFollowing = async (start, count) => {
-        const response = await apiGetFollowers(profileData.id, start, count)
+        const response = await apiGetFollowing(profileData.id, start, count)
         return {
             data: response.following,
         }

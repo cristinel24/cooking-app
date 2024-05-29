@@ -3,6 +3,8 @@ import { FormStars, FormTextarea, InfoModal } from '..'
 import RatingButton from './RatingButton'
 import { useEffect, useState } from 'react'
 import { getErrorMessage } from '../../utils/api'
+import { length } from '../../utils/form'
+import { ClipLoader } from 'react-spinners'
 
 const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Confirmă' }) => {
     const {
@@ -18,7 +20,8 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
         defaultValues: defaultValues,
     })
 
-    const [isSuccessful, setIsSuccessful] = useState(false)
+    const [isSubmitCallbackLoading, setIsSubmitCallbackLoading] = useState(false)
+    const [isSubmitCallbackSuccessful, setIsSubmitCallbackSuccessful] = useState(false)
 
     useEffect(() => {
         reset(defaultValues)
@@ -26,10 +29,10 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
 
     useEffect(() => {
         reset(defaultValues)
-        if (isSuccessful) {
-            setIsSuccessful(false)
+        if (isSubmitCallbackSuccessful) {
+            setIsSubmitCallbackSuccessful(false)
         }
-    }, [isSuccessful])
+    }, [isSubmitCallbackSuccessful])
 
     const onRatingChange = (data) => {
         setValue('rating', data)
@@ -47,12 +50,18 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
 
     const submitForm = async (data) => {
         try {
+            if (isSubmitCallbackLoading) {
+                return
+            }
+            setIsSubmitCallbackLoading(true)
             await onSubmit(data)
-            setIsSuccessful(true)
+            setIsSubmitCallbackSuccessful(true)
         } catch (e) {
             setError('api', {
                 message: getErrorMessage(e),
             })
+        } finally {
+            setIsSubmitCallbackLoading(false)
         }
     }
 
@@ -102,13 +111,16 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
                 </>
             )}
 
-            {defaultValues.text !== undefined && (
+            {defaultValues.description !== undefined && (
                 <FormTextarea
-                    id="text"
+                    id="description"
                     className="rating-card-textarea"
-                    {...register('text')}
                     errorCheck={errorCheck}
                     placeholder="Scrie comentariul..."
+                    {...register('description', {
+                        required: true,
+                        maxLength: length('maxim', 10000),
+                    })}
                 />
             )}
             <div className="rating-card-buttons">
@@ -117,7 +129,22 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
                         Anulează
                     </RatingButton>
                 )}
-                <RatingButton type="submit">{confirmText}</RatingButton>
+
+                <ClipLoader
+                    className="loading"
+                    cssOverride={{
+                        borderColor: 'var(--text-color)',
+                        color: 'var(--text-color)',
+                        alignSelf: 'center',
+                    }}
+                    width={'100%'}
+                    loading={isSubmitCallbackLoading}
+                    aria-label="Se încarcă..."
+                    data-testid="loader"
+                />
+                {!isSubmitCallbackLoading && (
+                    <RatingButton type="submit">{confirmText}</RatingButton>
+                )}
             </div>
         </form>
     )

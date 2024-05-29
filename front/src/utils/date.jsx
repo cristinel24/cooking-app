@@ -1,4 +1,4 @@
-export const dateToRomanian = (dateString) => {
+export const timestampToRomanian = (dateString) => {
     const date = new Date(dateString)
 
     const options = {
@@ -11,4 +11,9 @@ export const dateToRomanian = (dateString) => {
     const formattedDate = date.toLocaleDateString('ro-RO', options)
 
     return formattedDate
+}
+
+export const dateToTimestamp = (timestamp) => {
+    const date = new Date(timestamp)
+    return date.toISOString()
 }

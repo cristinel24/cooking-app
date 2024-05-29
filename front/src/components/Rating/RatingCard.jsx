@@ -1,16 +1,21 @@
 import { useState, useEffect, useContext } from 'react'
 import './index.css'
-import { RatingValue } from '..'
+import { RatingValue, ConfirmModal } from '..'
 
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import { ClipLoader } from 'react-spinners'
 
-import { dateToRomanian } from '../../utils/date'
+import { timestampToRomanian, dateToTimestamp } from '../../utils/date'
 import { getErrorMessage } from '../../utils/api'
 
 import RatingButton from './RatingButton'
 import RatingForm from './RatingForm'
-import { getRatingReplies } from '../../services/rating'
+import {
+    addRatingReply as apiAddRatingReply,
+    getRatingReplies as apiGetRatingReplies,
+    editRating as apiEditRating,
+    deleteRating as apiDeleteRating,
+} from '../../services/rating'
 import { UserContext } from '../../context'
 
 const RatingCard = ({ ratingData, onEdit, onDelete }) => {
@@ -19,10 +24,12 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const [showReplyForm, setShowReplyForm] = useState(false)
     const [editing, setEditing] = useState(false)
 
-    const [results, setResults] = useState({ start: 0, count: 1, replies: [] })
+    const [replyResults, setReplyResults] = useState({ start: 0, total: 1, data: [] })
     const [error, setError] = useState('')
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false)
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
     const { token, user } = useContext(UserContext)
 
@@ -30,8 +37,8 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const shortRatingLength = 300
 
     useEffect(() => {
-        setHasMore(error.length > 0 ? false : results.start < results.count)
-    }, [results, error])
+        setHasMore(error.length > 0 ? false : replyResults.start < replyResults.total)
+    }, [replyResults, error])
 
     useEffect(() => {
         let ignore = false
@@ -48,17 +55,17 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
 
         const fetch = async () => {
             try {
-                const result = await getRatingReplies({
+                const result = await apiGetRatingReplies({
                     ratingId: ratingData.id,
-                    start: results.start,
+                    start: replyResults.start,
                     count: fetchCount,
                 })
                 if (!ignore) {
-                    setResults((newResults) => ({
-                        ...results,
-                        start: results.start + fetchCount,
-                        count: result.count,
-                        replies: [...newResults.replies, ...result.replies],
+                    setReplyResults((newResults) => ({
+                        ...replyResults,
+                        start: replyResults.start + fetchCount,
+                        total: result.total,
+                        data: [...newResults.data, ...result.data],
                     }))
                 }
             } catch (e) {
@@ -79,16 +86,16 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
         }
         try {
             setLoading(true)
-            const result = await getRatingReplies({
+            const result = await apiGetRatingReplies({
                 ratingId: ratingData.id,
-                start: results.start,
+                start: replyResults.start,
                 count: fetchCount,
             })
-            setResults((newResults) => ({
-                ...results,
-                start: results.start + fetchCount,
-                count: result.count,
-                replies: [...newResults.replies, ...result.replies],
+            setReplyResults((newResults) => ({
+                ...replyResults,
+                start: replyResults.start + fetchCount,
+                total: result.total,
+                data: [...newResults.data, ...result.data],
             }))
         } catch (e) {
             setError(getErrorMessage(e))
@@ -102,29 +109,55 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     }
 
     const handleEdit = async (data) => {
+        // raw async callback; to be passed to RatingForm
+        const response = await onEdit(data)
         toggleEdit()
-        onEdit(data)
     }
 
     const editRating = async (data, id) => {
+        // raw async callback; to be passed to RatingForm
+        await apiEditRating(id, token)
+
         console.log(data)
-        setResults((newResults) => {
-            let newData = newResults
-            newData.replies.find((obj) => obj.id === id).description = data.text
+
+        setReplyResults((results) => {
+            let newData = { ...results }
+            let index = newData.data.findIndex((obj) => obj.id === id)
+            if (index !== -1) {
+                newData.data[index] = {
+                    ...newData.data[index],
+                    description: data.description,
+                    updatedAt: dateToTimestamp(Date.now()),
+                }
+            }
             return newData
         })
     }
 
-    const deleteRating = async (id) => {
-        setResults((newResults) => ({
+    const toggleDeleteModal = () => {
+        setIsDeleteModalOpen(!isDeleteModalOpen)
+    }
+
+    const handleConfirmDeleteModal = async () => {
+        await onDelete()
+        toggleDeleteModal()
+    }
+
+    const deleteReply = async (id) => {
+        // raw async callback; to be passed to RatingForm
+        await apiDeleteRating(id, token)
+
+        setReplyResults((newResults) => ({
             ...newResults,
-            replies: newResults.replies.filter((otherRating) => id !== otherRating.id),
+            data: newResults.data.filter((otherRating) => id !== otherRating.id),
         }))
         console.log(id)
     }
 
     const handleAddReply = async (data) => {
-        // throw new Error('mda')
+        // raw async callback; to be passed to RatingForm
+        await apiAddRatingReply(ratingData.id, data, token)
+
         toggleAddReply()
     }
 
@@ -137,6 +170,15 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
 
     return (
         <div className="rating-card">
+            <ConfirmModal
+                isOpen={isDeleteModalOpen}
+                onConfirm={handleConfirmDeleteModal}
+                onCancel={toggleDeleteModal}
+                confirmText={'Confirmare'}
+                cancelText={'Anulare'}
+            >
+                <p>Sigur doriți să ștergeți această recenzie?</p>
+            </ConfirmModal>
             <div className="rating-card-main-container">
                 <div className="rating-card-image">
                     <img src={ratingData.author.icon} />
@@ -152,7 +194,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                             </span>
                         </div>
                         <div className="rating-card-date">
-                            Postat pe {dateToRomanian(ratingData.createdAt)}
+                            Postat pe {timestampToRomanian(ratingData.createdAt)}
                             <em>
                                 {ratingData.updatedAt !== ratingData.createdAt ? ' (editat)' : ''}
                             </em>
@@ -192,7 +234,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                         )}
                                     </RatingButton>
                                 )}
-                                {results.replies.length > 0 && (
+                                {replyResults.data.length > 0 && (
                                     <RatingButton
                                         onClick={() => {
                                             setShowReplies(!showReplies)
@@ -213,7 +255,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                     <RatingButton onClick={toggleAddReply}>Răspunde</RatingButton>
                                 )}
                                 <RatingButton onClick={toggleEdit}>Editează</RatingButton>
-                                <RatingButton onClick={onDelete}>Șterge</RatingButton>
+                                <RatingButton onClick={toggleDeleteModal}>Șterge</RatingButton>
                             </div>
                         </>
                     ) : (
@@ -221,7 +263,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                             id={`${ratingData.id}-edit`}
                             onSubmit={handleEdit}
                             defaultValues={{
-                                text: ratingData.description,
+                                description: ratingData.description,
                                 ...(ratingData?.rating !== undefined
                                     ? { rating: ratingData.rating }
                                     : {}),
@@ -241,13 +283,13 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                         id={`${ratingData.id}-add-reply`}
                                         onSubmit={handleAddReply}
                                         defaultValues={{
-                                            text: '',
+                                            description: '',
                                         }}
                                         onCancel={toggleAddReply}
                                     />
                                 )}
-                                {results.replies.length > 0 &&
-                                    results.replies.map((reply) => {
+                                {replyResults.data.length > 0 &&
+                                    replyResults.data.map((reply) => {
                                         return (
                                             <RatingCard
                                                 key={reply.id}
@@ -256,7 +298,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                                     editRating(data, reply.id)
                                                 }}
                                                 onDelete={() => {
-                                                    deleteRating(reply.id)
+                                                    deleteReply(reply.id)
                                                 }}
                                             ></RatingCard>
                                         )

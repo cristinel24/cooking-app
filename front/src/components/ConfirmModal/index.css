@@ -1,0 +1,11 @@
+.confirm-modal-content {
+    /* text-align: justify; */
+}
+
+.confirm-modal-buttons {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}

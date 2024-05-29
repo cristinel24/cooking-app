@@ -7,7 +7,7 @@ from constants import ErrorCodes, UNSAFE_RECIPE_DATA_FIELDS
 from exception import RecipeEditorException
 from repository import MongoCollection, RecipeCollection
 from schemas import RecipeData, Recipe
-from utils import validate_recipe_data, check_flags, sanitize_html
+from utils import validate_recipe_data, check_flags, sanitize_html, Actions
 
 client = MongoCollection()
 recipe_collection = RecipeCollection(client.get_connection())
@@ -44,26 +44,26 @@ async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
                 if recipe_data.allergens is not None:
                     allergens_to_delete = [item for item in recipe_dict["allergens"] if item not in recipe.allergens]
                     allergens_to_add = [item for item in recipe.allergens if item not in recipe_dict["allergens"]]
-                    await api.delete_allergens(allergens_to_delete)
+                    await api.post_allergens(allergens_to_delete, Actions.DECREMENT)
                     flags += 1
-                    await api.add_allergens(allergens_to_add)
+                    await api.post_allergens(allergens_to_add, Actions.INCREMENT)
                     flags += 1 << 1
 
                 if recipe_data.tags is not None:
                     tags_to_delete = [item for item in recipe_dict["tags"] if item not in recipe.tags]
                     tags_to_add = [item for item in recipe.tags if item not in recipe_dict["tags"]]
-                    await api.delete_tags(tags_to_delete)
+                    await api.post_tags(tags_to_delete, Actions.DECREMENT)
                     flags += 1 << 2
-                    await api.add_tags(tags_to_add)
+                    await api.post_tags(tags_to_add, Actions.INCREMENT)
                     flags += 1 << 3
 
     except RecipeEditorException as e:
         if check_flags(flags, 0):
-            await api.add_allergens(allergens_to_delete)
+            await api.post_allergens(allergens_to_delete, Actions.INCREMENT)
         if check_flags(flags, 1):
-            await api.delete_allergens(allergens_to_add)
+            await api.post_allergens(allergens_to_add, Actions.DECREMENT)
         if check_flags(flags, 2):
-            await api.add_tags(tags_to_delete)
+            await api.post_tags(tags_to_delete, Actions.INCREMENT)
         if check_flags(flags, 3):
-            await api.delete_tags(tags_to_add)
+            await api.post_tags(tags_to_add, Actions.DECREMENT)
         raise e

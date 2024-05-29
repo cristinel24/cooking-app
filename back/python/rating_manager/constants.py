@@ -8,7 +8,8 @@ HOST = os.getenv("HOST", "localhost")
 PORT = int(os.getenv("PORT", 8000))
 DB_NAME = os.getenv("DB_NAME")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
-MAX_TIMEOUT_TIME_SECONDS = 3
+NORMAL_TIMEOUT_DB = 3
+LARGE_TIMEOUT_DB = 10
 
 ID_GENERATOR_API_URL = os.getenv("ID_GENERATOR_API_URL")
 if ID_GENERATOR_API_URL is None:

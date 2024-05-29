@@ -135,7 +135,7 @@ def delete_top_level_comment(rating: dict, session: ClientSession):
         if rating["childrenCount"] == 0:
             rating_collection.delete_rating(rating["id"], session)
             recipe_collection.modify_recipe(rating["parentId"], {"$pull": {"ratings": rating["id"]}}, session)
-            
+
         return  # None
 
     recipe_mod = {}
@@ -219,14 +219,14 @@ def delete_all(x_user_id, recipe_id):
 
     with client.get_connection().start_session() as session:
         with session.start_transaction():
-            
+
             data = rating_collection.get_children({"parentId": recipe_id})
             while data and len(data) > 0:
                 authors, ratings = (list(t) for t in zip(*data))
                 rating_collection.delete_many(ratings, session)
                 user_collection.remove_ratings_from_many(authors, ratings)
                 data = rating_collection.get_children({"parentId": {"$in": ratings}})
-                
+
             recipe_collection.modify_recipe(recipe_id, {"$set": {"ratings": []}}, session)
 
 
@@ -235,4 +235,3 @@ async def get_rating(rating_id: str) -> RatingDataCard:
     rating["author"] = await get_user_card(rating["authorId"])
     rating.pop("authorId")
     return RatingDataCard.model_validate(rating)
-

@@ -4,12 +4,36 @@ import pymongo.errors
 from fastapi import status
 from pymongo import MongoClient, timeout, ReturnDocument
 from pymongo.client_session import ClientSession
+from pymongo.collection import Collection
 from pymongo.results import UpdateResult, DeleteResult
 
-from constants import MONGO_URI, ErrorCodes, DB_NAME, MAX_TIMEOUT_TIME_SECONDS, RATING_PROJECTION
+from constants import MONGO_URI, ErrorCodes, DB_NAME, NORMAL_TIMEOUT_DB, RATING_PROJECTION, LARGE_TIMEOUT_DB
 from exception import RecipeRatingManagerException
 from schemas import RatingCreate
 from utils import transform_exception
+
+
+def _update_entry_by_id(
+    collection: Collection, entry_id: str, update: dict,
+    session: ClientSession, error: ErrorCodes, status_code: int
+) -> UpdateResult:
+    try:
+        with timeout(NORMAL_TIMEOUT_DB):
+            update = collection.update_one(
+                filter={"id": entry_id},
+                update=update,
+                session=session
+            )
+
+            if update.matched_count == 0:
+                raise RecipeRatingManagerException(
+                    error_code=error, status_code=status_code
+                )
+
+            return update
+
+    except Exception as e:
+        raise transform_exception(e)
 
 
 class MongoCollection:
@@ -43,7 +67,7 @@ class RatingCollection(MongoCollection):
     ) -> (int, list[dict]):
 
         try:
-            with timeout(10):
+            with timeout(LARGE_TIMEOUT_DB):
                 result = self._collection.aggregate(
                     pipeline=[{
                         "$facet": {
@@ -67,7 +91,7 @@ class RatingCollection(MongoCollection):
 
     def find_rating_by_id(self, rating_id) -> dict:
         try:
-            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(NORMAL_TIMEOUT_DB):
                 return self._collection.find_one(filter={"id": rating_id}, projection=RATING_PROJECTION)
 
         except Exception as e:
@@ -75,7 +99,7 @@ class RatingCollection(MongoCollection):
 
     def find_rating(self, recipe_id: str, author_id: str) -> dict:
         try:
-            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(NORMAL_TIMEOUT_DB):
                 rating = self._collection.find_one(
                     filter={
                         "authorId": author_id,
@@ -90,30 +114,21 @@ class RatingCollection(MongoCollection):
             raise transform_exception(e)
 
     def update_rating(self, rating_id: str, update: dict, session: ClientSession = None) -> UpdateResult:
-        try:
-            with timeout(MAX_TIMEOUT_TIME_SECONDS):
-                update = self._collection.update_one(
-                    filter={"id": rating_id},
-                    update=update,
-                    session=session
-                )
-
-                if update.matched_count == 0:
-                    raise RecipeRatingManagerException(
-                        error_code=ErrorCodes.RATING_NOT_FOUND, status_code=status.HTTP_404_NOT_FOUND
-                    )
-
-                return update
-
-        except Exception as e:
-            raise transform_exception(e)
+        return _update_entry_by_id(
+            self._collection,
+            rating_id,
+            update,
+            session,
+            ErrorCodes.RATING_NOT_FOUND,
+            status.HTTP_404_NOT_FOUND
+        )
 
     def create_rating(
         self, user_id: str, generated_id: str, rating_data: RatingCreate, session: ClientSession = None
     ) -> None:
 
         try:
-            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(NORMAL_TIMEOUT_DB):
                 self._collection.insert_one(
                     document={
                         "id": generated_id,
@@ -146,7 +161,7 @@ class RatingCollection(MongoCollection):
 
     def delete_rating(self, rating_id: str, session: ClientSession = None) -> DeleteResult:
         try:
-            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(NORMAL_TIMEOUT_DB):
                 return self._collection.delete_one(
                     filter={"id": rating_id},
                     session=session
@@ -157,7 +172,7 @@ class RatingCollection(MongoCollection):
 
     def find_and_update_rating(self, rating_id: str, update: dict, session: ClientSession = None):
         try:
-            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(NORMAL_TIMEOUT_DB):
                 rating = self._collection.find_one_and_update(
                     filter={"id": rating_id},
                     update=update,
@@ -209,7 +224,7 @@ class RecipeCollection(MongoCollection):
 
     def find_recipe(self, recipe_id: str):
         try:
-            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(NORMAL_TIMEOUT_DB):
                 return self._collection.find_one({"id": recipe_id})
 
         except Exception as e:
@@ -217,7 +232,7 @@ class RecipeCollection(MongoCollection):
 
     def modify_recipe(self, recipe_id: str, mods: dict, session: ClientSession = None):
         try:
-            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(NORMAL_TIMEOUT_DB):
                 self._collection.update_one(
                     filter={"id": recipe_id},
                     update=mods,
@@ -237,27 +252,18 @@ class UserCollection(MongoCollection):
     def update_user(
         self, author_id: str, update: dict, session: ClientSession = None
     ) -> UpdateResult:
-        try:
-            with timeout(MAX_TIMEOUT_TIME_SECONDS):
-                result = self._collection.update_one(
-                    filter={"id": author_id},
-                    update=update,
-                    session=session
-                )
-
-                if result.matched_count == 0:
-                    raise RecipeRatingManagerException(
-                        error_code=ErrorCodes.AUTHOR_NOT_FOUND, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-                    )
-
-                return result
-
-        except Exception as e:
-            raise transform_exception(e)
+        return _update_entry_by_id(
+            self._collection,
+            author_id,
+            update,
+            session,
+            ErrorCodes.AUTHOR_NOT_FOUND,
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
     def remove_ratings_from_many(self, authors: list[str], ratings: list[str]):
         try:
-            with timeout(MAX_TIMEOUT_TIME_SECONDS):
+            with timeout(NORMAL_TIMEOUT_DB):
                 self._collection.update_many(
                     filter={"id": {"$in": authors}},
                     update={"$pull": {"ratings": {"$in": ratings}}}

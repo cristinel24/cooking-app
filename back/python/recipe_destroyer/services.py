@@ -24,7 +24,7 @@ async def delete(recipe_id: str, x_user_id: str):
                 flag |= 0b01
 
                 await delete_allergens(recipe["allergens"])
-                flag &= 0b10
+                flag |= 0b10
 
                 # cannot undo rating deletion
                 try:

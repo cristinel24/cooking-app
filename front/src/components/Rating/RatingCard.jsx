@@ -24,7 +24,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const [showReplyForm, setShowReplyForm] = useState(false)
     const [editing, setEditing] = useState(false)
 
-    const [replyResults, setReplyResults] = useState({ start: 0, total: 1, data: [] })
+    const [replyResults, setReplyResults] = useState({ start: 0, total: 0, data: [] })
     const [error, setError] = useState('')
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false)

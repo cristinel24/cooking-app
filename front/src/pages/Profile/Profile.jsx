@@ -1,4 +1,11 @@
-import { Link, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import {
+    Link,
+    Outlet,
+    useLocation,
+    useNavigate,
+    useParams,
+    useSearchParams,
+} from 'react-router-dom'
 import './index.css'
 import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../context'
@@ -11,19 +18,24 @@ import { GenericModal } from '../../components'
 
 export default function Profile() {
     const navigate = useNavigate()
+    const location = useLocation()
 
     const [loading, setLoading] = useState(true)
     const [profileData, setProfileData] = useState({})
 
-    const profileId = 21
+    const { profileId } = useParams([])
 
     useEffect(() => {
         const fetch = async () => {
             // temporary; TODO: proper error handling with actual error message
             try {
-                const profile = await getProfile(profileId)
-                setProfileData(profile)
+                setLoading(true)
+                let profile = await getProfile(profileId)
 
+                // FOR TESTING (TODO WHEN INTEGRATING):
+                profile.id = profileId
+
+                setProfileData(profile)
                 setLoading(false)
             } catch (e) {
                 navigate('/not-found')
@@ -31,12 +43,7 @@ export default function Profile() {
         }
 
         fetch()
-    }, [])
-
-    // const onLogout = () => {
-    //     logout()
-    //     navigate('/')
-    // }
+    }, [profileId])
 
     return (
         <>

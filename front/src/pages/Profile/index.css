@@ -124,11 +124,38 @@
     width: 100%;
 }
 
+.profile-sidebar-follow-button {
+    background: transparent;
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+
+.profile-sidebar-follow-button:hover {
+    color: var(--color-primary);
+}
+
 .profile {
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 40px;
     align-items: start;
+}
+
+.profile-user-list-modal {
+    background-color: var(--body-bg-color);
+    border-radius: 10px;
+}
+
+.profile-user-list-container {
+    padding: 20px;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 @media only screen and (max-width: 480px) {

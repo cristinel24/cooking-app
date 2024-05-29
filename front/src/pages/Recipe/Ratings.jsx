@@ -15,7 +15,6 @@ import {
 import { useState, useEffect, useContext } from 'react'
 
 import { UserContext } from '../../context'
-import ConfirmModal from '../../components/ConfirmModal'
 
 export const Ratings = ({ recipeData }) => {
     const [results, setResults] = useState({

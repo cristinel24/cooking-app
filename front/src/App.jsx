@@ -127,8 +127,6 @@ function App() {
                             <Route path="/reset/:type" element={<CredentialsChange />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
                             <Route path="/recipe/:recipeId" element={<Recipe />} />
-                              
-                            {/* <Route path="/profile/:profileId" element={<ProfileDescription />} /> */}
 
                             <Route element={<Profile />}>
                                 <Route

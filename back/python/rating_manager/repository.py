@@ -1,116 +1,273 @@
-import asyncio
+import datetime
 
-from bson import ObjectId
-from motor.motor_asyncio import AsyncIOMotorClient
-from schemas import Rating, RatingUpdate
-from constants import MONGO_URI, DB_NAME, MONGO_COLLECTION, RATING_PROJECTION, DELETED_FIELD
-from exceptions import DatabaseError, InternalError, DatabaseNotFoundDataError
-from utils import singleton, init_logger
+import pymongo.errors
+from fastapi import status
+from pymongo import MongoClient, timeout, ReturnDocument
+from pymongo.client_session import ClientSession
+from pymongo.collection import Collection
+from pymongo.results import UpdateResult, DeleteResult
 
-OPERATION_TIMEOUT: int = 10
-OPERATION_TIMEOUT_MESSAGE: str = "Database operation timed out"
+from constants import MONGO_URI, ErrorCodes, DB_NAME, NORMAL_TIMEOUT_DB, RATING_PROJECTION, LARGE_TIMEOUT_DB
+from exception import RecipeRatingManagerException
+from schemas import RatingCreate
+from utils import transform_exception
 
 
-@singleton
-class RatingRepository:
-    def __init__(self, db_url: str = MONGO_URI,
-                 db_name: str = DB_NAME,
-                 collection_name: str = MONGO_COLLECTION):
-        self.client = AsyncIOMotorClient(db_url)
-        self.db = self.client[db_name]
-        self.collection = self.db[collection_name]
-        self.logger = init_logger("[REPOSITORY]")
-
-    async def get_ratings_of_parent(self, parent_id: str, start: int, count: int) -> (dict, int):
-        try:
-            pipeline = [
-                {"$match": {"parentId": parent_id}},
-                {"$sort": {"updatedAt": 1}},
-                {"$skip": start},
-                {"$limit": count},
-                {"$project": RATING_PROJECTION}
-            ]
-
-            cursor = self.collection.aggregate(pipeline, allowDiskUse=True)
-            ratings = await asyncio.wait_for(cursor.to_list(length=count), timeout=OPERATION_TIMEOUT)
-            if not ratings:
-                return ratings, 0
-
-            for rating in ratings:
-                rating__id = ObjectId(rating["_id"])
-                rating["createdAt"] = rating__id.generation_time
-                rating.pop("_id")
-
-            total_pipeline = [{"$match": {"parentId": parent_id}}, {"$count": "total"}]
-            total_result = await asyncio.wait_for(self.collection.aggregate(total_pipeline).next(),
-                                                  timeout=OPERATION_TIMEOUT)
-
-            total = total_result.get("total", 0)
-
-            return ratings, total
-
-        except asyncio.TimeoutError:
-            self.logger.error(OPERATION_TIMEOUT_MESSAGE)
-            raise DatabaseError()
-        except Exception as e:
-            self.logger.error(e)
-            raise InternalError()
-
-    async def update_rating(self, rating_id: str, update: RatingUpdate):
-        try:
-            query = {"id": rating_id}
-            rating = await asyncio.wait_for(
-                self.collection.find_one_and_update(query, {"$set": {"description": update.description}}),
-                timeout=OPERATION_TIMEOUT
+def _update_entry_by_id(
+    collection: Collection, entry_id: str, update: dict,
+    session: ClientSession, error: ErrorCodes, status_code: int
+) -> UpdateResult:
+    try:
+        with timeout(NORMAL_TIMEOUT_DB):
+            update = collection.update_one(
+                filter={"id": entry_id},
+                update=update,
+                session=session
             )
-            if rating and rating.get("parentType") == 'recipe':
-                await asyncio.wait_for(self.collection.update_one(query, {"$set": {"rating": update.rating}}),
-                                       timeout=OPERATION_TIMEOUT)
 
-        except asyncio.TimeoutError:
-            self.logger.error(OPERATION_TIMEOUT_MESSAGE)
-            raise DatabaseError()
-        except Exception as e:
-            self.logger.error(e)
-            raise InternalError()
+            if update.matched_count == 0:
+                raise RecipeRatingManagerException(
+                    error_code=error, status_code=status_code
+                )
 
-        if rating is None:
-            self.logger.warning(f"Rating '{rating_id}' not found!")
-            raise DatabaseNotFoundDataError()
+            return update
 
-    async def add_rating(self, parent_id: str, rating: Rating):
+    except Exception as e:
+        raise transform_exception(e)
+
+
+class MongoCollection:
+
+    def __init__(self, connection: MongoClient | None = None):
+        if connection is None:
+            self._connection = MongoClient(MONGO_URI)
+        else:
+            self._connection = connection
         try:
-            doc = {"parentId": parent_id, **rating.dict()}
-            await asyncio.wait_for(self.collection.insert_one(doc), timeout=OPERATION_TIMEOUT)
+            self._connection.admin.command("ping")
+        except ConnectionError:
+            raise RecipeRatingManagerException(
+                ErrorCodes.DB_CONNECTION_FAILURE.value,
+                status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
-        except asyncio.TimeoutError:
-            self.logger.error(OPERATION_TIMEOUT_MESSAGE)
-            raise DatabaseError()
-        except Exception as e:
-            self.logger.error(e)
-            raise InternalError()
+    def get_connection(self) -> MongoClient:
+        return self._connection
 
-    async def delete_rating(self, rating_id: str):
+
+class RatingCollection(MongoCollection):
+
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).get_collection("rating")
+
+    def find_ratings(
+        self, parent_id: str, start: int, count: int,
+        filter_aggregate: dict, sort_aggregate: dict
+    ) -> (int, list[dict]):
+
         try:
-            query = {"id": rating_id}
-            update_query = {
-                "$set": {
-                    "description": DELETED_FIELD,
-                    "authorId": DELETED_FIELD
-                }
-            }
-            rating = await asyncio.wait_for(self.collection.find_one_and_update(query, update_query),
-                                            timeout=OPERATION_TIMEOUT)
-            if rating and (not rating.get("children") or len(rating.get("children")) == 0):
-                await asyncio.wait_for(self.collection.delete_one(query), timeout=OPERATION_TIMEOUT)
-
-        except asyncio.TimeoutError:
-            self.logger.error(OPERATION_TIMEOUT_MESSAGE)
-            raise DatabaseError()
+            with timeout(LARGE_TIMEOUT_DB):
+                result = self._collection.aggregate(
+                    pipeline=[{
+                        "$facet": {
+                            "data": [
+                                {"$match": {"parentId": parent_id} | filter_aggregate},
+                                {"$skip": start},
+                                {"$limit": count},
+                                {"$sort": sort_aggregate},
+                                {"$project": RATING_PROJECTION}
+                            ],
+                            "total": [
+                                {"$match": {"parentId": parent_id} | filter_aggregate},
+                                {"$count": "total"}
+                            ]
+                        }
+                    }]
+                ).next()
+                return result["total"][0]["total"], result["data"]
         except Exception as e:
-            self.logger.error(e)
-            raise InternalError()
+            raise transform_exception(e)
 
-        if rating is None:
-            self.logger.warning(f"Rating '{rating_id}' not found!")
-            raise DatabaseNotFoundDataError()
+    def find_rating_by_id(self, rating_id) -> dict:
+        try:
+            with timeout(NORMAL_TIMEOUT_DB):
+                return self._collection.find_one(filter={"id": rating_id}, projection=RATING_PROJECTION)
+
+        except Exception as e:
+            raise transform_exception(e)
+
+    def find_rating(self, recipe_id: str, author_id: str) -> dict:
+        try:
+            with timeout(NORMAL_TIMEOUT_DB):
+                rating = self._collection.find_one(
+                    filter={
+                        "authorId": author_id,
+                        "parentId": recipe_id,
+                        "parentType": "recipe",
+                    },
+                    projection=RATING_PROJECTION,
+                )
+                return rating
+
+        except Exception as e:
+            raise transform_exception(e)
+
+    def update_rating(self, rating_id: str, update: dict, session: ClientSession = None) -> UpdateResult:
+        return _update_entry_by_id(
+            self._collection,
+            rating_id,
+            update,
+            session,
+            ErrorCodes.RATING_NOT_FOUND,
+            status.HTTP_404_NOT_FOUND
+        )
+
+    def create_rating(
+        self, user_id: str, generated_id: str, rating_data: RatingCreate, session: ClientSession = None
+    ) -> None:
+
+        try:
+            with timeout(NORMAL_TIMEOUT_DB):
+                self._collection.insert_one(
+                    document={
+                        "id": generated_id,
+                        "updatedAt": datetime.datetime.now(datetime.timezone.utc),
+                        "authorId": user_id,
+                        "parentType": rating_data.parentType,
+                        "parentId": rating_data.parentId,
+                        "rating": rating_data.rating,
+                        "description": rating_data.description,
+                        "children": [],
+                    },
+                    session=session
+                )
+
+        except pymongo.errors.DuplicateKeyError as e:
+            if "authorId_1_parentId_1" in str(e):
+                raise RecipeRatingManagerException(
+                    error_code=ErrorCodes.USER_ALREADY_COMMENTED, status_code=status.HTTP_403_FORBIDDEN
+                )
+            if "id_1" in str(e):
+                raise RecipeRatingManagerException(
+                    error_code=ErrorCodes.DUPLICATE_GENERATED_ID, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+            raise RecipeRatingManagerException(
+                error_code=ErrorCodes.UNKNOWN, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        except Exception as e:
+            raise transform_exception(e)
+
+    def delete_rating(self, rating_id: str, session: ClientSession = None) -> DeleteResult:
+        try:
+            with timeout(NORMAL_TIMEOUT_DB):
+                return self._collection.delete_one(
+                    filter={"id": rating_id},
+                    session=session
+                )
+
+        except Exception as e:
+            raise transform_exception(e)
+
+    def find_and_update_rating(self, rating_id: str, update: dict, session: ClientSession = None):
+        try:
+            with timeout(NORMAL_TIMEOUT_DB):
+                rating = self._collection.find_one_and_update(
+                    filter={"id": rating_id},
+                    update=update,
+                    return_document=ReturnDocument.AFTER,
+                    projection=RATING_PROJECTION,
+                    session=session,
+                )
+                if rating is None:
+                    raise RecipeRatingManagerException(
+                        error_code=ErrorCodes.PARENT_RATING_NOT_FOUND,
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
+
+                return rating
+
+        except Exception as e:
+            raise transform_exception(e)
+
+    def get_children(self, filter: dict):
+        try:
+            with timeout(10):
+                all_children: list[(str, str)] = []
+                for projection in self._collection.find(
+                        filter=filter, projection={
+                            "_id": 0, "authorId": 1, "id": 1
+                        }
+                ):
+                    all_children.append((projection["authorId"], projection["id"]))
+
+                return all_children
+
+        except Exception as e:
+            raise transform_exception(e)
+
+    def delete_many(self, ids: list[str], session: ClientSession = None):
+        try:
+            with timeout(10):
+                self._collection.delete_many(filter={"id": {"$in": ids}}, session=session)
+
+        except Exception as e:
+            raise transform_exception(e)
+
+
+class RecipeCollection(MongoCollection):
+
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).get_collection("recipe")
+
+    def find_recipe(self, recipe_id: str):
+        try:
+            with timeout(NORMAL_TIMEOUT_DB):
+                return self._collection.find_one({"id": recipe_id})
+
+        except Exception as e:
+            raise transform_exception(e)
+
+    def modify_recipe(self, recipe_id: str, mods: dict, session: ClientSession = None):
+        try:
+            with timeout(NORMAL_TIMEOUT_DB):
+                self._collection.update_one(
+                    filter={"id": recipe_id},
+                    update=mods,
+                    session=session
+                )
+
+        except Exception as e:
+            raise transform_exception(e)
+
+
+class UserCollection(MongoCollection):
+
+    def __init__(self, connection: MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).get_collection("user")
+
+    def update_user(
+        self, author_id: str, update: dict, session: ClientSession = None
+    ) -> UpdateResult:
+        return _update_entry_by_id(
+            self._collection,
+            author_id,
+            update,
+            session,
+            ErrorCodes.AUTHOR_NOT_FOUND,
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    def remove_ratings_from_many(self, authors: list[str], ratings: list[str]):
+        try:
+            with timeout(NORMAL_TIMEOUT_DB):
+                self._collection.update_many(
+                    filter={"id": {"$in": authors}},
+                    update={"$pull": {"ratings": {"$in": ratings}}}
+                )
+
+        except Exception as e:
+            raise transform_exception(e)

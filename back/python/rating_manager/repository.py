@@ -1,4 +1,5 @@
 import datetime
+from typing import Mapping, Any
 
 import pymongo.errors
 from fastapi import status
@@ -14,8 +15,8 @@ from utils import transform_exception
 
 
 def _update_entry_by_id(
-    collection: Collection, entry_id: str, update: dict,
-    session: ClientSession, error: ErrorCodes, status_code: int
+        collection: Collection, entry_id: str, update: dict,
+        session: ClientSession, error: ErrorCodes, status_code: int
 ) -> UpdateResult:
     try:
         with timeout(NORMAL_TIMEOUT_DB):
@@ -62,8 +63,8 @@ class RatingCollection(MongoCollection):
         self._collection = self._connection.get_database(DB_NAME).get_collection("rating")
 
     def find_ratings(
-        self, parent_id: str, start: int, count: int,
-        filter_aggregate: dict, sort_aggregate: dict
+            self, parent_id: str, start: int, count: int,
+            filter_aggregate: dict, sort_aggregate: dict
     ) -> (int, list[dict]):
 
         try:
@@ -97,17 +98,22 @@ class RatingCollection(MongoCollection):
         except Exception as e:
             raise transform_exception(e)
 
-    def find_rating(self, recipe_id: str, author_id: str) -> dict:
+    def find_rating_by_recipe_and_author_id(self, recipe_id: str, author_id: str) -> dict:
         try:
             with timeout(NORMAL_TIMEOUT_DB):
-                rating = self._collection.find_one(
+                rating: dict = self._collection.find_one(
                     filter={
                         "authorId": author_id,
                         "parentId": recipe_id,
                         "parentType": "recipe",
                     },
-                    projection=RATING_PROJECTION,
+                    projection=RATING_PROJECTION
                 )
+                if not rating:
+                    raise RecipeRatingManagerException(
+                        error_code=ErrorCodes.RATING_NOT_FOUND,
+                        status_code=status.HTTP_404_NOT_FOUND
+                    )
                 return rating
 
         except Exception as e:
@@ -124,7 +130,7 @@ class RatingCollection(MongoCollection):
         )
 
     def create_rating(
-        self, user_id: str, generated_id: str, rating_data: RatingCreate, session: ClientSession = None
+            self, user_id: str, generated_id: str, rating_data: RatingCreate, session: ClientSession = None
     ) -> None:
 
         try:
@@ -250,7 +256,7 @@ class UserCollection(MongoCollection):
         self._collection = self._connection.get_database(DB_NAME).get_collection("user")
 
     def update_user(
-        self, author_id: str, update: dict, session: ClientSession = None
+            self, author_id: str, update: dict, session: ClientSession = None
     ) -> UpdateResult:
         return _update_entry_by_id(
             self._collection,

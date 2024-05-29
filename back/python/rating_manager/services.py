@@ -10,9 +10,8 @@ user_collection = UserCollection(client.get_connection())
 
 
 async def get_ratings(
-    parent_type: str, parent_id: str, start: int, count: int, filter_query: str, sort_query: str
+        parent_type: str, parent_id: str, start: int, count: int, filter_query: str, sort_query: str
 ) -> RatingList:
-
     parent_type = parent_type.removesuffix("s")
     filter_query = filter_query.removesuffix("s")
     if parent_type not in [RECIPE, RATING]:
@@ -61,7 +60,6 @@ def validate_parent(parent_id: str, parent_type: str) -> dict:
 
 
 def add_reply(x_user_id: str, generated_id: str, body: RatingCreate, session: ClientSession):
-
     body.rating = 0
     rating_collection.create_rating(x_user_id, generated_id, body, session)
     update = rating_collection.update_rating(body.parentId, {"$push": {"children": generated_id}})
@@ -219,7 +217,6 @@ def delete_all(x_user_id, recipe_id):
 
     with client.get_connection().start_session() as session:
         with session.start_transaction():
-
             data = rating_collection.get_children({"parentId": recipe_id})
             while data and len(data) > 0:
                 authors, ratings = (list(t) for t in zip(*data))
@@ -232,6 +229,13 @@ def delete_all(x_user_id, recipe_id):
 
 async def get_rating(rating_id: str) -> RatingDataCard:
     rating = rating_collection.find_rating_by_id(rating_id)
+    rating["author"] = await get_user_card(rating["authorId"])
+    rating.pop("authorId")
+    return RatingDataCard.model_validate(rating)
+
+
+async def get_rating_by_author_and_recipe_id(recipe_id: str, author_id: str) -> RatingDataCard:
+    rating = rating_collection.find_rating_by_recipe_and_author_id(recipe_id, author_id)
     rating["author"] = await get_user_card(rating["authorId"])
     rating.pop("authorId")
     return RatingDataCard.model_validate(rating)

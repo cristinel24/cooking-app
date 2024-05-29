@@ -9,8 +9,9 @@ function PopUpChat() {
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
     const { logout, loggedIn } = useContext(UserContext)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false) // Set initial loading state to false
     const [modalIsOpen, setModalIsOpen] = useState(false)
+    const [conversation, setConversation] = useState([])
 
     const handleInputChange = (event) => {
         setMessage(event.target.value)
@@ -18,15 +19,28 @@ function PopUpChat() {
 
     const handleKeyPress = async (event) => {
         if (event.key === 'Enter') {
+            event.preventDefault() // Prevent default form submission behavior
             console.log(message)
+            setConversation((prevConversation) => [
+                ...prevConversation,
+                <div className="pop-up-chat-message" key={prevConversation.length}>
+                    {message}
+                </div>,
+            ])
             event.target.value = null
 
             setLoading(true)
             try {
                 const msg = await getResponse(message)
                 console.log(msg)
+                setConversation((prevConversation) => [
+                    ...prevConversation,
+                    <div className="pop-up-user-message" key={prevConversation.length}>
+                        {msg}
+                    </div>,
+                ])
             } catch (e) {
-                setError(getErrorMessage(e))
+                setError('api', { message: getErrorMessage(e) })
             } finally {
                 setLoading(false)
             }
@@ -58,10 +72,10 @@ function PopUpChat() {
                         <div className="pop-up-chat-title">
                             <h2>Chat</h2>
                         </div>
-
                         <div className="pop-up-chat-conversation">
-                            {error && <div className="pop-up-chat-conversation-error">{error}</div>}
-
+                            {conversation.map((item, index) => (
+                                <div key={index}>{item}</div>
+                            ))}
                             <input
                                 className="pop-up-chat-conversation-input"
                                 type="text"
@@ -73,9 +87,7 @@ function PopUpChat() {
                         </div>
                     </Modal>
                 </div>
-            ) : (
-                <></>
-            )}
+            ) : null}
         </>
     )
 }

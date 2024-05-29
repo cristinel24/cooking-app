@@ -12,6 +12,7 @@ function PopUpChat() {
     const [loading, setLoading] = useState(false) // Set initial loading state to false
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [conversation, setConversation] = useState([])
+    const { user } = useContext(UserContext)
 
     const handleInputChange = (event) => {
         setMessage(event.target.value)
@@ -23,8 +24,12 @@ function PopUpChat() {
             console.log(message)
             setConversation((prevConversation) => [
                 ...prevConversation,
-                <div className="pop-up-chat-message" key={prevConversation.length}>
+                <div className="pop-up-user-message" key={prevConversation.length}>
                     {message}
+                    <img
+                        className="pop-up-image"
+                        src="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                    ></img>
                 </div>,
             ])
             event.target.value = null
@@ -35,12 +40,15 @@ function PopUpChat() {
                 console.log(msg)
                 setConversation((prevConversation) => [
                     ...prevConversation,
-                    <div className="pop-up-user-message" key={prevConversation.length}>
-                        {msg}
-                    </div>,
+                    <>
+                        <div className="pop-up-chat-message" key={prevConversation.length}>
+                            <img className="pop-up-image" src="../public/logo.png"></img>
+                            {msg}
+                        </div>
+                    </>,
                 ])
             } catch (e) {
-                setError('api', { message: getErrorMessage(e) })
+                setError(getErrorMessage(e))
             } finally {
                 setLoading(false)
             }
@@ -54,7 +62,7 @@ function PopUpChat() {
 
     return (
         <>
-            {!loggedIn() ? (
+            {loggedIn() ? (
                 <div className="pop-up-chat-container">
                     <img
                         src={botLogo}
@@ -70,9 +78,10 @@ function PopUpChat() {
                         overlayClassName="pop-up-chat-modal-overlay"
                     >
                         <div className="pop-up-chat-title">
-                            <h2>Chat</h2>
+                            <h2>ChatBot Conversation</h2>
                         </div>
                         <div className="pop-up-chat-conversation">
+                            {error && <div className="pop-up-chat-conversation-error">{error}</div>}
                             {conversation.map((item, index) => (
                                 <div key={index}>{item}</div>
                             ))}

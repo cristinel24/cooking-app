@@ -15,7 +15,7 @@ async def execute_api(method: str, uri: str, json_data: dict | None = None) -> d
             if response.status_code != status.HTTP_200_OK:
                 if response.json().get("errorCode") is None:
                     raise RecipeRatingManagerException(
-                        error_code=ErrorCodes.RATING_NOT_FOUND,
+                        error_code=ErrorCodes.UNKNOWN,
                         status_code=status.HTTP_504_GATEWAY_TIMEOUT
                     )
                 else:

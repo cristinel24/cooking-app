@@ -8,7 +8,7 @@ from constants import ErrorCodes, UNSAFE_RECIPE_DATA_FIELDS
 from exception import RecipeCreatorException
 from repository import MongoCollection, UserCollection, RecipeCollection
 from schemas import RecipeData, Recipe
-from utils import validate_recipe_data, check_flags, sanitize_html
+from utils import validate_recipe_data, check_flags, sanitize_html, Actions
 
 client = MongoCollection()
 user_collection = UserCollection(client.get_connection())
@@ -35,13 +35,13 @@ async def create_recipe(user_id: str, recipe_data: RecipeData):
             with session.start_transaction():
                 user_collection.update_user(user_id, recipe.id, session)
                 recipe_collection.insert_recipe(vars(recipe), session)
-                await api.add_allergens(recipe.allergens)
+                await api.post_allergens(recipe.allergens, Actions.INCREMENT)
                 flags += 1
-                await api.add_tags(recipe.tags)
+                await api.post_tags(recipe.tags, Actions.INCREMENT)
                 flags += 1 << 1
     except RecipeCreatorException as e:
         if check_flags(flags, 0):
-            await api.delete_allergens(recipe.allergens)
+            await api.post_allergens(recipe.allergens, Actions.DECREMENT)
         if check_flags(flags, 1):
-            await api.delete_tags(recipe.tags)
+            await api.post_tags(recipe.tags, Actions.DECREMENT)
         raise e

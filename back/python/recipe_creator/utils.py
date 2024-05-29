@@ -6,6 +6,11 @@ from constants import *
 from exception import RecipeCreatorException
 
 
+class Actions:
+    INCREMENT = 1
+    DECREMENT = -1
+
+
 def validate_recipe_data(recipe_data: dict):
     if not 8 <= len(recipe_data["title"]) <= 128:
         raise RecipeCreatorException(ErrorCodes.INVALID_TITLE_SIZE.value, status.HTTP_400_BAD_REQUEST)

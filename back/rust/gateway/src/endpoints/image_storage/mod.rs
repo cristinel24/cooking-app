@@ -1,5 +1,4 @@
 use crate::models::ErrorResponse;
-use anyhow::anyhow;
 use bytes::Bytes;
 use reqwest::multipart::{Form, Part};
 use reqwest::{Client, Method};

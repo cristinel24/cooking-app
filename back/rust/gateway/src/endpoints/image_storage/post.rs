@@ -1,6 +1,6 @@
 use crate::endpoints::image_storage::{get_post_image, ImageResponse, SERVICE};
 
-use crate::endpoints::{EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
+use crate::endpoints::{FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::image_storage::UrlResponse;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};

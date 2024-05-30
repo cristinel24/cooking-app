@@ -6,7 +6,6 @@ use salvo::fs::NamedFile;
 use salvo::oapi::endpoint;
 use salvo::prelude::Json;
 use salvo::{Request, Response};
-use std::fs::File;
 use tokio::fs;
 use tracing::error;
 

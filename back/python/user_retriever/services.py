@@ -44,7 +44,7 @@ async def get_user_cards_data(user_ids: list[str], x_user_id: str) -> list[UserC
     for user_data in users_data:
         avg_rating = calculate_avg_rating(user_data)
         user_data["ratingAvg"] = avg_rating
-        if user_data["id"] != x_user_id:
+        if user_data["id"] != x_user_id and x_user_id is not None:
             follow_response = await request_get_follow(user_data["id"], x_user_id)
             user_data["isFollowedBy"] = follow_response["followed"]
             user_data["isFollowing"] = follow_response["following"]

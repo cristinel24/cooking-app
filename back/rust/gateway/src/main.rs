@@ -41,7 +41,7 @@ use crate::graceful_shutdown::GracefulShutdown;
 use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
 use endpoints::credentials_change_requester::request_credentials_change;
-use endpoints::rating_manager::{delete_recipe_ratings_endpoint, get_rating_endpoint};
+use endpoints::rating_manager::{delete_recipe_ratings_endpoint, get_rating_by_author_endpoint, get_rating_endpoint};
 use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
@@ -227,9 +227,11 @@ fn profile_data_changer_router() -> Router {
 fn rating_manager_router() -> Router {
     Router::new().oapi_tag("RATING MANAGER").append(&mut vec![
         Router::with_path("/ratings")
+            .get(get_rating_by_author_endpoint)
             .post(post_rating_endpoint)
             .push(
                 Router::with_path("/<parent_id>")
+                    .get(get_rating_endpoint)
                     .push(Router::with_path("/comments").get(get_ratings_endpoint))
                     .patch(patch_rating_endpoint)
                     .delete(delete_rating_endpoint),

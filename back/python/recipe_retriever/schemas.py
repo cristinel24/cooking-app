@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class UserCardData(BaseModel):
@@ -10,8 +11,22 @@ class UserCardData(BaseModel):
     icon: str
     roles: int
     ratingAvg: float
+    isFollowing: bool | None
+    isFollowedBy: bool | None
     updatedAt: datetime
     createdAt: datetime
+
+
+class RatingDataCard(BaseModel):
+    parentId: str
+    parentType: Literal["recipe", "rating"]
+    author: UserCardData
+    updatedAt: datetime
+    createdAt: datetime
+    rating: int = Field(0, ge=0, le=5, description="An integer value between 0 and 5")
+    description: str
+    childrenCount: int
+    id: str
 
 
 class RecipeData(BaseModel):
@@ -26,6 +41,8 @@ class RecipeData(BaseModel):
     tags: list[str]
     thumbnail: str
     viewCount: int
+    userRating: RatingDataCard | None
+    isFavorite: bool | None
     ratingAvg: float
     updatedAt: datetime
     createdAt: datetime
@@ -44,3 +61,5 @@ class RecipeCardData(BaseModel):
     ratingAvg: float
     updatedAt: datetime
     createdAt: datetime
+    userRating: RatingDataCard | None
+    isFavorite: bool | None

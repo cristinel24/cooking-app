@@ -4,12 +4,12 @@ use crate::{
     models::{rating::List, ErrorResponse},
 };
 use reqwest::Method;
-use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response, Writer};
+use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
 use tracing::error;
 
 #[endpoint(
     parameters(
-        ("parent_id" = String, description = "Rating id"),
+        ("parent_id" = String, description = "Parent id"),
         ("start" = i64, Query, description = "Start value"),
         ("count" = i64, Query, description = "Count value"),
         ("filter" = String, Query, description = "Type of comments (optional)"),

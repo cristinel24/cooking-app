@@ -229,12 +229,12 @@ fn rating_manager_router() -> Router {
         Router::with_path("/ratings")
             .post(post_rating_endpoint)
             .push(
-                Router::with_path("/<rating_id>")
+                Router::with_path("/<parent_id>")
                     .push(Router::with_path("/comments").get(get_ratings_endpoint))
                     .patch(patch_rating_endpoint)
                     .delete(delete_rating_endpoint),
             ),
-        Router::with_path("/recipes/<recipe_id>").append(&mut vec![
+        Router::with_path("/recipes/<parent_id>").append(&mut vec![
             Router::with_path("/comments").get(get_ratings_endpoint),
             Router::with_path("/ratings").delete(delete_recipe_ratings_endpoint),
         ]),

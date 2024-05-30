@@ -13,8 +13,8 @@ app = FastAPI(title="Rating Manager")
 
 @app.get("/{parent_type}/{parent_id}/comments", response_model=RatingList, response_description="Successful operation")
 async def get(
-    parent_type: str, parent_id: str, start: int,
-    count: int, filter: str = "", sort: str = ""
+        parent_type: str, parent_id: str, start: int,
+        count: int, filter: str = "", sort: str = ""
 ) -> RatingList | JSONResponse:
     if start is None:
         return build_response_from_values(
@@ -40,6 +40,14 @@ async def get_rating(rating_id: str) -> RatingDataCard | JSONResponse:
         return build_response_from_exception(transform_exception(e))
 
 
+@app.get("/", response_model=RatingDataCard, response_description="Successful operation")
+async def get_rating_by_recipe_and_author_id(recipe_id: str, author_id: str) -> RatingDataCard | JSONResponse:
+    try:
+        return await services.get_rating_by_author_and_recipe_id(recipe_id, author_id)
+    except Exception as e:
+        return build_response_from_exception(transform_exception(e))
+
+
 @app.post("/", response_model=None, response_description="Successful operation")
 async def post_rating(body: RatingCreate, x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
     if not x_user_id:
@@ -52,8 +60,8 @@ async def post_rating(body: RatingCreate, x_user_id: Annotated[str | None, Heade
 
 @app.patch("/{rating_id}", response_model=None, response_description="Successful operation")
 async def modify_rating(
-    rating_id: str, body: RatingUpdate,
-    x_user_id: Annotated[str | None, Header()] = None
+        rating_id: str, body: RatingUpdate,
+        x_user_id: Annotated[str | None, Header()] = None
 ) -> None | JSONResponse:
     if not x_user_id:
         return build_response_from_values(status.HTTP_401_UNAUTHORIZED, ErrorCodes.UNAUTHENTICATED.value)

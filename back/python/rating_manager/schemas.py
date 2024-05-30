@@ -18,6 +18,8 @@ class UserCardData(BaseModel):
     icon: str
     roles: int
     ratingAvg: float
+    isFollowing: bool | None
+    isFollowedBy: bool | None
     updatedAt: datetime
     createdAt: datetime
 

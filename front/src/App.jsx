@@ -169,7 +169,7 @@ function App() {
                                 <Route path="/followed" element={<Feed />} />
                                 <Route path="/recommended" element={<Feed />} />
 
-                                <Route path="/recipe/add" element={<AddRecipe />} />
+                                <Route path="/recipe/new-recipe" element={<AddRecipe />} />
                                 <Route path="/recipe/:recipeId/edit" element={<EditRecipe />} />
 
                                 <Route element={<Settings />}>

@@ -1,6 +1,6 @@
+use crate::models::recipe::Card;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
-use crate::models::recipe::Card;
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]

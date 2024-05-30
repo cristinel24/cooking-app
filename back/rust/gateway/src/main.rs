@@ -41,7 +41,7 @@ use crate::graceful_shutdown::GracefulShutdown;
 use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
 use endpoints::credentials_change_requester::request_credentials_change;
-use endpoints::rating_manager::delete_recipe_ratings_endpoint;
+use endpoints::rating_manager::{delete_recipe_ratings_endpoint, get_rating_endpoint};
 use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};

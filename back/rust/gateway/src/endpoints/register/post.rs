@@ -1,7 +1,7 @@
 use crate::endpoints::register::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::login::Success;
-use crate::models::register::SignInBody;
+use crate::models::register::RegisterBody;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -30,11 +30,11 @@ use tracing::error;
 pub async fn request_register_user(
     req: &mut Request,
     res: &mut Response,
-    data: JsonBody<SignInBody>,
+    data: JsonBody<RegisterBody>,
 ) -> Json<EndpointResponse<String>> {
     let url: String = SERVICE.to_string();
 
-    return match get_response::<&str, SignInBody, String>(
+    return match get_response::<&str, RegisterBody, String>(
         Method::POST,
         url,
         None,

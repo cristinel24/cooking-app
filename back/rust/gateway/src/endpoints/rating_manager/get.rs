@@ -1,7 +1,8 @@
 use crate::endpoints::{get_response, EndpointResponse};
+use crate::models::rating::RatingCard;
 use crate::{
     endpoints::{rating_manager::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-    models::{rating::List, ErrorResponse},
+    models::{rating::RatingList, ErrorResponse},
 };
 use reqwest::Method;
 use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
@@ -9,19 +10,15 @@ use tracing::error;
 
 #[endpoint(
     parameters(
-        ("parent_id" = String, description = "Parent id"),
-        ("start" = i64, Query, description = "Start value"),
-        ("count" = i64, Query, description = "Count value"),
-        ("filter" = String, Query, description = "Type of comments (optional)"),
-        ("sort" = String, Query, description = "Sorting criteria (optional)")
+        ("rating_id" = String, description = "Rating id"),
     ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = List,
-            example = json!(List::default())
+            body = RatingList,
+            example = json!(RatingList::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -31,16 +28,16 @@ use tracing::error;
         ),
     )
 )]
-pub async fn get_ratings_endpoint(
+pub async fn get_rating_endpoint(
     req: &mut Request,
     res: &mut Response,
-) -> Json<EndpointResponse<List>> {
+) -> Json<EndpointResponse<RatingCard>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[2..].join("/");
+    let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<Vec<(&String, &String)>, &str, List>(
+    return match get_response::<Vec<(&String, &String)>, &str, RatingCard>(
         Method::GET,
         url,
         Some(&req.queries().iter().collect()),

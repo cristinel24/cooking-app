@@ -1,6 +1,6 @@
 use crate::endpoints::recipe_creator::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::models::recipe::Recipe;
+use crate::models::recipe::RecipeBody;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -29,7 +29,7 @@ use tracing::error;
 pub async fn post_recipe_item(
     req: &mut Request,
     res: &mut Response,
-    data: JsonBody<Recipe>,
+    data: JsonBody<RecipeBody>,
 ) -> Json<EndpointResponse<String>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();

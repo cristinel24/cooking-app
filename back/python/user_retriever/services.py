@@ -15,7 +15,7 @@ async def get_user_data(user_id: str, x_user_id: str) -> UserData:
     followers_count = await request_user_followers_count(user_id)
     user_data["followsCount"] = follows_count
     user_data["followersCount"] = followers_count
-    if user_id != x_user_id:
+    if user_id != x_user_id and x_user_id is not None:
         follow_response = await request_get_follow(user_id, x_user_id)
         user_data["isFollowedBy"] = follow_response["followed"]
         user_data["isFollowing"] = follow_response["following"]

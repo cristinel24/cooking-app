@@ -9,7 +9,7 @@ use tracing::error;
 
 #[endpoint(
     parameters(
-        ("recipe_id" = String, description = "Recipe id")
+        ("parent_id" = String, description = "Recipe id")
     ),
     responses
     (

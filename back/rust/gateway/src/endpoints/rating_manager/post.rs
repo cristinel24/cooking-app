@@ -13,9 +13,6 @@ use salvo::{
 use tracing::error;
 
 #[endpoint(
-    parameters(
-        ("parent_id" = String, description = "Rating id")
-    ),
     responses
     (
         (

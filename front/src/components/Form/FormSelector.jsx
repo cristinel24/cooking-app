@@ -60,7 +60,7 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
     }
 
     window.addEventListener('click', (e) => {
-        const selector = document.getElementById(id)
+        const selector = document.getElementById(id).parentNode
 
         if (!selector.contains(e.target)) {
             setSuggestionsActive(false)

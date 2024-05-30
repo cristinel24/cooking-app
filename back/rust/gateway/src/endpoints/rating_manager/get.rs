@@ -10,7 +10,7 @@ use tracing::error;
 
 #[endpoint(
     parameters(
-        ("rating_id" = String, description = "Rating id"),
+        ("parent_id" = String, description = "Rating id"),
     ),
     responses
     (
@@ -37,10 +37,10 @@ pub async fn get_rating_endpoint(
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<Vec<(&String, &String)>, &str, RatingCard>(
+    return match get_response::<&str, &str, RatingCard>(
         Method::GET,
         url,
-        Some(&req.queries().iter().collect()),
+        None,
         None,
         Some(req.headers().clone()),
         false,
@@ -64,3 +64,4 @@ pub async fn get_rating_endpoint(
         }
     };
 }
+

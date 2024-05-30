@@ -4,7 +4,7 @@ use crate::{
     models::{rating::RatingList, ErrorResponse},
 };
 use reqwest::Method;
-use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response, Writer};
+use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
 use tracing::error;
 
 #[endpoint(

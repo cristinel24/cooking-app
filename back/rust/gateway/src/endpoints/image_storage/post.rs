@@ -10,6 +10,8 @@ use salvo::{Request, Response};
 use serde_json::Value;
 use tracing::error;
 
+const MAX_IMAGE_SIZE: usize = 16777216;
+
 #[endpoint(
     request_body(content = Value, content_type = "image/png"),
     responses
@@ -31,9 +33,12 @@ use tracing::error;
 pub async fn post_image(req: &mut Request, res: &mut Response) -> Json<ImageResponse> {
     let url = SERVICE.to_string();
 
-    let bytes = match req.payload().await {
+    let bytes = match req.payload_with_max_size(MAX_IMAGE_SIZE).await {
         Ok(value) => value.clone(),
-        Err(_) => return Json(ImageResponse::ServerError(ErrorResponse::default())),
+        Err(e) => {
+            error!("{e}");
+            return Json(ImageResponse::ServerError(ErrorResponse::default()))
+        },
     };
 
     match get_post_image(Method::POST, url, Some(bytes)).await {

@@ -22,15 +22,20 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
     const handleInputChange = async (e) => {
         const newInputValue = e.target.value
         setInputValue(newInputValue)
-        setSuggestionsActive(false)
         // don't suggest if less than 3 characters were given
         if (!suggest || newInputValue.length < 3) {
             setSuggestionsActive(false)
             setItems([])
             return
         }
-        setItems(await suggest(newInputValue))
-        setSuggestionsActive(true)
+
+        try {
+            setItems(await suggest(newInputValue))
+            setSuggestionsActive(true)
+        } catch (e) {
+            setSuggestionsActive(false)
+            setItems([])
+        }
     }
 
     const addItemAndClearSuggestions = (value) => {

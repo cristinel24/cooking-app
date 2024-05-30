@@ -47,6 +47,12 @@
     min-height: 100%;
 }
 
+.profile-description-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .profile-description-username {
     font-weight: bolder;
     color: var(--color-primary);
@@ -63,8 +69,8 @@
 }
 
 .profile-description-title {
-    font-size: 2rem;
-    margin-top: 1rem;
+    font-size: 1.5rem;
+    margin-top: 2rem;
     margin-bottom: 1rem;
 }
 
@@ -132,10 +138,11 @@
     border: none;
     cursor: pointer;
     transition: color 0.2s ease-in-out;
+    color: var(--color-primary);
 }
 
 .profile-sidebar-follow-button:hover {
-    color: var(--color-primary);
+    color: var(--card-color);
 }
 
 .profile {

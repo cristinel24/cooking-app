@@ -19,19 +19,18 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
     const [inputValue, setInputValue] = useState('')
     const [items, setItems] = useState([])
 
-    const handleInputChange = (e) => {
+    const handleInputChange = async (e) => {
         const newInputValue = e.target.value
         setInputValue(newInputValue)
-
+        setSuggestionsActive(false)
         // don't suggest if less than 3 characters were given
         if (!suggest || newInputValue.length < 3) {
             setSuggestionsActive(false)
             setItems([])
             return
         }
-
+        setItems(await suggest(newInputValue))
         setSuggestionsActive(true)
-        setItems(suggest(newInputValue))
     }
 
     const addItemAndClearSuggestions = (value) => {
@@ -61,7 +60,7 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
     }
 
     window.addEventListener('click', (e) => {
-        const selector = document.getElementById(id).parentNode
+        const selector = document.getElementById(id)
 
         if (!selector.contains(e.target)) {
             setSuggestionsActive(false)

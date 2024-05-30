@@ -5,24 +5,21 @@ import { MdOutlineCancel } from 'react-icons/md'
 import './index.css'
 
 import { Button, GenericModal } from '../../components'
+import { FormCheckboxList } from '../../components'
 
 function Report(props) {
     const [formVariants, setFormVariants] = useState([
-        { id: 1, text: 'Conținut sexual', checked: false },
-        { id: 2, text: 'Conținut respingător/violent', checked: false },
-        { id: 3, text: 'Conținut instigator la ură/abuziv', checked: false },
-        { id: 4, text: 'Hărțuire sau intimidare', checked: false },
-        { id: 5, text: 'Dezinformare', checked: false },
-        { id: 6, text: 'Conținut fals', checked: false },
-        { id: 7, text: 'Probleme legale', checked: false },
+        { id: 1, label: 'Conținut sexual', checked: false },
+        { id: 2, label: 'Conținut respingător/violent', checked: false },
+        { id: 3, label: 'Conținut instigator la ură/abuziv', checked: false },
+        { id: 4, label: 'Hărțuire sau intimidare', checked: false },
+        { id: 5, label: 'Dezinformare', checked: false },
+        { id: 6, label: 'Conținut fals', checked: false },
+        { id: 7, label: 'Probleme legale', checked: false },
     ])
 
-    const handleVariantChange = (id) => {
-        setFormVariants((prevVariants) =>
-            prevVariants.map((variant) =>
-                variant.id === id ? { ...variant, checked: !variant.checked } : variant
-            )
-        )
+    const handleChoice = (choice) => {
+        console.log('Selected choice:', choice)
     }
 
     return (
@@ -30,17 +27,12 @@ function Report(props) {
             <div className="report-wrapper">
                 <p className="report-wrapper-title">Raportează</p>
                 <form className="report-input-wrapper">
-                    {formVariants.map((variant) => (
-                        <div className="report-inputs" key={variant.id}>
-                            <input
-                                type="checkbox"
-                                id={`variant-${variant.id}`}
-                                checked={variant.checked}
-                                onChange={() => handleVariantChange(variant.id)}
-                            />
-                            <label htmlFor={`variant-${variant.id}`}>{variant.text}</label>
-                        </div>
-                    ))}
+                    <FormCheckboxList
+                        options={formVariants}
+                        setOptions={setFormVariants}
+                        onChoice={handleChoice}
+                        multipleChoice={true}
+                    />
                 </form>
                 <div className="report-buttons">
                     <Button
@@ -54,7 +46,7 @@ function Report(props) {
                         text="Trimite"
                         Icon={LuSend}
                         onClick={() => {
-                            props.onSend(formVariants.filter((variant) => variant.checked === true))
+                            props.onSend(formVariants.filter((variant) => variant.checked))
                         }}
                     />
                 </div>

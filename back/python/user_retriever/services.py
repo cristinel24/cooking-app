@@ -29,7 +29,7 @@ async def get_user_card_data(user_id: str, x_user_id: str) -> UserCardData:
     user_data = user_collection.get_user_by_id(user_id, USER_CARD_DATA_PROJECTION)
     avg_rating = calculate_avg_rating(user_data)
     user_data["ratingAvg"] = avg_rating
-    if user_id != x_user_id:
+    if user_id != x_user_id and x_user_id is not None:
         follow_response = await request_get_follow(user_id, x_user_id)
         user_data["isFollowedBy"] = follow_response["followed"]
         user_data["isFollowing"] = follow_response["following"]

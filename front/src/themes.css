@@ -35,6 +35,8 @@
     --text-color-inverted: #eeeeee;
 
     --chatbot-color: #ff9d9d;
+    --chatbot-messages-color: #f5d4c7;
+    
 }
 
 [data-theme='dark'] {
@@ -69,4 +71,5 @@
     --text-color-inverted: #0c1821;
 
     --chatbot-color: #1c1c1c;
+    --chatbot-messages-color: #05233a;
 }

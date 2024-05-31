@@ -24,13 +24,18 @@ function PopUpChat() {
             console.log(message)
             setConversation((prevConversation) => [
                 ...prevConversation,
-                <div className="pop-up-user-message" key={prevConversation.length}>
-                    {message}
-                    <img
-                        className="pop-up-image"
-                        src={user.icon}
-                        //src="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
-                    ></img>
+                <div className="outgoing-chats">
+                    <div className="outgoing-chats-img">
+                        <img
+                            className="outgoing-chats-img"
+                            src="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                        ></img>
+                    </div>
+                    <div className="outgoing-msg">
+                        <div className="outgoing-msg-inbox">
+                            <p>{message}</p>
+                        </div>
+                    </div>
                 </div>,
             ])
             event.target.value = null
@@ -41,9 +46,18 @@ function PopUpChat() {
                 console.log(msg)
                 setConversation((prevConversation) => [
                     ...prevConversation,
-                    <div className="pop-up-chat-message" key={prevConversation.length}>
-                        <img className="pop-up-image" src="../public/logo.png"></img>
-                        {msg}
+                    <div className="received-chats">
+                        <div className="received-chats-img">
+                            <img
+                                className="received-chats-img"
+                                src="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
+                            ></img>
+                        </div>
+                        <div className="received-msg">
+                            <div className="received-msg-inbox">
+                                <p>{msg}</p>
+                            </div>
+                        </div>
                     </div>,
                 ])
             } catch (e) {
@@ -61,7 +75,7 @@ function PopUpChat() {
 
     return (
         <>
-            {loggedIn() ? (
+            {!loggedIn() ? (
                 <div className="pop-up-chat-container">
                     <img
                         src={botLogo}
@@ -79,11 +93,12 @@ function PopUpChat() {
                         <div className="pop-up-chat-title">
                             <h2>ChatBot Conversation</h2>
                         </div>
-                        <div className="pop-up-chat-conversation">
-                            {error && <div className="pop-up-chat-conversation-error">{error}</div>}
-                            {conversation.map((item, index) => (
-                                <div key={index}>{item}</div>
-                            ))}
+                        <div className="chat-page">
+                            <div className="msg-inbox">
+                                <div className="chats">
+                                    <div className="msg-page">{conversation}</div>
+                                </div>
+                            </div>
                             <input
                                 className="pop-up-chat-conversation-input"
                                 type="text"

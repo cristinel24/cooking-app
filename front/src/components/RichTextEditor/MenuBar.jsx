@@ -20,21 +20,40 @@ import { MdFormatClear } from 'react-icons/md'
 
 import { fileToBase64 } from '../../utils/base64'
 
-export const MenuBar = ({ onChange, onRemove, allowImageUploads }) => {
+export const MenuBar = ({ content, onChange, onRemove, allowImageUploads }) => {
     const { editor } = useCurrentEditor()
     const timeoutRef = useRef(null)
 
     useEffect(() => {
-        onChange(editor.getJSON())
-    }, [])
+        if (!editor || editor.isDestroyed) {
+            return
+        }
+        if (!editor.isFocused || !editor.isEditable) {
+            if (timeoutRef.current != null) {
+                // force onChange before proceeding
+                clearTimeout(timeoutRef.current)
+                onChange(editor.getJSON())
+                timeoutRef.current = null
+            }
+        }
+    }, [editor, editor?.isEditable, editor?.isFocused])
+
+    useEffect(() => {
+        // Use queueMicrotask per https://github.com/ueberdosis/tiptap/issues/3764#issuecomment-1546854730
+        queueMicrotask(() => {
+            const currentSelection = editor.state.selection
+            editor.chain().setContent(content).setTextSelection(currentSelection).run()
+        })
+    }, [content])
 
     const handleContentChange = (editor) => {
         clearTimeout(timeoutRef.current)
         timeoutRef.current = setTimeout(() => {
             if (onChange) {
                 onChange(editor.getJSON())
+                timeoutRef.current = null
             }
-        }, 500)
+        }, 300)
     }
 
     editor.on('update', ({ editor }) => {

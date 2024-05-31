@@ -36,20 +36,12 @@ async def execute_api(method: str, uri: str, json_data: dict | None = None, head
         )
 
 
-async def delete_allergens(allergens: list[str]):
-    await execute_api(POST_METHOD, DEC_ALLERGENS_ROUTE, {"allergens": allergens})
+async def post_allergens(allergens: list[str], action: int):
+    await execute_api(POST_METHOD, f"{POST_ALLERGENS_ROUTE}?action={action}", {"allergens": allergens})
 
 
-async def add_allergens(allergens: list[str]):
-    await execute_api(POST_METHOD, INC_ALLERGENS_ROUTE, {"allergens": allergens})
-
-
-async def delete_tags(tags: list[str]):
-    await execute_api(POST_METHOD, DEC_TAGS_ROUTE, {"tags": tags})
-
-
-async def add_tags(tags: list[str]):
-    await execute_api(POST_METHOD, INC_TAGS_ROUTE, {"tags": tags})
+async def post_tags(tags: list[str], action: int):
+    await execute_api(POST_METHOD, f"{POST_TAGS_ROUTE}?action={action}", {"tags": tags})
 
 
 async def delete_ratings(rating_id: str, author_id: str):

@@ -1,6 +1,7 @@
 from api import *
 from repository import RecipeCollection, UserCollection, MongoCollection
 from constants import UserRoles
+from utils import Actions
 
 client = MongoCollection()
 recipe_collection = RecipeCollection(client.get_connection())
@@ -21,10 +22,10 @@ async def delete(recipe_id: str, x_user_id: str, user_roles: int):
         with client.get_connection().start_session() as session:
             with session.start_transaction():
 
-                await delete_tags(recipe["tags"])
+                await post_tags(recipe["tags"], Actions.DECREMENT)
                 flag |= 0b01
 
-                await delete_allergens(recipe["allergens"])
+                await post_allergens(recipe["allergens"], Actions.DECREMENT)
                 flag |= 0b10
 
                 # cannot undo rating deletion
@@ -69,6 +70,6 @@ def check_bit(flag: int, n: int) -> bool:
 
 def undo_steps(recipe: dict, flag: int):
     if check_bit(flag, 0):
-        add_tags(recipe["tags"])
+        post_tags(recipe["tags"], Actions.INCREMENT)
     if check_bit(flag, 1):
-        add_allergens(recipe["allergens"])
+        post_allergens(recipe["allergens"], Actions.INCREMENT)

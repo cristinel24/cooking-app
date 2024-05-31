@@ -9,7 +9,7 @@ function PopUpChat() {
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
     const { logout, loggedIn } = useContext(UserContext)
-    const [loading, setLoading] = useState(false) // Set initial loading state to false
+    const [loading, setLoading] = useState(false) 
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [conversation, setConversation] = useState([])
     const { user } = useContext(UserContext)
@@ -19,20 +19,17 @@ function PopUpChat() {
     }
 
     const handleKeyPress = async (event) => {
-        if (event.key === 'Enter') {
-            event.preventDefault() // Prevent default form submission behavior
+        if (event.key === 'Enter' && !loading) {
+            event.preventDefault() 
             console.log(message)
             setConversation((prevConversation) => [
                 ...prevConversation,
-                <div className="outgoing-chats">
-                    <div className="outgoing-chats-img">
-                        <img
-                            className="outgoing-chats-img"
-                            src="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
-                        ></img>
+                <div className="pop-up-outgoing-chats">
+                    <div className="pop-up-outgoing-chats-img">
+                        <img className="pop-up-outgoing-chats-img" src={user.icon} alt="User Icon"></img>
                     </div>
-                    <div className="outgoing-msg">
-                        <div className="outgoing-msg-inbox">
+                    <div className="pop-up-outgoing-msg">
+                        <div className="pop-up-outgoing-msg-inbox">
                             <p>{message}</p>
                         </div>
                     </div>
@@ -41,20 +38,18 @@ function PopUpChat() {
             event.target.value = null
 
             setLoading(true)
+            setError('')
             try {
                 const msg = await getResponse(message)
                 console.log(msg)
                 setConversation((prevConversation) => [
                     ...prevConversation,
-                    <div className="received-chats">
-                        <div className="received-chats-img">
-                            <img
-                                className="received-chats-img"
-                                src="https://tazzcdn.akamaized.net/uploads/cover/Cover_Ikura_Sushi_8.png"
-                            ></img>
+                    <div className="pop-up-received-chats">
+                        <div className="pop-up-received-chats-img">
+                            <img className="pop-up-received-chats-img" src={botLogo} alt="Bot Logo"></img>
                         </div>
-                        <div className="received-msg">
-                            <div className="received-msg-inbox">
+                        <div className="pop-up-received-msg">
+                            <div className="pop-up-received-msg-inbox">
                                 <p>{msg}</p>
                             </div>
                         </div>
@@ -67,6 +62,10 @@ function PopUpChat() {
             }
             setMessage('')
         }
+    }
+
+    const getErrorMessage = (error) => {
+        return error.message
     }
 
     const toggleModal = () => {
@@ -93,19 +92,29 @@ function PopUpChat() {
                         <div className="pop-up-chat-title">
                             <h2>ChatBot Conversation</h2>
                         </div>
-                        <div className="chat-page">
-                            <div className="msg-inbox">
-                                <div className="chats">
-                                    <div className="msg-page">{conversation}</div>
+
+                        <div className="pop-up-chat-page">
+                            {error && <div className="pop-up-chat-conversation-error">{error}</div>}
+                            {!error && (
+                                <div className="pop-up-message-inbox">
+                                    <div className="pop-up-chats">
+                                        <div className="pop-up-message-page">
+                                            {conversation.map((item, index) => (
+                                                <div key={index}>{item}</div>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
+
                             <input
-                                className="pop-up-chat-conversation-input"
+                                className={`pop-up-chat-conversation-input ${loading ? 'loading' : ''}`}
                                 type="text"
                                 value={message}
                                 onChange={handleInputChange}
                                 onKeyDown={handleKeyPress}
                                 placeholder="Scrie un mesaj..."
+                                disabled={loading}
                             />
                         </div>
                     </Modal>

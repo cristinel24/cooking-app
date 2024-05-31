@@ -59,7 +59,7 @@ def test_nonexistent_user(mock_update_user_roles):
 @patch("services.update_user_roles")
 def test_invalid_role_data_type(mock_update_user_roles):
     role_data = {
-        "verified": "john", ### in cazul in care stringul este un numar de exemplu "123" merge sau daca e un numar diferit de -1, 0, 1 se intampla urmatoarele: daca e un numar >0 atunci o sa puna 1 la rol, daca este <0, rolul devine 0
+        "verified": "john", 
         "admin": 0,
         "premium": 0,
         "banned": 0

@@ -1,0 +1,11 @@
+Unit Testing Results
+
+    - The unit tests for the routes related to login passed successfully.
+    - The unit tests covered scenarios involving invalid users.
+
+
+Testing Environment
+
+    Operating System: LinuxMint
+    CPU: AMD Ryzen 5
+    Graphics: Radeon

@@ -37,12 +37,16 @@ export default function Filters() {
     } = useForm({
         defaultValues: async () => ({
             ...filters,
-            prepTime: "prepTime" in filters ? filters.prepTime.toString() : '',
-            rating: "rating" in filters ? filters.rating.toString() : '',
+            prepTime: 'prepTime' in filters ? filters.prepTime.toString() : '',
+            rating: 'rating' in filters ? filters.rating.toString() : '',
         }),
     })
 
-    const onSuggest = (value) => {
+    const onSuggest = async (value) => {
+        // for testing purposes
+        const delay = (ms) => new Promise((res) => setTimeout(res, ms))
+        await delay(500)
+
         return [
             value,
             'nuci cu muci',

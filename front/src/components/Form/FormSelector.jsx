@@ -19,10 +19,9 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
     const [inputValue, setInputValue] = useState('')
     const [items, setItems] = useState([])
 
-    const handleInputChange = (e) => {
+    const handleInputChange = async (e) => {
         const newInputValue = e.target.value
         setInputValue(newInputValue)
-
         // don't suggest if less than 3 characters were given
         if (!suggest || newInputValue.length < 3) {
             setSuggestionsActive(false)
@@ -30,8 +29,13 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
             return
         }
 
-        setSuggestionsActive(true)
-        setItems(suggest(newInputValue))
+        try {
+            setItems(await suggest(newInputValue))
+            setSuggestionsActive(true)
+        } catch (e) {
+            setSuggestionsActive(false)
+            setItems([])
+        }
     }
 
     const addItemAndClearSuggestions = (value) => {

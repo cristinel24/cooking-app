@@ -34,7 +34,7 @@
     transform: translateX(-50%);
     border-radius: 20px;
     color: var(--card-bg-color);
-    background-color: red;
+    background-color: #ff0000;
     padding: 10px 20px;
     font-size: 0.9rem;
     z-index: 1005;
@@ -207,12 +207,24 @@
         width: 3.5rem;
         height: 3.5rem;
     }
+    
+    .pop-up-outgoing-msg {
+        padding: 0 0 0 25px;
+    }
+
+    .pop-up-chat-conversation-input {
+        width: 85%;
+    }
 }
 
 @media (min-width: 320px) and (max-width: 487px) {
     .pop-up-chat-container {
         bottom: 0.1rem;
         right: 0.5rem;
+    }
+
+    .pop-up-chat-conversation-input {
+        width: 80%;
     }
 
     .pop-up-chat-modal-content {
@@ -228,5 +240,14 @@
     }
     .pop-up-chat-conversation-input {
         margin: 10px;
+        font-size: 0.7rem;
+    }
+    
+    .pop-up-received-msg-inbox p, .pop-up-outgoing-msg-inbox p {
+        font-size: 0.7rem;
+    }
+
+    .pop-up-chat-title {
+        font-size: 0.8rem;
     }
 }

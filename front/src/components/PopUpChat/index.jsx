@@ -9,7 +9,7 @@ function PopUpChat() {
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
     const { logout, loggedIn } = useContext(UserContext)
-    const [loading, setLoading] = useState(false) 
+    const [loading, setLoading] = useState(false)
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [conversation, setConversation] = useState([])
     const { user } = useContext(UserContext)
@@ -20,13 +20,16 @@ function PopUpChat() {
 
     const handleKeyPress = async (event) => {
         if (event.key === 'Enter' && !loading) {
-            event.preventDefault() 
-            console.log(message)
+            event.preventDefault()
             setConversation((prevConversation) => [
                 ...prevConversation,
                 <div className="pop-up-outgoing-chats">
                     <div className="pop-up-outgoing-chats-img">
-                        <img className="pop-up-outgoing-chats-img" src={user.icon} alt="User Icon"></img>
+                        <img
+                            className="pop-up-outgoing-chats-img"
+                            src={user.icon}
+                            alt="User Icon"
+                        ></img>
                     </div>
                     <div className="pop-up-outgoing-msg">
                         <div className="pop-up-outgoing-msg-inbox">
@@ -41,12 +44,15 @@ function PopUpChat() {
             setError('')
             try {
                 const msg = await getResponse(message)
-                console.log(msg)
                 setConversation((prevConversation) => [
                     ...prevConversation,
                     <div className="pop-up-received-chats">
                         <div className="pop-up-received-chats-img">
-                            <img className="pop-up-received-chats-img" src={botLogo} alt="Bot Logo"></img>
+                            <img
+                                className="pop-up-received-chats-img"
+                                src={botLogo}
+                                alt="Bot Logo"
+                            ></img>
                         </div>
                         <div className="pop-up-received-msg">
                             <div className="pop-up-received-msg-inbox">
@@ -74,7 +80,7 @@ function PopUpChat() {
 
     return (
         <>
-            {!loggedIn() ? (
+            {loggedIn() ? (
                 <div className="pop-up-chat-container">
                     <img
                         src={botLogo}
@@ -108,7 +114,9 @@ function PopUpChat() {
                             )}
 
                             <input
-                                className={`pop-up-chat-conversation-input ${loading ? 'loading' : ''}`}
+                                className={`pop-up-chat-conversation-input ${
+                                    loading ? 'loading' : ''
+                                }`}
                                 type="text"
                                 value={message}
                                 onChange={handleInputChange}

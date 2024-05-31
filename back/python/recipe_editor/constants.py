@@ -27,6 +27,14 @@ URL_SCHEMES = {"https", "http"}
 UNSAFE_RECIPE_DATA_FIELDS = {"description", "steps"}
 
 
+class UserRoles:
+    VERIFIED = 0b1
+    ADMIN = 0b10
+    PREMIUM = 0b100
+    BANNED = 0b1000
+    ACTIVE = 0b0
+
+
 @unique
 class ErrorCodes(Enum):
     DB_CONNECTION_FAILURE = 26200
@@ -43,3 +51,4 @@ class ErrorCodes(Enum):
     NONEXISTENT_RECIPE = 26211
     FORBIDDEN_USER = 26212
     MALFORMED_HTML = 26213
+    USER_ROLES_INVALID_VALUE = 26214

@@ -3,7 +3,7 @@ import datetime
 from fastapi import status
 
 import api
-from constants import ErrorCodes, UNSAFE_RECIPE_DATA_FIELDS
+from constants import ErrorCodes, UNSAFE_RECIPE_DATA_FIELDS, UserRoles
 from exception import RecipeEditorException
 from repository import MongoCollection, RecipeCollection
 from schemas import RecipeData, Recipe
@@ -13,7 +13,7 @@ client = MongoCollection()
 recipe_collection = RecipeCollection(client.get_connection())
 
 
-async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
+async def edit_recipe(x_user_id: str, user_roles: int, recipe_id, recipe_data: RecipeData):
     sanitized_fields = sanitize_html(recipe_data.model_dump(include=UNSAFE_RECIPE_DATA_FIELDS))
     for key, value in sanitized_fields.items():
         setattr(recipe_data, key, value)
@@ -25,7 +25,7 @@ async def edit_recipe(x_user_id: str, recipe_id, recipe_data: RecipeData):
 
     recipe_dict = await recipe_collection.get_recipe_by_id(recipe_id)
 
-    if recipe_dict["authorId"] != x_user_id:
+    if recipe_dict["authorId"] != x_user_id and not user_roles & UserRoles.ADMIN:
         raise RecipeEditorException(ErrorCodes.FORBIDDEN_USER.value, status.HTTP_403_FORBIDDEN)
 
     try:

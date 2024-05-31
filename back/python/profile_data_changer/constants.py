@@ -23,6 +23,14 @@ URL_SCHEMES = {"https", "http"}
 UNSAFE_USER_DATA_FIELDS = {"description"}
 
 
+class UserRoles:
+    VERIFIED = 0b1
+    ADMIN = 0b10
+    PREMIUM = 0b100
+    BANNED = 0b1000
+    ACTIVE = 0b0
+
+
 class ErrorCodes(Enum):
     USER_NOT_FOUND = 21800
     DATABASE_ERROR = 21801
@@ -38,6 +46,7 @@ class ErrorCodes(Enum):
     MALFORMED_HTML = 21811
     DATABASE_TIMEOUT = 21812
     FORBIDDEN_REQUEST = 21813
+    USER_ROLES_INVALID_VALUE = 21814
 
 
 ICON_VALIDATION = {

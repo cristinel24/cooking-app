@@ -14,7 +14,7 @@ app = FastAPI(title="Rating Manager")
 @app.get("/{parent_type}/{parent_id}/comments", response_model=RatingList, response_description="Successful operation")
 async def get(
         parent_type: str, parent_id: str, start: int,
-        count: int, filter: str = "", sort: str = ""
+        count: int, filter: str = "", sort: str = "", x_user_id: Annotated[str | None, Header()] = None
 ) -> RatingList | JSONResponse:
     if start is None:
         return build_response_from_values(
@@ -27,23 +27,24 @@ async def get(
         )
 
     try:
-        return await services.get_ratings(parent_type, parent_id, start, count, filter, sort)
+        return await services.get_ratings(parent_type, parent_id, start, count, filter, sort, x_user_id)
     except Exception as e:
         return build_response_from_exception(transform_exception(e))
 
 
 @app.get("/{rating_id}", response_model=RatingDataCard, response_description="Successful operation")
-async def get_rating(rating_id: str) -> RatingDataCard | JSONResponse:
+async def get_rating(rating_id: str, x_user_id: Annotated[str | None, Header()] = None) -> RatingDataCard | JSONResponse:
     try:
-        return await services.get_rating(rating_id)
+        return await services.get_rating(rating_id, x_user_id)
     except Exception as e:
         return build_response_from_exception(transform_exception(e))
 
 
 @app.get("/", response_model=RatingDataCard, response_description="Successful operation")
-async def get_rating_by_recipe_and_author_id(recipe_id: str, author_id: str) -> RatingDataCard | JSONResponse:
+async def get_rating_by_recipe_and_author_id(recipe_id: str, author_id: str,
+                                             x_user_id: Annotated[str | None, Header()] = None) -> RatingDataCard | JSONResponse:
     try:
-        return await services.get_rating_by_author_and_recipe_id(recipe_id, author_id)
+        return await services.get_rating_by_author_and_recipe_id(recipe_id, author_id, x_user_id)
     except Exception as e:
         return build_response_from_exception(transform_exception(e))
 

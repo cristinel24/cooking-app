@@ -1,0 +1,10 @@
+Unit Testing Results
+
+    - The unit tests for the routes related to username_changer passed successfully.
+    - The unit tests covered scenarios involving invalid usersname and invalid token.
+
+Testing Environment
+
+    Operating System: LinuxMint
+    CPU: AMD Ryzen 5
+    Graphics: Radeon

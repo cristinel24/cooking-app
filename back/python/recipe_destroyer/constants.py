@@ -51,6 +51,14 @@ GET_METHOD = "get"
 SRC_URL_FROM_IMG_TAG_REGEX = re.compile(rf"<img[^>]*src=[\"']{GATEWAY_API_URL}(?:/[^>]*)*/images/([^\"]*)[\"'][^>]*>")
 
 
+class UserRoles:
+    VERIFIED = 0b1
+    ADMIN = 0b10
+    PREMIUM = 0b100
+    BANNED = 0b1000
+    ACTIVE = 0b0
+
+
 class ErrorCodes(Enum):
     SERVER_ERROR = 26300
     RECIPE_NOT_FOUND = 26301
@@ -66,3 +74,4 @@ class ErrorCodes(Enum):
     DB_NON_TIMEOUT = 26310
     UNAUTHENTICATED = 26311
     UNAUTHORIZED = 26312
+    USER_ROLES_INVALID_VALUE = 21706

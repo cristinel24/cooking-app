@@ -4,9 +4,11 @@ use serde::{Deserialize, Serialize};
 
 pub mod ai;
 pub mod allergens;
+pub mod credentials_change_requester;
 pub mod email;
 pub mod follow_manager;
 pub mod hash;
+pub mod image_storage;
 pub mod login;
 pub mod message_history;
 pub mod password_changer;

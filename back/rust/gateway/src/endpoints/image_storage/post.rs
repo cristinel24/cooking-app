@@ -1,6 +1,7 @@
-use crate::endpoints::image_storage::{get_put_image, ImageResponse, SERVICE};
+use crate::endpoints::image_storage::{get_post_image, ImageResponse, SERVICE};
 
 use crate::endpoints::{FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
+use crate::models::image_storage::UrlResponse;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -9,6 +10,8 @@ use salvo::{Request, Response};
 use serde_json::Value;
 use tracing::error;
 
+const MAX_IMAGE_SIZE: usize = 16777216;
+
 #[endpoint(
     request_body(content = Value, content_type = "image/png"),
     responses
@@ -16,35 +19,43 @@ use tracing::error;
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = String,
-            example = json!("null")
+            body = UrlResponse,
+            example = json!(UrlResponse::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
             description = FAILED_RESPONSE,
-            body = ImageResponse,
-            example = json!(ImageResponse::default())
+            body = ErrorResponse,
+            example = json!(ErrorResponse::default())
         ),
     )
 )]
 pub async fn post_image(req: &mut Request, res: &mut Response) -> Json<ImageResponse> {
-    let uri = req.uri().path();
-    let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[3..].join("/");
-    let url = format!("{SERVICE}/{new_url}");
+    let url = SERVICE.to_string();
 
-    let bytes = match req.payload().await {
+    let bytes = match req.payload_with_max_size(MAX_IMAGE_SIZE).await {
         Ok(value) => value.clone(),
-        Err(_) => return Json(ImageResponse::Error(ErrorResponse::default())),
+        Err(e) => {
+            error!("{e}");
+            return Json(ImageResponse::ServerError(ErrorResponse::default()))
+        },
     };
 
-    return (get_put_image(Method::POST, format!("http://{url}"), Some(bytes), true).await)
-        .map_or_else(
-            |e| {
-                error!("{e}");
-                res.status_code(StatusCode::BAD_REQUEST);
-                Json(ImageResponse::Error(ErrorResponse::default()))
-            },
-            Json,
-        );
+    match get_post_image(Method::POST, url, Some(bytes)).await {
+        Ok(item) => {
+            if let ImageResponse::Error((error_code, status_code)) = item {
+                res.status_code(
+                    StatusCode::from_u16(status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR),
+                );
+                Json(ImageResponse::ServerError(error_code))
+            } else {
+                Json(item)
+            }
+        }
+        Err(e) => {
+            error!("{e}");
+            res.status_code(StatusCode::BAD_REQUEST);
+            Json(ImageResponse::ServerError(ErrorResponse::default()))
+        }
+    }
 }

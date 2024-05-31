@@ -26,7 +26,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn talk(
+pub async fn chatbot_route(
     req: &mut Request,
     res: &mut Response,
     body: JsonBody<ChatBotRequest>,

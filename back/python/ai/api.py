@@ -27,7 +27,7 @@ async def get_message_history(user_id: str) -> list[str]:
 
 async def add_message_to_history(user_id: str, message: str) -> None:
     async with httpx.AsyncClient() as client:
-        response = await client.put(
+        response = await client.post(
             url=MESSAGE_HISTORY_MANAGER_API_URL + f"/{user_id}/message-history",
             content=json.dumps({"message": message})
         )

@@ -1,28 +1,22 @@
-use super::SERVICE;
-use crate::endpoints::{get_response, EndpointResponse};
-use crate::{
-    endpoints::{FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-    models::{rating::Update, ErrorResponse},
-};
+use crate::endpoints::allergen_manager::SERVICE;
+use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
+use crate::models::allergens::Allergens;
+use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
-use salvo::{
-    oapi::{endpoint, extract::JsonBody},
-    prelude::Json,
-    Request, Response, Writer,
-};
+use salvo::oapi::endpoint;
+use salvo::oapi::extract::QueryParam;
+use salvo::prelude::Json;
+use salvo::{Request, Response, Writer};
 use tracing::error;
 
 #[endpoint(
-    parameters(
-        ("rating_id" = String, description = "Rating id")
-    ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = String,
-            example = json!("null")
+            body = Allergens,
+            example = json!(Allergens::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -32,22 +26,22 @@ use tracing::error;
         ),
     )
 )]
-pub async fn patch_rating_endpoint(
-    rating_update: JsonBody<Update>,
+pub async fn get_allergens_route(
     req: &mut Request,
     res: &mut Response,
-) -> Json<EndpointResponse<String>> {
+    starting_with: QueryParam<String, true>,
+) -> Json<EndpointResponse<Allergens>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[3..].join("/");
+    let new_url = parts[2..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
-    return match get_response::<&str, Update, String>(
-        Method::PATCH,
+    return match get_response::<[(&str, String); 1], &str, Allergens>(
+        Method::GET,
         url,
+        Some(&[("starting_with", starting_with.into_inner())]),
         None,
-        Some(rating_update.into_inner()),
         Some(req.headers().clone()),
-        true,
+        false,
     )
     .await {
         Ok(item) => {

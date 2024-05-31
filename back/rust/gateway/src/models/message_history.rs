@@ -9,6 +9,6 @@ pub struct History {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct Message {
+pub struct MessageHistoryBody {
     pub message: String,
 }

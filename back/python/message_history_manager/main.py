@@ -18,7 +18,7 @@ async def get_message_history(user_id: str, start: int, count: int) -> History |
         return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code.value})
 
 
-@app.put("/{user_id}/message-history", response_model=None, response_description="Successful operation")
+@app.post("/{user_id}/message-history", response_model=None, response_description="Successful operation")
 async def add_message_history(user_id: str, body: Message) -> None | JSONResponse:
     try:
         await services.add_message_history(user_id, body.message)

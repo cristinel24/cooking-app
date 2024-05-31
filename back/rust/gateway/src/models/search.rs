@@ -1,6 +1,6 @@
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
-use crate::models::recipe::Card;
+use crate::models::recipe::RecipeCard;
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
@@ -10,13 +10,7 @@ pub struct Results {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct Query {
-    pub search: String,
-}
-
-#[derive(Serialize, Deserialize, Default, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub struct AiBody {
+pub struct SearchWithAiBody {
     pub query: String,
     pub sort: Option<String>,
     pub order: Option<String>,
@@ -27,7 +21,7 @@ pub struct AiBody {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RecipeBody {
+pub struct SearchRecipesBody {
     pub query: Option<String>,
     pub sort: Option<String>,
     pub order: Option<String>,
@@ -38,7 +32,7 @@ pub struct RecipeBody {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct UserBody {
+pub struct SearchUsersBody {
     pub query: Option<String>,
     pub sort: Option<String>,
     pub order: Option<String>,
@@ -69,5 +63,5 @@ pub struct BlacklistedFilters {
 #[serde(rename_all = "camelCase")]
 pub struct DataResponse {
     pub count: u32,
-    pub data: Vec<Card>,
+    pub data: Vec<RecipeCard>,
 }

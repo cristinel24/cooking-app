@@ -1,17 +1,15 @@
-use crate::endpoints::message_history_manager::SERVICE;
-use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::models::message_history::Message;
-use crate::models::ErrorResponse;
-use reqwest::{Method, StatusCode};
-use salvo::oapi::endpoint;
-use salvo::oapi::extract::JsonBody;
-use salvo::prelude::Json;
-use salvo::{Request, Response, Writer};
+use crate::endpoints::{get_response, EndpointResponse};
+use crate::{
+    endpoints::{rating_manager::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
+    models::ErrorResponse,
+};
+use reqwest::Method;
+use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
 use tracing::error;
 
 #[endpoint(
     parameters(
-        ("user_id" = String, description = "Id of the user")
+        ("parent_id" = String, description = "Rating id")
     ),
     responses
     (
@@ -29,21 +27,20 @@ use tracing::error;
         ),
     )
 )]
-pub async fn put_history(
+pub async fn delete_rating_endpoint(
     req: &mut Request,
     res: &mut Response,
-    message: JsonBody<Message>,
 ) -> Json<EndpointResponse<String>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<&str, _, String>(
-        Method::PUT,
+    return match get_response::<&str, &str, String>(
+        Method::DELETE,
         url,
         None,
-        Some(message.into_inner()),
+        None,
         Some(req.headers().clone()),
         true,
     )

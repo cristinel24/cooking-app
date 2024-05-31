@@ -106,8 +106,7 @@ async def process_chatbot_query(
         return JSONResponse(
             status_code=e.status_code, content={"errorCode": e.error_code}
         )
-    except (Exception,) as e:
-        print(e)
+    except (Exception,):
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"errorCode": ErrorCodes.UNKNOWN.value},

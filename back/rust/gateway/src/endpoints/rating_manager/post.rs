@@ -1,26 +1,25 @@
+use super::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse};
 use crate::{
-    endpoints::{rating::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-    models::{rating::List, ErrorResponse},
+    endpoints::{FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
+    models::{rating::RatingCreateBody, ErrorResponse},
 };
-use reqwest::Method;
-use salvo::oapi::extract::QueryParam;
-use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response, Writer};
+use reqwest::{Method, StatusCode};
+use salvo::{
+    oapi::{endpoint, extract::JsonBody},
+    prelude::Json,
+    Request, Response, Writer,
+};
 use tracing::error;
 
 #[endpoint(
-    parameters(
-        ("parent_id" = String, description = "Rating id"),
-        ("start" = i64, description = "Start value"),
-        ("count" = i64, description = "Count value")
-    ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = List,
-            example = json!(List::default())
+            body = String,
+            example = json!("null")
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -30,24 +29,23 @@ use tracing::error;
         ),
     )
 )]
-pub async fn get_rating_endpoint(
+pub async fn post_rating_endpoint(
+    rating_create: JsonBody<RatingCreateBody>,
     req: &mut Request,
     res: &mut Response,
-    start: QueryParam<u32, true>,
-    count: QueryParam<u32, true>,
-) -> Json<EndpointResponse<List>> {
+) -> Json<EndpointResponse<String>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<[(&str, u32); 2], &str, List>(
-        Method::GET,
+    return match get_response::<[(&str, String); 1], RatingCreateBody, String>(
+        Method::POST,
         url,
-        Some(&[("start", start.into_inner()), ("count", count.into_inner())]),
         None,
+        Some(rating_create.into_inner()),
         Some(req.headers().clone()),
-        false,
+        true,
     )
     .await {
         Ok(item) => {

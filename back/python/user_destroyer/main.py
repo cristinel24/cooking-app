@@ -16,15 +16,15 @@ async def delete_user(
         x_user_id: Annotated[str | None, Header()] = None,
         x_user_roles: Annotated[str | None, Header()] = None
 ) -> None | JSONResponse:
+    if not x_user_id:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"errorCode": ErrorCodes.UNAUTHORIZED_REQUEST.value})
+
     try:
         user_roles = int(x_user_roles)
     except ValueError:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
                             content={"errorCode": ErrorCodes.USER_ROLES_INVALID_VALUE.value})
-
-    if not x_user_id:
-        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
-                            content={"errorCode": ErrorCodes.UNAUTHORIZED_REQUEST.value})
 
     if user_id != x_user_id and not user_roles & UserRoles.ADMIN:
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,

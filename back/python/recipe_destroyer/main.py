@@ -24,17 +24,17 @@ async def delete_recipe(
         x_user_id: Annotated[str | None, Header()] = None,
         x_user_roles: Annotated[str | None, Header()] = None
 ) -> None | JSONResponse:
-    try:
-        user_roles = int(x_user_roles)
-    except ValueError:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
-                            content={"errorCode": ErrorCodes.USER_ROLES_INVALID_VALUE.value})
-
     if x_user_id is None:
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
             content={"errorCode": ErrorCodes.UNAUTHENTICATED.value}
         )
+
+    try:
+        user_roles = int(x_user_roles)
+    except ValueError:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"errorCode": ErrorCodes.USER_ROLES_INVALID_VALUE.value})
 
     try:
         await services.delete(recipe_id, x_user_id, user_roles)

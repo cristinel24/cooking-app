@@ -1,0 +1,19 @@
+Unit Testing Results
+
+    - The unit tests for the routes related to role_changer passed successfully.
+    - The unit tests covered scenarios involving invalid users and invalid roles.
+
+Performance Testing
+
+    - The role_changer route works for a single request, but complications arise with multiple requests.
+    - For handling 1000 requests, a timeout of 200 seconds is necessary.
+
+Testing Database
+
+    - Roles were manually verified to have been changed in the database.
+
+Testing Environment
+
+    Operating System: LinuxMint
+    CPU: AMD Ryzen 5
+    Graphics: Radeon

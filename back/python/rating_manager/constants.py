@@ -21,6 +21,15 @@ if USER_RETRIEVER_API_URL is None:
 
 DELETED_FIELD = "«deleted»"
 
+
+class UserRoles:
+    VERIFIED = 0b1
+    ADMIN = 0b10
+    PREMIUM = 0b100
+    BANNED = 0b1000
+    ACTIVE = 0b0
+
+
 RATING_PROJECTION = {
     "_id": 0,
     "createdAt": {"$toDate": "$_id"},
@@ -83,3 +92,4 @@ class ErrorCodes(Enum):
     MISSING_COUNT_QUERY_PARAM = 26417
     PARENT_RATING_NOT_FOUND = 26418
     AUTHOR_NOT_FOUND = 26419
+    USER_ROLES_INVALID_VALUE = 26420

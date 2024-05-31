@@ -1,7 +1,7 @@
 use crate::endpoints::{
     get_response, search::SERVICE, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
 };
-use crate::models::search::{DataResponse, RecipeBody};
+use crate::models::search::{DataResponse, SearchRecipesBody};
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -30,14 +30,14 @@ use tracing::error;
 pub async fn recipes_endpoint(
     req: &mut Request,
     res: &mut Response,
-    data: JsonBody<RecipeBody>,
+    data: JsonBody<SearchRecipesBody>,
 ) -> Json<EndpointResponse<DataResponse>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<&str, RecipeBody, DataResponse>(
+    return match get_response::<&str, SearchRecipesBody, DataResponse>(
         Method::POST,
         url,
         None,

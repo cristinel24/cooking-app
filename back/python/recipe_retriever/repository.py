@@ -44,5 +44,19 @@ class RecipeCollection(MongoCollection):
                     recipe_card.pop("_id")
                     recipe_cards.append(recipe_card)
                 return recipe_cards
-        except errors.PyMongoError:
+        except errors.PyMongoError as e:
+            raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR)
+
+
+class UserCollection(MongoCollection):
+    def __init__(self, connection: pymongo.MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).user
+
+    def is_favorite_recipe(self, user_id: str, recipe_id: str) -> bool:
+        try:
+            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+                item = self._collection.find_one({"id": user_id, "savedRecipes": recipe_id})
+                return item is not None
+        except errors.PyMongoError as e:
             raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR)

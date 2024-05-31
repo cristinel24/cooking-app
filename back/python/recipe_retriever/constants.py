@@ -10,6 +10,7 @@ HOST = os.getenv("HOST", "0.0.0.0")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")
 USER_RETRIEVER_API_URL = os.getenv("USER_RETRIEVER_API_URL", "http://localhost:7998")
+RATING_MANAGER_API_URL = os.getenv("RATING_MANAGER_API_URL", "http://localhost:7999")
 MAX_TIMEOUT_TIME_SECONDS = 3
 
 RECIPE_DATA_PROJECTION = {
@@ -54,3 +55,5 @@ class ErrorCodes(Enum):
     USER_NOT_FOUND = 20903
     NON_RESPONSIVE_API = 20904
     BROKEN_USER_RETRIEVER_RESPONSE = 20905
+    RATING_NOT_FOUND = 20906
+    FAILED_TO_GET_RATING = 20907

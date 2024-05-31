@@ -10,5 +10,5 @@ RUN apt update --quiet --assume-yes && \
     cargo install cargo-watch && \
     cargo build
 
-# CMD ["./target/release/search_cooking_app"]
-CMD cargo watch -x run
+CMD cargo run
+# CMD cargo watch -x run

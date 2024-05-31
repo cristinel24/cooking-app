@@ -3,7 +3,7 @@ import datetime
 from pydantic import BaseModel
 
 
-class RecipeData(BaseModel):
+class RecipeCreationData(BaseModel):
     title: str
     description: str
     prepTime: int

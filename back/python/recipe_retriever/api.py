@@ -20,7 +20,7 @@ async def request_user_card(user_id: str) -> dict:
     except Exception:
         raise UserRetrieverException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.FAILED_TO_GET_USER_CARD)
 
-
+        
 async def request_user_cards(user_ids: UserCardRequestData) -> UserCardResponseData:
     async with httpx.AsyncClient() as client:
         payload = user_ids.model_dump_json()
@@ -35,3 +35,15 @@ async def request_user_cards(user_ids: UserCardRequestData) -> UserCardResponseD
         else:
             user_card_response_data.cards = [UserCardData(**card) for card in response.json()["cards"]]
         return user_card_response_data
+
+
+async def request_recipe_rating(recipe_id: str, x_user_id: str) -> dict | None:
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url=f"{RATING_MANAGER_API_URL}", params={"recipe_id": recipe_id, "author_id": x_user_id})
+            if response.status_code == status.HTTP_404_NOT_FOUND:
+                return None
+            if response.status_code == status.HTTP_200_OK:
+                return response.json()
+    except Exception:
+        raise RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.FAILED_TO_GET_RATING)

@@ -6,7 +6,7 @@ use salvo::oapi::extract::JsonBody;
 use salvo::prelude::Json;
 use salvo::{Request, Response, Writer};
 use tracing::error;
-use crate::models::search::{AiBody, DataResponse};
+use crate::models::search::{SearchWithAiBody, DataResponse};
 
 #[endpoint(
     responses
@@ -28,14 +28,14 @@ use crate::models::search::{AiBody, DataResponse};
 pub async fn ai_endpoint(
     req: &mut Request,
     res: &mut Response,
-    data: JsonBody<AiBody>,
+    data: JsonBody<SearchWithAiBody>,
 ) -> Json<EndpointResponse<DataResponse>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[2..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<&str, AiBody, DataResponse>(
+    return match get_response::<&str, SearchWithAiBody, DataResponse>(
         Method::POST,
         url,
         None,

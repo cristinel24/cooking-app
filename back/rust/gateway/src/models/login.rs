@@ -1,4 +1,4 @@
-use crate::models::user::CardData;
+use crate::models::user::UserCard;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
@@ -13,5 +13,5 @@ pub struct Body {
 #[serde(rename_all = "camelCase")]
 pub struct Success {
     pub session_token: String,
-    pub user: CardData,
+    pub user: UserCard,
 }

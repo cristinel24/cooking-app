@@ -1,6 +1,6 @@
 use crate::endpoints::user_retriever::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::models::user::CardData;
+use crate::models::user::UserCard;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
 use salvo::prelude::Json;
@@ -18,8 +18,8 @@ use tracing::error;
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = CardData,
-            example = json!(CardData::default())
+            body = UserCard,
+            example = json!(UserCard::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -32,13 +32,13 @@ use tracing::error;
 pub async fn get_user_card_item(
     req: &mut Request,
     res: &mut Response,
-) -> Json<EndpointResponse<CardData>> {
+) -> Json<EndpointResponse<UserCard>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<&str, &str, CardData>(
+    return match get_response::<&str, &str, UserCard>(
         Method::GET,
         url,
         None,

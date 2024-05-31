@@ -1,7 +1,8 @@
 [package]
 name = "gateway"
 authors = [
-    "Cristian Andrei <cristianandrei987@gmail.com>"
+    "Cristian Andrei <cristianandrei987@gmail.com>",
+    "Alexandru MITREANU <alexmitreanu04@gmail.com>"
 ]
 version = "0.1.0"
 edition = "2021"

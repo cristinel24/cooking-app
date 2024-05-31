@@ -267,6 +267,25 @@ services:
     volumes:
       - ./python/recipe_creator:/app
 
+  recipe_destroyer:
+    build:
+      context: ./python/recipe_destroyer
+      dockerfile: ../Dockerfile
+    networks:
+      - ca
+    ports:
+      - $RECIPE_DESTROYER_PORT:80
+    environment:
+      - PORT=80
+      - MONGO_URI=$MONGO_URI
+      - DB_NAME=$DB_NAME
+      - ALLERGEN_MANAGER_API_URL=http://allergen_manager
+      - TAG_MANAGER_API_URL=http://tag_manager
+      - RATING_MANAGER_API_URL=http://rating_manager
+      - RECIPE_RETRIEVER_API_URL=http://recipe_retriever
+      - IMAGE_STORAGE_API_URL=http://image_storage
+      - GATEWAY_API_URL=$GATEWAY_API_URL
+
   recipe_editor:
     build: 
       context: ./python/recipe_editor

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct User {
+pub struct UserProfile {
     pub id: String,
     pub username: String,
     pub display_name: String,
@@ -21,7 +21,7 @@ pub struct User {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct CardData {
+pub struct UserCard {
     pub id: String,
     pub username: String,
     pub display_name: String,
@@ -34,7 +34,7 @@ pub struct CardData {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct FullData {
+pub struct UserFullProfile {
     pub id: String,
     pub username: String,
     pub display_name: String,
@@ -62,5 +62,5 @@ pub struct CardsRequestData {
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct Cards {
-    pub cards: Vec<CardData>,
+    pub cards: Vec<UserCard>,
 }

@@ -18,7 +18,8 @@ use crate::endpoints::message_history_manager::{delete_history, get_history, pos
 use crate::endpoints::password_changer::pass_change;
 use crate::endpoints::profile_data_changer::patch_profile_data;
 use crate::endpoints::rating_manager::{
-    delete_rating_endpoint, get_rating_comments_endpoint, patch_rating_endpoint, post_rating_endpoint,
+    delete_rating_endpoint, get_rating_comments_endpoint, patch_rating_endpoint,
+    post_rating_endpoint,
 };
 use crate::endpoints::recipe_creator::post_recipe_item;
 use crate::endpoints::recipe_editor::edit_recipe;
@@ -42,8 +43,10 @@ use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
 use endpoints::credentials_change_requester::request_credentials_change;
 use endpoints::rating_manager::{
-    delete_recipe_ratings_endpoint, get_rating_by_id_endpoint, get_rating_by_recipe_and_author_endpoint, get_recipe_comments_endpoint
+    delete_recipe_ratings_endpoint, get_rating_by_id_endpoint,
+    get_rating_by_recipe_and_author_endpoint, get_recipe_comments_endpoint,
 };
+use endpoints::recipe_saver::get_saved_recipes;
 use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
@@ -266,10 +269,14 @@ fn recipe_retriever_router() -> Router {
 }
 
 fn recipe_saver_router() -> Router {
-    Router::with_path("/users/<user_id>/saved-recipes/<recipe_id>")
+    Router::with_path("/users/<user_id>/saved-recipes")
         .oapi_tag("RECIPE SAVER")
-        .put(put_recipe)
-        .delete(delete_recipe)
+        .get(get_saved_recipes)
+        .push(
+            Router::with_path("/<recipe_id>")
+                .put(put_recipe)
+                .delete(delete_recipe),
+        )
 }
 
 fn register_router() -> Router {

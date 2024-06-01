@@ -2,9 +2,11 @@ from api import request_token_generation, request_email_verification, request_to
 from constants import EMAIL_VERIFICATION_TOKEN_TYPE, ErrorCodes
 from repository import DBWrapper
 from schemas import EmailChange
+from utils import validate_request
 
 
 async def handle_change_email(email_change: EmailChange):
+    validate_request(email_change)
     db_wrapper = DBWrapper()
     if not db_wrapper.check_unique_email(email_change.email):
         raise Exception(ErrorCodes.EMAIL_UNIQUE_CONSTRAINT_VIOLATED.value)

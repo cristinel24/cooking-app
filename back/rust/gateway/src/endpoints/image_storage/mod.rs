@@ -13,7 +13,6 @@ pub use post::post_image;
 pub mod get;
 use crate::models::image_storage::UrlResponse;
 pub use get::get_image;
-
 pub const SERVICE: &str = "image_storage";
 
 #[derive(Deserialize, ToSchema)]
@@ -51,13 +50,16 @@ pub(crate) async fn get_post_image(
     headers: Option<HeaderMap>,
 ) -> anyhow::Result<ImageResponse> {
     let mut req_builder = Client::new().request(method.clone(), format!("http://{service_url}"));
+
+    if let Some(mut headers) = headers {
+        // headers will contain `Content-Type: image/*`, but below `Content-Type: multipart/form-data` is expected
+        headers.remove("Content-Type");
+        req_builder = req_builder.headers(headers);
+    }
+
     if let Some(bytes) = payload {
         req_builder = req_builder
             .multipart(Form::new().part("file", Part::bytes(bytes.to_vec()).file_name("file")));
-    }
-
-    if let Some(headers) = headers {
-        req_builder = req_builder.headers(headers);
     }
 
     let response: reqwest::Response = req_builder.send().await?;
@@ -68,7 +70,7 @@ pub(crate) async fn get_post_image(
             Ok(ImageResponse::Url(response.json::<UrlResponse>().await?))
         } else {
             let name = service_url.split("/").last().unwrap_or("image");
-            let mut file = File::create(format!("{name}.png"))?;
+            let mut file = File::create(format!("../{name}.png"))?;
             file.write_all(&*response.bytes().await?.to_vec())?;
             Ok(ImageResponse::ImageName(name.to_string()))
         }

@@ -11,7 +11,7 @@ user_collection = UserCollection(client.get_connection())
 
 
 async def get_ratings(
-        parent_type: str, parent_id: str, start: int, count: int, filter_query: str, sort_query: str
+        parent_type: str, parent_id: str, start: int, count: int, filter_query: str, sort_query: str, x_user_id
 ) -> RatingList:
     parent_type = parent_type.removesuffix("s")
     filter_query = filter_query.removesuffix("s")
@@ -24,7 +24,7 @@ async def get_ratings(
     sort_aggregate = SORT_DICT.get(sort_query, DEFAULT_SORT)
 
     total, data = rating_collection.find_ratings(parent_id, start, count, filter_aggregate, sort_aggregate)
-    user_cards = await fetch_user_list(list(set([rating["authorId"] for rating in data])))
+    user_cards = await fetch_user_list(list(set([rating["authorId"] for rating in data])), x_user_id)
 
     for rating in data:
         for user in user_cards.cards:
@@ -228,15 +228,15 @@ def delete_all(x_user_id, user_roles, recipe_id):
             recipe_collection.modify_recipe(recipe_id, {"$set": {"ratings": []}}, session)
 
 
-async def get_rating(rating_id: str) -> RatingDataCard:
+async def get_rating(rating_id: str, x_user_id) -> RatingDataCard:
     rating = rating_collection.find_rating_by_id(rating_id)
-    rating["author"] = await get_user_card(rating["authorId"])
+    rating["author"] = await get_user_card(rating["authorId"], x_user_id)
     rating.pop("authorId")
     return RatingDataCard.model_validate(rating)
 
 
-async def get_rating_by_author_and_recipe_id(recipe_id: str, author_id: str) -> RatingDataCard:
+async def get_rating_by_author_and_recipe_id(recipe_id: str, author_id: str, x_user_id) -> RatingDataCard:
     rating = rating_collection.find_rating_by_recipe_and_author_id(recipe_id, author_id)
-    rating["author"] = await get_user_card(rating["authorId"])
+    rating["author"] = await get_user_card(rating["authorId"], x_user_id)
     rating.pop("authorId")
     return RatingDataCard.model_validate(rating)

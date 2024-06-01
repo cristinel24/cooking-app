@@ -41,11 +41,8 @@ export const follow = async (userId, otherUserId, token) => {
 }
 
 export const unfollow = async (userId, otherUserId, token) => {
-    await axios.delete(
-        `${API_URL}/users/${userId}/follow`,
-        { followsId: otherUserId },
-        {
-            headers: ngrok({ Authorization: token }),
-        }
-    )
+    await axios.delete(`${API_URL}/users/${userId}/follow`, {
+        headers: ngrok({ Authorization: token }),
+        data: { followsId: otherUserId },
+    })
 }

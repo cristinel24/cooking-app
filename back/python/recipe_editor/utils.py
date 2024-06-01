@@ -7,6 +7,11 @@ from exception import RecipeEditorException
 from schemas import RecipeData
 
 
+class Actions:
+    INCREMENT = 1
+    DECREMENT = -1
+
+
 def validate_recipe_data(recipe_data: RecipeData):
     if recipe_data.title is not None and not 8 <= len(recipe_data.title) <= 128:
         raise RecipeEditorException(ErrorCodes.INVALID_TITLE_SIZE.value, status.HTTP_400_BAD_REQUEST)

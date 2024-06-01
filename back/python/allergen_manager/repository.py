@@ -23,15 +23,6 @@ class AllergenCollection(MongoCollection):
 
             return [item["allergen"] for item in result]
 
-    async def inc_allergen(self, name: str) -> None:
-        with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
-            result = self._collection.find_one({"allergen": name})
-
-            if result:
-                self._collection.update_one(result, {"$inc": {"counter": 1}})
-            else:
-                self._collection.insert_one({"allergen": name, "counter": 1})
-
     async def inc_allergens(self, names: list[str]) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             results = [result["allergen"] for result in self._collection.find({"allergen": {"$in": names}})]
@@ -40,18 +31,6 @@ class AllergenCollection(MongoCollection):
             new_allergens = [{"allergen": allergen, "counter": 1} for allergen in names if allergen not in results]
             if new_allergens:
                 self._collection.insert_many(new_allergens)
-
-    async def dec_allergen(self, name: str) -> None:
-        with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
-            result = self._collection.find_one({"allergen": name})
-
-            if not result:
-                raise exceptions.AllergenException(ErrorCodes.NONEXISTENT_ALLERGEN.value)
-
-            if result["counter"] == 1:
-                self._collection.delete_one(result)
-            else:
-                self._collection.update_one(result, {"$inc": {"counter": -1}})
 
     async def dec_allergens(self, names: list[str]) -> None:
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):

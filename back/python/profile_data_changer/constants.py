@@ -9,8 +9,7 @@ HOST = os.getenv("HOST", "0.0.0.0")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
 DB_NAME = os.getenv("DB_NAME")
 ALLERGEN_MANAGER_API_URL = os.getenv("ALLERGEN_MANAGER_API_URL", "http://localhost:8001")
-INC_ALLERGENS = "/allergens/inc"
-DEC_ALLERGENS = "/allergens/dec"
+POST_ALLERGENS = "/"
 MONGO_TIMEOUT = 3
 
 ICON_MAX_LENGTH = 2048
@@ -24,10 +23,18 @@ URL_SCHEMES = {"https", "http"}
 UNSAFE_USER_DATA_FIELDS = {"description"}
 
 
+class UserRoles:
+    VERIFIED = 0b1
+    ADMIN = 0b10
+    PREMIUM = 0b100
+    BANNED = 0b1000
+    ACTIVE = 0b0
+
+
 class ErrorCodes(Enum):
     USER_NOT_FOUND = 21800
     DATABASE_ERROR = 21801
-    UNAUTHORIZED = 21802
+    UNAUTHORIZED_REQUEST = 21802
     SERVER_ERROR = 21803
     ICON_SIZE_TOO_LARGE = 21804
     ICON_REQUIRED = 21805
@@ -38,6 +45,8 @@ class ErrorCodes(Enum):
     DESCRIPTION_TOO_LONG = 21810
     MALFORMED_HTML = 21811
     DATABASE_TIMEOUT = 21812
+    FORBIDDEN_REQUEST = 21813
+    USER_ROLES_INVALID_VALUE = 21814
 
 
 ICON_VALIDATION = {

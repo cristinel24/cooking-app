@@ -1,6 +1,7 @@
+from fastapi import status
+
 from constants import ErrorCodes, UserRoles
 from exceptions import RoleChangerException
-from fastapi import status
 from repository import UserCollection
 from schemas import *
 

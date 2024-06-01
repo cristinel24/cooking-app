@@ -61,5 +61,21 @@ class RecipeCardData(BaseModel):
     ratingAvg: float
     updatedAt: datetime
     createdAt: datetime
-    userRating: RatingDataCard | None
-    isFavorite: bool | None
+    userRating: RatingDataCard | None = None
+    isFavorite: bool | None = None
+      
+
+class RecipeCardsRequest(BaseModel):
+    ids: list[str]
+
+
+class RecipeCardsResponse(BaseModel):
+    recipeCards: list[RecipeCardData | None]
+
+
+class UserCardRequestData(BaseModel):
+    ids: list[str] | None = None
+
+
+class UserCardResponseData(BaseModel):
+    cards: list[UserCardData]

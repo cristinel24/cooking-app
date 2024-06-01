@@ -13,13 +13,23 @@ app = FastAPI(title="Recipe Editor")
 
 
 @app.patch("/{recipe_id}", response_model=None, response_description="Successful operation")
-async def edit_recipe(recipe_id: str, recipe_data: RecipeData,
-                      x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
+async def edit_recipe(
+        recipe_id: str, recipe_data: RecipeData,
+        x_user_id: Annotated[str | None, Header()] = None,
+        x_user_roles: Annotated[str | None, Header()] = None
+) -> None | JSONResponse:
     if not x_user_id:
-        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})
+
     try:
-        await services.edit_recipe(x_user_id, recipe_id, recipe_data)
+        user_roles = int(x_user_roles)
+    except ValueError:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"errorCode": ErrorCodes.USER_ROLES_INVALID_VALUE.value})
+
+    try:
+        await services.edit_recipe(x_user_id, user_roles, recipe_id, recipe_data)
     except RecipeEditorException as e:
         return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
 

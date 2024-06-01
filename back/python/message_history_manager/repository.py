@@ -1,9 +1,10 @@
-import exceptions
 import pymongo
-from constants import (DB_NAME, HISTORY_MAX_SIZE, MAX_TIMEOUT_TIME_SECONDS,
-                       MONGO_URI, ErrorCodes)
 from fastapi import status
 from pymongo import errors
+
+import exceptions
+from constants import (DB_NAME, HISTORY_MAX_SIZE, MAX_TIMEOUT_TIME_SECONDS,
+                       MONGO_URI, ErrorCodes)
 from utils import match_collection_error
 
 
@@ -25,7 +26,8 @@ class MessageHistoryCollection(MongoCollection):
                     {"messageHistory": {"$slice": [-start - count, count]}}
                 )
             if result is None:
-                raise exceptions.MessageHistoryException(ErrorCodes.MESSAGE_HISTORY_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+                raise exceptions.MessageHistoryException(ErrorCodes.MESSAGE_HISTORY_NOT_FOUND,
+                                                         status.HTTP_404_NOT_FOUND)
             return result["messageHistory"]
         except errors.PyMongoError as e:
             raise match_collection_error(e)

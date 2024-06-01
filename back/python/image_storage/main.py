@@ -1,7 +1,8 @@
 import fnmatch
 import os.path
+from typing import Annotated
 
-from fastapi import FastAPI, UploadFile, status
+from fastapi import FastAPI, UploadFile, status, Header
 from fastapi.responses import FileResponse, JSONResponse
 
 import services
@@ -13,7 +14,10 @@ app = FastAPI(title="Image Storage")
 
 
 @app.post("/", response_model=UrlResponse, response_description="Successful operation")
-async def add_image(file: UploadFile) -> UrlResponse | JSONResponse:
+async def add_image(file: UploadFile, x_user_id: Annotated[str | None, Header()] = None) -> UrlResponse | JSONResponse:
+    if not x_user_id:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"errorCode": ErrorCodes.UNAUTHORIZED_USER.value})
     try:
         image_url = await services.add_image(file)
         return UrlResponse(url=image_url)

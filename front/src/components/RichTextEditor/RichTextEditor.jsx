@@ -1,5 +1,3 @@
-import React from 'react'
-
 import './index.css'
 
 import { EditorProvider } from '@tiptap/react'
@@ -11,26 +9,25 @@ function RichTextEditor({
     onChange,
     onRemove,
     allowImageUploads = true,
-    defaultValue,
+    value,
     className,
     id,
     errorCheck,
 }) {
-    const content = defaultValue ? defaultValue : ''
-
     return (
         <div className={`form-item ${className ? className : ''}`}>
             <div className="rich-text-editor" id={id}>
                 <EditorProvider
                     slotBefore={
                         <RTEMenuBar
+                            content={value}
                             onRemove={onRemove}
                             onChange={onChange}
                             allowImageUploads={allowImageUploads}
                         />
                     }
                     extensions={extensions}
-                    content={content}
+                    content={value}
                     editorProps={{
                         attributes: {
                             class: 'rich-text-editor-content',

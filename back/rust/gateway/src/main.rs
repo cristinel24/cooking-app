@@ -169,8 +169,8 @@ fn ai_router() -> Router {
 }
 
 fn allergen_manager_router() -> Router {
-    Router::with_path("/allergen")
-        .oapi_tag("ALLERGEN")
+    Router::with_path("/allergens")
+        .oapi_tag("ALLERGEN MANAGER")
         .get(get_allergens_route)
 }
 
@@ -315,7 +315,7 @@ fn search_history_manager_router() -> Router {
 }
 
 fn tag_manager_router() -> Router {
-    Router::with_path("/tag").oapi_tag("TAG").get(get_tags)
+    Router::with_path("/tags").oapi_tag("TAG MANAGER").get(get_tags)
 }
 
 fn user_destroyer_router() -> Router {

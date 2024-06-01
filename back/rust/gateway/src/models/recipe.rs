@@ -20,7 +20,7 @@ pub struct Body {
 #[serde(rename_all = "camelCase")]
 pub struct Recipe {
     pub id: String,
-    pub author: Card,
+    pub author: user::Card,
     pub title: String,
     pub description: String,
     pub prep_time: u32,

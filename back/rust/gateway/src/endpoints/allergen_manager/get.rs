@@ -4,12 +4,14 @@ use crate::models::allergens::Allergens;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
-use salvo::oapi::extract::QueryParam;
 use salvo::prelude::Json;
 use salvo::{Request, Response, Writer};
 use tracing::error;
 
 #[endpoint(
+    parameters(
+        ("starting_with" = Option<String>, Query, description = "Starting with"),
+    ),
     responses
     (
         (
@@ -29,16 +31,16 @@ use tracing::error;
 pub async fn get_allergens_route(
     req: &mut Request,
     res: &mut Response,
-    starting_with: QueryParam<String, true>,
 ) -> Json<EndpointResponse<Allergens>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[2..].join("/");
+    let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
-    return match get_response::<[(&str, String); 1], &str, Allergens>(
+    println!("{url}");
+    return match get_response::<Vec<(&String, &String)>, &str, Allergens>(
         Method::GET,
         url,
-        Some(&[("starting_with", starting_with.into_inner())]),
+        Some(&req.queries().iter().collect()),
         None,
         Some(req.headers().clone()),
         false,

@@ -6,12 +6,12 @@ from exceptions import RecipeSaverException
 from schemas import RecipeCardsRequest, RecipeCardsResponse, RecipeCardData
 
 
-async def request_recipe_cards(recipe_ids: RecipeCardsRequest) -> RecipeCardsResponse:
+async def request_recipe_cards(recipe_ids: RecipeCardsRequest, user_id: str) -> RecipeCardsResponse:
     print(RECIPE_RETRIEVER_API_URL)
     async with httpx.AsyncClient() as client:
         payload = recipe_ids.model_dump_json()
         response = await client.post(url=f"{RECIPE_RETRIEVER_API_URL}/cards",
-                                     content=payload)
+                                     content=payload, headers={"X-User-Id": user_id})
         recipe_cards_response = RecipeCardsResponse(recipeCards=[])
         if "recipeCards" not in response.json():
             if "errorCode" in response.json():

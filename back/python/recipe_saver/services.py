@@ -20,7 +20,7 @@ async def get_recipes(user_id: str, start: int, count: int) -> (int, list[Recipe
     if saved_recipe_ids:
         try:
             saved_recipes_cards = (await api.request_recipe_cards(
-                RecipeCardsRequest(ids=saved_recipe_ids)
+                RecipeCardsRequest(ids=saved_recipe_ids), user_id
             )).recipeCards
         except httpx.ConnectError:
             raise RecipeSaverException(ErrorCodes.NON_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)

@@ -28,7 +28,6 @@ export default function Sidebar({ profileData, setProfileData }) {
 
     const toggleFollow = async () => {
         if (profileData?.isFollowing !== undefined) {
-            console.log(profileData.isFollowing)
             try {
                 setIsFollowLoading(true)
                 if (profileData?.isFollowing) {
@@ -155,7 +154,7 @@ export default function Sidebar({ profileData, setProfileData }) {
                         {profileData.followsCount} urmăriți
                     </button>
                 </p>
-                {loggedIn() && (
+                {loggedIn() && profileData?.id != user?.id && (
                     <Button
                         disabled={isFollowLoading}
                         text={profileData.isFollowing ? 'Nu mai urmări' : 'Urmărește'}

@@ -19,7 +19,7 @@ pub struct RatingCard {
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct RatingList {
-    pub ratings: Vec<RatingCard>,
+    pub data: Vec<RatingCard>,
     pub total: usize,
 }
 

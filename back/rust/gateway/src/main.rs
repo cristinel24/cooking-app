@@ -18,7 +18,7 @@ use crate::endpoints::message_history_manager::{delete_history, get_history, pos
 use crate::endpoints::password_changer::pass_change;
 use crate::endpoints::profile_data_changer::patch_profile_data;
 use crate::endpoints::rating_manager::{
-    delete_rating_endpoint, get_ratings_endpoint, patch_rating_endpoint, post_rating_endpoint,
+    delete_rating_endpoint, get_rating_comments_endpoint, patch_rating_endpoint, post_rating_endpoint,
 };
 use crate::endpoints::recipe_creator::post_recipe_item;
 use crate::endpoints::recipe_editor::edit_recipe;
@@ -42,7 +42,7 @@ use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
 use endpoints::credentials_change_requester::request_credentials_change;
 use endpoints::rating_manager::{
-    delete_recipe_ratings_endpoint, get_rating_by_author_endpoint, get_rating_endpoint,
+    delete_recipe_ratings_endpoint, get_rating_by_id_endpoint, get_rating_by_recipe_and_author_endpoint, get_recipe_comments_endpoint
 };
 use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
@@ -229,17 +229,17 @@ fn profile_data_changer_router() -> Router {
 fn rating_manager_router() -> Router {
     Router::new().oapi_tag("RATING MANAGER").append(&mut vec![
         Router::with_path("/ratings")
-            .get(get_rating_by_author_endpoint)
+            .get(get_rating_by_recipe_and_author_endpoint)
             .post(post_rating_endpoint)
             .push(
                 Router::with_path("/<parent_id>")
-                    .get(get_rating_endpoint)
-                    .push(Router::with_path("/comments").get(get_ratings_endpoint))
+                    .get(get_rating_by_id_endpoint)
+                    .push(Router::with_path("/comments").get(get_rating_comments_endpoint))
                     .patch(patch_rating_endpoint)
                     .delete(delete_rating_endpoint),
             ),
         Router::with_path("/recipes/<parent_id>").append(&mut vec![
-            Router::with_path("/comments").get(get_ratings_endpoint),
+            Router::with_path("/comments").get(get_recipe_comments_endpoint),
             Router::with_path("/ratings").delete(delete_recipe_ratings_endpoint),
         ]),
     ])

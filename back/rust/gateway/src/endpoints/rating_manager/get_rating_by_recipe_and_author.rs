@@ -10,7 +10,8 @@ use tracing::error;
 
 #[endpoint(
     parameters(
-        ("parent_id" = String, description = "Rating id"),
+        ("recipe_id" = String, Query, description = "Recipe id"),
+        ("author_id" = String, Query, description = "Author id")
     ),
     responses
     (
@@ -28,7 +29,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn get_rating_endpoint(
+pub async fn get_rating_by_recipe_and_author_endpoint(
     req: &mut Request,
     res: &mut Response,
 ) -> Json<EndpointResponse<RatingCard>> {
@@ -37,10 +38,10 @@ pub async fn get_rating_endpoint(
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<&str, &str, RatingCard>(
+    return match get_response::<Vec<(&String, &String)>, &str, RatingCard>(
         Method::GET,
         url,
-        None,
+        Some(&req.queries().iter().collect()),
         None,
         Some(req.headers().clone()),
         false,

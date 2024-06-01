@@ -9,11 +9,11 @@ use tracing::error;
 
 #[endpoint(
     parameters(
-        ("parent_id" = String, description = "Rating id"),
+        ("parent_id" = String, description = "Recipe id"),
         ("start" = i64, Query, description = "Start value"),
         ("count" = i64, Query, description = "Count value"),
-        ("filter" = String, Query, description = "Type of comments (optional)"),
-        ("sort" = String, Query, description = "Sorting criteria (optional)")
+        ("filter" = Option<String>, Query, description = "Type of comments (optional)"),
+        ("sort" = Option<String>, Query, description = "Sorting criteria (optional)")
     ),
     responses
     (
@@ -31,7 +31,7 @@ use tracing::error;
         ),
     )
 )]
-pub async fn get_ratings_endpoint(
+pub async fn get_recipe_comments_endpoint(
     req: &mut Request,
     res: &mut Response,
 ) -> Json<EndpointResponse<RatingList>> {

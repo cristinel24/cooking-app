@@ -2,6 +2,7 @@ use crate::models::ErrorResponse;
 use bytes::Bytes;
 use reqwest::multipart::{Form, Part};
 use reqwest::{Client, Method};
+use salvo::http::HeaderMap;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 use std::fs::File;
@@ -47,11 +48,16 @@ pub(crate) async fn get_post_image(
     method: Method,
     service_url: String,
     payload: Option<Bytes>,
+    headers: Option<HeaderMap>,
 ) -> anyhow::Result<ImageResponse> {
     let mut req_builder = Client::new().request(method.clone(), format!("http://{service_url}"));
     if let Some(bytes) = payload {
         req_builder = req_builder
             .multipart(Form::new().part("file", Part::bytes(bytes.to_vec()).file_name("file")));
+    }
+
+    if let Some(headers) = headers {
+        req_builder = req_builder.headers(headers);
     }
 
     let response: reqwest::Response = req_builder.send().await?;

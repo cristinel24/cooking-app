@@ -34,7 +34,7 @@ pub async fn get_image(req: &mut Request, res: &mut Response) {
     let new_url = parts[3..].join("/");
     let url = format!("{SERVICE}/{new_url}");
 
-    match get_post_image(Method::GET, url, None).await {
+    match get_post_image(Method::GET, url, None, Some(req.headers().clone())).await {
         Ok(item) => match item {
             ImageResponse::ImageName(name) => {
                 let file_name = format!("{name}.png");

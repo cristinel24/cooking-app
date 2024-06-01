@@ -3,6 +3,11 @@ USAGE: pytest tests/test_routes/test_login_routes.py
 Tested: exceptions: invalid user
 All tests: ~6.0 seconds
 
+ADD TO REQUIREMENTS:
+pytest==7.1.3
+httpx==0.23.0
+pytest-asyncio==0.19.0
+
 """
 
 

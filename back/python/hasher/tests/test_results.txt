@@ -1,0 +1,9 @@
+Unit Testing Results
+
+    - The unit tests for the routes related to hasher passed with 500_INTERNAL_SERVER_ERROR.
+
+Testing Environment
+
+    Operating System: LinuxMint
+    CPU: AMD Ryzen 5
+    Graphics: Radeon

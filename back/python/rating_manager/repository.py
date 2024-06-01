@@ -86,6 +86,10 @@ class RatingCollection(MongoCollection):
                         }
                     }]
                 ).next()
+
+                if len(result["data"]) == 0:
+                    return 0, []
+
                 return result["total"][0]["total"], result["data"]
         except Exception as e:
             raise transform_exception(e)

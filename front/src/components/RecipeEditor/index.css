@@ -1,0 +1,48 @@
+.recipe-editor {
+}
+
+.recipe-editor-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+
+    align-items: center;
+}
+
+.recipe-editor-row {
+    display: flex;
+    gap: 10px;
+}
+.recipe-editor-center-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.recipe-editor-button {
+    background: transparent;
+    color: var(--input-color);
+    border: none;
+    cursor: pointer;
+    font-size: inherit;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: color 0.2s ease-in-out;
+}
+
+.recipe-editor-button:hover {
+    color: var(--color-primary);
+}
+
+.recipe-editor-field-array-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    > * {
+        width: 100%;
+    }
+}

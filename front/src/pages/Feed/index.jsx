@@ -64,6 +64,7 @@ export default function Feed() {
             setError('')
             navigate(`/${feed.path}`)
         } else if (results.recipes.length == 0) {
+            let ignore = false
             // after page change, this code should get triggered
             const fetch = async () => {
                 try {
@@ -85,7 +86,6 @@ export default function Feed() {
                 }
             }
 
-            let ignore = false
             fetch()
             return () => {
                 ignore = true
@@ -100,12 +100,10 @@ export default function Feed() {
                 start: results.recipes.length,
                 count: 10,
             })
-            if (!ignore) {
-                setResults((results) => ({
-                    ...result,
-                    recipes: [...results.recipes, ...result.recipes],
-                }))
-            }
+            setResults((results) => ({
+                ...result,
+                recipes: [...results.recipes, ...result.recipes],
+            }))
         } catch (e) {
             // if fetching fails, set results.count to 0 so that InfiniteScroll thinks there
             // are no more results
@@ -151,10 +149,10 @@ export default function Feed() {
             <Dropdown options={feeds} option={feed} setOption={setFeed} />
             <InfiniteScroll
                 className="feed"
-                dataLength={results.recipes.length} //This is important field to render the next data
+                dataLength={results.recipes.length}
                 next={fetchRecipes}
                 hasMore={error.length > 0 ? false : results.recipes.length < results.count}
-                loader={<h4>Loading...</h4>}
+                loader={<h4 style={{ textAlign: 'center' }}>Se încarcă...</h4>}
                 endMessage={
                     error.length > 0 ? (
                         <p style={{ textAlign: 'center' }}>
@@ -162,7 +160,7 @@ export default function Feed() {
                         </p>
                     ) : (
                         <p style={{ textAlign: 'center' }}>
-                            <b>No more recipes for you</b>
+                            <b>Toate rețetele au fost încărcate.</b>
                         </p>
                     )
                 }

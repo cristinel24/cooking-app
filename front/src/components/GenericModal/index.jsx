@@ -11,7 +11,6 @@ export default function GenericModal({
     contentLabel,
     children,
 }) {
-    contentLabel = 'dsfdbffss'
     return (
         <Modal
             isOpen={isOpen}
@@ -19,8 +18,10 @@ export default function GenericModal({
             contentLabel="Example Modal"
             className={`modal ${className ? className : ''}`}
             overlayClassName="modal-overlay"
+            ariaHideApp={false}
         >
             <div className="modal-title-bar">
+                <h3>{contentLabel}</h3>
                 <button type="button" onClick={onRequestClose} className="modal-close-button">
                     <IoIosClose />
                 </button>

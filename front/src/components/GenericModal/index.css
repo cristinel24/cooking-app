@@ -18,15 +18,23 @@
 }
 
 .modal-title-bar {
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
-    padding: 10px;
-    padding-bottom: 0px;
+    /* justify-content: flex-end; */
+    padding: 20px;
+    align-items: center;
+    width: 100%;
+
+    h3 {
+        margin: 0;
+    }
 }
 
 .modal-close-button {
+    margin-left: auto;
     background-color: var(--color-primary);
+    height: min-content;
     transition: background-color 0.2s ease-in-out;
     border-radius: 9999px;
     padding: 0;
@@ -49,5 +57,5 @@
 .modal-overlay {
     position: fixed;
     inset: 0px;
-    background-color: color-mix(in srgb, var(--body-bg-color) 75%, rgba(0, 0, 0, 0));
+    background-color: color-mix(in srgb, var(--body-bg-color) 75%, rgba(0, 0, 0, 0.5));
 }

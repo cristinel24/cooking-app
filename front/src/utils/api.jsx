@@ -1,6 +1,7 @@
 // error map
 const errors = {
     12345: 'Example error',
+    21001: 'Deja urmăriți acest utilizator',
     21604: 'Acest token nu este valid',
     25400: 'Numele de utilizator există deja',
 }
@@ -28,3 +29,4 @@ export const getErrorMessage = (error) => {
 
 // for testing only
 export const delay = (ms) => new Promise((res) => setTimeout(res, ms))
+export const ngrok = (headers) => ({ ...headers, 'ngrok-skip-browser-warning': '1' })

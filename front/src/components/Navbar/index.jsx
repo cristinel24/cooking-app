@@ -16,7 +16,7 @@ const Navbar = () => {
 
     const navigate = useNavigate()
 
-    const { logout, loggedIn } = useContext(UserContext)
+    const { logout, loggedIn, user } = useContext(UserContext)
     const { toggleTheme } = useContext(ThemeContext)
 
     const [activeDropdown, setActiveDropdown] = useState('nav-dropdown')
@@ -73,10 +73,10 @@ const Navbar = () => {
                         <Link to="/settings" className="nav-button">
                             <IoSettingsOutline />
                         </Link>
-                        <Link to="/profile" className="nav-button">
+                        <Link to={`/profile/${user?.id}`} className="nav-button">
                             <FaRegUser />
                         </Link>
-                        <Link to="/profile/favorite" className="nav-button">
+                        <Link to={`/profile/${user?.id}/favorites`} className="nav-button">
                             <FaRegHeart />
                         </Link>
                         <button type="button" className="nav-button" onClick={onLogout}>

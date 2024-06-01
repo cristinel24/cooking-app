@@ -1,6 +1,6 @@
 .user-card {
     --user-card-image-height: 8rem;
-    --user-card-padding: 20px;
+    --user-card-padding: 10px;
 
     position: relative;
 
@@ -67,12 +67,14 @@
     font-weight: bold;
     display: flex;
     align-items: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     color: var(--color-primary);
 }
 
 @media (min-width: 481px) and (max-width: 767px) {
     .user-card {
-        --user-card-image-height: 10.5rem;
+        --user-card-image-height: 7.5rem;
     }
     .user-card-details-display-name {
         font-size: 1rem;
@@ -88,16 +90,16 @@
 
 @media (min-width: 320px) and (max-width: 480px) {
     .user-card {
-        --user-card-image-height: 8rem;
+        --user-card-image-height: 5.5rem;
     }
     .user-card-details-display-name {
         font-size: 0.8rem;
     }
 
     .user-card-details-user-name {
-        font-size: 0.5rem;
+        font-size: 0.7rem;
     }
     .user-card-details {
-        font-size: 0.5rem;
+        font-size: 0.7rem;
     }
 }

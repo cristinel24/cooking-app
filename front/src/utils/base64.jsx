@@ -17,10 +17,12 @@ export const base64ToFile = (base64Image) => {
     return new File([blob], '', { type: base64Image.split(',')[0].trim() })
 }
 
+// must be awaited; returns a promise
 export const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = () => {
+            console.log(reader.result.slice(0, 100))
             resolve(reader.result)
         }
         reader.onerror = () => {
@@ -31,13 +33,13 @@ export const fileToBase64 = (file) => {
 }
 
 export function encodeObjectToBase64(obj) {
-    const jsonString = JSON.stringify(obj);
-    const base64String = btoa(encodeURIComponent(jsonString));
-    return base64String;
+    const jsonString = JSON.stringify(obj)
+    const base64String = btoa(encodeURIComponent(jsonString))
+    return base64String
 }
 
 export function decodeBase64ToObject(base64String) {
-    const jsonString = decodeURIComponent(atob(base64String));
-    const obj = JSON.parse(jsonString);
-    return obj;
+    const jsonString = decodeURIComponent(atob(base64String))
+    const obj = JSON.parse(jsonString)
+    return obj
 }

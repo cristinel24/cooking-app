@@ -1,3 +1,16 @@
+"""
+USAGE: pytest tests/test_routes/test_recipe_creator_routes.py
+Tested: exceptions: missing user and invalid data
+All tests: error 
+
+
+ADD TE REQUIREMENTS.TXT
+pytest==7.1.3
+httpx==0.23.0
+pytest-asyncio==0.19.0
+"""
+
+
 import os
 import sys
 from unittest.mock import patch

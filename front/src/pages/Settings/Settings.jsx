@@ -1,13 +1,16 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import './index.css'
 import { Button } from '../../components'
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../context'
+import { getProfile } from '../../services/profile'
+import { ClipLoader } from 'react-spinners'
 
 export default function Settings() {
     const navigate = useNavigate()
-    const { logout } = useContext(UserContext)
+    const { user, token, logout } = useContext(UserContext)
     const { pathname } = useLocation()
+    const [profile, setProfile] = useState()
 
     const links = [
         { link: '/settings/account', display: 'Account', alt: ['/settings'] },
@@ -18,14 +21,45 @@ export default function Settings() {
 
     const onLogout = () => {
         logout()
-        navigate("/")
+        navigate('/')
+    }
+
+    useEffect(() => {
+        let ignore = false
+        const fetchProfile = async () => {
+            try {
+                const profile = await getProfile(user.id, token)
+                if (!ignore) {
+                    setProfile(profile)
+                }
+            } catch (e) {
+                navigate('/error')
+            }
+        }
+        fetchProfile()
+        return () => (ignore = true)
+    }, [])
+
+    if (!profile) {
+        return (
+            <ClipLoader
+                className="loading"
+                cssOverride={{
+                    alignSelf: 'center',
+                }}
+                color={'var(--text-color)'}
+                loading={true}
+                aria-label="Se încarcă..."
+                data-testid="loader"
+            />
+        )
     }
 
     return (
-        <div className="settings">
+        <div className="fh settings">
             <div className="settings-card settings-menu">
                 <div className="settings-links">
-                    {links.map(({link, display, alt}) => (
+                    {links.map(({ link, display, alt }) => (
                         <Link
                             key={link}
                             to={link}
@@ -40,7 +74,7 @@ export default function Settings() {
                 </div>
             </div>
             <div className="settings-card settings-tab">
-                <Outlet />
+                <Outlet context={profile} />
             </div>
         </div>
     )

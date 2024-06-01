@@ -186,8 +186,9 @@ fn follow_manager_router() -> Router {
                 .get(get_all_followers)
                 .push(Router::with_path("/count").get(get_followers_count)),
             Router::with_path("/following")
-                .push(Router::with_path("/count").get(get_user_following_count))
                 .get(get_all_following)
+                .push(Router::with_path("/count").get(get_user_following_count)),
+            Router::with_path("/follow")
                 .post(post_new_following_user)
                 .delete(delete_following_user),
         ])

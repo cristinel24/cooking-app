@@ -1,13 +1,11 @@
-import os
-import pathlib
 from io import BytesIO
 
 import uuid6
-from PIL import Image
-from fastapi import UploadFile
-
-from constants import IMAGE_DIRECTORY_PATH, MAX_IMAGE_SIZE, ACCEPTED_IMAGE_EXTENSIONS, ErrorCodes, IMAGE_URL_HEAD
+from constants import (ACCEPTED_IMAGE_FORMATS, IMAGE_DIRECTORY_PATH,
+                       IMAGE_URL_HEAD, MAX_IMAGE_SIZE, ErrorCodes)
 from exception import ImageStorageException
+from fastapi import UploadFile
+from PIL import Image, UnidentifiedImageError
 
 
 async def add_image(file: UploadFile) -> str:

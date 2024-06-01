@@ -53,7 +53,7 @@ async def get_recipe_cards(recipe_ids: list[str], x_user_id: str) -> list[Recipe
     try:
         user_cards = (await request_user_cards(UserCardRequestData(ids=author_ids), x_user_id)).cards
     except httpx.ConnectError:
-        raise RecipeException(ErrorCodes.NON_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
+        raise RecipeException(status.HTTP_503_SERVICE_UNAVAILABLE, ErrorCodes.NON_RESPONSIVE_API)
 
     for recipe_card in recipe_cards:
         recipe_card["author"] = (

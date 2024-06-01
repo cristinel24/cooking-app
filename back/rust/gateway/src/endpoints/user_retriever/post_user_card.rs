@@ -11,9 +11,6 @@ use crate::models::ErrorResponse;
 use tracing::error;
 
 #[endpoint(
-    parameters(
-        ("user_id" = String, description = "Id of the user")
-    ),
     responses
     (
         (

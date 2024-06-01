@@ -41,7 +41,9 @@ use crate::graceful_shutdown::GracefulShutdown;
 use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
 use endpoints::credentials_change_requester::request_credentials_change;
-use endpoints::rating_manager::{delete_recipe_ratings_endpoint, get_rating_by_author_endpoint, get_rating_endpoint};
+use endpoints::rating_manager::{
+    delete_recipe_ratings_endpoint, get_rating_by_author_endpoint, get_rating_endpoint,
+};
 use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
@@ -310,14 +312,17 @@ fn user_destroyer_router() -> Router {
 }
 
 fn user_retriever_router() -> Router {
-    Router::with_path("/users/<user_id>")
+    Router::with_path("/users")
         .oapi_tag("USER RETRIEVER")
-        .get(get_user_data_item)
-        .append(&mut vec![
-            Router::with_path("/card").get(get_user_card_item),
-            Router::with_path("/profile").get(get_user_profile_item),
-        ])
         .post(post_user_card_item)
+        .push(
+            Router::with_path("/<user_id>")
+                .get(get_user_data_item)
+                .append(&mut vec![
+                    Router::with_path("/card").get(get_user_card_item),
+                    Router::with_path("/profile").get(get_user_profile_item),
+                ]),
+        )
 }
 
 fn username_changer_router() -> Router {

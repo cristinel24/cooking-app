@@ -7,7 +7,7 @@ recipe_collection = RecipeCollection()
 user_collection = UserCollection()
 
 
-async def get_recipe_by_id(recipe_id: str, x_user_id) -> RecipeData:
+async def get_recipe_by_id(recipe_id: str, x_user_id: str | None) -> RecipeData:
     recipe_data = recipe_collection.get_recipe_by_id(recipe_id, RECIPE_DATA_PROJECTION, True)
     if not recipe_data:
         raise exceptions.RecipeException(status.HTTP_404_NOT_FOUND_NOT_FOUND, ErrorCodes.NONEXISTENT_RECIPE)
@@ -19,13 +19,15 @@ async def get_recipe_by_id(recipe_id: str, x_user_id) -> RecipeData:
     recipe_data.pop("ratingSum")
     recipe_data.pop("ratingCount")
     recipe_data["author"] = user_card
-    user_rating = await request_recipe_rating(recipe_id, x_user_id)
+    user_rating = None
+    if x_user_id:
+        user_rating = await request_recipe_rating(recipe_id, x_user_id)
     recipe_data["userRating"] = user_rating if user_rating else None
     recipe_data["isFavorite"] = user_collection.is_favorite_recipe(x_user_id, recipe_id) if author_id != x_user_id and x_user_id is not None else None
     return RecipeData(**recipe_data)
 
 
-async def get_recipe_card_by_id(recipe_id: str, x_user_id) -> RecipeCardData:
+async def get_recipe_card_by_id(recipe_id: str, x_user_id: str | None) -> RecipeCardData:
     recipe_card = recipe_collection.get_recipe_by_id(recipe_id, RECIPE_DATA_CARD_PROJECTION, False)
     if not recipe_card:
         raise exceptions.RecipeException(status.HTTP_404_NOT_FOUND_NOT_FOUND, ErrorCodes.NONEXISTENT_RECIPE)

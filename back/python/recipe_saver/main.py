@@ -44,10 +44,12 @@ async def get_saved_recipes(user_id: str, start: int, count: int,
                             content={"errorCode": constants.ErrorCodes.FORBIDDEN_REQUEST.value})
 
     try:
-        return SavedRecipesModel(savedRecipes=await services.get_recipes(user_id, start, count))
+        total, data = await services.get_recipes(user_id, start, count)
+        return SavedRecipesModel(total=total, data=data)
     except exceptions.RecipeSaverException as e:
         return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code})
-    except (Exception,):
+    except (Exception,) as e:
+        print(e)
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             content={"errorCode": constants.ErrorCodes.SERVER_ERROR.value})
 

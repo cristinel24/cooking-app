@@ -30,7 +30,8 @@ class RecipeCardData(BaseModel):
 
 
 class SavedRecipesModel(BaseModel):
-    savedRecipes: list[RecipeCardData]
+    data: list[RecipeCardData]
+    total: int
 
 
 class RecipeCardsRequest(BaseModel):

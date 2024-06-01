@@ -25,7 +25,7 @@ async def request_user_cards(user_ids: UserCardRequestData, x_user_id: str) -> U
     async with httpx.AsyncClient() as client:
         payload = user_ids.model_dump_json()
         response = await client.post(url=f"{USER_RETRIEVER_API_URL}/",
-                                     content=payload, headers={"x-user-id": x_user_id})
+                                     content=payload, headers={"x-user-id": x_user_id} if x_user_id else None)
         user_card_response_data = UserCardResponseData(cards=[])
         if "cards" not in response.json():
             if "errorCode" in response.json():

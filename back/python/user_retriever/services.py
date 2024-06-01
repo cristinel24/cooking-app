@@ -7,7 +7,7 @@ from api import *
 user_collection = UserCollection()
 
 
-async def get_user_data(user_id: str, x_user_id: str) -> UserData:
+async def get_user_data(user_id: str, x_user_id: str | None) -> UserData:
     user_data = user_collection.get_user_by_id(user_id, USER_DATA_PROJECTION)
     avg_rating = calculate_avg_rating(user_data)
     user_data["ratingAvg"] = avg_rating
@@ -25,7 +25,7 @@ async def get_user_data(user_id: str, x_user_id: str) -> UserData:
     return UserData(**user_data)
 
 
-async def get_user_card_data(user_id: str, x_user_id: str) -> UserCardData:
+async def get_user_card_data(user_id: str, x_user_id: str | None) -> UserCardData:
     user_data = user_collection.get_user_by_id(user_id, USER_CARD_DATA_PROJECTION)
     avg_rating = calculate_avg_rating(user_data)
     user_data["ratingAvg"] = avg_rating
@@ -39,7 +39,7 @@ async def get_user_card_data(user_id: str, x_user_id: str) -> UserCardData:
     return UserCardData(**user_data)
 
 
-async def get_user_cards_data(user_ids: list[str], x_user_id: str) -> list[UserCardData]:
+async def get_user_cards_data(user_ids: list[str], x_user_id: str | None) -> list[UserCardData]:
     users_data = user_collection.get_users_by_id(user_ids, USER_CARD_DATA_PROJECTION)
     for user_data in users_data:
         avg_rating = calculate_avg_rating(user_data)

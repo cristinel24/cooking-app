@@ -53,7 +53,7 @@ async def add_follow(
         x_user_id: Annotated[str | None, Header()] = None,
         x_user_roles: Annotated[str | None, Header()] = None
 ) -> None | JSONResponse:
-    if not x_user_id:
+    if not x_user_id or not x_user_roles:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"errorCode": ErrorCodes.UNAUTHORIZED_REQUEST.value})
 
@@ -89,7 +89,7 @@ async def delete_follow(
         x_user_id: Annotated[str | None, Header()] = None,
         x_user_roles: Annotated[str | None, Header()] = None
 ) -> None | JSONResponse:
-    if not x_user_id:
+    if not x_user_id or not x_user_roles:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"errorCode": ErrorCodes.UNAUTHORIZED_REQUEST.value})
 

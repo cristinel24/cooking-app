@@ -1,7 +1,7 @@
 from api import post_allergens
 from constants import UNSAFE_USER_DATA_FIELDS
 from repository import UserCollection, MongoCollection
-from schemas import UserProfileData, UserData
+from schemas import UserProfileData
 from utils import validate_user_profile_data, sanitize_html, Actions
 
 

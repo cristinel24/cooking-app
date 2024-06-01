@@ -7,7 +7,7 @@ import api
 from constants import ErrorCodes, UNSAFE_RECIPE_DATA_FIELDS
 from exception import RecipeCreatorException
 from repository import MongoCollection, UserCollection, RecipeCollection
-from schemas import RecipeData, Recipe
+from schemas import Recipe, RecipeCreationData
 from utils import validate_recipe_data, check_flags, sanitize_html, Actions
 
 

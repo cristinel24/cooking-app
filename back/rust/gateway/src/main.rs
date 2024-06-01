@@ -60,7 +60,7 @@ async fn test() {}
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt()
-        .with_max_level(tracing_core::Level::TRACE)
+        .with_max_level(tracing_core::Level::INFO)
         .init();
 
     let cors = Cors::new()

@@ -69,7 +69,7 @@ export default function Recipe() {
                 aria-label="Se încarcă..."
                 data-testid="loader"
             />
-            {error !== '' && <span class="form-error">{error}</span>}
+            {error !== '' && <span className="form-error">{error}</span>}
             {!recipeLoading && error === '' && (
                 <>
                     <div className="recipe-page-container">

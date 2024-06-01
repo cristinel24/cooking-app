@@ -39,6 +39,11 @@ export const getRecipeCard = async (recipeId) => {
 }
 
 export const getRecipe = async (recipeId) => {
+    // const response = await axios.get(`${API_URL}/recipes/${recipeId}`, {
+    //     headers: { 'ngrok-skip-browser-warning': '1' },
+    // })
+    // console.log(response)
+    // return response.data
     // just for testing purposes
     if (recipeId < 0 || recipeId > 100) {
         return (await axios.post(`/verify?token_value=`)).data

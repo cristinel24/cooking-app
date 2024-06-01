@@ -42,7 +42,6 @@ export const Ratings = ({ recipeData }) => {
                 if (!ignore) {
                     setResults((newResults) => ({
                         ...newResults,
-                        fetchedInitial: true,
                         start: newResults.start + initialFetchCount,
                         total: result.total,
                         data: reduceRatingsToUniqueIds([...newResults.data, ...result.data]),
@@ -74,9 +73,6 @@ export const Ratings = ({ recipeData }) => {
         )
 
     const fetchMoreRatings = async () => {
-        if (!results.fetchedInitial) {
-            return
-        }
         try {
             const result = await apiGetRatings({
                 recipeId: recipeData.id,

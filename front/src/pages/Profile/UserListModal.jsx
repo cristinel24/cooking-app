@@ -28,7 +28,6 @@ export default function UserListModal({ total, fetchData, isOpen, onClose, conte
                 if (!ignore) {
                     setResults((newResults) => ({
                         ...newResults,
-                        fetchedInitial: true,
                         start: newResults.start + fetchCount,
                         data: [...newResults.data, ...result.data],
                     }))
@@ -45,9 +44,6 @@ export default function UserListModal({ total, fetchData, isOpen, onClose, conte
     }, [])
 
     const fetchMoreData = async () => {
-        if (!results.fetchedInitial) {
-            return
-        }
         try {
             const result = await fetchData(results.start, fetchCount)
             setResults((newResults) => ({
@@ -73,7 +69,7 @@ export default function UserListModal({ total, fetchData, isOpen, onClose, conte
                 dataLength={results.data.length}
                 next={fetchMoreData}
                 hasMore={results.start < results.total}
-                loader={<h4>Se încarcă...</h4>}
+                loader={<h4 style={{ textAlign: 'center' }}>Se încarcă...</h4>}
                 height={400}
                 endMessage={
                     error.length > 0 ? (

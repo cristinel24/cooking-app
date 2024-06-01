@@ -11,9 +11,6 @@ from exception import ImageStorageException
 
 
 async def add_image(file: UploadFile) -> str:
-    file_extension = pathlib.Path(file.filename).suffix
-    if file_extension not in ACCEPTED_IMAGE_EXTENSIONS:
-        raise ImageStorageException(ErrorCodes.INVALID_IMAGE_EXTENSION.value, 400)
     image_bytes = BytesIO(await file.read())
     if image_bytes.getbuffer().nbytes > MAX_IMAGE_SIZE:
         raise ImageStorageException(ErrorCodes.TOO_LARGE_FILE.value, 413)
@@ -27,5 +24,9 @@ async def add_image(file: UploadFile) -> str:
         image = Image.open(image_bytes)
         image.save(IMAGE_DIRECTORY_PATH + image_id + file_extension)
         return IMAGE_URL_HEAD + image_id
+            if image.format not in ACCEPTED_IMAGE_FORMATS:
+                raise ImageStorageException(ErrorCodes.INVALID_IMAGE_FORMAT.value, 415)
+    except UnidentifiedImageError:
+        raise ImageStorageException(ErrorCodes.INVALID_IMAGE_FORMAT.value, 415)
     except OSError:
         raise ImageStorageException(ErrorCodes.DUPLICATE_ID.value, 400)

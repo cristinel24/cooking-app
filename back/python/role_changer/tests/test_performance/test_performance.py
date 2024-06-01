@@ -17,11 +17,10 @@ import asyncio
 from fastapi import status
 
 
-FASTAPI_URL = "http://127.0.0.1:8000"
 ROLE_CHANGER_ROUTE = "/{user_id}/roles"
 
 USER_ID = "1"
-URL = f"{FASTAPI_URL}{ROLE_CHANGER_ROUTE.format(user_id=USER_ID)}"
+URL = f"{ROLE_CHANGER_ROUTE.format(user_id=USER_ID)}"
 
 role_data = {
     "verified": -1,

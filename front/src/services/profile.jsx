@@ -13,6 +13,20 @@ export const getProfile = async (profileId, token) => {
     return response.data
 }
 
+export const getFullProfile = async (id, token) => {
+    return (
+        await axios.get(`${API_URL}/users/${id}/profile`, {
+            headers: { Authorization: token },
+        })
+    ).data
+}
+
+export const updateProfile = async (id, token, data) => {
+    await axios.patch(`${API_URL}/users/${id}`, data, {
+        headers: { Authorization: token },
+    })
+}
+
 export const getFollowers = async (profileId, start, count) => {
     const response = await axios.get(`${API_URL}/users/${profileId}/followers`, {
         headers: ngrok({}),

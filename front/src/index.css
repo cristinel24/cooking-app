@@ -19,3 +19,8 @@ body {
     background-color: var(--body-bg-color);
     color: var(--text-color);
 }
+
+/* utility class for pages to have full height */
+.fh {
+    flex: 1
+}

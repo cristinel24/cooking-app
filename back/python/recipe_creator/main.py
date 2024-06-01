@@ -7,13 +7,13 @@ from fastapi.responses import JSONResponse
 import services
 from constants import HOST, PORT, ErrorCodes
 from exception import RecipeCreatorException
-from schemas import RecipeData
+from schemas import RecipeCreationData
 
 app = FastAPI(title="Recipe Creator")
 
 
 @app.post("/", response_model=None, response_description="Successful operation")
-async def create_recipe(recipe_data: RecipeData,
+async def create_recipe(recipe_data: RecipeCreationData,
                         x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
     if not x_user_id:
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,

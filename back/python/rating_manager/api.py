@@ -1,45 +1,56 @@
-from aiohttp import ClientSession, ClientTimeout, ClientError, ClientResponseError
+import httpx
+from fastapi import status
+from httpx import Response
 
-from schemas import AuthorCardData
-from utils import singleton, init_logger, async_retry
-from constants import ID_GENERATOR_API_URL, USER_RETRIEVER_API_URL
-from exceptions import InternalError, ExternalError
-
-REQUEST_TIMEOUT: int = 5
-ERROR_FIELD: str = 'errorCode'
-request_errors = (ClientError, ClientResponseError, TimeoutError)
+from constants import *
+from exception import RecipeRatingManagerException
+from schemas import *
 
 
-@singleton
-class ExternalDataProvider:
+async def execute_api(method: str, uri: str, json_data: dict | None = None) -> dict:
+    try:
+        async with httpx.AsyncClient() as client:
+            response: Response = await getattr(client, method)(uri, json=json_data) if json_data \
+                else await getattr(client, method)(uri)
+            if response.status_code != status.HTTP_200_OK:
+                if response.json().get("errorCode") is None:
+                    raise RecipeRatingManagerException(
+                        error_code=ErrorCodes.UNKNOWN,
+                        status_code=status.HTTP_504_GATEWAY_TIMEOUT
+                    )
+                else:
+                    raise RecipeRatingManagerException(
+                        error_code=int(response.json()["errorCode"]),
+                        status_code=response.status_code
+                    )
 
-    def __init__(self):
-        self.logger = init_logger("[ExternalDataProvider]")
-        self.timeout = ClientTimeout(total=REQUEST_TIMEOUT)
+            return response.json()
 
-    @async_retry(request_errors)
-    async def generate_id(self) -> str:
-        async with ClientSession(timeout=self.timeout) as session:
-            async with session.get(ID_GENERATOR_API_URL) as response:
-                self.logger.info(f'Request {ID_GENERATOR_API_URL}')
-                response = await response.json()
+    except RecipeRatingManagerException as e:
+        raise e
+    except (Exception,):
+        raise RecipeRatingManagerException(
+            error_code=ErrorCodes.UNKNOWN,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
-        if isinstance(response, dict) and response.get(ERROR_FIELD):
-            raise ExternalError()
-        return response["id"]
 
-    @async_retry(request_errors)
-    async def get_user(self, user_id: str | None) -> AuthorCardData:
-        if user_id is None:
-            raise InternalError()
+async def fetch_user_list(user_ids: list[str]) -> UserCardDataList:
+    return UserCardDataList.model_validate(
+        await execute_api(
+            POST_METHOD, USER_RETRIEVER_API_URL + "/",
+            {"ids": user_ids}
+        )
+    )
 
-        async with ClientSession(timeout=self.timeout) as session:
-            url = f'{USER_RETRIEVER_API_URL}/{user_id}/card'
-            async with session.get(url) as response:
-                self.logger.info(f'Request {url}')
-                response = await response.json()
 
-        if isinstance(response, dict) and response.get(ERROR_FIELD):
-            raise ExternalError()
+async def get_user_card(user_id: str) -> UserCardData:
+    return UserCardData.model_validate(
+        await execute_api(
+            GET_METHOD, USER_RETRIEVER_API_URL + f"/{user_id}/card"
+        )
+    )
 
-        return AuthorCardData(**response)
+
+async def generate_id() -> str:
+    return (await execute_api(GET_METHOD, ID_GENERATOR_API_URL + "/"))["id"]

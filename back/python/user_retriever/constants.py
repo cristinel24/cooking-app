@@ -12,6 +12,7 @@ DB_NAME = os.getenv("DB_NAME")
 FOLLOW_MANAGER_API_URL = os.getenv("FOLLOW_MANAGER_API_URL", "http://0.0.0.0:8000")
 FOLLOWERS_COUNT_ROUTE = "/followers/count"
 FOLLOWING_COUNT_ROUTE = "/following/count"
+GET_FOLLOW_ROUTE = "/{user_id}/follow"
 MONGO_TIMEOUT = 3
 
 USER_DATA_PROJECTION = {

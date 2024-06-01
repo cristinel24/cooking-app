@@ -15,24 +15,25 @@ export default function Profile() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [profileData, setProfileData] = useState({})
+    const { user, token } = useContext(UserContext)
 
     const { profileId } = useParams([])
     const { token } = useContext(UserContext)
 
     useEffect(() => {
         const fetch = async () => {
+            setLoading(true)
             try {
-                setLoading(true)
-                let profile = await getProfile(profileId, token)
-
+                const profile = await getProfile(profileId, token)
                 setProfileData(profile)
-                setLoading(false)
             } catch (e) {
                 if (e?.response?.status === 404) {
                     navigate('/not-found')
                 } else {
                     setError(getErrorMessage(e))
                 }
+            } finally {
+                setLoading(false)
             }
         }
 

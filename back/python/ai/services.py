@@ -56,6 +56,8 @@ async def process_chatbot(chatbot_input: schemas.ChatbotInput, user_id: str):
     user_info = db_wrapper.get_user_context(user_id)
     message_history = await api.get_message_history(user_id)
     saved_recipe_tags = get_tags_from_saved_recipes(user_info["savedRecipes"])
+    
+    await api.add_message_to_history(user_id, chatbot_input.userQuery)
 
     message = await process_chatbot_query(
             message_history,

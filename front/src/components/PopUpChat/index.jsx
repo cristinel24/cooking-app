@@ -1,73 +1,78 @@
-import React, { useContext, useState } from 'react'
-import { UserContext } from '../../context'
+import { useContext, useEffect, useRef, useState } from 'react'
 import Modal from 'react-modal'
+import { SyncLoader } from 'react-spinners'
+
 import './index.css'
-import botLogo from '/bot.png'
+
+import { UserContext } from '../../context'
 import { getResponse } from '../../services/chatbot'
+import { getErrorMessage } from '../../utils/api'
+
+function ChatMessage({ message, icon, left, loading }) {
+    return (
+        <div className={`pop-up-message pop-up-message-${left ? 'left' : 'right'}`}>
+            {loading ? (
+                <SyncLoader
+                    size={8}
+                    color="#eeeeee50"
+                    speedMultiplier={0.5}
+                    cssOverride={{ alignSelf: 'center' }}
+                />
+            ) : (
+                <p className="pop-up-message-content">{message}</p>
+            )}
+            <img className="pop-up-message-icon" src={icon} alt="Participant icon"></img>
+        </div>
+    )
+}
 
 function PopUpChat() {
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
-    const { logout, loggedIn } = useContext(UserContext)
     const [loading, setLoading] = useState(false)
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [conversation, setConversation] = useState([])
-    const { user } = useContext(UserContext)
+    const { token, user } = useContext(UserContext)
+
+    const ref = useRef()
+
+    // scroll to bottom when a new message gets added
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.scrollIntoView(false)
+        }
+    }, [conversation])
+
+    useEffect(() => {
+
+    })
 
     const handleInputChange = (event) => {
         setMessage(event.target.value)
+        setError('')
     }
 
     const handleKeyPress = async (event) => {
-        if (event.key === 'Enter' && !loading) {
-            event.preventDefault()
-            setConversation((prevConversation) => [
-                ...prevConversation,
-                <div className="pop-up-outgoing-chats">
-                    <div className="pop-up-outgoing-msg">
-                        <div className="pop-up-outgoing-msg-inbox">
-                            <p>{message}</p>
-                        </div>
-                    </div>
-                    <img
-                        className="pop-up-outgoing-chats-img"
-                        src={user.icon}
-                        alt="User Icon"
-                    ></img>
-                </div>,
-            ])
-            event.target.value = null
-
-            setLoading(true)
-            setError('')
-            try {
-                const msg = await getResponse(message)
-                setConversation((prevConversation) => [
-                    ...prevConversation,
-                    <div className="pop-up-received-chats">
-                        <img
-                            className="pop-up-received-chats-img"
-                            src={botLogo}
-                            alt="Bot Logo"
-                        ></img>
-                        <div className="pop-up-received-msg">
-                            <div className="pop-up-received-msg-inbox">
-                                <p>{msg}</p>
-                            </div>
-                        </div>
-                    </div>,
-                ])
-            } catch (e) {
-                setError(getErrorMessage(e))
-            } finally {
-                setLoading(false)
-            }
-            setMessage('')
+        if (event.code != 'Enter' || loading) {
+            return
         }
-    }
 
-    const getErrorMessage = (error) => {
-        return error.message
+        setError('')
+        setConversation((prevConversation) => [...prevConversation, message])
+        setLoading(true)
+
+        try {
+            const response = await getResponse(token, message)
+            setConversation((prevConversation) => [...prevConversation, response])
+            setMessage('')
+        } catch (e) {
+            setConversation((prevConversation) =>
+                prevConversation.slice(0, prevConversation.length - 1)
+            )
+            setError(getErrorMessage(e))
+        } finally {
+            setLoading(false)
+        }
     }
 
     const toggleModal = () => {
@@ -75,56 +80,41 @@ function PopUpChat() {
     }
 
     return (
-        <>
-            {loggedIn() ? (
-                <div className="pop-up-chat-container">
-                    <img
-                        src={botLogo}
-                        alt="Logo"
-                        className="pop-up-chat-bot-logo"
-                        onClick={toggleModal}
-                    />
-                    <Modal
-                        isOpen={modalIsOpen}
-                        onRequestClose={toggleModal}
-                        contentLabel="chat-modal"
-                        className="pop-up-chat-modal-content"
-                        overlayClassName="pop-up-chat-modal-overlay"
-                    >
-                        <div className="pop-up-chat-title">
-                            <h2>ChatBot Conversation</h2>
-                        </div>
-
-                        <div className="pop-up-chat-page">
-                            {error && <div className="pop-up-chat-conversation-error">{error}</div>}
-                            {!error && (
-                                <div className="pop-up-message-inbox">
-                                    <div className="pop-up-chats">
-                                        <div className="pop-up-message-page">
-                                            {conversation.map((item, index) => (
-                                                <div key={index}>{item}</div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            <input
-                                className={`pop-up-chat-conversation-input ${
-                                    loading ? 'loading' : ''
-                                }`}
-                                type="text"
-                                value={message}
-                                onChange={handleInputChange}
-                                onKeyDown={handleKeyPress}
-                                placeholder="Scrie un mesaj..."
-                                disabled={loading}
-                            />
-                        </div>
-                    </Modal>
+        <div className="pop-up-chat-container">
+            <img src="/bot.png" alt="Logo" className="pop-up-chat-logo" onClick={toggleModal} />
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={toggleModal}
+                contentLabel="chat-modal"
+                className="pop-up-chat-modal-content"
+                overlayClassName="pop-up-chat-modal-overlay"
+                ariaHideApp={false}
+            >
+                <h2 className="pop-up-chat-title">Sesiune live</h2>
+                <div className="pop-up-chat-messages">
+                    {conversation.map((message, index) => (
+                        <ChatMessage
+                            key={index}
+                            message={message}
+                            icon={index % 2 == 0 ? user.icon : '/bot.png'}
+                            left={index % 2 == 1}
+                        />
+                    ))}
+                    {loading && <ChatMessage icon="/bot.png" left loading />}
+                    {error && <div className="pop-up-chat-error">{error}</div>}
+                    <div ref={ref} />
                 </div>
-            ) : null}
-        </>
+                <input
+                    className={`pop-up-chat-input ${loading ? 'loading' : ''}`}
+                    type="text"
+                    value={message}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyPress}
+                    placeholder="Scrie un mesaj..."
+                    disabled={loading}
+                />
+            </Modal>
+        </div>
     )
 }
 

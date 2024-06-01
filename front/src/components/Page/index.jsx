@@ -1,17 +1,20 @@
+import { useContext } from 'react'
 import { Outlet } from 'react-router-dom'
-import PopUpChat from '../PopUpChat'
-import Footer from '../Footer'
-import Navbar from '../Navbar'
 
 import './index.css'
 
+import { Footer, PopUpChat, Navbar } from '../../components'
+import { UserContext } from '../../context'
+
 const Page = () => {
+    const { loggedIn } = useContext(UserContext)
+
     return (
         <>
             <Navbar />
             <div className="page-container">
                 <Outlet />
-                <PopUpChat />
+                {loggedIn && <PopUpChat />}
             </div>
             <Footer />
         </>

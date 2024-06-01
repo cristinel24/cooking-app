@@ -1,3 +1,11 @@
+"""
+USAGE: pytest tests/test_routes/test_login_routes.py
+Tested: exceptions: invalid user
+All tests: ~6.0 seconds
+
+"""
+
+
 import os
 import sys
 from unittest.mock import patch

@@ -1,6 +1,5 @@
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
-use crate::models::recipe::RecipeCard;
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
@@ -57,11 +56,4 @@ pub struct BlacklistedFilters {
     pub ingredients: Option<Vec<String>>,
     pub tags: Option<Vec<String>>,
     pub allergens: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Default, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub struct DataResponse {
-    pub count: u32,
-    pub data: Vec<RecipeCard>,
 }

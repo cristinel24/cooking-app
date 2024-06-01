@@ -26,7 +26,7 @@ impl<T: Serialize> Serialize for EndpointResponse<T> {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 pub struct AggregationResponse<T: Serialize> {
-    pub count: u32,
+    pub total: u32,
     pub data: Vec<T>,
 }
 

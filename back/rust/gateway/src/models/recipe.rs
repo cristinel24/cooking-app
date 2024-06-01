@@ -55,3 +55,10 @@ pub struct RecipeCard {
     pub created_at: String,
     pub updated_at: String,
 }
+
+#[derive(Serialize, Deserialize, Default, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct RecipeCardList {
+    pub total: u32,
+    pub data: Vec<RecipeCard>,
+}

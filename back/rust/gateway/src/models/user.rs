@@ -70,3 +70,10 @@ pub struct CardsRequestData {
 pub struct Cards {
     pub cards: Vec<UserCard>,
 }
+
+#[derive(Serialize, Deserialize, Default, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct UserCardList {
+    pub total: u32,
+    pub data: Vec<UserCard>,
+}

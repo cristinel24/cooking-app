@@ -12,7 +12,10 @@ from exception import ImageStorageException
 
 async def add_image(file: UploadFile) -> str:
     image_bytes = BytesIO(await file.read())
-    if image_bytes.getbuffer().nbytes > MAX_IMAGE_SIZE:
+    if not file.size:
+        raise ImageStorageException(ErrorCodes.INVALID_IMAGE.value, 400)
+
+    if file.size > MAX_IMAGE_SIZE:
         raise ImageStorageException(ErrorCodes.TOO_LARGE_FILE.value, 413)
     try:
         with Image.open(image_bytes) as image:

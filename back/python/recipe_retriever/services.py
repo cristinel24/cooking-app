@@ -37,8 +37,6 @@ async def get_recipe_card_by_id(recipe_id: str, x_user_id) -> RecipeCardData:
     recipe_card.pop("ratingSum")
     recipe_card.pop("ratingCount")
     recipe_card["author"] = user_card
-    user_rating = await request_recipe_rating(recipe_id, x_user_id)
-    recipe_card["userRating"] = user_rating if user_rating else None
     recipe_card["isFavorite"] = user_collection.is_favorite_recipe(x_user_id, recipe_id) if author_id != x_user_id and x_user_id is not None else None
     return RecipeCardData(**recipe_card)
 

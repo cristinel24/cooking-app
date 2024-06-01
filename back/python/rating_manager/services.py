@@ -2,6 +2,7 @@ from api import *
 from repository import *
 from schemas import RatingCreate
 from utils import get_modify_rating_dict
+from constants import UserRoles
 
 client = MongoCollection()
 recipe_collection = RecipeCollection(client.get_connection())
@@ -10,7 +11,7 @@ user_collection = UserCollection(client.get_connection())
 
 
 async def get_ratings(
-        parent_type: str, parent_id: str, start: int, count: int, filter_query: str, sort_query: str
+        parent_type: str, parent_id: str, start: int, count: int, filter_query: str, sort_query: str, x_user_id
 ) -> RatingList:
     parent_type = parent_type.removesuffix("s")
     filter_query = filter_query.removesuffix("s")
@@ -23,7 +24,7 @@ async def get_ratings(
     sort_aggregate = SORT_DICT.get(sort_query, DEFAULT_SORT)
 
     total, data = rating_collection.find_ratings(parent_id, start, count, filter_aggregate, sort_aggregate)
-    user_cards = await fetch_user_list(list(set([rating["authorId"] for rating in data])))
+    user_cards = await fetch_user_list(list(set([rating["authorId"] for rating in data])), x_user_id)
 
     for rating in data:
         for user in user_cards.cards:
@@ -193,14 +194,14 @@ def delete_upwards(rating: dict, session: ClientSession):
         user_collection.update_user(rating["authorId"], {"$pull": {"ratings": rating["id"]}}, session)
 
 
-def delete(x_user_id: str, rating_id: str):
+def delete(x_user_id: str, user_roles: int, rating_id: str):
     rating = rating_collection.find_rating_by_id(rating_id)
     if rating is None:
         raise RecipeRatingManagerException(
             status_code=status.HTTP_404_NOT_FOUND, error_code=ErrorCodes.RATING_NOT_FOUND
         )
 
-    if rating["authorId"] != x_user_id:
+    if rating["authorId"] != x_user_id and not user_roles & UserRoles.ADMIN:
         raise RecipeRatingManagerException(status_code=status.HTTP_403_FORBIDDEN, error_code=ErrorCodes.UNAUTHORIZED)
 
     with client.get_connection().start_session() as session:
@@ -211,8 +212,8 @@ def delete(x_user_id: str, rating_id: str):
                 delete_upwards(rating, session)
 
 
-def delete_all(x_user_id, recipe_id):
-    if x_user_id != recipe_collection.find_recipe(recipe_id)["authorId"]:
+def delete_all(x_user_id, user_roles, recipe_id):
+    if x_user_id != recipe_collection.find_recipe(recipe_id)["authorId"] and not user_roles & UserRoles.ADMIN:
         raise RecipeRatingManagerException(status_code=status.HTTP_403_FORBIDDEN, error_code=ErrorCodes.UNAUTHORIZED)
 
     with client.get_connection().start_session() as session:
@@ -227,15 +228,15 @@ def delete_all(x_user_id, recipe_id):
             recipe_collection.modify_recipe(recipe_id, {"$set": {"ratings": []}}, session)
 
 
-async def get_rating(rating_id: str) -> RatingDataCard:
+async def get_rating(rating_id: str, x_user_id) -> RatingDataCard:
     rating = rating_collection.find_rating_by_id(rating_id)
-    rating["author"] = await get_user_card(rating["authorId"])
+    rating["author"] = await get_user_card(rating["authorId"], x_user_id)
     rating.pop("authorId")
     return RatingDataCard.model_validate(rating)
 
 
-async def get_rating_by_author_and_recipe_id(recipe_id: str, author_id: str) -> RatingDataCard:
+async def get_rating_by_author_and_recipe_id(recipe_id: str, author_id: str, x_user_id) -> RatingDataCard:
     rating = rating_collection.find_rating_by_recipe_and_author_id(recipe_id, author_id)
-    rating["author"] = await get_user_card(rating["authorId"])
+    rating["author"] = await get_user_card(rating["authorId"], x_user_id)
     rating.pop("authorId")
     return RatingDataCard.model_validate(rating)

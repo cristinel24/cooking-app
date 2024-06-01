@@ -1,4 +1,5 @@
 import os
+import re
 from enum import Enum
 from dotenv import load_dotenv
 from fastapi import status
@@ -22,7 +23,35 @@ class ErrorCodes(Enum):
     FAILED_TO_UPDATE_USERNAME = 25801
     TOKEN_VALIDATOR_REQUEST_FAILED = 25802
     TOKEN_DESTROYER_REQUEST_FAILED = 25803
+    USERNAME_REQUIRED = 25804
+    USERNAME_TOO_SHORT = 25805
+    USERNAME_TOO_LONG = 25806
+    USERNAME_INVALID = 25807
+    TOKEN_REQUIRED = 25808
 
 
 ErrorCodesToHTTPCodesMapping: dict[int, int] = {
+    ErrorCodes.USERNAME_REQUIRED.value: status.HTTP_400_BAD_REQUEST,
+    ErrorCodes.USERNAME_TOO_SHORT.value: status.HTTP_400_BAD_REQUEST,
+    ErrorCodes.USERNAME_TOO_LONG.value: status.HTTP_400_BAD_REQUEST,
+    ErrorCodes.USERNAME_INVALID.value: status.HTTP_400_BAD_REQUEST,
+    ErrorCodes.TOKEN_REQUIRED.value: status.HTTP_400_BAD_REQUEST,
+}
+
+USERNAME_MIN_LENGTH = 8
+USERNAME_MAX_LENGTH = 64
+USERNAME_REGEX = r"[A-Za-z0-9_\.]+"
+COMPILED_USERNAME_REGEX = re.compile(USERNAME_REGEX)
+
+USERNAME_VALIDATION = {
+    "required": ErrorCodes.USERNAME_REQUIRED.value,
+    "min_length": USERNAME_MIN_LENGTH,
+    "too_short": ErrorCodes.USERNAME_TOO_SHORT.value,
+    "max_length": USERNAME_MAX_LENGTH,
+    "too_long": ErrorCodes.USERNAME_TOO_LONG.value,
+    "pattern": {"regex": COMPILED_USERNAME_REGEX, "error": ErrorCodes.USERNAME_INVALID.value}
+}
+
+TOKEN_VALIDATION = {
+    "required": ErrorCodes.TOKEN_REQUIRED.value
 }

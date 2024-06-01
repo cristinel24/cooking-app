@@ -5,6 +5,11 @@ from constants import ErrorCodes, logger
 from exception import RecipeDestroyerException
 
 
+class Actions:
+    INCREMENT = 1
+    DECREMENT = -1
+
+
 def match_collection_error(e: errors.PyMongoError) -> RecipeDestroyerException:
     logger.error(e)
     if e.timeout:

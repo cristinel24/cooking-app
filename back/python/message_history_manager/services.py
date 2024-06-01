@@ -1,5 +1,5 @@
-from repository import MessageHistoryCollection
 from exceptions import MessageHistoryException
+from repository import MessageHistoryCollection
 
 message_history_collection = MessageHistoryCollection()
 

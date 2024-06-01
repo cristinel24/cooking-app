@@ -1,9 +1,11 @@
 from api import request_password_hash, request_token_validation, request_token_destroy
 from repository import DBWrapper
 from schemas import PasswordChange
+from utils import validate_request
 
 
 async def handle_change_password(password_change: PasswordChange):
+    validate_request(password_change)
     token_validation_request_response = await request_token_validation(password_change.token)
     hasher_request_response = await request_password_hash(password_change.password)
     await request_token_destroy(token_validation_request_response.userId)

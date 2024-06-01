@@ -1,5 +1,5 @@
-from repository import SearchHistoryCollection
 from exceptions import SearchHistoryException
+from repository import SearchHistoryCollection
 
 search_history_collection = SearchHistoryCollection()
 

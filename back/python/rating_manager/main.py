@@ -14,7 +14,7 @@ app = FastAPI(title="Rating Manager")
 @app.get("/{parent_type}/{parent_id}/comments", response_model=RatingList, response_description="Successful operation")
 async def get(
         parent_type: str, parent_id: str, start: int,
-        count: int, filter: str = "", sort: str = ""
+        count: int, filter: str = "", sort: str = "", x_user_id: Annotated[str | None, Header()] = None
 ) -> RatingList | JSONResponse:
     if start is None:
         return build_response_from_values(
@@ -27,23 +27,24 @@ async def get(
         )
 
     try:
-        return await services.get_ratings(parent_type, parent_id, start, count, filter, sort)
+        return await services.get_ratings(parent_type, parent_id, start, count, filter, sort, x_user_id)
     except Exception as e:
         return build_response_from_exception(transform_exception(e))
 
 
 @app.get("/{rating_id}", response_model=RatingDataCard, response_description="Successful operation")
-async def get_rating(rating_id: str) -> RatingDataCard | JSONResponse:
+async def get_rating(rating_id: str, x_user_id: Annotated[str | None, Header()] = None) -> RatingDataCard | JSONResponse:
     try:
-        return await services.get_rating(rating_id)
+        return await services.get_rating(rating_id, x_user_id)
     except Exception as e:
         return build_response_from_exception(transform_exception(e))
 
 
 @app.get("/", response_model=RatingDataCard, response_description="Successful operation")
-async def get_rating_by_recipe_and_author_id(recipe_id: str, author_id: str) -> RatingDataCard | JSONResponse:
+async def get_rating_by_recipe_and_author_id(recipe_id: str, author_id: str,
+                                             x_user_id: Annotated[str | None, Header()] = None) -> RatingDataCard | JSONResponse:
     try:
-        return await services.get_rating_by_author_and_recipe_id(recipe_id, author_id)
+        return await services.get_rating_by_author_and_recipe_id(recipe_id, author_id, x_user_id)
     except Exception as e:
         return build_response_from_exception(transform_exception(e))
 
@@ -73,23 +74,44 @@ async def modify_rating(
 
 
 @app.delete("/{rating_id}", response_model=None, response_description="Successful operation")
-async def delete_rating(rating_id: str, x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
+async def delete_rating(
+        rating_id: str,
+        x_user_id: Annotated[str | None, Header()] = None,
+        x_user_roles: Annotated[str | None, Header()] = None
+) -> None | JSONResponse:
     if not x_user_id:
         return build_response_from_values(status.HTTP_401_UNAUTHORIZED, ErrorCodes.UNAUTHENTICATED.value)
 
     try:
-        services.delete(x_user_id, rating_id)
+        user_roles = int(x_user_roles)
+    except ValueError:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"errorCode": ErrorCodes.USER_ROLES_INVALID_VALUE.value})
+
+    try:
+        services.delete(x_user_id, user_roles, rating_id)
     except Exception as e:
         return build_response_from_exception(transform_exception(e))
 
 
 @app.delete("/recipes/{recipe_id}/ratings", response_model=None, response_description="Successful operation")
-async def delete_all(recipe_id: str, x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
+async def delete_all(
+        recipe_id: str,
+        x_user_id: Annotated[str | None, Header()] = None,
+        x_user_roles: Annotated[str | None, Header()] = None
+) -> None | JSONResponse:
     if not x_user_id:
-        return build_response_from_values(status.HTTP_401_UNAUTHORIZED, ErrorCodes.UNAUTHENTICATED.value)
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"errorCode": ErrorCodes.UNAUTHORIZED.value})
 
     try:
-        services.delete_all(x_user_id, recipe_id)
+        user_roles = int(x_user_roles)
+    except ValueError:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"errorCode": ErrorCodes.USER_ROLES_INVALID_VALUE.value})
+
+    try:
+        services.delete_all(x_user_id, user_roles, recipe_id)
     except Exception as e:
         return build_response_from_exception(transform_exception(e))
 

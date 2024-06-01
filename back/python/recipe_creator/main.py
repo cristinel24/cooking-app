@@ -16,8 +16,9 @@ app = FastAPI(title="Recipe Creator")
 async def create_recipe(recipe_data: RecipeCreationData,
                         x_user_id: Annotated[str | None, Header()] = None) -> None | JSONResponse:
     if not x_user_id:
-        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
-                            content={"errorCode": ErrorCodes.NOT_AUTHENTICATED.value})
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"errorCode": ErrorCodes.UNAUTHORIZED_REQUEST.value})
+
     try:
         await services.create_recipe(x_user_id, recipe_data)
     except RecipeCreatorException as e:

@@ -19,10 +19,30 @@ class UserCollection(MongoCollection):
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             result = self._collection.update_one(
                 {"id": user_id},
-                {"$addToSet": {"savedRecipes": recipe_id}}
+                [
+                    {
+                        "$set": {
+                            "savedRecipes": {
+                                "$cond": {
+                                    "if": {"$in": [recipe_id, "$savedRecipes"]},
+                                    "then": "$savedRecipes",
+                                    "else": {"$concatArrays": [[recipe_id], "$savedRecipes"]}
+                                }
+                            }
+                        }
+                    }
+                ]
             )
             if result.matched_count == 0:
                 raise exceptions.RecipeSaverException(status.HTTP_404_NOT_FOUND, ErrorCodes.NONEXISTENT_USER.value)
+
+    def get_saved_recipes(self, user_id: str, start: int, count: int):
+
+        with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+            return self._collection.find_one(
+                {"id": user_id},
+                {"_id": 0, "savedRecipes": {"$slice": [start, start + count]}}
+            )["savedRecipes"]
 
     def remove_recipe_from_saved(self, user_id: str, recipe_id: str):
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):

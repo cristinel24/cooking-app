@@ -333,6 +333,7 @@ services:
       - PORT=80
       - MONGO_URI=$MONGO_URI
       - DB_NAME=$DB_NAME
+      - RECIPE_RETRIEVER_API_URL=http://recipe_retriever
     volumes:
       - ./python/recipe_saver:/app
 

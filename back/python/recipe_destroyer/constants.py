@@ -17,14 +17,12 @@ MAX_TIMEOUT_TIME_SECONDS = 3
 ALLERGEN_MANAGER_API_URL = os.getenv("ALLERGEN_MANAGER_API_URL")
 if ALLERGEN_MANAGER_API_URL is None:
     raise ValueError("Environment variable 'ALLERGEN_MANAGER_API_URL' is not set")
-DEC_ALLERGENS_ROUTE = ALLERGEN_MANAGER_API_URL + "/allergens/dec"
-INC_ALLERGENS_ROUTE = ALLERGEN_MANAGER_API_URL + "/allergens/inc"
+POST_ALLERGENS_ROUTE = ALLERGEN_MANAGER_API_URL + "/"
 
 TAG_MANAGER_API_URL = os.getenv("TAG_MANAGER_API_URL")
 if TAG_MANAGER_API_URL is None:
     raise ValueError("Environment variable 'TAG_MANAGER_API_URL' is not set")
-DEC_TAGS_ROUTE = TAG_MANAGER_API_URL + "/tags/dec"
-INC_TAGS_ROUTE = TAG_MANAGER_API_URL + "/tags/inc"
+POST_TAGS_ROUTE = TAG_MANAGER_API_URL + "/"
 
 RATING_MANAGER_API_URL = os.getenv("RATING_MANAGER_API_URL")
 if RATING_MANAGER_API_URL is None:
@@ -51,6 +49,14 @@ GET_METHOD = "get"
 SRC_URL_FROM_IMG_TAG_REGEX = re.compile(rf"<img[^>]*src=[\"']{GATEWAY_API_URL}(?:/[^>]*)*/images/([^\"]*)[\"'][^>]*>")
 
 
+class UserRoles:
+    VERIFIED = 0b1
+    ADMIN = 0b10
+    PREMIUM = 0b100
+    BANNED = 0b1000
+    ACTIVE = 0b0
+
+
 class ErrorCodes(Enum):
     SERVER_ERROR = 26300
     RECIPE_NOT_FOUND = 26301
@@ -66,3 +72,4 @@ class ErrorCodes(Enum):
     DB_NON_TIMEOUT = 26310
     UNAUTHENTICATED = 26311
     UNAUTHORIZED = 26312
+    USER_ROLES_INVALID_VALUE = 21706

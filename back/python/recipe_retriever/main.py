@@ -29,5 +29,14 @@ async def get_recipe_card_by_id(recipe_id: str, x_user_id: Annotated[str | None,
         return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code.value})
 
 
+@app.post("/cards", tags=["recipe-retriever"], response_model=RecipeCardsResponse,
+          response_description="Successful operation")
+async def get_recipe_cards(recipe_cards_request: RecipeCardsRequest, x_user_id: Annotated[str | None, Header()]) -> RecipeCardsResponse | JSONResponse:
+    try:
+        return RecipeCardsResponse(recipeCards=await services.get_recipe_cards(recipe_cards_request.ids, x_user_id))
+    except exceptions.RecipeException as e:
+        return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code.value})
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST, port=PORT)

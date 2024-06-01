@@ -16,17 +16,23 @@ AI_API_URL = os.getenv("AI_API_URL", "http://localhost:8003")
 AI_RECIPE_TOKENIZER_ROUTE = AI_API_URL + "/tokenize/recipe"
 
 ALLERGEN_MANAGER_API_URL = os.getenv("ALLERGEN_MANAGER_API_URL", "http://localhost:8000")
-INC_ALLERGENS_ROUTE = ALLERGEN_MANAGER_API_URL + "/allergens/inc"
-DEC_ALLERGENS_ROUTE = ALLERGEN_MANAGER_API_URL + "/allergens/dec"
+POST_ALLERGENS_ROUTE = ALLERGEN_MANAGER_API_URL + "/"
 
 TAG_MANAGER_API_URL = os.getenv("TAG_MANAGER_API_URL", "http://localhost:8001")
-INC_TAGS_ROUTE = TAG_MANAGER_API_URL + "/tags/inc"
-DEC_TAGS_ROUTE = TAG_MANAGER_API_URL + "/tags/dec"
+POST_TAGS_ROUTE = TAG_MANAGER_API_URL + "/"
 
 ALLOWED_TAGS = {"p", "ul", "li", "ol", "img", "s", "u", "strong", "em", "br"}
 ALLOWED_ATTRIBUTES = {"img": {"src"}}
 URL_SCHEMES = {"https", "http"}
 UNSAFE_RECIPE_DATA_FIELDS = {"description", "steps"}
+
+
+class UserRoles:
+    VERIFIED = 0b1
+    ADMIN = 0b10
+    PREMIUM = 0b100
+    BANNED = 0b1000
+    ACTIVE = 0b0
 
 
 @unique
@@ -43,5 +49,6 @@ class ErrorCodes(Enum):
     EMPTY_LIST_INGREDIENTS = 26209
     INVALID_THUMBNAIL_URL_SIZE = 26210
     NONEXISTENT_RECIPE = 26211
-    ACCESS_UNAUTHORIZED = 26212
+    FORBIDDEN_USER = 26212
     MALFORMED_HTML = 26213
+    USER_ROLES_INVALID_VALUE = 26214

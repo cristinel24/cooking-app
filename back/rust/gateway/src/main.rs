@@ -4,6 +4,7 @@ pub mod graceful_shutdown;
 mod middlewares;
 pub mod models;
 
+
 use crate::config::{get_configuration, CONTEXT};
 use crate::endpoints::ai::{chatbot_route, replace_ingredient_route};
 use crate::endpoints::allergen_manager::get_allergens_route;
@@ -48,6 +49,7 @@ use endpoints::rating_manager::{
 };
 use endpoints::recipe_saver::get_saved_recipes;
 use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
+use salvo::http::HeaderName;
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
 use salvo::Service;
@@ -65,13 +67,17 @@ async fn test() {}
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt()
-        .with_max_level(tracing_core::Level::INFO)
+        .with_max_level(tracing_core::Level::TRACE)
         .init();
 
     let cors = Cors::new()
         .allow_origin(AllowOrigin::any())
         .allow_methods(AllowMethods::any())
-        .allow_headers(AllowHeaders::any())
+        // .allow_headers(AllowHeaders::any())
+        .allow_headers(vec![
+            HeaderName::from_lowercase(b"authorization").unwrap(),
+            HeaderName::from_lowercase(b"*").unwrap(),
+        ])
         .into_handler();
 
     let config = get_configuration().context("Invalid configuration file!")?;

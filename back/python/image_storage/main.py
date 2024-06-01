@@ -12,6 +12,11 @@ from schemas import UrlResponse
 app = FastAPI(title="Image Storage")
 
 
+if not os.path.exists(IMAGE_DIRECTORY_PATH):
+    print("Created image directory")
+    os.mkdir(IMAGE_DIRECTORY_PATH)
+
+
 @app.post("/", response_model=UrlResponse, response_description="Successful operation")
 async def add_image(file: UploadFile) -> UrlResponse | JSONResponse:
     try:

@@ -13,7 +13,7 @@ use tracing::error;
 const MAX_IMAGE_SIZE: usize = 16777216;
 
 #[endpoint(
-    request_body(content = Value, content_type = "image/png"),
+    request_body(content = Value, content_type = "image/*"),
     responses
     (
         (

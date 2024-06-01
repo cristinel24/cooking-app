@@ -17,8 +17,6 @@ async def add_image(file: UploadFile) -> str:
     image_bytes = BytesIO(await file.read())
     if image_bytes.getbuffer().nbytes > MAX_IMAGE_SIZE:
         raise ImageStorageException(ErrorCodes.TOO_LARGE_FILE.value, 413)
-    if not os.path.exists(IMAGE_DIRECTORY_PATH):
-        os.mkdir(IMAGE_DIRECTORY_PATH)
     try:
         with Image.open(image_bytes) as image:
             image.verify()

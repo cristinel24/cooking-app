@@ -51,7 +51,7 @@ pub(crate) async fn get_post_image(
     let mut req_builder = Client::new().request(method.clone(), format!("http://{service_url}"));
     if let Some(bytes) = payload {
         req_builder = req_builder
-            .multipart(Form::new().part("file", Part::bytes(bytes.to_vec()).file_name("file.png")));
+            .multipart(Form::new().part("file", Part::bytes(bytes.to_vec()).file_name("file")));
     }
 
     let response: reqwest::Response = req_builder.send().await?;

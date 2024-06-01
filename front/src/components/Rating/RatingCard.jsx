@@ -284,7 +284,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                     <RatingButton onClick={toggleDeleteModal}>Șterge</RatingButton>
                                 )}
 
-                                {!(isLogged() && ratingData?.id === user?.id) && (
+                                {!(loggedIn() && ratingData?.id === user?.id) && (
                                     <RatingButton onClick={setIsReportVisible}>
                                         Raportează
                                     </RatingButton>

@@ -4,7 +4,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../context'
 import { ClipLoader } from 'react-spinners'
 
-import { getProfile } from '../../services/profile'
+import { getFullProfile } from '../../services/profile'
 import Sidebar from './Sidebar'
 
 import { GenericModal } from '../../components'
@@ -22,7 +22,7 @@ export default function Profile() {
         const fetch = async () => {
             // temporary; TODO: proper error handling with actual error message
             try {
-                const profile = await getProfile(user.id, token)
+                const profile = await getFullProfile(user.id, token)
                 setProfileData(profile)
 
                 setLoading(false)

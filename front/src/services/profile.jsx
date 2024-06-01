@@ -3,7 +3,7 @@ import { delay } from '../utils/api'
 
 const API_URL = import.meta.env.VITE_API_URL
 
-export const getProfile = async (id, token) => {
+export const getFullProfile = async (id, token) => {
     return (
         await axios.get(`${API_URL}/users/${id}/profile`, {
             headers: {

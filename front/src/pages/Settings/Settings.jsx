@@ -3,7 +3,7 @@ import './index.css'
 import { Button } from '../../components'
 import { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../context'
-import { getProfile } from '../../services/profile'
+import { getFullProfile } from '../../services/profile'
 import { ClipLoader } from 'react-spinners'
 
 export default function Settings() {
@@ -28,7 +28,7 @@ export default function Settings() {
         let ignore = false
         const fetchProfile = async () => {
             try {
-                const profile = await getProfile(user.id, token)
+                const profile = await getFullProfile(user.id, token)
                 if (!ignore) {
                     setProfile(profile)
                 }

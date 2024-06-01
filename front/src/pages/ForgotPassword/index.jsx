@@ -28,7 +28,6 @@ export default function ForgotPassword() {
     }
 
     const onSubmit = async (data) => {
-        console.log(data)
         setLoading(true)
         try {
             await credentialChange(data.email, 'password')

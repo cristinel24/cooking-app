@@ -31,7 +31,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
-    const { token, user } = useContext(UserContext)
+    const { token, user, loggedIn } = useContext(UserContext)
 
     const fetchCount = 20
     const shortRatingLength = 300
@@ -248,11 +248,15 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                         )}
                                     </RatingButton>
                                 )}
-                                {ratingData.parentType !== 'rating' && (
+                                {loggedIn() && ratingData.parentType !== 'rating' && (
                                     <RatingButton onClick={toggleAddReply}>Răspunde</RatingButton>
                                 )}
-                                <RatingButton onClick={toggleEdit}>Editează</RatingButton>
-                                <RatingButton onClick={toggleDeleteModal}>Șterge</RatingButton>
+                                {loggedIn() && user?.id && user?.id === ratingData?.author?.id && (
+                                    <RatingButton onClick={toggleEdit}>Editează</RatingButton>
+                                )}
+                                {loggedIn() && user?.id && user?.id === ratingData?.author?.id && (
+                                    <RatingButton onClick={toggleDeleteModal}>Șterge</RatingButton>
+                                )}
                             </div>
                         </>
                     ) : (

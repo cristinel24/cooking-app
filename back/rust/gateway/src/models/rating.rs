@@ -1,14 +1,15 @@
-use crate::models::user::UserCard;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
+use super::user::Card;
+
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RatingCard {
+pub struct Rating {
     pub id: String,
     pub parent_id: String,
     pub parent_type: String,
-    pub author: UserCard,
+    pub author: Card,
     pub updated_at: String,
     pub created_at: String,
     pub rating: usize,
@@ -18,14 +19,14 @@ pub struct RatingCard {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RatingList {
-    pub data: Vec<RatingCard>,
+pub struct List {
+    pub data: Vec<Rating>,
     pub total: usize,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RatingCreateBody {
+pub struct CreateBody {
     pub description: String,
     pub rating: usize,
     pub parent_type: String,
@@ -34,7 +35,7 @@ pub struct RatingCreateBody {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RatingUpdateBody {
+pub struct UpdateBody {
     pub description: String,
     pub rating: usize,
 }

@@ -10,7 +10,7 @@ use salvo::{Request, Response};
 use serde_json::Value;
 use tracing::error;
 
-const MAX_IMAGE_SIZE: usize = 16777216;
+const MAX_IMAGE_SIZE: usize = 16_777_216;
 
 #[endpoint(
     request_body(content = Value, content_type = "image/*"),

@@ -1,7 +1,7 @@
 use crate::endpoints::recipe_editor::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::login::Success;
-use crate::models::recipe::RecipeBody;
+use crate::models::recipe::Body;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -33,14 +33,14 @@ use tracing::error;
 pub async fn edit_recipe(
     req: &mut Request,
     res: &mut Response,
-    data: JsonBody<RecipeBody>,
+    data: JsonBody<Body>,
 ) -> Json<EndpointResponse<String>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<&str, RecipeBody, String>(
+    return match get_response::<&str, Body, String>(
         Method::PATCH,
         url,
         None,

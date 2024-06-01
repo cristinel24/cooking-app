@@ -1,4 +1,4 @@
-use crate::models::user::UserCard;
+use crate::models::user::Card;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
@@ -17,13 +17,13 @@ pub struct FollowingCount {
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct Follow {
-    pub followers: Vec<UserCard>,
+    pub followers: Vec<Card>,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct Following {
-    pub following: Vec<UserCard>,
+    pub following: Vec<Card>,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]

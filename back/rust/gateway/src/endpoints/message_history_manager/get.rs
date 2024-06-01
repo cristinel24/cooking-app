@@ -1,6 +1,6 @@
 use crate::endpoints::message_history_manager::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::models::message_history::History;
+use crate::models::message_history::MessageHistory;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -20,8 +20,8 @@ use tracing::error;
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = History,
-            example = json!(History::default())
+            body = MessageHistory,
+            example = json!(MessageHistory::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -36,13 +36,13 @@ pub async fn get_history(
     res: &mut Response,
     start: QueryParam<i64, true>,
     count: QueryParam<i64, true>,
-) -> Json<EndpointResponse<History>> {
+) -> Json<EndpointResponse<MessageHistory>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<[(&str, i64)], &str, History>(
+    return match get_response::<[(&str, i64)], &str, MessageHistory>(
         Method::GET,
         url,
         Some(&[("start", start.into_inner()), ("count", count.into_inner())]),

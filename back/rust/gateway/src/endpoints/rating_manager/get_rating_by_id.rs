@@ -1,8 +1,8 @@
 use crate::endpoints::{get_response, EndpointResponse};
-use crate::models::rating::RatingCard;
+use crate::models::rating::Rating;
 use crate::{
     endpoints::{rating_manager::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-    models::{rating::RatingList, ErrorResponse},
+    models::{rating::List, ErrorResponse},
 };
 use reqwest::Method;
 use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
@@ -17,8 +17,8 @@ use tracing::error;
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = RatingList,
-            example = json!(RatingList::default())
+            body = List,
+            example = json!(List::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -31,13 +31,13 @@ use tracing::error;
 pub async fn get_rating_by_id_endpoint(
     req: &mut Request,
     res: &mut Response,
-) -> Json<EndpointResponse<RatingCard>> {
+) -> Json<EndpointResponse<Rating>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<&str, &str, RatingCard>(
+    return match get_response::<&str, &str, Rating>(
         Method::GET,
         url,
         None,

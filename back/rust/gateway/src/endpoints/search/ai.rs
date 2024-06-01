@@ -1,8 +1,8 @@
 use crate::endpoints::{
     get_response, search::SERVICE, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE,
 };
-use crate::models::recipe::RecipeCardList;
-use crate::models::search::SearchWithAiBody;
+use crate::models::recipe::CardList;
+use crate::models::search::WithAiBody;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -17,8 +17,8 @@ use tracing::error;
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = RecipeCardList,
-            example = json!(RecipeCardList::default())
+            body = CardList,
+            example = json!(CardList::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -31,14 +31,14 @@ use tracing::error;
 pub async fn ai_endpoint(
     req: &mut Request,
     res: &mut Response,
-    data: JsonBody<SearchWithAiBody>,
-) -> Json<EndpointResponse<RecipeCardList>> {
+    data: JsonBody<WithAiBody>,
+) -> Json<EndpointResponse<CardList>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[2..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<&str, SearchWithAiBody, RecipeCardList>(
+    return match get_response::<&str, WithAiBody, CardList>(
         Method::POST,
         url,
         None,

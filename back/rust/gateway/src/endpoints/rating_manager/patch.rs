@@ -2,7 +2,7 @@ use super::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse};
 use crate::{
     endpoints::{FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-    models::{rating::RatingUpdateBody, ErrorResponse},
+    models::{rating::UpdateBody, ErrorResponse},
 };
 use reqwest::{Method, StatusCode};
 use salvo::{
@@ -33,7 +33,7 @@ use tracing::error;
     )
 )]
 pub async fn patch_rating_endpoint(
-    rating_update: JsonBody<RatingUpdateBody>,
+    rating_update: JsonBody<UpdateBody>,
     req: &mut Request,
     res: &mut Response,
 ) -> Json<EndpointResponse<String>> {
@@ -42,7 +42,7 @@ pub async fn patch_rating_endpoint(
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<&str, RatingUpdateBody, String>(
+    return match get_response::<&str, UpdateBody, String>(
         Method::PATCH,
         url,
         None,

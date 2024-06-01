@@ -9,7 +9,7 @@ pub struct Results {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct SearchWithAiBody {
+pub struct WithAiBody {
     pub query: String,
     pub sort: Option<String>,
     pub order: Option<String>,
@@ -20,7 +20,7 @@ pub struct SearchWithAiBody {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct SearchRecipesBody {
+pub struct RecipesBody {
     pub query: Option<String>,
     pub sort: Option<String>,
     pub order: Option<String>,
@@ -31,7 +31,7 @@ pub struct SearchRecipesBody {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct SearchUsersBody {
+pub struct UsersBody {
     pub query: Option<String>,
     pub sort: Option<String>,
     pub order: Option<String>,

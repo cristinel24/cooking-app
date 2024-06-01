@@ -1,12 +1,11 @@
-use crate::models::user::UserCard;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
-use super::rating::RatingCard;
+use super::user;
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RecipeBody {
+pub struct Body {
     pub title: String,
     pub description: String,
     pub prep_time: u64,
@@ -21,7 +20,7 @@ pub struct RecipeBody {
 #[serde(rename_all = "camelCase")]
 pub struct Recipe {
     pub id: String,
-    pub author: UserCard,
+    pub author: Card,
     pub title: String,
     pub description: String,
     pub prep_time: u32,
@@ -31,7 +30,7 @@ pub struct Recipe {
     pub tags: Vec<String>,
     pub thumbnail: String,
     pub view_count: u32,
-    pub user_rating: Option<RatingCard>,
+    pub user_rating: Option<Card>,
     pub is_favorite: Option<bool>,
     pub rating_avg: f32,
     pub created_at: String,
@@ -40,9 +39,9 @@ pub struct Recipe {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RecipeCard {
+pub struct Card {
     pub id: String,
-    pub author: UserCard,
+    pub author: user::Card,
     pub title: String,
     pub description: String,
     pub prep_time: u32,
@@ -58,7 +57,7 @@ pub struct RecipeCard {
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RecipeCardList {
+pub struct CardList {
     pub total: u32,
-    pub data: Vec<RecipeCard>,
+    pub data: Vec<Card>,
 }

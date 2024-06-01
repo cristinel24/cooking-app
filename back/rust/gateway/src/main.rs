@@ -4,7 +4,6 @@ pub mod graceful_shutdown;
 mod middlewares;
 pub mod models;
 
-
 use crate::config::{get_configuration, CONTEXT};
 use crate::endpoints::ai::{chatbot_route, replace_ingredient_route};
 use crate::endpoints::allergen_manager::get_allergens_route;
@@ -48,7 +47,7 @@ use endpoints::rating_manager::{
     get_rating_by_recipe_and_author_endpoint, get_recipe_comments_endpoint,
 };
 use endpoints::recipe_saver::get_saved_recipes;
-use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
+use salvo::cors::{AllowMethods, AllowOrigin, Cors};
 use salvo::http::HeaderName;
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
@@ -75,8 +74,8 @@ async fn main() -> Result<()> {
         .allow_methods(AllowMethods::any())
         // .allow_headers(AllowHeaders::any())
         .allow_headers(vec![
-            HeaderName::from_lowercase(b"authorization").unwrap(),
-            HeaderName::from_lowercase(b"*").unwrap(),
+            HeaderName::from_lowercase(b"authorization")?,
+            HeaderName::from_lowercase(b"*")?,
         ])
         .into_handler();
 

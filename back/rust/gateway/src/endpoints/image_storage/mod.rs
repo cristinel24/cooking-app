@@ -69,9 +69,9 @@ pub(crate) async fn get_post_image(
         if method == Method::POST {
             Ok(ImageResponse::Url(response.json::<UrlResponse>().await?))
         } else {
-            let name = service_url.split("/").last().unwrap_or("image");
+            let name = service_url.split('/').last().unwrap_or("image");
             let mut file = File::create(format!("../{name}.png"))?;
-            file.write_all(&*response.bytes().await?.to_vec())?;
+            file.write_all(&response.bytes().await?)?;
             Ok(ImageResponse::ImageName(name.to_string()))
         }
     } else {

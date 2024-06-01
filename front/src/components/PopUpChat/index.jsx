@@ -24,18 +24,16 @@ function PopUpChat() {
             setConversation((prevConversation) => [
                 ...prevConversation,
                 <div className="pop-up-outgoing-chats">
-                    <div className="pop-up-outgoing-chats-img">
-                        <img
-                            className="pop-up-outgoing-chats-img"
-                            src={user.icon}
-                            alt="User Icon"
-                        ></img>
-                    </div>
                     <div className="pop-up-outgoing-msg">
                         <div className="pop-up-outgoing-msg-inbox">
                             <p>{message}</p>
                         </div>
                     </div>
+                    <img
+                        className="pop-up-outgoing-chats-img"
+                        src={user.icon}
+                        alt="User Icon"
+                    ></img>
                 </div>,
             ])
             event.target.value = null
@@ -47,13 +45,11 @@ function PopUpChat() {
                 setConversation((prevConversation) => [
                     ...prevConversation,
                     <div className="pop-up-received-chats">
-                        <div className="pop-up-received-chats-img">
-                            <img
-                                className="pop-up-received-chats-img"
-                                src={botLogo}
-                                alt="Bot Logo"
-                            ></img>
-                        </div>
+                        <img
+                            className="pop-up-received-chats-img"
+                            src={botLogo}
+                            alt="Bot Logo"
+                        ></img>
                         <div className="pop-up-received-msg">
                             <div className="pop-up-received-msg-inbox">
                                 <p>{msg}</p>

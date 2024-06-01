@@ -111,7 +111,7 @@
 }
 
 .pop-up-chat-page {
-    padding: 0 0 50px 0;
+    padding: 0 0 40px 0;
 }
 
 .pop-up-message-inbox {
@@ -120,10 +120,10 @@
 }
 
 .pop-up-chats {
-    padding: 30px 40px 0 40px;
+    padding: 30px 15px 0 15px;
 }
 
-.pop-up-message-page  {
+.pop-up-message-page {
     gap: 1px;
     height: 516px;
     overflow-y: auto;
@@ -151,26 +151,40 @@
 
 .pop-up-received-msg-inbox p {
     font-weight: 500;
-    word-break: break-all;
+    margin: 0px;
+
+    overflow-wrap: break-word;
     background-color: var(--chatbot-messages-color);
     color: var(--text-color);
     border-radius: 10px;
-    margin: 0;
-    padding: 8px 10px 8px 12px;
+    padding: 8px 0px 8px 12px;
     width: 100%;
 }
 
+.pop-up-received-chats {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
 .pop-up-outgoing-chats {
+    display: flex;
+    flex-direction: row;
     margin-bottom: 10px;
     margin-top: 10px;
 }
 
 .pop-up-outgoing-chats-img {
+    aspect-ratio: 1;
+    background-size: cover;
+    background-position: center;
+    object-fit: cover;
+    border-radius: 100%;
     display: block;
     width: 35px;
     height: 35px;
     float: right;
-    border-radius: 50%;
 }
 
 .pop-up-outgoing-msg {
@@ -183,18 +197,18 @@
     width: auto;
     max-width: 80%;
     float: right;
-    margin-right: 30px;
+    margin-right: 20px;
 }
 
 .pop-up-outgoing-msg-inbox p {
     font-weight: 500;
-    word-break: break-all;
+    overflow-wrap: break-word;
     text-align: right;
     background-color: var(--chatbot-messages-color);
     color: var(--text-color);
     border-radius: 10px;
-    margin: 0;
-    padding: 8px 10px 8px 12px;
+    margin: 0px;
+    padding: 8px 10px 8px 0px;
     width: 100%;
 }
 
@@ -207,13 +221,21 @@
         width: 3.5rem;
         height: 3.5rem;
     }
-    
+
     .pop-up-outgoing-msg {
-        padding: 0 0 0 25px;
+        padding: 0 0 0 31px;
+    }
+
+    .pop-up-received-msg {
+        padding: 0px;
     }
 
     .pop-up-chat-conversation-input {
         width: 85%;
+    }
+
+    .pop-up-received-msg {
+        padding: 0 0 0 7px;
     }
 }
 
@@ -232,6 +254,8 @@
         height: 90%;
         bottom: 0;
         right: 0;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
     }
 
     .pop-up-chat-bot-logo {
@@ -242,12 +266,21 @@
         margin: 10px;
         font-size: 0.7rem;
     }
-    
-    .pop-up-received-msg-inbox p, .pop-up-outgoing-msg-inbox p {
+
+    .pop-up-received-msg-inbox p,
+    .pop-up-outgoing-msg-inbox p {
         font-size: 0.7rem;
     }
 
     .pop-up-chat-title {
         font-size: 0.8rem;
+    }
+
+    .pop-up-outgoing-msg {
+        padding: 0 0 0 34px;
+    }
+
+    .pop-up-received-msg {
+        padding: 0 0 0 7px;
     }
 }

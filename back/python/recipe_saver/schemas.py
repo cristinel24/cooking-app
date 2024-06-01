@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from pydantic import BaseModel
+from typing import Optional
 
 
 class UserCardData(BaseModel):
@@ -12,6 +13,8 @@ class UserCardData(BaseModel):
     ratingAvg: float
     updatedAt: datetime
     createdAt: datetime
+    isFollowing: Optional[bool] = None
+    isFollowedBy : Optional[bool] = None
 
 
 class RecipeCardData(BaseModel):

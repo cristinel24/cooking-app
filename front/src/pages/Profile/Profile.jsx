@@ -1,6 +1,6 @@
 import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import './index.css'
-import React, { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../context'
 import { ClipLoader } from 'react-spinners'
 
@@ -15,10 +15,9 @@ export default function Profile() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [profileData, setProfileData] = useState({})
-    const { user, token } = useContext(UserContext)
+    const { token } = useContext(UserContext)
 
     const { profileId } = useParams([])
-    const { token } = useContext(UserContext)
 
     useEffect(() => {
         const fetch = async () => {

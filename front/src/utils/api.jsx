@@ -29,4 +29,3 @@ export const getErrorMessage = (error) => {
 
 // for testing only
 export const delay = (ms) => new Promise((res) => setTimeout(res, ms))
-export const ngrok = (headers) => ({ ...headers, 'ngrok-skip-browser-warning': '1' })

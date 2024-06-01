@@ -17,7 +17,7 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
         clearErrors,
         formState: { errors },
     } = useForm({
-        defaultValues: defaultValues,
+        defaultValues: { ...defaultValues, rating: 0 },
     })
 
     const [isSubmitCallbackLoading, setIsSubmitCallbackLoading] = useState(false)
@@ -80,7 +80,7 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
                     <p className="form-error">{errors['api'].message}</p>
                 </InfoModal>
             )}
-            {defaultValues.rating !== undefined && (
+            {defaultValues?.rating !== undefined && (
                 <>
                     <div className="rating-card-form-stars">
                         <Controller

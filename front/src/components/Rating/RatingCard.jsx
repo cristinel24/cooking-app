@@ -155,7 +155,16 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
 
     const handleAddReply = async (data) => {
         // raw async callback; to be passed to RatingForm
-        await apiAddRatingReply(ratingData.id, data, token)
+        const response = await apiAddRatingReply(ratingData.id, data, token)
+
+        // aka: if all of the replies before this new one have been fetched
+        if (replyResults.start >= replyResults.total) {
+            setReplyResults((newResults) => ({
+                ...newResults,
+                total: newResults.total + 1,
+                data: [...newResults.data, response],
+            }))
+        }
 
         toggleAddReply()
     }
@@ -275,7 +284,11 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                     <RatingButton onClick={toggleDeleteModal}>Șterge</RatingButton>
                                 )}
 
-                                <RatingButton onClick={setIsReportVisible}>Raportează</RatingButton>
+                                {!(isLogged() && ratingData?.id === user?.id) && (
+                                    <RatingButton onClick={setIsReportVisible}>
+                                        Raportează
+                                    </RatingButton>
+                                )}
                             </div>
                         </>
                     ) : (
@@ -284,7 +297,8 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                             onSubmit={handleEdit}
                             defaultValues={{
                                 description: ratingData.description,
-                                ...(ratingData?.rating !== undefined
+                                ...(ratingData?.parentType === 'recipe' &&
+                                ratingData?.rating !== undefined
                                     ? { rating: ratingData.rating }
                                     : {}),
                             }}

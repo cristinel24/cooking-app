@@ -32,7 +32,7 @@ async def save_recipe(user_id: str, recipe_id: str,
                             content={"errorCode": constants.ErrorCodes.SERVER_ERROR.value})
 
 
-@app.get("/{user_id}/saved-recipes/", tags=["user-actions"], response_model=SavedRecipesModel)
+@app.get("/{user_id}/saved-recipes", tags=["user-actions"], response_model=SavedRecipesModel)
 async def get_saved_recipes(user_id: str, start: int, count: int,
                             x_user_id: Annotated[str | None, Header()] = None) -> SavedRecipesModel | JSONResponse:
     if not x_user_id:

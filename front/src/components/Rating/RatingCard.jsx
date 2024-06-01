@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import './index.css'
-import { RatingValue, ConfirmModal } from '..'
+import { RatingValue, ConfirmModal, Report } from '..'
 
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import { ClipLoader } from 'react-spinners'
@@ -30,6 +30,8 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const [loading, setLoading] = useState(false)
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+
+    const [isReportVisible, setIsReportVisible] = useState(false)
 
     const { token, user, loggedIn } = useContext(UserContext)
 
@@ -165,6 +167,20 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
         }
     }
 
+    const onSendReport = async () => {
+        try {
+            // TODO: api call
+        } catch (e) {
+            setError(getErrorMessage(e))
+        } finally {
+            setIsReportVisible(!isReportVisible)
+        }
+    }
+
+    const toggleReport = () => {
+        setIsReportVisible(!isReportVisible)
+    }
+
     return (
         <div className="rating-card">
             <ConfirmModal
@@ -176,6 +192,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
             >
                 <p>Sigur doriți să ștergeți această recenzie?</p>
             </ConfirmModal>
+            {isReportVisible && <Report onSend={onSendReport} onCancel={toggleReport} />}
             <div className="rating-card-main-container">
                 <div className="rating-card-image">
                     <img src={ratingData.author.icon} />
@@ -257,6 +274,8 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                 {loggedIn() && user?.id && user?.id === ratingData?.author?.id && (
                                     <RatingButton onClick={toggleDeleteModal}>Șterge</RatingButton>
                                 )}
+
+                                <RatingButton onClick={setIsReportVisible}>Raportează</RatingButton>
                             </div>
                         </>
                     ) : (

@@ -18,24 +18,12 @@ class UserCollection(MongoCollection):
         db = self.connection.get_database(DB_NAME)
         self._collection = db.user
 
-    def patch_user_and_get_allergens(self, user_id: str, changes: dict, allergens_to_add: list[str], allergens_to_remove: list[str],
-                                     session: ClientSession) -> set[str]:
+    def patch_user_and_get_allergens(self, user_id: str, changes: dict, session: ClientSession) -> set[str]:
         try:
             with pymongo.timeout(MONGO_TIMEOUT):
-                update_pipeline = [
-                    {"$set": changes},
-                    {"$set": {
-                        "allergens": {
-                            "$setUnion": [
-                                {"$setDifference": ["$allergens", allergens_to_remove]},
-                                allergens_to_add
-                            ]
-                        }
-                    }}
-                ]
                 updated_user = self._collection.find_one_and_update(
-                    {"id": user_id},
-                    update_pipeline,
+                    filter={"id": user_id},
+                    update=changes,
                     return_document=ReturnDocument.BEFORE,
                     projection={"_id": 0, "allergens": 1},
                     session=session

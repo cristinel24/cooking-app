@@ -20,8 +20,9 @@ async def get_user_data(user_id: str, x_user_id: Annotated[str | None, Header()]
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             content={"errorCode": ErrorCodes.SERVER_ERROR.value})
 
-      
-@app.get("/{user_id}/card", tags=["user_card_data"], response_model=UserCardData, response_description="Successful operation")
+
+@app.get("/{user_id}/card", tags=["user_card_data"], response_model=UserCardData,
+         response_description="Successful operation")
 async def get_user_card(user_id: str, x_user_id: Annotated[str | None, Header()] = None) -> UserCardData | JSONResponse:
     try:
         return await services.get_user_card_data(user_id, x_user_id)
@@ -64,7 +65,6 @@ async def get_user_full_data(user_id: str,
     except (Exception,):
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             content={"errorCode": ErrorCodes.SERVER_ERROR.value})
-
 
 
 if __name__ == "__main__":

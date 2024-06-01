@@ -21,11 +21,11 @@ async def request_user_card(user_id: str) -> dict:
         raise UserRetrieverException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.FAILED_TO_GET_USER_CARD)
 
         
-async def request_user_cards(user_ids: UserCardRequestData) -> UserCardResponseData:
+async def request_user_cards(user_ids: UserCardRequestData, x_user_id: str) -> UserCardResponseData:
     async with httpx.AsyncClient() as client:
         payload = user_ids.model_dump_json()
         response = await client.post(url=f"{USER_RETRIEVER_API_URL}/",
-                                     content=payload)
+                                     content=payload, headers={"x-user-id": x_user_id})
         user_card_response_data = UserCardResponseData(cards=[])
         if "cards" not in response.json():
             if "errorCode" in response.json():

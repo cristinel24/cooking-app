@@ -43,7 +43,7 @@ async def get_recipe_card_by_id(recipe_id: str, x_user_id) -> RecipeCardData:
     return RecipeCardData(**recipe_card)
 
 
-async def get_recipe_cards(recipe_ids: list[str]) -> list[RecipeCardData]:
+async def get_recipe_cards(recipe_ids: list[str], x_user_id: str) -> list[RecipeCardData]:
     recipe_cards = recipe_collection.get_recipes(recipe_ids, RECIPE_DATA_CARD_PROJECTION)
     if not recipe_cards:
         return []
@@ -51,7 +51,7 @@ async def get_recipe_cards(recipe_ids: list[str]) -> list[RecipeCardData]:
     author_ids = [recipe_card["authorId"] for recipe_card in recipe_cards]
 
     try:
-        user_cards = (await request_user_cards(UserCardRequestData(ids=author_ids))).cards
+        user_cards = (await request_user_cards(UserCardRequestData(ids=author_ids), x_user_id)).cards
     except httpx.ConnectError:
         raise RecipeException(ErrorCodes.NON_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
 

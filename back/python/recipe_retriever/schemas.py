@@ -61,8 +61,8 @@ class RecipeCardData(BaseModel):
     ratingAvg: float
     updatedAt: datetime
     createdAt: datetime
-    userRating: RatingDataCard | None
-    isFavorite: bool | None
+    userRating: RatingDataCard | None = None
+    isFavorite: bool | None = None
       
 
 class RecipeCardsRequest(BaseModel):

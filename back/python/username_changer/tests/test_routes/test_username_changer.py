@@ -1,3 +1,14 @@
+"""
+USAGE: pytest tests/test_routes/test_username_changer.py
+Tested: exceptions: invalid token and invalid data
+
+ADD TO REQUIREMENTS:
+pytest==7.1.3
+httpx==0.23.0
+pytest-asyncio==0.19.0
+"""
+
+
 import os
 import sys
 from unittest.mock import patch

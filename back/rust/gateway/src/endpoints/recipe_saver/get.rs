@@ -38,7 +38,6 @@ pub async fn get_saved_recipes(
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
-    println!("{url}");
 
     return match get_response::<Vec<(&String, &String)>, &str, RecipeCardList>(
         Method::GET,

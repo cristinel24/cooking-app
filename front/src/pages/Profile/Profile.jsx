@@ -14,14 +14,15 @@ export default function Profile() {
 
     const [loading, setLoading] = useState(true)
     const [profileData, setProfileData] = useState({})
+    const { user, token } = useContext(UserContext)
 
-    const profileId = 21
+    // const profileId = 21
 
     useEffect(() => {
         const fetch = async () => {
             // temporary; TODO: proper error handling with actual error message
             try {
-                const profile = await getProfile(profileId)
+                const profile = await getProfile(user.id, token)
                 setProfileData(profile)
 
                 setLoading(false)

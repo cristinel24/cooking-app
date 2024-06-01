@@ -1,8 +1,8 @@
 use crate::endpoints::{get_response, EndpointResponse};
 use crate::models::recipe::RecipeCardList;
 use crate::{
-    endpoints::{rating_manager::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-    models::{rating::RatingList, ErrorResponse},
+    endpoints::{recipe_saver::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
+    models::ErrorResponse,
 };
 use reqwest::Method;
 use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
@@ -20,7 +20,7 @@ use tracing::error;
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
             body = RecipeCardList,
-            example = json!(RatingList::default())
+            example = json!(RecipeCardList::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -36,8 +36,9 @@ pub async fn get_saved_recipes(
 ) -> Json<EndpointResponse<RecipeCardList>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[2..].join("/");
+    let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
+    println!("{url}");
 
     return match get_response::<Vec<(&String, &String)>, &str, RecipeCardList>(
         Method::GET,

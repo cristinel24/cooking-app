@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '..'
 import { IoClose } from 'react-icons/io5'
 
@@ -64,14 +64,20 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
         onChange(value.filter((i) => i !== item))
     }
 
-    window.addEventListener('click', (e) => {
-        const selector = document.getElementById(id).parentNode
+    useEffect(() => {
+        const onClick = (e) => {
+            const selector = document.getElementById(id).parentNode
 
-        if (!selector.contains(e.target)) {
-            setSuggestionsActive(false)
-            onBlur()
+            if (!selector.contains(e.target)) {
+                setSuggestionsActive(false)
+                onBlur()
+            }
         }
-    })
+
+        window.addEventListener('click', onClick)
+
+        return () => window.removeEventListener('click', onClick)
+    }, [])
 
     return (
         <div className="form-item">

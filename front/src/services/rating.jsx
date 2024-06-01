@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import { authHeader } from '../utils/api'
+
 const API_URL = import.meta.env.VITE_API_URL
 
 const placeholderRating = {
@@ -18,36 +20,20 @@ const placeholderRating = {
     updatedAt: '2024-05-26T05:29:06Z',
 }
 
-export const getRatings = async ({ recipeId, start, count }) => {
-    const finalCount = 100
-
-    console.log(
-        `count ${finalCount !== undefined ? finalCount : '-'} ${
-            start !== undefined ? start : '-'
-        } ${count !== undefined ? count : '-'} `
-    )
-    const ratings = new Array(count).fill(0).map((_, index) => ({
-        ...placeholderRating,
-        parentType: 'recipe',
-        description: `${index + start}`,
-        id: `${index + start}`,
-    }))
-    const delay = (ms) => new Promise((res) => setTimeout(res, ms))
-    await delay(700)
-    return { total: 100, data: ratings }
+export const getRatings = async (recipeId, params) => {
+    const response = await axios.get(`${API_URL}/recipes/${recipeId}/comments`, {
+        params: params,
+    })
+    console.log(response)
+    return response.data
 }
 
-export const getRatingReplies = async ({ ratingId, start, count }) => {
-    const finalCount = 100
-    const ratings = new Array(count).fill(0).map((_, index) => ({
-        ...placeholderRating,
-        description: `${index + start}`,
-        id: `${ratingId}_${index + start}`,
-    }))
-
-    const delay = (ms) => new Promise((res) => setTimeout(res, ms))
-    await delay(700)
-    return { total: 100, data: ratings }
+export const getRatingReplies = async (ratingId, params) => {
+    const response = await axios.get(`${API_URL}/ratings/${ratingId}/comments`, {
+        params: params,
+    })
+    console.log(response)
+    return response.data
 }
 
 export const deleteRating = async (id, token) => {
@@ -62,26 +48,33 @@ export const editRating = async (id, data, token) => {
 }
 
 export const addRating = async (recipeId, data, token) => {
+    await axios.post(
+        `${API_URL}/ratings`,
+        {
+            ...data,
+            parentType: 'recipe',
+            parentId: recipeId,
+        },
+        { headers: { ...authHeader(token) } }
+    )
+}
+
+export const addRatingReply = async (ratingId, data, token) => {
     // data contains description and (optionally) rating 0
     let newData = {
         ...placeholderRating,
         rating: 0,
         ...data,
-        parentType: 'recipe',
-        parentId: recipeId,
-        id: `${100000 + (Math.random() % 2500)}`,
+        parentType: 'rating',
+        parentId: ratingId,
+        author: {
+            ...placeholderRating.author,
+            id: '1me', // hardcoded
+        },
     }
 
     const delay = (ms) => new Promise((res) => setTimeout(res, ms))
     await delay(700)
 
     return newData
-}
-
-export const addRatingReply = async (ratingId, data, token) => {
-    // data contains description and (optionally) rating 0
-    let newData = { rating: 0, ...data, parentType: 'rating', parentId: ratingId }
-
-    const delay = (ms) => new Promise((res) => setTimeout(res, ms))
-    await delay(700)
 }

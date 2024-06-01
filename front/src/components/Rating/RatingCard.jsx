@@ -17,6 +17,7 @@ import {
     deleteRating as apiDeleteRating,
 } from '../../services/rating'
 import { UserContext } from '../../context'
+import { Link } from 'react-router-dom'
 
 const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const [showAllText, setShowAllText] = useState(false)
@@ -57,8 +58,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
 
         const fetch = async () => {
             try {
-                const result = await apiGetRatingReplies({
-                    ratingId: ratingData.id,
+                const result = await apiGetRatingReplies(ratingData.id, {
                     start: replyResults.start,
                     count: fetchCount,
                 })
@@ -88,8 +88,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
         }
         try {
             setLoading(true)
-            const result = await apiGetRatingReplies({
-                ratingId: ratingData.id,
+            const result = await apiGetRatingReplies(ratingData.id, {
                 start: replyResults.start,
                 count: fetchCount,
             })
@@ -212,9 +211,12 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                             <h4 className="rating-card-display-name">
                                 {ratingData.author.displayName}
                             </h4>
-                            <span className="rating-card-username">
+                            <Link
+                                to={`/profile/${ratingData.author.id}`}
+                                className="rating-card-username"
+                            >
                                 @{ratingData.author.username}
-                            </span>
+                            </Link>
                         </div>
                         <div className="rating-card-date">
                             Postat pe {timestampToRomanian(ratingData.createdAt)}

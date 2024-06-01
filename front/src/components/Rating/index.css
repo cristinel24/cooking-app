@@ -61,6 +61,14 @@ h4.rating-card-display-name {
     border-radius: 10px;
     background-color: var(--card-bg-color);
     color: var(--color-primary);
+
+    cursor: pointer;
+
+    transition: color 0.2s ease-in-out;
+}
+
+.rating-card-username:hover {
+    color: color-mix(in srgb, var(--color-primary), #fff 20%);
 }
 
 .rating-card-buttons {

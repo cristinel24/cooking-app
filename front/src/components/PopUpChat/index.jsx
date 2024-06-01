@@ -5,7 +5,7 @@ import { SyncLoader } from 'react-spinners'
 import './index.css'
 
 import { UserContext } from '../../context'
-import { getResponse } from '../../services/chatbot'
+import { getMessageHistory, getResponse } from '../../services/chatbot'
 import { getErrorMessage } from '../../utils/api'
 
 function ChatMessage({ message, icon, left, loading }) {
@@ -38,14 +38,29 @@ function PopUpChat() {
 
     // scroll to bottom when a new message gets added
     useEffect(() => {
-        if (ref.current) {
+        if (modalIsOpen && ref.current) {
             ref.current.scrollIntoView(false)
         }
-    }, [conversation])
+    }, [modalIsOpen, conversation])
 
     useEffect(() => {
+        const fetch = async ()  => {
+            try {
+                const { history } = await getMessageHistory(user.id, token)
+                if (!ignore) {
+                    setConversation(history)
+                }
+            } catch (e) {
+                setError(getErrorMessage(e))
+            }
+        }
 
-    })
+        let ignore = false
+        fetch()
+        return () => {
+            ignore = true
+        }
+    }, [])
 
     const handleInputChange = (event) => {
         setMessage(event.target.value)
@@ -62,7 +77,7 @@ function PopUpChat() {
         setLoading(true)
 
         try {
-            const response = await getResponse(token, message)
+            const { response } = await getResponse(token, message)
             setConversation((prevConversation) => [...prevConversation, response])
             setMessage('')
         } catch (e) {

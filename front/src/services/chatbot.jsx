@@ -11,5 +11,14 @@ export const getResponse = async (token, message) => {
                 headers: { Authorization: token },
             }
         )
-    ).data.response
+    ).data
+}
+
+export const getMessageHistory = async (id, token) => {
+    return (
+        await axios.get(`${API_URL}/users/${id}/message-history`, {
+            params: { start: 0, count: 100 },
+            headers: { Authorization: token },
+        })
+    ).data
 }

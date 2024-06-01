@@ -20,12 +20,12 @@ export default function Recipe() {
     const { recipeId } = useParams()
     const navigate = useNavigate()
 
-    const { token } = useContext(UserContext)
+    const { token, user } = useContext(UserContext)
 
     useEffect(() => {
         const fetch = async () => {
             try {
-                const recipe = await getRecipe(recipeId)
+                const recipe = await getRecipe(recipeId, token)
                 setRecipeData(recipe)
             } catch (e) {
                 if (e.response?.status === 404) {
@@ -43,9 +43,9 @@ export default function Recipe() {
 
     const onFavorite = async () => {
         if (recipeData.isFavorite) {
-            await apiSaveRecipe(recipeData.id, token)
+            await apiUnsaveRecipe(user.id, recipeData.id, token)
         } else {
-            await apiUnsaveRecipe(recipeData.id, token)
+            await apiSaveRecipe(user.id, recipeData.id, token)
         }
         setRecipeData((recipeData) => {
             return {

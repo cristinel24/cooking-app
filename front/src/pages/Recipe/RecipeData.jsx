@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { RatingValue, Tag, Button, Report, InfoModal } from '../../components'
 import './index.css'
@@ -6,11 +6,14 @@ import { prepTimeDisplayText, ratingToNumber } from '../../utils/recipeData'
 import { IoIosTime } from 'react-icons/io'
 import { FaUser, FaEye } from 'react-icons/fa'
 import { getErrorMessage } from '../../utils/api'
+import { UserContext } from '../../context'
 
 export default function RecipeData({ recipeData, onFavorite }) {
     const [isReportVisible, setIsReportVisible] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+
+    const { loggedIn } = useContext(UserContext)
 
     const onPressFavorite = async () => {
         if (loading) {
@@ -77,7 +80,7 @@ export default function RecipeData({ recipeData, onFavorite }) {
 
                         <RatingValue
                             className="recipe-page-rating-stars"
-                            value={ratingToNumber(recipeData.ratingSum, recipeData.ratingCount)}
+                            value={recipeData.ratingAvg}
                         />
 
                         <button
@@ -112,8 +115,9 @@ export default function RecipeData({ recipeData, onFavorite }) {
                     <div className="recipe-page-image">
                         <img src={recipeData.thumbnail} alt="recipe image" />
                     </div>
-                    {recipeData.isFavorite !== undefined && (
+                    {loggedIn() && recipeData.isFavorite !== undefined && (
                         <Button
+                            disabled={loading}
                             className={'recipe-page-button-favorite'}
                             text={
                                 recipeData.isFavorite

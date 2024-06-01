@@ -83,8 +83,8 @@ export default function UserListModal({ total, fetchData, isOpen, onClose, conte
                     )
                 }
             >
-                {results.data.map((result, index) => (
-                    <UserCard user={result} />
+                {results.data.map((result) => (
+                    <UserCard key={result?.id} user={result} />
                 ))}
             </InfiniteScroll>
         </GenericModal>

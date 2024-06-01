@@ -1,16 +1,19 @@
 import { FaHeart } from 'react-icons/fa6'
 import { PiCookingPot } from 'react-icons/pi'
 import { BsTextParagraph } from 'react-icons/bs'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import {
     getFollowers as apiGetFollowers,
     getFollowing as apiGetFollowing,
+    follow as apiFollow,
+    unfollow as apiUnfollow,
 } from '../../services/profile'
 
 import SideButton from './SideButton'
-import { Button, GenericModal } from '../../components'
+import { Button, InfoModal } from '../../components'
 import UserListModal from './UserListModal'
-import { getErrorMessage } from '../../utils/api' //TODO: error handling for follow/unfollow requests
+import { getErrorMessage } from '../../utils/api'
+import { UserContext } from '../../context'
 
 export default function Sidebar({ profileData, setProfileData }) {
     const [userModalOpen, setUserModalOpen] = useState({
@@ -18,17 +21,40 @@ export default function Sidebar({ profileData, setProfileData }) {
         following: false,
     })
 
-    const toggleFollow = () => {
-        if (profileData.isFollowing !== undefined) {
-            setProfileData((data) => {
-                return {
-                    ...data,
-                    isFollowing: !data.isFollowing,
-                    followersCount: profileData.isFollowing
-                        ? data.followersCount - 1
-                        : data.followersCount + 1,
+    const [isFollowLoading, setIsFollowLoading] = useState(false)
+    const [error, setError] = useState('')
+
+    const { token, user, loggedIn } = useContext(UserContext)
+
+    const toggleFollow = async () => {
+        if (profileData?.isFollowing !== undefined) {
+            console.log(profileData.isFollowing)
+            try {
+                setIsFollowLoading(true)
+                if (profileData?.isFollowing) {
+                    await apiUnfollow(user?.id, profileData?.id, token)
+                    setProfileData((data) => {
+                        return {
+                            ...data,
+                            isFollowing: false,
+                            followersCount: data.followersCount - 1,
+                        }
+                    })
+                } else {
+                    await apiFollow(user?.id, profileData?.id, token)
+                    setProfileData((data) => {
+                        return {
+                            ...data,
+                            isFollowing: true,
+                            followersCount: data.followersCount + 1,
+                        }
+                    })
                 }
-            })
+            } catch (e) {
+                setError(getErrorMessage(e))
+            } finally {
+                setIsFollowLoading(false)
+            }
         }
     }
 
@@ -59,6 +85,14 @@ export default function Sidebar({ profileData, setProfileData }) {
 
     return (
         <div className="profile-sidebar" id={`profile-sidebar-${profileData.id}`}>
+            <InfoModal
+                isOpen={error !== ''}
+                onClose={() => {
+                    setError('')
+                }}
+            >
+                <p>Eroare: {error}</p>
+            </InfoModal>
             {userModalOpen.followers && (
                 <UserListModal
                     contentLabel={'Urmăritori'}
@@ -77,7 +111,7 @@ export default function Sidebar({ profileData, setProfileData }) {
                 <UserListModal
                     contentLabel={'Urmăriți'}
                     fetchData={fetchFollowing}
-                    total={profileData.followingCount}
+                    total={profileData.followsCount}
                     isOpen={userModalOpen.following}
                     onClose={() => {
                         setUserModalOpen((data) => ({
@@ -118,13 +152,16 @@ export default function Sidebar({ profileData, setProfileData }) {
                             }))
                         }}
                     >
-                        {profileData.followingCount} urmăriți
+                        {profileData.followsCount} urmăriți
                     </button>
                 </p>
-                <Button
-                    text={profileData.isFollowing ? 'Nu mai urmări' : 'Urmărește'}
-                    onClick={toggleFollow}
-                />
+                {loggedIn() && (
+                    <Button
+                        disabled={isFollowLoading}
+                        text={profileData.isFollowing ? 'Nu mai urmări' : 'Urmărește'}
+                        onClick={toggleFollow}
+                    />
+                )}
             </div>
 
             <div className="profile-sidebar-buttons">

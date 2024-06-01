@@ -1,43 +1,44 @@
-import { Link, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import './index.css'
 import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../context'
 import { ClipLoader } from 'react-spinners'
 
-import { getFullProfile } from '../../services/profile'
+import { getProfile } from '../../services/profile'
 import Sidebar from './Sidebar'
 
-import { GenericModal } from '../../components'
+import { getErrorMessage } from '../../utils/api'
 
 export default function Profile() {
     const navigate = useNavigate()
 
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
     const [profileData, setProfileData] = useState({})
     const { user, token } = useContext(UserContext)
 
-    // const profileId = 21
+    const { profileId } = useParams([])
+    const { token } = useContext(UserContext)
 
     useEffect(() => {
         const fetch = async () => {
-            // temporary; TODO: proper error handling with actual error message
+            setLoading(true)
             try {
-                const profile = await getFullProfile(user.id, token)
+                const profile = await getProfile(profileId, token)
                 setProfileData(profile)
-
-                setLoading(false)
             } catch (e) {
-                navigate('/not-found')
+                if (e?.response?.status === 404) {
+                    navigate('/not-found')
+                } else {
+                    setError(getErrorMessage(e))
+                }
+            } finally {
+                setLoading(false)
             }
         }
 
         fetch()
-    }, [])
-
-    // const onLogout = () => {
-    //     logout()
-    //     navigate('/')
-    // }
+    }, [profileId])
 
     return (
         <>
@@ -49,16 +50,17 @@ export default function Profile() {
                     alignSelf: 'center',
                 }}
                 width={'100%'}
-                loading={loading}
+                loading={loading && !error}
                 aria-label="Se încarcă..."
                 data-testid="loader"
             />
-            {!loading && (
+            {!error && !loading && (
                 <div className="profile">
                     <Sidebar profileData={profileData} setProfileData={setProfileData} />
                     <Outlet context={{ profileData }} />
                 </div>
             )}
+            {error !== '' && <span style={{ textAlign: 'center' }}>{error}</span>}
         </>
     )
 }

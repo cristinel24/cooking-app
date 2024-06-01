@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 
 const FormInput = forwardRef(function FormInput(
-    { className, label, id, errorCheck, ...other },
+    { className, label, id, errorCheck, placeholder, ...other },
     ref
 ) {
     return (
@@ -11,7 +11,13 @@ const FormInput = forwardRef(function FormInput(
                     {label}
                 </label>
             )}
-            <input className="form-input" id={id} ref={ref} {...other} />
+            <input
+                className="form-input"
+                placeholder={placeholder ? placeholder : ''}
+                id={id}
+                ref={ref}
+                {...other}
+            />
             {errorCheck && errorCheck(id)}
         </div>
     )

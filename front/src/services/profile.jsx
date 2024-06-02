@@ -29,14 +29,12 @@ export const getFollowers = async (profileId, start, count) => {
         headers: {},
         params: { start: start, count: count },
     })
-    console.log(response)
     return response.data
 }
 export const getFollowing = async (profileId, start, count) => {
     const response = await axios.get(`${API_URL}/users/${profileId}/following`, {
         params: { start: start, count: count },
     })
-    console.log(response)
     return response.data
 }
 

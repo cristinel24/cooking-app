@@ -1,6 +1,8 @@
 import pymongo
 from fastapi import status
 from pymongo import errors
+from datetime import datetime, timezone
+
 
 import exceptions
 from constants import (DB_NAME, HISTORY_MAX_SIZE, MAX_TIMEOUT_TIME_SECONDS,
@@ -42,7 +44,9 @@ class MessageHistoryCollection(MongoCollection):
                             "$each": [message],
                             "$slice": -HISTORY_MAX_SIZE  # Keeps only the last 100 entries
                         }
-                    }}
+                    },
+                    "$set": {"updatedAt": datetime.now(timezone.utc)}
+                    }
                 )
             if update_result.modified_count == 0:
                 raise exceptions.MessageHistoryException(ErrorCodes.USER_NOT_FOUND, status.HTTP_404_NOT_FOUND)

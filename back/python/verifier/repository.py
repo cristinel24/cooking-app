@@ -3,6 +3,7 @@ from constants import DB_NAME, MONGO_TIMEOUT, MONGO_URI, ErrorCodes
 from exception import VerifierException
 from fastapi import status
 from pymongo import MongoClient, errors
+from datetime import datetime, timezone
 
 
 class MongoCollection:
@@ -20,6 +21,7 @@ class UserCollection(MongoCollection):
         try:
             with pymongo.timeout(MONGO_TIMEOUT):
                 pipeline[0]["$match"]["id"] = user_id
+                pipeline[1]["$set"]["updatedAt"] = datetime.now(timezone.utc)
                 self._collection.aggregate(pipeline)
         except errors.PyMongoError as e:
             if e.timeout:

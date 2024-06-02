@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from pymongo import MongoClient, timeout
 from constants import DB_NAME, MONGO_URI, TIMEOUT_LIMIT, ErrorCodes
 
@@ -23,6 +25,6 @@ class DBWrapper:
     def update_username(self, user_id: str, new_username: str) -> None:
         try:
             with timeout(TIMEOUT_LIMIT):
-                self.connection.get_database(DB_NAME).user.update_one({"id": user_id}, {"$set": {"username": new_username}})
+                self.connection.get_database(DB_NAME).user.update_one({"id": user_id}, {"$set": {"username": new_username, "updatedAt": datetime.now(timezone.utc)}})
         except Exception:
             raise Exception(ErrorCodes.FAILED_TO_UPDATE_USERNAME.value)

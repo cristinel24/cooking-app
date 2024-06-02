@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 from typing import Mapping, Any
 
 import pymongo.errors
@@ -20,6 +20,7 @@ def _update_entry_by_id(
 ) -> UpdateResult:
     try:
         with timeout(NORMAL_TIMEOUT_DB):
+            update.update({"$set": {"updatedAt": datetime.now(timezone.utc)}})
             update = collection.update_one(
                 filter={"id": entry_id},
                 update=update,
@@ -142,7 +143,7 @@ class RatingCollection(MongoCollection):
                 self._collection.insert_one(
                     document={
                         "id": generated_id,
-                        "updatedAt": datetime.datetime.now(datetime.timezone.utc),
+                        "updatedAt": datetime.now(timezone.utc),
                         "authorId": user_id,
                         "parentType": rating_data.parentType,
                         "parentId": rating_data.parentId,
@@ -183,6 +184,7 @@ class RatingCollection(MongoCollection):
     def find_and_update_rating(self, rating_id: str, update: dict, session: ClientSession = None):
         try:
             with timeout(NORMAL_TIMEOUT_DB):
+                update["$set"]["updatedAt"] = datetime.now(timezone.utc)
                 rating = self._collection.find_one_and_update(
                     filter={"id": rating_id},
                     update=update,
@@ -243,6 +245,7 @@ class RecipeCollection(MongoCollection):
     def modify_recipe(self, recipe_id: str, mods: dict, session: ClientSession = None):
         try:
             with timeout(NORMAL_TIMEOUT_DB):
+                mods.update({"$set": {"updatedAt": datetime.now(timezone.utc)}})
                 self._collection.update_one(
                     filter={"id": recipe_id},
                     update=mods,

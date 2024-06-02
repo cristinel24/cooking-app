@@ -6,6 +6,7 @@ const errors = {
     25400: 'Numele de utilizator există deja',
     21503: 'Deja ați salvat această rețetă',
     21504: 'Nu ați salvat această rețetă',
+    26413: 'Nu puteți avea mai mult de 1 recenzie/comentariu la o rețetă',
 }
 
 // transforms an error from axios to a pretty error message for the client

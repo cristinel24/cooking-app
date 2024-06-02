@@ -6,7 +6,14 @@ import { getErrorMessage } from '../../utils/api'
 import { length } from '../../utils/form'
 import { ClipLoader } from 'react-spinners'
 
-const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Confirmă' }) => {
+const RatingForm = ({
+    defaultValues,
+    allowRatingValue = true,
+    onSubmit,
+    onCancel,
+    id,
+    confirmText = 'Confirmă',
+}) => {
     const {
         register,
         handleSubmit,
@@ -17,7 +24,7 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
         clearErrors,
         formState: { errors },
     } = useForm({
-        defaultValues: { ...defaultValues, rating: 0 },
+        defaultValues: { rating: 0, ...defaultValues },
     })
 
     const [isSubmitCallbackLoading, setIsSubmitCallbackLoading] = useState(false)
@@ -77,10 +84,10 @@ const RatingForm = ({ defaultValues, onSubmit, onCancel, id, confirmText = 'Conf
         >
             {errors['api'] && (
                 <InfoModal isOpen={Boolean(errors['api'])} onClose={onCloseModal}>
-                    <p className="form-error">{errors['api'].message}</p>
+                    <p>Eroare: {errors['api'].message}</p>
                 </InfoModal>
             )}
-            {defaultValues?.rating !== undefined && (
+            {allowRatingValue && (
                 <>
                     <div className="rating-card-form-stars">
                         <Controller

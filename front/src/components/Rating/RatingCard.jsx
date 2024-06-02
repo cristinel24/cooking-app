@@ -5,7 +5,7 @@ import { RatingValue, ConfirmModal, Report } from '..'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import { ClipLoader } from 'react-spinners'
 
-import { timestampToRomanian, dateToTimestamp } from '../../utils/date'
+import { timestampToRomanian, dateToTimestamp, timestampToSeconds } from '../../utils/date'
 import { getErrorMessage } from '../../utils/api'
 
 import RatingButton from './RatingButton'
@@ -15,6 +15,7 @@ import {
     getRatingReplies as apiGetRatingReplies,
     editRating as apiEditRating,
     deleteRating as apiDeleteRating,
+    getRating as apiGetRating,
 } from '../../services/rating'
 import { UserContext } from '../../context'
 import { Link } from 'react-router-dom'
@@ -40,8 +41,8 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const shortRatingLength = 300
 
     useEffect(() => {
-        setHasMore(error.length > 0 ? false : replyResults.start < replyResults.total)
-    }, [replyResults, error])
+        setHasMore(error.length > 0 ? false : replyResults.start <= replyResults.total)
+    }, [replyResults.total, replyResults.start, error])
 
     useEffect(() => {
         let ignore = false
@@ -111,21 +112,22 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
 
     const handleEdit = async (data) => {
         // raw async callback; to be passed to RatingForm
-        const response = await onEdit(data)
+        await onEdit(data)
         toggleEdit()
     }
 
     const editRating = async (data, id) => {
         // raw async callback; to be passed to RatingForm
-        await apiEditRating(id, token)
+        await apiEditRating(id, data, token)
+
+        const newRating = await apiGetRating(id)
 
         setReplyResults((results) => {
             let newData = { ...results }
             let index = newData.data.findIndex((obj) => obj.id === id)
             if (index !== -1) {
                 newData.data[index] = {
-                    ...newData.data[index],
-                    description: data.description,
+                    ...newRating,
                     updatedAt: dateToTimestamp(Date.now()),
                 }
             }
@@ -154,17 +156,14 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
 
     const handleAddReply = async (data) => {
         // raw async callback; to be passed to RatingForm
-        const response = await apiAddRatingReply(ratingData.id, data, token)
-
-        // aka: if all of the replies before this new one have been fetched
-        if (replyResults.start >= replyResults.total) {
-            setReplyResults((newResults) => ({
+        await apiAddRatingReply(ratingData.id, data, token)
+        setReplyResults((newResults) => {
+            return {
                 ...newResults,
+                start: newResults.total,
                 total: newResults.total + 1,
-                data: [...newResults.data, response],
-            }))
-        }
-
+            }
+        })
         toggleAddReply()
     }
 
@@ -221,7 +220,10 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                         <div className="rating-card-date">
                             Postat pe {timestampToRomanian(ratingData.createdAt)}
                             <em>
-                                {ratingData.updatedAt !== ratingData.createdAt ? ' (editat)' : ''}
+                                {timestampToSeconds(ratingData.updatedAt) !==
+                                timestampToSeconds(ratingData.createdAt)
+                                    ? ' (editat)'
+                                    : ''}
                             </em>
                         </div>
                     </div>
@@ -297,12 +299,13 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                         <RatingForm
                             id={`${ratingData.id}-edit`}
                             onSubmit={handleEdit}
+                            allowRatingValue={
+                                ratingData?.parentType === 'recipe' &&
+                                ratingData?.rating !== undefined
+                            }
                             defaultValues={{
                                 description: ratingData.description,
-                                ...(ratingData?.parentType === 'recipe' &&
-                                ratingData?.rating !== undefined
-                                    ? { rating: ratingData.rating }
-                                    : {}),
+                                rating: ratingData.rating,
                             }}
                             onCancel={toggleEdit}
                         />
@@ -318,8 +321,10 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                     <RatingForm
                                         id={`${ratingData.id}-add-reply`}
                                         onSubmit={handleAddReply}
+                                        allowRatingValue={false}
                                         defaultValues={{
                                             description: '',
+                                            rating: 0,
                                         }}
                                         onCancel={toggleAddReply}
                                     />
@@ -358,7 +363,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                 />
                             </div>
                         ) : (
-                            <div className="form-error">{error}</div>
+                            <p>Eroare: {error}</p>
                         ))}
                 </>
             )}

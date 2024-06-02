@@ -1,7 +1,7 @@
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize};
 
-use super::user;
+use super::{rating::Rating, user};
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
@@ -30,7 +30,7 @@ pub struct Recipe {
     pub tags: Vec<String>,
     pub thumbnail: String,
     pub view_count: u32,
-    pub user_rating: Option<Card>,
+    pub user_rating: Option<Rating>,
     pub is_favorite: Option<bool>,
     pub rating_avg: f32,
     pub created_at: String,

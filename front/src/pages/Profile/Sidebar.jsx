@@ -57,16 +57,23 @@ export default function Sidebar({ profileData, setProfileData }) {
         }
     }
 
-    const links = [
+    let links = [
         {
             link: `/profile/${profileData.id}/description`,
             text: 'Descriere',
             alt: [`/profile/${profileData.id}`],
             Icon: BsTextParagraph,
         },
-        { link: `/profile/${profileData.id}/favorites`, text: 'Favorite', Icon: FaHeart },
         { link: `/profile/${profileData.id}/recipes`, text: 'Rețete', Icon: PiCookingPot },
     ]
+
+    if (loggedIn() && user.id === profileData.id) {
+        links.push({
+            link: `/profile/${profileData.id}/favorites`,
+            text: 'Favorite',
+            Icon: FaHeart,
+        })
+    }
 
     const fetchFollowing = async (start, count) => {
         const response = await apiGetFollowing(profileData.id, start, count)

@@ -54,3 +54,12 @@ export const unfollow = async (userId, otherUserId, token) => {
         data: { followsId: otherUserId },
     })
 }
+
+export const getSavedRecipes = async (profileId, start, count, token) => {
+    const response = await axios.get(`${API_URL}/users/${profileId}/saved-recipes`, {
+        headers: { ...authHeader(token) },
+        params: { start, count },
+    })
+    console.log(response)
+    return response.data
+}

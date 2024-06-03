@@ -19,7 +19,7 @@ async def get_recipes_from_followers(user_id: str, x_user_id: str, start: int, c
     for following in following_ids:
         recipes.update(user_collection.get_user_recipe_ids(following, start, count))
     recipe_ids_paginated = recipe_collection.get_recipe_ids_paginated(list(recipes), start, count)
-    return RecipeCardsData(data=await get_recipe_cards(recipe_ids_paginated, x_user_id), count=len(recipe_ids))
+    return RecipeCardsData(data=await get_recipe_cards(recipe_ids_paginated, x_user_id), total=len(recipe_ids))
 
 
 async def get_recipe_by_id(recipe_id: str, x_user_id) -> RecipeData:

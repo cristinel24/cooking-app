@@ -1,57 +1,54 @@
 import axios from 'axios'
+import { authHeader } from '../utils/api'
 
 const API_URL = import.meta.env.VITE_API_URL
 
-export const getRatings = async (recipeId) => {
-    const placeholderRating = {
-        id: '7a',
-        parentId: '21',
-        rating: 3,
-        parentType: 'recipe',
-        description:
-            'Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune Georgiana a underscore fr spune ',
-        author: {
-            id: '40',
-            username: 'davisann',
-            displayName: 'Justin Howard',
-            icon: 'https://thispersondoesnotexist.com/',
-            ratingAvg: 3,
-        },
-        createdAt: '2024-05-26T05:29:05Z',
-        updatedAt: '2024-05-26T05:29:06Z',
-    }
-
-    const ratings = new Array(10)
-        .fill(0)
-        .map((_, index) => ({ ...placeholderRating, description: `${index}`, id: `${index}` }))
-    const delay = (ms) => new Promise((res) => setTimeout(res, ms))
-    await delay(1200)
-    return ratings
+export const getRating = async (ratingId) => {
+    return (await axios.get(`${API_URL}/ratings/${ratingId}`)).data
 }
 
-export const getRatingReplies = async (ratingId) => {
-    const placeholderRating = {
-        id: '7a',
-        parentId: '21',
-        parentType: 'rating',
-        description: 'Georgiana a underscore fr spune Georgiana a  ',
-        author: {
-            id: '40',
-            username: 'davisann',
-            displayName: 'Justin Howard',
-            icon: 'https://thispersondoesnotexist.com/',
-            ratingAvg: 3,
-        },
-        createdAt: '2024-05-26T05:29:06Z',
-        updatedAt: '2024-05-26T05:29:06Z',
-    }
-    const ratings = new Array(10).fill(0).map((_, index) => ({
-        ...placeholderRating,
-        description: `${index}`,
-        id: `${ratingId}_${index}`,
-    }))
+export const getRatings = async (recipeId, params) => {
+    const response = await axios.get(`${API_URL}/recipes/${recipeId}/comments`, {
+        params: params,
+    })
+    return response.data
+}
 
-    const delay = (ms) => new Promise((res) => setTimeout(res, ms))
-    await delay(1200)
-    return ratings
+export const getRatingReplies = async (ratingId, params) => {
+    const response = await axios.get(`${API_URL}/ratings/${ratingId}/comments`, {
+        params: params,
+    })
+    return response.data
+}
+
+export const deleteRating = async (ratingId, token) => {
+    await axios.delete(`${API_URL}/ratings/${ratingId}`, { headers: { ...authHeader(token) } })
+}
+
+export const editRating = async (ratingId, data, token) => {
+    await axios.patch(`${API_URL}/ratings/${ratingId}`, data, { headers: { ...authHeader(token) } })
+}
+
+export const addRating = async (recipeId, data, token) => {
+    await axios.post(
+        `${API_URL}/ratings`,
+        {
+            ...data,
+            parentType: 'recipe',
+            parentId: recipeId,
+        },
+        { headers: { ...authHeader(token) } }
+    )
+}
+
+export const addRatingReply = async (ratingId, data, token) => {
+    await axios.post(
+        `${API_URL}/ratings`,
+        {
+            ...data,
+            parentType: 'rating',
+            parentId: ratingId,
+        },
+        { headers: { ...authHeader(token) } }
+    )
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '..'
 import { IoClose } from 'react-icons/io5'
 
@@ -19,10 +19,9 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
     const [inputValue, setInputValue] = useState('')
     const [items, setItems] = useState([])
 
-    const handleInputChange = (e) => {
+    const handleInputChange = async (e) => {
         const newInputValue = e.target.value
         setInputValue(newInputValue)
-
         // don't suggest if less than 3 characters were given
         if (!suggest || newInputValue.length < 3) {
             setSuggestionsActive(false)
@@ -30,8 +29,13 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
             return
         }
 
-        setSuggestionsActive(true)
-        setItems(suggest(newInputValue))
+        try {
+            setItems(await suggest(newInputValue))
+            setSuggestionsActive(true)
+        } catch (e) {
+            setSuggestionsActive(false)
+            setItems([])
+        }
     }
 
     const addItemAndClearSuggestions = (value) => {
@@ -60,14 +64,20 @@ function FormSelector({ label, id, value, onChange, onBlur, suggest }) {
         onChange(value.filter((i) => i !== item))
     }
 
-    window.addEventListener('click', (e) => {
-        const selector = document.getElementById(id).parentNode
+    useEffect(() => {
+        const onClick = (e) => {
+            const selector = document.getElementById(id).parentNode
 
-        if (!selector.contains(e.target)) {
-            setSuggestionsActive(false)
-            onBlur()
+            if (!selector.contains(e.target)) {
+                setSuggestionsActive(false)
+                onBlur()
+            }
         }
-    })
+
+        window.addEventListener('click', onClick)
+
+        return () => window.removeEventListener('click', onClick)
+    }, [])
 
     return (
         <div className="form-item">

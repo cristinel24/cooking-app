@@ -162,17 +162,18 @@
     }
 }
 
-.recipe-page-comments-container {
+.recipe-page-ratings-container {
+    padding: 4px;
+}
+
+.recipe-page-ratings-container,
+.recipe-page-ratings-with-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
 @media screen and (max-width: 768px) {
-    .recipe-page-container {
-        font-size: 1.1rem;
-    }
-
     .recipe-page-grid-container {
         grid-template-columns: 1fr 2fr;
     }
@@ -202,6 +203,9 @@
 }
 
 @media screen and (max-width: 560px) {
+    .recipe-page-container {
+        font-size: 0.9rem;
+    }
     .recipe-page-grid-container {
         grid-template-columns: 1fr;
     }

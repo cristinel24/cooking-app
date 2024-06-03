@@ -1,5 +1,5 @@
 export { default as AddRecipe } from './AddRecipe'
-export { default as CredentialsChange } from './CredentialsChange'
+export { ChangeEmail, ChangeUsername, ChangePassword } from './CredentialsChange'
 export { default as Dashboard } from './Dashboard'
 export { default as EditRecipe } from './EditRecipe'
 export { default as ErrorPage } from './ErrorPage'

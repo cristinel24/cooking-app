@@ -52,7 +52,7 @@ export const renderJSONtoHTML = (json) => {
 }
 
 // takes raw RTE JSON, returns RTE JSON with base64 images uploaded to the server
-export async function uploadImagesInJSON(richTextData) {
+export async function uploadImagesInJSON(token, richTextData) {
     let images = new Set()
     collectImageSrcs(richTextData, images)
     let imageArray = Array.from(images)
@@ -62,7 +62,7 @@ export async function uploadImagesInJSON(richTextData) {
             let formData = new FormData()
             formData.append('file', base64ToFile(base64Image))
 
-            const response = await uploadImage(formData)
+            const response = await uploadImage(token, formData)
             imageLinkMap.set(base64Image, response)
         })
     )

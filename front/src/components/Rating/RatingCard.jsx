@@ -1,23 +1,48 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import './index.css'
-import { RatingValue } from '..'
+import { RatingValue, ConfirmModal, Report } from '..'
 
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
+import { ClipLoader } from 'react-spinners'
 
-import { dateToRomanian } from '../../utils/date'
+import { timestampToRomanian, dateToTimestamp, timestampToSeconds } from '../../utils/date'
+import { getErrorMessage } from '../../utils/api'
 
 import RatingButton from './RatingButton'
-import RatingEditForm from './RatingEditForm'
-import { getRatingReplies } from '../../services/rating'
+import RatingForm from './RatingForm'
+import {
+    addRatingReply as apiAddRatingReply,
+    getRatingReplies as apiGetRatingReplies,
+    editRating as apiEditRating,
+    deleteRating as apiDeleteRating,
+    getRating as apiGetRating,
+} from '../../services/rating'
+import { UserContext } from '../../context'
+import { Link } from 'react-router-dom'
 
 const RatingCard = ({ ratingData, onEdit, onDelete }) => {
     const [showAllText, setShowAllText] = useState(false)
+    const [showReplies, setShowReplies] = useState(false)
+    const [showReplyForm, setShowReplyForm] = useState(false)
     const [editing, setEditing] = useState(false)
 
-    const [replies, setReplies] = useState([])
-    const [showReplies, setShowReplies] = useState(false)
-    const [repliesError, setRepliesError] = useState('')
-    const [loadingReplies, setLoadingReplies] = useState(false)
+    const [replyResults, setReplyResults] = useState({ start: 0, total: 0, data: [] })
+    const [error, setError] = useState('')
+    const [hasMore, setHasMore] = useState(true)
+    const [loading, setLoading] = useState(false)
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+
+    const [isReportVisible, setIsReportVisible] = useState(false)
+
+    const { token, user, loggedIn } = useContext(UserContext)
+
+    const fetchCount = 20
+    const shortRatingLength = 300
+
+    useEffect(() => {
+        setHasMore(error.length > 0 ? false : replyResults.start <= replyResults.total)
+    }, [replyResults.total, replyResults.start, error])
 
     useEffect(() => {
         let ignore = false
@@ -26,80 +51,190 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
         }
 
         if (ratingData.parentType !== 'recipe') {
+            // don't even try to fetch replies
             return ignoreTrue
         }
 
-        setLoadingReplies(true)
+        setLoading(true)
 
-        getRatingReplies(ratingData.id)
-            .then((result) => {
+        const fetch = async () => {
+            try {
+                const result = await apiGetRatingReplies(ratingData.id, {
+                    start: replyResults.start,
+                    count: fetchCount,
+                })
                 if (!ignore) {
-                    setReplies(result)
+                    setReplyResults((newResults) => ({
+                        ...replyResults,
+                        start: replyResults.start + fetchCount,
+                        total: result.total,
+                        data: [...newResults.data, ...result.data],
+                    }))
                 }
-            })
-            .then(() => {
-                setLoadingReplies(false)
-            })
-            .catch((e) => setRepliesError('error'))
+            } catch (e) {
+                setError(getErrorMessage(e))
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetch()
 
         return ignoreTrue
     }, [])
+
+    const fetchMoreReplies = async () => {
+        if (loading) {
+            return
+        }
+        try {
+            setLoading(true)
+            const result = await apiGetRatingReplies(ratingData.id, {
+                start: replyResults.start,
+                count: fetchCount,
+            })
+            setReplyResults((newResults) => ({
+                ...replyResults,
+                start: replyResults.start + fetchCount,
+                total: result.total,
+                data: [...newResults.data, ...result.data],
+            }))
+        } catch (e) {
+            setError(getErrorMessage(e))
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const toggleEdit = () => {
         setEditing(!editing)
     }
 
     const handleEdit = async (data) => {
+        // raw async callback; to be passed to RatingForm
+        await onEdit(data)
         toggleEdit()
-        onEdit(data)
     }
 
     const editRating = async (data, id) => {
-        console.log(data)
-        setReplies((ratingData) => {
-            let newData = ratingData
-            newData.find((obj) => obj.id === id).description = data.text
+        // raw async callback; to be passed to RatingForm
+        await apiEditRating(id, data, token)
+
+        const newRating = await apiGetRating(id)
+
+        setReplyResults((results) => {
+            let newData = { ...results }
+            let index = newData.data.findIndex((obj) => obj.id === id)
+            if (index !== -1) {
+                newData.data[index] = {
+                    ...newRating,
+                    updatedAt: dateToTimestamp(Date.now()),
+                }
+            }
             return newData
         })
     }
 
-    const deleteRating = async (id) => {
-        setReplies(replies.filter((otherRating) => id !== otherRating.id))
-        console.log(id)
+    const toggleDeleteModal = () => {
+        setIsDeleteModalOpen(!isDeleteModalOpen)
     }
 
-    const shortRatingLength = 300
+    const handleConfirmDeleteModal = async () => {
+        await onDelete()
+        toggleDeleteModal()
+    }
+
+    const deleteReply = async (id) => {
+        // raw async callback; to be passed to RatingForm
+        await apiDeleteRating(id, token)
+
+        setReplyResults((newResults) => ({
+            ...newResults,
+            data: newResults.data.filter((otherRating) => id !== otherRating.id),
+        }))
+    }
+
+    const handleAddReply = async (data) => {
+        // raw async callback; to be passed to RatingForm
+        await apiAddRatingReply(ratingData.id, data, token)
+        setReplyResults((newResults) => {
+            return {
+                ...newResults,
+                start: newResults.total,
+                total: newResults.total + 1,
+            }
+        })
+        toggleAddReply()
+    }
+
+    const toggleAddReply = () => {
+        setShowReplyForm(!showReplyForm)
+        if (!showReplies) {
+            setShowReplies(true)
+        }
+    }
+
+    const onSendReport = async () => {
+        try {
+            // TODO: api call
+        } catch (e) {
+            setError(getErrorMessage(e))
+        } finally {
+            setIsReportVisible(!isReportVisible)
+        }
+    }
+
+    const toggleReport = () => {
+        setIsReportVisible(!isReportVisible)
+    }
+
     return (
         <div className="rating-card">
+            <ConfirmModal
+                isOpen={isDeleteModalOpen}
+                onConfirm={handleConfirmDeleteModal}
+                onCancel={toggleDeleteModal}
+                confirmText={'Confirmare'}
+                cancelText={'Anulare'}
+            >
+                <p>Sigur doriți să ștergeți această recenzie?</p>
+            </ConfirmModal>
+            {isReportVisible && <Report onSend={onSendReport} onCancel={toggleReport} />}
             <div className="rating-card-main-container">
                 <div className="rating-card-image">
                     <img src={ratingData.author.icon} />
                 </div>
                 <div className="rating-card-content">
                     <div className="rating-card-data">
-                        {ratingData.rating && ratingData.rating > 0 && (
-                            <div className="rating-card-rating">
-                                <RatingValue value={ratingData.rating} showValue={false} />
-                            </div>
-                        )}
                         <div className="rating-card-user">
                             <h4 className="rating-card-display-name">
                                 {ratingData.author.displayName}
                             </h4>
-                            <span className="rating-card-username">
+                            <Link
+                                to={`/profile/${ratingData.author.id}`}
+                                className="rating-card-username"
+                            >
                                 @{ratingData.author.username}
-                            </span>
+                            </Link>
                         </div>
                         <div className="rating-card-date">
-                            Postat pe {dateToRomanian(ratingData.createdAt)}
+                            Postat pe {timestampToRomanian(ratingData.createdAt)}
                             <em>
-                                {ratingData.updatedAt !== ratingData.createdAt ? ' (editat)' : ''}
+                                {timestampToSeconds(ratingData.updatedAt) !==
+                                timestampToSeconds(ratingData.createdAt)
+                                    ? ' (editat)'
+                                    : ''}
                             </em>
                         </div>
                     </div>
                     {!editing ? (
                         <>
                             <div className="rating-card-description">
+                                {ratingData?.rating > 0 && (
+                                    <div className="rating-card-rating">
+                                        <RatingValue value={ratingData.rating} showValue={false} />
+                                    </div>
+                                )}
                                 <p>
                                     {showAllText ||
                                     ratingData.description.length <= shortRatingLength
@@ -126,7 +261,7 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                         )}
                                     </RatingButton>
                                 )}
-                                {replies.length > 0 && (
+                                {replyResults.data.length > 0 && (
                                     <RatingButton
                                         onClick={() => {
                                             setShowReplies(!showReplies)
@@ -143,46 +278,95 @@ const RatingCard = ({ ratingData, onEdit, onDelete }) => {
                                         )}
                                     </RatingButton>
                                 )}
-                                {ratingData.parentType !== 'rating' && (
-                                    <RatingButton>Răspunde</RatingButton>
+                                {loggedIn() && ratingData.parentType !== 'rating' && (
+                                    <RatingButton onClick={toggleAddReply}>Răspunde</RatingButton>
                                 )}
-                                <RatingButton onClick={toggleEdit}>Editează</RatingButton>
-                                <RatingButton onClick={onDelete}>Șterge</RatingButton>
+                                {loggedIn() && user?.id && user?.id === ratingData?.author?.id && (
+                                    <RatingButton onClick={toggleEdit}>Editează</RatingButton>
+                                )}
+                                {loggedIn() && user?.id && user?.id === ratingData?.author?.id && (
+                                    <RatingButton onClick={toggleDeleteModal}>Șterge</RatingButton>
+                                )}
+
+                                {!(loggedIn() && ratingData?.id === user?.id) && (
+                                    <RatingButton onClick={setIsReportVisible}>
+                                        Raportează
+                                    </RatingButton>
+                                )}
                             </div>
                         </>
                     ) : (
-                        <RatingEditForm
+                        <RatingForm
+                            id={`${ratingData.id}-edit`}
                             onSubmit={handleEdit}
-                            defaultValue={ratingData.description}
+                            allowRatingValue={
+                                ratingData?.parentType === 'recipe' &&
+                                ratingData?.rating !== undefined
+                            }
+                            defaultValues={{
+                                description: ratingData.description,
+                                rating: ratingData.rating,
+                            }}
                             onCancel={toggleEdit}
                         />
                     )}
                 </div>
             </div>
-            {ratingData.parentType === 'recipe' &&
-                showReplies &&
-                (repliesError === '' ? (
-                    replies.length > 0 && (
-                        <div className="rating-card-replies">
-                            {replies.map((reply) => {
-                                return (
-                                    <RatingCard
-                                        key={reply.id}
-                                        ratingData={reply}
-                                        onEdit={(data) => {
-                                            editRating(data, reply.id)
+            {ratingData.parentType === 'recipe' && (
+                <>
+                    {showReplies &&
+                        (error === '' ? (
+                            <div className="rating-card-replies">
+                                {showReplyForm && (
+                                    <RatingForm
+                                        id={`${ratingData.id}-add-reply`}
+                                        onSubmit={handleAddReply}
+                                        allowRatingValue={false}
+                                        defaultValues={{
+                                            description: '',
+                                            rating: 0,
                                         }}
-                                        onDelete={() => {
-                                            deleteRating(reply.id)
-                                        }}
-                                    ></RatingCard>
-                                )
-                            })}
-                        </div>
-                    )
-                ) : (
-                    <>{repliesError}</>
-                ))}
+                                        onCancel={toggleAddReply}
+                                    />
+                                )}
+                                {replyResults.data.length > 0 &&
+                                    replyResults.data.map((reply) => {
+                                        return (
+                                            <RatingCard
+                                                key={reply.id}
+                                                ratingData={reply}
+                                                onEdit={(data) => {
+                                                    editRating(data, reply.id)
+                                                }}
+                                                onDelete={() => {
+                                                    deleteReply(reply.id)
+                                                }}
+                                            ></RatingCard>
+                                        )
+                                    })}
+                                {!loading && hasMore && (
+                                    <RatingButton onClick={fetchMoreReplies}>
+                                        Afișează mai multe răspunsuri
+                                    </RatingButton>
+                                )}
+                                <ClipLoader
+                                    className="loading"
+                                    cssOverride={{
+                                        borderColor: 'var(--text-color)',
+                                        color: 'var(--text-color)',
+                                        alignSelf: 'center',
+                                    }}
+                                    width={'100%'}
+                                    loading={loading}
+                                    aria-label="Se încarcă..."
+                                    data-testid="loader"
+                                />
+                            </div>
+                        ) : (
+                            <p>Eroare: {error}</p>
+                        ))}
+                </>
+            )}
         </div>
     )
 }

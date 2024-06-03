@@ -3,7 +3,7 @@ import { forwardRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 
 const FormTextarea = forwardRef(function FormInput(
-    { className, label, id, errorCheck, grow = true, resize = false, ...other },
+    { className, label, id, errorCheck, grow = true, maxRows = 10, resize = false, ...other },
     ref
 ) {
     return (
@@ -19,6 +19,7 @@ const FormTextarea = forwardRef(function FormInput(
                     className="form-input"
                     id={id}
                     ref={ref}
+                    {...(maxRows && { maxRows: maxRows })}
                     {...other}
                 />
             ) : (

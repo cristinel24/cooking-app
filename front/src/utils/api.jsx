@@ -1,8 +1,12 @@
 // error map
 const errors = {
     12345: 'Example error',
+    21001: 'Deja urmăriți acest utilizator',
     21604: 'Acest token nu este valid',
     25400: 'Numele de utilizator există deja',
+    21503: 'Deja ați salvat această rețetă',
+    21504: 'Nu ați salvat această rețetă',
+    26413: 'Nu puteți avea mai mult de 1 recenzie/comentariu la o rețetă',
 }
 
 // transforms an error from axios to a pretty error message for the client
@@ -28,3 +32,6 @@ export const getErrorMessage = (error) => {
 
 // for testing only
 export const delay = (ms) => new Promise((res) => setTimeout(res, ms))
+
+export const authHeader = (token) =>
+    token !== undefined && token !== '' ? { Authorization: token } : {}

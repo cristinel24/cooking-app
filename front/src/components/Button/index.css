@@ -16,6 +16,12 @@
     background-color: var(--hover-bg-color);
 }
 
+.button:disabled,
+.button[disabled] {
+    cursor: unset;
+    background-color: var(--neutral-bg-color);
+}
+
 .button-icon {
     color: var(--text-color);
 }

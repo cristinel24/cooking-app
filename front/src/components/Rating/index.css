@@ -1,7 +1,6 @@
 .rating-card {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
 
     background-color: rgba(255, 255, 255, 0.1);
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.198);
@@ -15,7 +14,7 @@
 }
 
 .rating-card-image {
-    flex: 0 0 100px;
+    flex: 0 0 88px;
 
     img {
         object-fit: cover;
@@ -31,6 +30,10 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+}
+
+.rating-card-date {
+    font-size: 0.75rem;
 }
 
 .rating-card-rating {
@@ -58,11 +61,24 @@ h4.rating-card-display-name {
     border-radius: 10px;
     background-color: var(--card-bg-color);
     color: var(--color-primary);
+
+    cursor: pointer;
+
+    transition: color 0.2s ease-in-out;
+}
+
+.rating-card-username:hover {
+    color: color-mix(in srgb, var(--color-primary), #fff 20%);
 }
 
 .rating-card-buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
+}
+
+.rating-card-buttons:empty {
+    display: none;
 }
 
 .rating-card-button {
@@ -79,43 +95,68 @@ h4.rating-card-display-name {
 }
 
 .rating-card-replies {
+    margin-top: 30px;
     margin-left: 30px;
 
     font-size: 0.8rem;
-
     display: flex;
     flex-direction: column;
     gap: 1rem;
-
     .rating-card-image {
         flex: 0 0 64px;
     }
 }
-
 .rating-card-description,
 .rating-card-form {
     p {
         margin: 0;
     }
-    margin: 1rem 0;
+}
+
+.rating-card-description {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .rating-card-form {
     width: 100%;
 }
 
+.rating-card-form-stars {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    /* align-items: center; */
+}
+/* 
 .rating-card-textarea textarea {
     border-radius: 10px;
     width: 100%;
     font-size: inherit;
-}
+} */
 
 .rating-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     width: 100%;
 }
 
 @media only screen and (max-width: 480px) {
+    .rating-card-main-container {
+        flex-direction: column;
+        gap: 10px;
+    }
     .rating-card-image {
-        flex: 0 0 64px;
+        flex: unset;
+        width: 64px;
+    }
+
+    .rating-card-replies {
+        .rating-card-image {
+            flex: unset;
+            width: 48px;
+        }
     }
 }

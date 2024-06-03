@@ -1,0 +1,31 @@
+.credentials-change-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: var(--min-page-content-height);
+    align-items: center;
+    justify-content: center;
+}
+
+.credentials-change-card {
+    padding: 20px;
+    border-radius: 10px;
+    /* background-color: var(--card-bg-color);
+    color: var(--color-black); */
+    align-self: center;
+    justify-content: center;
+
+    max-width: 400px;
+    width: 100%;
+
+    h2 {
+        text-align: center;
+        align-self: center;
+        justify-self: center;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .credentials-change-card {
+        max-width: 280px;
+    }
+}

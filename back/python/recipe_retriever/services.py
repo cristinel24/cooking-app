@@ -10,7 +10,7 @@ follow_collection = FollowCollection()
 async def get_recipes_by_user_id(user_id: str, x_user_id: str, start: int, count: int) -> RecipeCardsData:
     recipes_ids = user_collection.get_user_recipe_ids(user_id, start, count)
     if not recipes_ids:
-        return RecipeCardsData(data=[], count=0)
+        return RecipeCardsData(data=[], total=0)
     return RecipeCardsData(data=await get_recipe_cards(recipes_ids, x_user_id), total=len(recipes_ids))
 
 async def get_recipes_from_followers(user_id: str, x_user_id: str, start: int, count: int) -> RecipeCardsData:

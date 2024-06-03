@@ -24,18 +24,20 @@ async def get_ratings(
     sort_aggregate = SORT_DICT.get(sort_query, DEFAULT_SORT)
 
     total, data = rating_collection.find_ratings(parent_id, start, count, filter_aggregate, sort_aggregate)
-    user_cards = await fetch_user_list(list(set([rating["authorId"] for rating in data])), x_user_id)
 
-    for rating in data:
-        for user in user_cards.cards:
-            if rating.get("authorId") == user.id:
-                rating["author"] = user
-                rating.pop("authorId")
+    if len(data) > 0:
+        user_cards = await fetch_user_list(list(set([rating["authorId"] for rating in data])), x_user_id)
 
-    if len(data) > 0 and data[0] is not None and data[0]["parentType"] != parent_type:
-        raise RecipeRatingManagerException(
-            error_code=ErrorCodes.WRONG_PARENT_TYPE, status_code=status.HTTP_400_BAD_REQUEST
-        )
+        for rating in data:
+            for user in user_cards.cards:
+                if rating.get("authorId") == user.id:
+                    rating["author"] = user
+                    rating.pop("authorId")
+
+        if data[0] is not None and data[0]["parentType"] != parent_type:
+            raise RecipeRatingManagerException(
+                error_code=ErrorCodes.WRONG_PARENT_TYPE, status_code=status.HTTP_400_BAD_REQUEST
+            )
 
     return RatingList(total=total, data=data)
 

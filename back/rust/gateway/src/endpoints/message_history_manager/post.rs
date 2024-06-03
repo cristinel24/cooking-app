@@ -1,6 +1,6 @@
 use crate::endpoints::message_history_manager::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::models::message_history::MessageHistoryBody;
+use crate::models::message_history::Body;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -32,7 +32,7 @@ use tracing::error;
 pub async fn post_history(
     req: &mut Request,
     res: &mut Response,
-    message: JsonBody<MessageHistoryBody>,
+    message: JsonBody<Body>,
 ) -> Json<EndpointResponse<String>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();

@@ -26,7 +26,7 @@ USER_DESTROYER_API_URL = os.getenv("USER_DESTROYER_API_URL", "http://localhost:1
 DESTROY_USER_ROUTE = "/{user_id}"
 
 GATEWAY_API_URL = os.getenv("GATEWAY_API_URL", "http://localhost:12345")
-DEFAULT_ICON_URL = f"{GATEWAY_API_URL}/api/images/default.png"
+DEFAULT_ICON_URL = f"{GATEWAY_API_URL}/images/default"
 
 VERIFY_ACCOUNT_TOKEN_TYPE = "emailChange"
 

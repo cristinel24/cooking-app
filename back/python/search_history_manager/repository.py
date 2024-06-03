@@ -1,6 +1,7 @@
 import pymongo
 from fastapi import status
 from pymongo import MongoClient, errors
+from datetime import datetime, timezone
 
 import exceptions
 from constants import *
@@ -40,7 +41,8 @@ class SearchHistoryCollection(MongoCollection):
                             "$each": [search_query],
                             "$slice": -HISTORY_MAX_SIZE  # Keeps only the last 100 entries
                         }
-                    }}
+                    },
+                    "$set": {"updatedAt": datetime.now(timezone.utc)}}
                 )
             if update_result.modified_count == 0:
                 raise exceptions.SearchHistoryException(ErrorCodes.USER_NOT_FOUND, status.HTTP_404_NOT_FOUND)
@@ -53,7 +55,7 @@ class SearchHistoryCollection(MongoCollection):
             with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
                 update_result = self._collection.update_one(
                     {"id": user_id},
-                    {"$set": {"searchHistory": []}}
+                    {"$set": {"searchHistory": [], "updatedAt": datetime.now(timezone.utc)}}
                 )
             return update_result.modified_count
         except errors.PyMongoError as e:

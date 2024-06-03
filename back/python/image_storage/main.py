@@ -2,15 +2,19 @@ import fnmatch
 import os.path
 from typing import Annotated
 
+import services
+from constants import HOST, IMAGE_DIRECTORY_PATH, PORT, ErrorCodes
+from exception import ImageStorageException
 from fastapi import FastAPI, UploadFile, status, Header
 from fastapi.responses import FileResponse, JSONResponse
-
-import services
-from constants import HOST, PORT, IMAGE_DIRECTORY_PATH, ErrorCodes
-from exception import ImageStorageException
 from schemas import UrlResponse
 
 app = FastAPI(title="Image Storage")
+
+
+if not os.path.exists(IMAGE_DIRECTORY_PATH):
+    print("Created image directory")
+    os.mkdir(IMAGE_DIRECTORY_PATH)
 
 
 @app.post("/", response_model=UrlResponse, response_description="Successful operation")

@@ -45,7 +45,7 @@ pub async fn post_new_following_user(
         None,
         Some(follows.into_inner()),
         Some(req.headers().clone()),
-        false,
+        true,
     )
     .await {
         Ok(item) => {

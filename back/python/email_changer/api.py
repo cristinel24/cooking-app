@@ -41,7 +41,7 @@ async def request_token_validation(token: str) -> TokenValidatorRequestResponse:
 async def request_token_destroy(user_id: str) -> None:
     try:
         async with httpx.AsyncClient() as client:
-            request_url = f"{TOKEN_DESTROYER_API_URL}/{user_id}/all"
+            request_url = f"{TOKEN_DESTROYER_API_URL}/{user_id}/tokens"
             response = await client.delete(url=request_url)
             if response.json() is not None:
                 raise Exception()

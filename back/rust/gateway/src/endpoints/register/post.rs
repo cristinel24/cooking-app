@@ -1,7 +1,7 @@
 use crate::endpoints::register::SERVICE;
 use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
 use crate::models::login::Success;
-use crate::models::register::RegisterBody;
+use crate::models::register::Body;
 use crate::models::ErrorResponse;
 use reqwest::{Method, StatusCode};
 use salvo::oapi::endpoint;
@@ -16,8 +16,8 @@ use tracing::error;
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = Success,
-            example = json!(Success::default())
+            body = String,
+            example = json!("null")
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -30,11 +30,11 @@ use tracing::error;
 pub async fn request_register_user(
     req: &mut Request,
     res: &mut Response,
-    data: JsonBody<RegisterBody>,
+    data: JsonBody<Body>,
 ) -> Json<EndpointResponse<String>> {
     let url: String = SERVICE.to_string();
 
-    return match get_response::<&str, RegisterBody, String>(
+    return match get_response::<&str, Body, String>(
         Method::POST,
         url,
         None,

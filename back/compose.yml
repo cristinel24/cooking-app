@@ -318,6 +318,7 @@ services:
       - MONGO_URI=$MONGO_URI
       - DB_NAME=$DB_NAME
       - USER_RETRIEVER_API_URL=http://user_retriever
+      - RATING_MANAGER_API_URL=http://rating_manager
     volumes:
       - ./python/recipe_retriever:/app
     

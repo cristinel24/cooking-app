@@ -2,6 +2,7 @@ use crate::models::ErrorResponse;
 use bytes::Bytes;
 use reqwest::multipart::{Form, Part};
 use reqwest::{Client, Method};
+use salvo::http::HeaderMap;
 use salvo::oapi::ToSchema;
 use serde::{Deserialize, Serialize, Serializer};
 use std::fs::File;
@@ -12,7 +13,6 @@ pub use post::post_image;
 pub mod get;
 use crate::models::image_storage::UrlResponse;
 pub use get::get_image;
-
 pub const SERVICE: &str = "image_storage";
 
 #[derive(Deserialize, ToSchema)]
@@ -47,11 +47,19 @@ pub(crate) async fn get_post_image(
     method: Method,
     service_url: String,
     payload: Option<Bytes>,
+    headers: Option<HeaderMap>,
 ) -> anyhow::Result<ImageResponse> {
     let mut req_builder = Client::new().request(method.clone(), format!("http://{service_url}"));
+
+    if let Some(mut headers) = headers {
+        // headers will contain `Content-Type: image/*`, but below `Content-Type: multipart/form-data` is expected
+        headers.remove("Content-Type");
+        req_builder = req_builder.headers(headers);
+    }
+
     if let Some(bytes) = payload {
         req_builder = req_builder
-            .multipart(Form::new().part("file", Part::bytes(bytes.to_vec()).file_name("file.png")));
+            .multipart(Form::new().part("file", Part::bytes(bytes.to_vec()).file_name("file")));
     }
 
     let response: reqwest::Response = req_builder.send().await?;
@@ -61,9 +69,9 @@ pub(crate) async fn get_post_image(
         if method == Method::POST {
             Ok(ImageResponse::Url(response.json::<UrlResponse>().await?))
         } else {
-            let name = service_url.split("/").last().unwrap_or("image");
-            let mut file = File::create(format!("{name}.png"))?;
-            file.write_all(&*response.bytes().await?.to_vec())?;
+            let name = service_url.split('/').last().unwrap_or("image");
+            let mut file = File::create(format!("../{name}.png"))?;
+            file.write_all(&response.bytes().await?)?;
             Ok(ImageResponse::ImageName(name.to_string()))
         }
     } else {

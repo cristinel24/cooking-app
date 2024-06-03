@@ -33,7 +33,7 @@ pub async fn get_tags(
 ) -> Json<EndpointResponse<Tags>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[2..].join("/");
+    let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
     return match get_response::<[(&str, String); 1], &str, Tags>(
         Method::GET,

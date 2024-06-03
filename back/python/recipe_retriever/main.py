@@ -12,7 +12,7 @@ app = FastAPI(title="Recipe Retriever")
 
 
 @app.get("/{recipe_id}", tags=["recipe-retriever"], response_model=RecipeData, response_description="Successful operation")
-async def get_recipe_by_id(recipe_id: str, x_user_id: Annotated[str | None, Header()]) -> RecipeData | JSONResponse:
+async def get_recipe_by_id(recipe_id: str, x_user_id: Annotated[str | None, Header()] = None) -> RecipeData | JSONResponse:
     try:
         recipe = await services.get_recipe_by_id(recipe_id, x_user_id)
         return recipe
@@ -36,7 +36,7 @@ async def get_recipes_from_followers(user_id: str, x_user_id: Annotated[str | No
         return JSONResponse(status_code=e.status_code, content={"errorCode": e.error_code.value}
 
 @app.get("/{recipe_id}/card", tags=["recipe-retriever"], response_model=RecipeCardData, response_description="Successful operation")
-async def get_recipe_card_by_id(recipe_id: str, x_user_id: Annotated[str | None, Header()]) -> RecipeCardData | JSONResponse:
+async def get_recipe_card_by_id(recipe_id: str, x_user_id: Annotated[str | None, Header()] = None) -> RecipeCardData | JSONResponse:
     try:
         recipe_card = await services.get_recipe_card_by_id(recipe_id, x_user_id)
         return recipe_card
@@ -46,7 +46,7 @@ async def get_recipe_card_by_id(recipe_id: str, x_user_id: Annotated[str | None,
 
 @app.post("/cards", tags=["recipe-retriever"], response_model=RecipeCardsResponse,
           response_description="Successful operation")
-async def get_recipe_cards(recipe_cards_request: RecipeCardsRequest, x_user_id: Annotated[str | None, Header()]) -> RecipeCardsResponse | JSONResponse:
+async def get_recipe_cards(recipe_cards_request: RecipeCardsRequest, x_user_id: Annotated[str | None, Header()] = None) -> RecipeCardsResponse | JSONResponse:
     try:
         return RecipeCardsResponse(recipeCards=await services.get_recipe_cards(recipe_cards_request.ids, x_user_id))
     except exceptions.RecipeException as e:

@@ -1,25 +1,25 @@
-use crate::endpoints::user_retriever::SERVICE;
-use crate::endpoints::{get_response, EndpointResponse, FAILED_RESPONSE, SUCCESSFUL_RESPONSE};
-use crate::models::user::_UserProfile;
-use reqwest::{Method, StatusCode};
-use salvo::oapi::endpoint;
-use salvo::prelude::Json;
-use salvo::{Request, Response};
-
-use crate::models::ErrorResponse;
+use crate::endpoints::{get_response, EndpointResponse};
+use crate::models::rating::Rating;
+use crate::{
+    endpoints::{rating_manager::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
+    models::{rating::List, ErrorResponse},
+};
+use reqwest::Method;
+use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
 use tracing::error;
 
 #[endpoint(
     parameters(
-        ("user_id" = String, description = "Id of the user")
+        ("recipe_id" = String, Query, description = "Recipe id"),
+        ("author_id" = String, Query, description = "Author id")
     ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = _UserProfile,
-            example = json!(_UserProfile::default())
+            body = List,
+            example = json!(List::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -29,36 +29,40 @@ use tracing::error;
         ),
     )
 )]
-pub async fn get_user_data_item(
+pub async fn get_rating_by_recipe_and_author_endpoint(
     req: &mut Request,
     res: &mut Response,
-) -> Json<EndpointResponse<_UserProfile>> {
+) -> Json<EndpointResponse<Rating>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
     let new_url = parts[3..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<&str, &str, _UserProfile>(
+    return match get_response::<Vec<(&String, &String)>, &str, Rating>(
         Method::GET,
         url,
-        None,
+        Some(&req.queries().iter().collect()),
         None,
         Some(req.headers().clone()),
         false,
     )
-    .await {
+    .await
+    {
         Ok(item) => {
             if let EndpointResponse::Error((error_code, status_code)) = item {
-                res.status_code(StatusCode::from_u16(status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR));
+                res.status_code(
+                    StatusCode::from_u16(status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR),
+                );
                 Json(EndpointResponse::ServerError(error_code))
             } else {
                 Json(item)
             }
-        },
+        }
         Err(e) => {
             error!("{e}");
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
             Json(EndpointResponse::default())
         }
-    }
+    };
 }
+

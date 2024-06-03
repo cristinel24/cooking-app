@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct UserProfile {
+pub struct _UserProfile {
     pub id: String,
     pub username: String,
     pub display_name: String,
@@ -15,13 +15,15 @@ pub struct UserProfile {
     pub ratings: Vec<String>,
     pub created_at: String,
     pub updated_at: String,
-    pub following_count: u32,
+    pub follows_count: u32,
     pub followers_count: u32,
+    pub is_following: Option<bool>,
+    pub is_followed_by: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct UserCard {
+pub struct Card {
     pub id: String,
     pub username: String,
     pub display_name: String,
@@ -30,11 +32,13 @@ pub struct UserCard {
     pub rating_avg: f32,
     pub created_at: String,
     pub updated_at: String,
+    pub is_following: Option<bool>,
+    pub is_followed_by: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct UserFullProfile {
+pub struct FullProfile {
     pub id: String,
     pub username: String,
     pub display_name: String,
@@ -51,6 +55,8 @@ pub struct UserFullProfile {
     pub search_history: Vec<String>,
     pub message_history: Vec<String>,
     pub saved_recipes: Vec<String>,
+    pub created_at: String,
+    pub updated_at: String,
 }
 
 #[derive(Serialize, Deserialize, Default, ToSchema)]
@@ -62,5 +68,12 @@ pub struct CardsRequestData {
 #[derive(Serialize, Deserialize, Default, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct Cards {
-    pub cards: Vec<UserCard>,
+    pub cards: Vec<Card>,
+}
+
+#[derive(Serialize, Deserialize, Default, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct CardList {
+    pub total: u32,
+    pub data: Vec<Card>,
 }

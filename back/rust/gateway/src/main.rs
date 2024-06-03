@@ -18,7 +18,8 @@ use crate::endpoints::message_history_manager::{delete_history, get_history, pos
 use crate::endpoints::password_changer::pass_change;
 use crate::endpoints::profile_data_changer::patch_profile_data;
 use crate::endpoints::rating_manager::{
-    delete_rating_endpoint, get_ratings_endpoint, patch_rating_endpoint, post_rating_endpoint,
+    delete_rating_endpoint, get_rating_comments_endpoint, patch_rating_endpoint,
+    post_rating_endpoint,
 };
 use crate::endpoints::recipe_creator::post_recipe_item;
 use crate::endpoints::recipe_editor::edit_recipe;
@@ -41,8 +42,13 @@ use crate::graceful_shutdown::GracefulShutdown;
 use crate::middlewares::auth::{auth_middleware, AUTH_HEADER};
 use anyhow::{Context, Result};
 use endpoints::credentials_change_requester::request_credentials_change;
-use endpoints::rating_manager::{delete_recipe_ratings_endpoint, get_rating_by_author_endpoint, get_rating_endpoint};
-use salvo::cors::{AllowHeaders, AllowMethods, AllowOrigin, Cors};
+use endpoints::rating_manager::{
+    delete_recipe_ratings_endpoint, get_rating_by_id_endpoint,
+    get_rating_by_recipe_and_author_endpoint, get_recipe_comments_endpoint,
+};
+use endpoints::recipe_saver::get_saved_recipes;
+use salvo::cors::{AllowMethods, AllowOrigin, Cors};
+use salvo::http::HeaderName;
 use salvo::oapi::security::{ApiKey, ApiKeyValue};
 use salvo::oapi::{endpoint, SecurityRequirement, SecurityScheme};
 use salvo::Service;
@@ -60,13 +66,17 @@ async fn test() {}
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt()
-        .with_max_level(tracing_core::Level::TRACE)
+        .with_max_level(tracing_core::Level::INFO)
         .init();
 
     let cors = Cors::new()
         .allow_origin(AllowOrigin::any())
         .allow_methods(AllowMethods::any())
-        .allow_headers(AllowHeaders::any())
+        // .allow_headers(AllowHeaders::any())
+        .allow_headers(vec![
+            HeaderName::from_lowercase(b"authorization")?,
+            HeaderName::from_lowercase(b"*")?,
+        ])
         .into_handler();
 
     let config = get_configuration().context("Invalid configuration file!")?;
@@ -159,8 +169,8 @@ fn ai_router() -> Router {
 }
 
 fn allergen_manager_router() -> Router {
-    Router::with_path("/allergen")
-        .oapi_tag("ALLERGEN")
+    Router::with_path("/allergens")
+        .oapi_tag("ALLERGEN MANAGER")
         .get(get_allergens_route)
 }
 
@@ -184,8 +194,9 @@ fn follow_manager_router() -> Router {
                 .get(get_all_followers)
                 .push(Router::with_path("/count").get(get_followers_count)),
             Router::with_path("/following")
-                .push(Router::with_path("/count").get(get_user_following_count))
                 .get(get_all_following)
+                .push(Router::with_path("/count").get(get_user_following_count)),
+            Router::with_path("/follow")
                 .post(post_new_following_user)
                 .delete(delete_following_user),
         ])
@@ -227,17 +238,17 @@ fn profile_data_changer_router() -> Router {
 fn rating_manager_router() -> Router {
     Router::new().oapi_tag("RATING MANAGER").append(&mut vec![
         Router::with_path("/ratings")
-            .get(get_rating_by_author_endpoint)
+            .get(get_rating_by_recipe_and_author_endpoint)
             .post(post_rating_endpoint)
             .push(
                 Router::with_path("/<parent_id>")
-                    .get(get_rating_endpoint)
-                    .push(Router::with_path("/comments").get(get_ratings_endpoint))
+                    .get(get_rating_by_id_endpoint)
+                    .push(Router::with_path("/comments").get(get_rating_comments_endpoint))
                     .patch(patch_rating_endpoint)
                     .delete(delete_rating_endpoint),
             ),
         Router::with_path("/recipes/<parent_id>").append(&mut vec![
-            Router::with_path("/comments").get(get_ratings_endpoint),
+            Router::with_path("/comments").get(get_recipe_comments_endpoint),
             Router::with_path("/ratings").delete(delete_recipe_ratings_endpoint),
         ]),
     ])
@@ -263,10 +274,14 @@ fn recipe_retriever_router() -> Router {
 }
 
 fn recipe_saver_router() -> Router {
-    Router::with_path("/users/<user_id>/saved-recipes/<recipe_id>")
+    Router::with_path("/users/<user_id>/saved-recipes")
         .oapi_tag("RECIPE SAVER")
-        .put(put_recipe)
-        .delete(delete_recipe)
+        .get(get_saved_recipes)
+        .push(
+            Router::with_path("/<recipe_id>")
+                .put(put_recipe)
+                .delete(delete_recipe),
+        )
 }
 
 fn register_router() -> Router {
@@ -300,7 +315,7 @@ fn search_history_manager_router() -> Router {
 }
 
 fn tag_manager_router() -> Router {
-    Router::with_path("/tag").oapi_tag("TAG").get(get_tags)
+    Router::with_path("/tags").oapi_tag("TAG MANAGER").get(get_tags)
 }
 
 fn user_destroyer_router() -> Router {
@@ -310,14 +325,17 @@ fn user_destroyer_router() -> Router {
 }
 
 fn user_retriever_router() -> Router {
-    Router::with_path("/users/<user_id>")
+    Router::with_path("/users")
         .oapi_tag("USER RETRIEVER")
-        .get(get_user_data_item)
-        .append(&mut vec![
-            Router::with_path("/card").get(get_user_card_item),
-            Router::with_path("/profile").get(get_user_profile_item),
-        ])
         .post(post_user_card_item)
+        .push(
+            Router::with_path("/<user_id>")
+                .get(get_user_data_item)
+                .append(&mut vec![
+                    Router::with_path("/card").get(get_user_card_item),
+                    Router::with_path("/profile").get(get_user_profile_item),
+                ]),
+        )
 }
 
 fn username_changer_router() -> Router {

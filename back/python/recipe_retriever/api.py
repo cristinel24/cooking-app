@@ -25,13 +25,13 @@ async def request_user_cards(user_ids: UserCardRequestData, x_user_id: str) -> U
     async with httpx.AsyncClient() as client:
         payload = user_ids.model_dump_json()
         response = await client.post(url=f"{USER_RETRIEVER_API_URL}/",
-                                     content=payload, headers={"x-user-id": x_user_id})
+                                     content=payload, headers={"x-user-id": x_user_id} if x_user_id else None)
         user_card_response_data = UserCardResponseData(cards=[])
         if "cards" not in response.json():
             if "errorCode" in response.json():
-                raise RecipeException(int(response.json()["errorCode"]), status.HTTP_404_NOT_FOUND)
+                raise RecipeException(error_code=ErrorCodes((response.json()["errorCode"])), status_code=status.HTTP_404_NOT_FOUND)
             else:
-                raise RecipeException(ErrorCodes.NON_RESPONSIVE_API.value, status.HTTP_503_SERVICE_UNAVAILABLE)
+                raise RecipeException(error_code=ErrorCodes.NON_RESPONSIVE_API, status_code=status.HTTP_503_SERVICE_UNAVAILABLE)
         else:
             user_card_response_data.cards = [UserCardData(**card) for card in response.json()["cards"]]
         return user_card_response_data

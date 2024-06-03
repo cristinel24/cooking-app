@@ -1,7 +1,7 @@
 import pymongo
 from constants import *
 from fastapi import status
-
+from datetime import datetime, timezone
 import exceptions
 
 
@@ -22,6 +22,7 @@ class UserCollection(MongoCollection):
                 [
                     {
                         "$set": {
+                            "updatedAt": datetime.now(timezone.utc),
                             "savedRecipes": {
                                 "$cond": {
                                     "if": {"$in": [recipe_id, "$savedRecipes"]},
@@ -36,17 +37,21 @@ class UserCollection(MongoCollection):
             if result.matched_count == 0:
                 raise exceptions.RecipeSaverException(status.HTTP_404_NOT_FOUND, ErrorCodes.NONEXISTENT_USER.value)
 
-    def get_saved_recipes(self, user_id: str, start: int, count: int):
+    def get_saved_recipes(self, user_id: str, start: int, count: int) -> dict:
 
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
             return self._collection.find_one(
                 {"id": user_id},
-                {"_id": 0, "savedRecipes": {"$slice": [start, start + count]}}
-            )["savedRecipes"]
+                {
+                    "_id": 0, 
+                    "savedRecipes": {"$slice": [start, start + count]}, 
+                    "total": {"$size": "$savedRecipes"}
+                }
+            )
 
     def remove_recipe_from_saved(self, user_id: str, recipe_id: str):
         with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
-            result = self._collection.update_one({"id": user_id}, {"$pull": {"savedRecipes": recipe_id}})
+            result = self._collection.update_one({"id": user_id}, {"$pull": {"savedRecipes": recipe_id}, "$set": {"updatedAt": datetime.now(timezone.utc)}})
             if result.matched_count == 0:
                 raise exceptions.RecipeSaverException(status.HTTP_404_NOT_FOUND, ErrorCodes.NONEXISTENT_USER.value)
             if result.modified_count == 0:

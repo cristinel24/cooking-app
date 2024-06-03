@@ -38,8 +38,8 @@ async def execute_api(method: str, uri: str, json_data: dict | None = None, head
 async def fetch_user_list(user_ids: list[str], x_user_id: str) -> UserCardDataList:
     return UserCardDataList.model_validate(
         await execute_api(
-            POST_METHOD, USER_RETRIEVER_API_URL + "/",
-            json_data={"ids": user_ids}, headers={"X-User-Id": x_user_id}
+            POST_METHOD, f"{USER_RETRIEVER_API_URL}/",
+            json_data={"ids": user_ids}, headers={"X-User-Id": x_user_id} if x_user_id else None
         )
     )
 
@@ -47,10 +47,10 @@ async def fetch_user_list(user_ids: list[str], x_user_id: str) -> UserCardDataLi
 async def get_user_card(user_id: str, x_user_id: str) -> UserCardData:
     return UserCardData.model_validate(
         await execute_api(
-            GET_METHOD, USER_RETRIEVER_API_URL + f"/{user_id}/card", headers={"X-User-Id": x_user_id}
+            GET_METHOD, f"{USER_RETRIEVER_API_URL}/{user_id}/card", headers={"X-User-Id": x_user_id} if x_user_id else None
         )
     )
 
 
 async def generate_id() -> str:
-    return (await execute_api(GET_METHOD, ID_GENERATOR_API_URL + "/"))["id"]
+    return (await execute_api(GET_METHOD, f"{ID_GENERATOR_API_URL}/"))["id"]

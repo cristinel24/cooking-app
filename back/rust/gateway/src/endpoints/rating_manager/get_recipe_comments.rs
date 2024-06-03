@@ -1,8 +1,7 @@
 use crate::endpoints::{get_response, EndpointResponse};
-use crate::models::rating::RatingCard;
 use crate::{
     endpoints::{rating_manager::SERVICE, FAILED_RESPONSE, SUCCESSFUL_RESPONSE},
-    models::{rating::RatingList, ErrorResponse},
+    models::{rating::List, ErrorResponse},
 };
 use reqwest::Method;
 use salvo::{http::StatusCode, oapi::endpoint, prelude::Json, Request, Response};
@@ -10,16 +9,19 @@ use tracing::error;
 
 #[endpoint(
     parameters(
-        ("recipe_id" = String, Query, description = "Recipe id"),
-        ("author_id" = String, Query, description = "Author id")
+        ("parent_id" = String, description = "Recipe id"),
+        ("start" = i64, Query, description = "Start value"),
+        ("count" = i64, Query, description = "Count value"),
+        ("filter" = Option<String>, Query, description = "Type of comments (optional)"),
+        ("sort" = Option<String>, Query, description = "Sorting criteria (optional)")
     ),
     responses
     (
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = RatingList,
-            example = json!(RatingList::default())
+            body = List,
+            example = json!(List::default())
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,
@@ -29,16 +31,16 @@ use tracing::error;
         ),
     )
 )]
-pub async fn get_rating_by_author_endpoint(
+pub async fn get_recipe_comments_endpoint(
     req: &mut Request,
     res: &mut Response,
-) -> Json<EndpointResponse<RatingCard>> {
+) -> Json<EndpointResponse<List>> {
     let uri = req.uri().path();
     let parts: Vec<&str> = uri.split('/').collect();
-    let new_url = parts[3..].join("/");
+    let new_url = parts[2..].join("/");
     let url: String = format!("{SERVICE}/{new_url}");
 
-    return match get_response::<Vec<(&String, &String)>, &str, RatingCard>(
+    return match get_response::<Vec<(&String, &String)>, &str, List>(
         Method::GET,
         url,
         Some(&req.queries().iter().collect()),
@@ -65,4 +67,3 @@ pub async fn get_rating_by_author_endpoint(
         }
     };
 }
-

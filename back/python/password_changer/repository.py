@@ -1,5 +1,6 @@
 from pymongo import MongoClient, timeout
 from constants import DB_NAME, MONGO_URI, TIMEOUT_LIMIT, ErrorCodes
+from datetime import datetime, timezone
 
 
 def singleton(cls):
@@ -27,6 +28,7 @@ class DBWrapper:
                 self.connection.get_database(DB_NAME).user.update_one({"id": user_id},
                                                                       {"$set": {"login.hashAlgName": hash_alg_name,
                                                                                 "login.hash": hashed_pass,
-                                                                                "login.salt": salt}})
+                                                                                "login.salt": salt,
+                                                                                "updatedAt": datetime.now(timezone.utc)}})
         except Exception:
             raise Exception(ErrorCodes.FAILED_TO_UPDATE_PASSWORD.value)

@@ -18,7 +18,7 @@ pub struct User {
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
 pub struct UserAggregation {
     pub data: Vec<User>,
-    pub count: u32,
+    pub total: u32,
 }
 
 impl CollectionName for User {

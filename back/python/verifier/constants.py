@@ -20,6 +20,7 @@ PIPELINE_EMAIL_CHANGE = [
     },
     {
         "$set": {
+            "updatedAt": 0,
             "login.emailStatus": "Confirmed",
             "email": "$login.newEmail",
             "login.newEmail": None

@@ -1,5 +1,6 @@
 from pymongo import MongoClient, timeout
 from constants import DB_NAME, MONGO_URI, TIMEOUT_LIMIT, ErrorCodes
+from datetime import datetime, timezone
 
 
 def singleton(cls):
@@ -24,7 +25,7 @@ class DBWrapper:
         try:
             with timeout(TIMEOUT_LIMIT):
                 self.connection.get_database(DB_NAME).user.update_one({"id": user_id},
-                                                                      {"$set": {"login.newEmail": email}})
+                                                                      {"$set": {"login.newEmail": email, "updatedAt": datetime.now(timezone.utc)}})
         except Exception:
             raise Exception(ErrorCodes.FAILED_TO_UPDATE_EMAIL.value)
 

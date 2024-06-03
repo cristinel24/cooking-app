@@ -3,6 +3,7 @@ from exception import UserDestroyerException
 from pymongo import MongoClient, errors, timeout
 from pymongo.client_session import ClientSession
 from utils import match_collection_error
+from datetime import datetime, timezone
 
 
 class MongoCollection:
@@ -68,7 +69,7 @@ class RecipeCollection(MongoCollection):
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 self._collection.update_many(
                     {"authorId": user_id},
-                    {"$set": {"authorId": DELETED_USER_ID}},
+                    {"$set": {"authorId": DELETED_USER_ID}, "updatedAt": datetime.now(timezone.utc)},
                     session=session
                 )
         except errors.PyMongoError as e:
@@ -85,7 +86,7 @@ class RatingCollection(MongoCollection):
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 self._collection.update_many(
                     {"authorId": user_id},
-                    {"$set": {"authorId": DELETED_USER_ID}},
+                    {"$set": {"authorId": DELETED_USER_ID}, "updatedAt": datetime.now(timezone.utc)},
                     session=session
                 )
         except errors.PyMongoError as e:

@@ -1,8 +1,8 @@
 from fastapi import status
 from pymongo import MongoClient, errors, timeout
-
 from constants import *
 from exceptions import RoleChangerException
+from datetime import datetime, timezone
 
 
 class MongoCollection:
@@ -44,7 +44,7 @@ class UserCollection(MongoCollection):
     def update_roles(self, user_id: str, roles: int):
         try:
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
-                self._collection.update_one({"id": user_id}, {"$set": {"roles": roles}})
+                self._collection.update_one({"id": user_id}, {"$set": {"roles": roles, "updatedAt": datetime.now(timezone.utc)}})
         except errors.PyMongoError as e:
             if e.timeout:
                 raise RoleChangerException(status_code=status.HTTP_504_GATEWAY_TIMEOUT,

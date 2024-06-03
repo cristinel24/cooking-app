@@ -1,6 +1,7 @@
 from fastapi import status
 from pymongo import MongoClient, timeout, errors
 from pymongo.client_session import ClientSession
+from datetime import datetime, timezone
 
 from constants import MONGO_URI, ErrorCodes, DB_NAME, MAX_TIMEOUT_TIME_SECONDS
 from exception import RecipeEditorException
@@ -43,6 +44,7 @@ class RecipeCollection(MongoCollection):
     async def edit_recipe(self, recipe_id: str, recipe: dict, session: ClientSession):
         try:
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                recipe["updatedAt"] = datetime.now(timezone.utc)
                 update_dict = {"$set": recipe}
                 self._collection.update_one({"id": recipe_id}, update_dict, session=session)
         except errors.PyMongoError as e:

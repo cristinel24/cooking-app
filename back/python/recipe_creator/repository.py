@@ -5,6 +5,7 @@ from pymongo.client_session import ClientSession
 from constants import MONGO_URI, ErrorCodes, DB_NAME, MAX_TIMEOUT_TIME_SECONDS
 from exception import RecipeCreatorException
 from utils import match_collection_error
+from datetime import datetime, timezone
 
 
 class MongoCollection:
@@ -35,7 +36,7 @@ class UserCollection(MongoCollection):
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
                 self._collection.update_one(
                     {"id": user_id},
-                    {"$push": {"recipes": recipe_id}},
+                    {"$push": {"recipes": recipe_id}, "$set": {"updatedAt": datetime.now(timezone.utc)}},
                     session=session
                 )
         except errors.PyMongoError as e:
@@ -50,6 +51,7 @@ class RecipeCollection(MongoCollection):
     def insert_recipe(self, recipe: dict, session: ClientSession):
         try:
             with timeout(MAX_TIMEOUT_TIME_SECONDS):
+                recipe["updatedAt"] = datetime.now(timezone.utc)
                 self._collection.insert_one(recipe, session=session)
         except errors.PyMongoError as e:
             raise match_collection_error(e)

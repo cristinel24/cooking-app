@@ -16,8 +16,8 @@ use tracing::error;
         (
             status_code = StatusCode::OK,
             description = SUCCESSFUL_RESPONSE,
-            body = Success,
-            example = json!(Success::default())
+            body = String,
+            example = json!("null")
         ),
         (
             status_code = StatusCode::INTERNAL_SERVER_ERROR,

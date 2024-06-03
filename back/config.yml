@@ -1,0 +1,11 @@
+version: "2"
+authtoken: 2ao8o4sfC12UdsM7AQ65OmzBs8i_2uiBCJuAZVtFNXvZDwceK
+tunnels:
+  gateway:
+    addr: 12327
+    labels:
+      - edge=edghts_2hI8vR652Mzv4Pj4RxX30H4AG4l
+  db:
+    addr: 27017
+    proto: tcp
+    remote_addr: 8.tcp.eu.ngrok.io:23594

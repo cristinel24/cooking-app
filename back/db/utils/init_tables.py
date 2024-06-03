@@ -4,8 +4,8 @@ import pymongo
 from pymongo import MongoClient, IndexModel
 
 print("Connecting to kitchen db...".ljust(36, '.'), end="")
-client = MongoClient(os.getenv("MONGO_URI"))
-db = client.get_database(os.getenv("DB_NAME"))
+client = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true"))
+db = client.get_database(os.getenv("DB_NAME", "cooking_app"))
 print("Done")
 
 print("Cleaning the tables...".ljust(36, '.'), end="")

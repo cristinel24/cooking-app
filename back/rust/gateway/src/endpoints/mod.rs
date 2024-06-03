@@ -100,8 +100,9 @@ pub(crate) async fn get_response<
             Ok(EndpointResponse::Ok(response.json::<G>().await?))
         }
     } else {
-        Ok(EndpointResponse::Error(
-            (response.json::<ErrorResponse>().await?, code),
-        ))
+        Ok(EndpointResponse::Error((
+            response.json::<ErrorResponse>().await?,
+            code,
+        )))
     }
 }

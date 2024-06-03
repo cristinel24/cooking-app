@@ -95,14 +95,14 @@ impl Repository<Recipe> for Service {
                 "$group": {
                     "_id": null,
                     "data": { "$push": "$$ROOT" },
-                    "count": { "$sum": 1 }
+                    "total": { "$sum": 1 }
                 }
             },
             doc! {
                 "$project": {
                     "_id": 0,
                     "data": 1,
-                    "count": 1
+                    "total": 1
                 }
             },
         ];
@@ -172,14 +172,14 @@ impl Repository<Recipe> for Service {
                 "$group": {
                     "_id": null,
                     "data": { "$push": "$$ROOT" },
-                    "count": { "$sum": 1 }
+                    "total": { "$sum": 1 }
                 }
             },
             doc! {
                 "$project": {
                     "_id": 0,
                     "data": 1,
-                    "count": 1
+                    "total": 1
                 }
             },
         ];
@@ -194,6 +194,7 @@ impl Repository<Recipe> for Service {
     }
 
     async fn search(&self, params: SearchRecipesParams) -> Result<AggregationResponse<Recipe>> {
+        println!("{:?}", params);
         let mut pipeline = vec![];
 
         let mut fields = doc! {
@@ -277,20 +278,22 @@ impl Repository<Recipe> for Service {
             pipeline.push(doc! { "$match": match_doc });
 
             if let Some(users) = filters.authors {
-                let or_conditions = users
-                    .into_iter()
-                    .flat_map(|user| {
-                        vec![
-                            doc! {"author.displayName": { "$regex": &user, "$options": "i"} },
-                            doc! {"author.username": { "$regex": user, "$options": "i", } },
-                        ]
+                if !users.is_empty() {
+                    let or_conditions = users
+                        .into_iter()
+                        .flat_map(|user| {
+                            vec![
+                                doc! {"author.displayName": { "$regex": &user, "$options": "i"} },
+                                doc! {"author.username": { "$regex": user, "$options": "i", } },
+                            ]
+                        })
+                        .collect::<Vec<_>>();
+                    matched_authors = Some(doc! {
+                        "$match": {
+                            "$or": or_conditions
+                        }
                     })
-                    .collect::<Vec<_>>();
-                matched_authors = Some(doc! {
-                    "$match": {
-                        "$or": or_conditions
-                    }
-                })
+                }
             }
         }
 
@@ -388,7 +391,7 @@ impl Repository<Recipe> for Service {
             doc! {
                 "$facet": {
                     "data": [
-                        { "$skip": params.start * params.count },
+                        { "$skip": params.start },
                         { "$limit": params.count },
                     ],
                     "total": [
@@ -400,7 +403,7 @@ impl Repository<Recipe> for Service {
             doc! {
                 "$project": {
                     "data": 1,
-                    "count": "$total.count",
+                    "total": "$total.count",
                 }
             },
         ]);

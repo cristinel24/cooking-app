@@ -60,7 +60,7 @@ impl Repository<User> for Service {
             doc! {
                 "$facet": {
                     "data": [
-                        { "$skip": params.start * params.count },
+                        { "$skip": params.start },
                         { "$limit": params.count },
                     ],
                     "total": [
@@ -72,7 +72,7 @@ impl Repository<User> for Service {
             doc! {
                 "$project": {
                     "data": 1,
-                    "count": "$total.count",
+                    "total": "$total.count",
                 }
             },
         ];

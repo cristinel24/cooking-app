@@ -42,6 +42,7 @@ pub struct BlacklistedFilters {
     pub allergens: Option<Vec<String>>,
 }
 
+#[derive(Debug)]
 pub struct SearchRecipesParams {
     pub query: String,
     pub sort: String,

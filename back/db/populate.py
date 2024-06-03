@@ -42,6 +42,15 @@ available_roles = {
     "banned": 0b1000
 }
 
+images = [
+    "https://cooking-app.ngrok.app/api/images/018fde0e-2f4a-7fc5-b6ed-ef52828538ff",
+    "https://cooking-app.ngrok.app/api/images/018fde0e-69ec-750b-bd0b-0c0fdca07802",
+    "https://cooking-app.ngrok.app/api/images/018fde0e-914d-76a1-83c0-bf7a74465156",
+    "https://cooking-app.ngrok.app/api/images/018fde0e-b519-7b90-a9fe-a4aa9fd0b6c6",
+    "https://cooking-app.ngrok.app/api/images/018fde0e-da4a-79f0-a3ed-edabac77786d",
+    "https://cooking-app.ngrok.app/api/images/018fde0f-066c-730e-a147-ebc4ac03a83d",
+]
+
 
 def get_role():
     role = 0
@@ -167,7 +176,7 @@ def get_user():
         "id": generate_id(counters_collection),
         "username": username,
         "email": email,
-        "icon": fake.url(),
+        "icon": "https://cooking-app.ngrok.app/api/images/default",
         "displayName": fake.name(),
         "roles": get_role(),
         "ratingSum": 0,
@@ -207,7 +216,7 @@ def get_recipe():
         "tags": random_unique_arr(get_tag, 0, 20),
         "tokens": random_unique_arr(get_ingredient, 20, 100),
         "ratings": [],
-        "thumbnail": "default-img.png",
+        "thumbnail": random_from(images),
         "viewCount": random.randint(0, 100000)
     }
 

@@ -8,13 +8,15 @@ pub struct Recipe {
     pub id: String,
     pub author: User,
     pub title: String,
-    pub rating_avg: f32,
     pub description: String,
     pub prep_time: u32,
     pub allergens: Vec<String>,
     pub tags: Vec<String>,
     pub thumbnail: String,
     pub view_count: u32,
+    // TODO: ?
+    pub is_favorite: Option<bool>,
+    pub rating_avg: f32,
     pub created_at: String,
     pub updated_at: String,
 }

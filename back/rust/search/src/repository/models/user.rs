@@ -6,19 +6,16 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct User {
     pub id: String,
-    pub icon: String,
-    pub display_name: String,
     pub username: String,
-    pub roles: i32,
+    pub display_name: String,
+    pub icon: String,
+    pub roles: u32,
     pub rating_avg: f32,
     pub created_at: String,
     pub updated_at: String,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
-pub struct UserAggregation {
-    pub data: Vec<User>,
-    pub total: u32,
+    // TODO: ?
+    pub is_following: Option<bool>,
+    pub is_followed_by: Option<bool>,
 }
 
 impl CollectionName for User {

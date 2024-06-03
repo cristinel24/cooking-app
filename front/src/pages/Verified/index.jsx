@@ -52,7 +52,7 @@ export default function Verified() {
         <div className="verified-wrapper">
             <p>Contul tău a fost înregistrat cu succes. Te poți întoarce la pagina principală.</p>
             <div className="verified-button-wrapper">
-                <PageButton path={'https://www.google.ro/'} className="verified-button">
+                <PageButton path="/" className="verified-button">
                     Acasă
                 </PageButton>
             </div>

@@ -26,29 +26,23 @@ const recipeMock = {
 }
 
 export const searchRecipes = async (params) => {
-    // return await axios
-    //     .post(`${API_URL}/search/recipes`, params)
-    //     .then((response) => {
-    //         console.log(response)
-    //         return response.data
-    //     })
-    //     .catch((err) => console.log(err))
-    await delay(2000) // in ms
-
-    return {
-        count: 100,
-        recipes: [...Array(params.count).keys()].map((id) => {
-            return {
-                ...recipeMock,
-                title: `${recipeMock.title} #${params.start + id}`,
-                author: {
-                    ...recipeMock.author,
-                    id: (params.start + id) % 4 == 0 ? '1' : '21',
-                },
-                id: params.start + id,
-            }
-        }),
-    }
+    return (await axios.post(`${API_URL}/search/recipes`, params)).data
+    // await delay(2000) // in ms
+    //
+    // return {
+    //     count: 100,
+    //     recipes: [...Array(params.count).keys()].map((id) => {
+    //         return {
+    //             ...recipeMock,
+    //             title: `${recipeMock.title} #${params.start + id}`,
+    //             author: {
+    //                 ...recipeMock.author,
+    //                 id: (params.start + id) % 4 == 0 ? '1' : '21',
+    //             },
+    //             id: params.start + id,
+    //         }
+    //     }),
+    // }
 }
 
 const userMock = {
@@ -61,13 +55,7 @@ const userMock = {
 }
 
 export const searchUsers = async (params) => {
-    // return await axios
-    //     .post(`${API_URL}/search`, params)
-    //     .then((response) => {
-    //         console.log(response)
-    //         return response.data
-    //     })
-    //     .catch((err) => console.log(err))
+    return (await axios.post(`${API_URL}/search/users`, params)).data
     await delay(2000) // in ms
 
     return {

@@ -14,7 +14,7 @@ const Page = () => {
             <Navbar />
             <div className="page-container">
                 <Outlet />
-                {loggedIn && <PopUpChat />}
+                {loggedIn() && <PopUpChat />}
             </div>
             <Footer />
         </>

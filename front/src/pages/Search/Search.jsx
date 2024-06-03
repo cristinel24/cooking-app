@@ -25,10 +25,10 @@ export default function Search() {
     ])
     const [sortOption, setSortOption] = useState(sortOptions[0])
 
-    const [results, setResults] = useState({ count: 1, items: [] })
+    const [results, setResults] = useState({ total: 1, data: [] })
 
     const onChoice = (choice) => {
-        setResults({ count: 1, items: [] })
+        setResults({ total: 1, data: [] })
         navigate(`/search/${choice.id}`)
     }
 

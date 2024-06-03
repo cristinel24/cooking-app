@@ -30,9 +30,10 @@ export default function AccountSettings() {
     const onSubmit = async (data) => {
         setLoading(true)
         try {
-            const icon = await uploadImage(token, data.icon)
-            delete data.allergens
-            await updateProfile(user.id, token, { ...data, icon })
+            if (data.icon) {
+                data.icon = await uploadImage(token, data.icon)
+            }
+            await updateProfile(user.id, token, data)
         } catch (e) {
             setError('api', { message: getErrorMessage(e) })
         } finally {

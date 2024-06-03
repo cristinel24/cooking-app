@@ -5,6 +5,8 @@ import './index.css'
 import { FormInput, FormSelector } from '../Form'
 import { Button } from '..'
 import { useSearch } from '../../hooks/useSearch'
+import { getAllergens } from '../../services/allergens'
+import { getTags } from '../../services/tags'
 
 /*
 example filters
@@ -47,14 +49,7 @@ export default function Filters() {
         const delay = (ms) => new Promise((res) => setTimeout(res, ms))
         await delay(500)
 
-        return [
-            value,
-            'nuci cu muci',
-            'zahăr cu ceva bun',
-            'despre ce vorbești',
-            'cartof',
-            'pantooooooooooooooooooooooooooooof',
-        ]
+        return [value]
     }
 
     const onSubmit = (data) => {
@@ -136,7 +131,7 @@ export default function Filters() {
                             value={field.value}
                             onChange={field.onChange}
                             onBlur={field.onBlur}
-                            suggest={onSuggest}
+                            suggest={getTags}
                         />
                     )}
                 />
@@ -151,7 +146,7 @@ export default function Filters() {
                             value={field.value}
                             onChange={field.onChange}
                             onBlur={field.onBlur}
-                            suggest={onSuggest}
+                            suggest={getAllergens}
                         />
                     )}
                 />

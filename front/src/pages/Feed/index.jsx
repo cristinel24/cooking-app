@@ -29,22 +29,22 @@ export default function Feed() {
         },
         { name: 'cele mai recente', path: 'new', params: { sort: 'createdAt', order: 'desc' } },
     ].concat(
-        loggedIn()
-            ? [
-                  {
-                      name: 'de la cei urmăriți',
-                      path: 'followed',
-                      params: {
-                          filters: {
-                              authors: {
-                                  /* TODO: get the followed authors of the current user and put their names here */
-                              },
-                          },
-                      },
-                  },
-                  // 'recommended',
-              ]
-            : []
+        // loggedIn()
+        //     ? [
+        //           {
+        //               name: 'de la cei urmăriți',
+        //               path: 'followed',
+        //               params: {
+        //                   filters: {
+        //                       authors: {
+        //                           /* TODO: get the followed authors of the current user and put their names here */
+        //                       },
+        //                   },
+        //               },
+        //           },
+        //           // 'recommended',
+        //       ]
+        //     : []
     )
 
     const [feed, setFeed] = useState(
@@ -54,33 +54,34 @@ export default function Feed() {
                 ('alias' in feed && feed.alias === pathname.substring(1))
         )
     )
-    const [results, setResults] = useState({ count: 1, recipes: [] })
+    const [results, setResults] = useState({ total: 1, data: [] })
     const [error, setError] = useState('')
 
     useEffect(() => {
         if (feed.path !== pathname.substring(1)) {
             // reset state if page changed
-            setResults({ count: 1, recipes: [] })
+            setResults({ total: 1, data: [] })
             setError('')
             navigate(`/${feed.path}`)
-        } else if (results.recipes.length == 0) {
+        } else if (results.data.length == 0) {
             let ignore = false
             // after page change, this code should get triggered
             const fetch = async () => {
                 try {
                     const result = await searchRecipes({
                         query: '',
-                        start: results.recipes.length,
+                        start: results.data.length,
                         count: 10,
                     })
+                    console.log(result)
                     if (!ignore) {
                         setResults((results) => ({
                             ...result,
-                            recipes: [...results.recipes, ...result.recipes],
+                            data: [...results.data, ...result.data],
                         }))
                     }
                 } catch (e) {
-                    // if fetching fails, set results.count to 0 so that InfiniteScroll thinks there
+                    // if fetching fails, set results.total to 0 so that InfiniteScroll thinks there
                     // are no more results
                     setError(getErrorMessage(e))
                 }
@@ -97,15 +98,16 @@ export default function Feed() {
         try {
             const result = await searchRecipes({
                 query: '',
-                start: results.recipes.length,
+                start: results.data.length,
                 count: 10,
             })
+            console.log(result)
             setResults((results) => ({
                 ...result,
-                recipes: [...results.recipes, ...result.recipes],
+                data: [...results.data, ...result.data],
             }))
         } catch (e) {
-            // if fetching fails, set results.count to 0 so that InfiniteScroll thinks there
+            // if fetching fails, set results.total to 0 so that InfiniteScroll thinks there
             // are no more results
             setError(getErrorMessage(e))
         }
@@ -116,7 +118,7 @@ export default function Feed() {
             await saveRecipe(id, token)
 
             setResults((results) => {
-                for (const recipe of results.recipes) {
+                for (const recipe of results.data) {
                     if (recipe.id === id) {
                         recipe.favorite = !recipe.favorite
                     }
@@ -135,7 +137,7 @@ export default function Feed() {
 
             setResults((results) => ({
                 ...results,
-                recipes: results.recipes.filter((recipe) => recipe.id !== id),
+                data: results.data.filter((recipe) => recipe.id !== id),
             }))
         } catch (e) {
             // can't do nothing here
@@ -149,9 +151,9 @@ export default function Feed() {
             <Dropdown options={feeds} option={feed} setOption={setFeed} />
             <InfiniteScroll
                 className="feed"
-                dataLength={results.recipes.length}
+                dataLength={results.data.length}
                 next={fetchRecipes}
-                hasMore={error.length > 0 ? false : results.recipes.length < results.count}
+                hasMore={error.length > 0 ? false : results.data.length < results.total}
                 loader={<h4 style={{ textAlign: 'center' }}>Se încarcă...</h4>}
                 endMessage={
                     error.length > 0 ? (
@@ -165,7 +167,7 @@ export default function Feed() {
                     )
                 }
             >
-                {results.recipes.map((recipe) => (
+                {results.data.map((recipe) => (
                     <RecipeCard
                         key={recipe.id}
                         recipe={recipe}

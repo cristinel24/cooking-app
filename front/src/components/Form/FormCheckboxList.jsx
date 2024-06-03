@@ -20,7 +20,7 @@ export default function FormCheckboxList({ options, setOptions, onChoice, multip
             {options.map((option) => (
                 <div className="report-inputs" key={option.id}>
                     <input
-                        type="checkbox"
+                        type="radio"
                         id={`option-${option.id}`}
                         checked={option.checked}
                         onChange={(e) => handleOptionChange(e.target.value, option)}

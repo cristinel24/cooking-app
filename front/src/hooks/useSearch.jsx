@@ -71,10 +71,12 @@ export const useSearch = () => {
 
     const goToSearch = (query) => {
         setParam('query', query)
-        navigate({
-            pathname: '/search/users',
-            search: `?${params.toString()}`,
-        })
+        if (!['/search/users', '/search/recipes'].includes(pathname)) {
+            navigate({
+                pathname: '/search/users',
+                search: `?${params.toString()}`,
+            })
+        }
     }
 
     const setParam = (field, value) => {

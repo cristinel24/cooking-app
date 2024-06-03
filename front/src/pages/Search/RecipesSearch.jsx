@@ -7,28 +7,33 @@ import { UserContext } from '../../context'
 import { RecipeCard } from '../../components'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useOutletContext } from 'react-router-dom'
+import { useSearch } from '../../hooks/useSearch'
 
 export default function RecipesSearch() {
     const [results, setResults] = useOutletContext()
     const { user, token } = useContext(UserContext)
     const [error, setError] = useState('')
+    const { query, sort, order, filters } = useSearch()
 
     useEffect(() => {
         const fetch = async () => {
             try {
                 const result = await searchRecipes({
-                    query: '',
-                    start: results.items.length,
+                    query,
+                    sort,
+                    order,
+                    filters,
+                    start: results.data.length,
                     count: 10,
                 })
                 if (!ignore) {
                     setResults((results) => ({
                         ...result,
-                        items: [...results.items, ...result.recipes],
+                        data: [...results.data, ...result.data],
                     }))
                 }
             } catch (e) {
-                // if fetching fails, set results.count to 0 so that InfiniteScroll thinks there
+                // if fetching fails, set results.total to 0 so that InfiniteScroll thinks there
                 // are no more results
                 setError(getErrorMessage(e))
             }
@@ -43,18 +48,21 @@ export default function RecipesSearch() {
     const fetchRecipes = async (ignore = false) => {
         try {
             const result = await searchRecipes({
-                query: '',
-                start: results.items.length,
+                query,
+                sort,
+                order,
+                filters,
+                start: results.data.length,
                 count: 10,
             })
             if (!ignore) {
                 setResults((results) => ({
                     ...result,
-                    items: [...results.items, ...result.recipes],
+                    data: [...results.data, ...result.data],
                 }))
             }
         } catch (e) {
-            // if fetching fails, set results.count to 0 so that InfiniteScroll thinks there
+            // if fetching fails, set results.total to 0 so that InfiniteScroll thinks there
             // are no more results
             setError(getErrorMessage(e))
         }
@@ -65,7 +73,7 @@ export default function RecipesSearch() {
             await saveRecipe(id, token)
 
             setResults((results) => {
-                for (const recipe of results.items) {
+                for (const recipe of results.data) {
                     if (recipe.id === id) {
                         recipe.favorite = !recipe.favorite
                     }
@@ -84,7 +92,7 @@ export default function RecipesSearch() {
 
             setResults((results) => ({
                 ...results,
-                items: results.items.filter((recipe) => recipe.id !== id),
+                data: results.data.filter((recipe) => recipe.id !== id),
             }))
         } catch (e) {
             // can't do nothing here
@@ -96,9 +104,9 @@ export default function RecipesSearch() {
         <div className="search-page-results">
             <InfiniteScroll
                 className="search-page-results-container"
-                dataLength={results.items.length} //This is important field to render the next data
+                dataLength={results.data.length} //This is important field to render the next data
                 next={fetchRecipes}
-                hasMore={error.length > 0 ? false : results.items.length < results.count}
+                hasMore={error.length > 0 ? false : results.data.length < results.total}
                 loader={<h4>Loading...</h4>}
                 endMessage={
                     error.length > 0 ? (
@@ -112,7 +120,7 @@ export default function RecipesSearch() {
                     )
                 }
             >
-                {results.items.map((recipe) => (
+                {results.data.map((recipe) => (
                     <RecipeCard
                         key={recipe.id}
                         recipe={recipe}

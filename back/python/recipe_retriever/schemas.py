@@ -67,7 +67,7 @@ class RecipeCardData(BaseModel):
 
 class RecipeCardsData(BaseModel):
     data: list[RecipeCardData]
-    count: int
+    total: int
 
 class RecipeCardsRequest(BaseModel):
     ids: list[str]

@@ -1,9 +1,0 @@
-version: "2"
-authtoken: 2ao8o4sfC12UdsM7AQ65OmzBs8i_2uiBCJuAZVtFNXvZDwceK
-tunnels:
-  gateway:
-    addr: 12327
-    proto: http
-  db:
-    addr: 27017
-    proto: tcp

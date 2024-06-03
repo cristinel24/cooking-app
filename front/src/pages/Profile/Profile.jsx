@@ -4,7 +4,7 @@ import { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../context'
 import { ClipLoader } from 'react-spinners'
 
-import { getProfile } from '../../services/profile'
+import { getProfile, getFullProfile } from '../../services/profile'
 import Sidebar from './Sidebar'
 
 import { getErrorMessage } from '../../utils/api'
@@ -15,7 +15,7 @@ export default function Profile() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [profileData, setProfileData] = useState({})
-    const { token } = useContext(UserContext)
+    const { token, user, loggedIn } = useContext(UserContext)
 
     const { profileId } = useParams([])
 
@@ -23,7 +23,11 @@ export default function Profile() {
         const fetch = async () => {
             setLoading(true)
             try {
-                const profile = await getProfile(profileId, token)
+                const profile =
+                    loggedIn() && profileId === user.id
+                        ? await getFullProfile(profileId, token)
+                        : await getProfile(profileId, token)
+                console.log(profile)
                 setProfileData(profile)
             } catch (e) {
                 if (e?.response?.status === 404) {

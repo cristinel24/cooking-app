@@ -13,6 +13,8 @@ export const timestampToRomanian = (dateString) => {
     return formattedDate
 }
 
+export const timestampToSeconds = (timestamp) => new Date(timestamp).getSeconds()
+
 export const dateToTimestamp = (timestamp) => {
     const date = new Date(timestamp)
     return date.toISOString()

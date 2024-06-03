@@ -28,7 +28,6 @@ export default function Sidebar({ profileData, setProfileData }) {
 
     const toggleFollow = async () => {
         if (profileData?.isFollowing !== undefined) {
-            console.log(profileData.isFollowing)
             try {
                 setIsFollowLoading(true)
                 if (profileData?.isFollowing) {
@@ -58,16 +57,23 @@ export default function Sidebar({ profileData, setProfileData }) {
         }
     }
 
-    const links = [
+    let links = [
         {
             link: `/profile/${profileData.id}/description`,
             text: 'Descriere',
             alt: [`/profile/${profileData.id}`],
             Icon: BsTextParagraph,
         },
-        { link: `/profile/${profileData.id}/favorites`, text: 'Favorite', Icon: FaHeart },
         { link: `/profile/${profileData.id}/recipes`, text: 'Rețete', Icon: PiCookingPot },
     ]
+
+    if (loggedIn() && user.id === profileData.id) {
+        links.push({
+            link: `/profile/${profileData.id}/favorites`,
+            text: 'Favorite',
+            Icon: FaHeart,
+        })
+    }
 
     const fetchFollowing = async (start, count) => {
         const response = await apiGetFollowing(profileData.id, start, count)
@@ -155,7 +161,7 @@ export default function Sidebar({ profileData, setProfileData }) {
                         {profileData.followsCount} urmăriți
                     </button>
                 </p>
-                {loggedIn() && (
+                {loggedIn() && profileData?.id != user?.id && (
                     <Button
                         disabled={isFollowLoading}
                         text={profileData.isFollowing ? 'Nu mai urmări' : 'Urmărește'}

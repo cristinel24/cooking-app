@@ -21,7 +21,7 @@ export default function RatingValue({ value, className, showValue = true }) {
     return (
         <div className={`rating-value-container ${className ? className : ''}`}>
             {getStars(value)}
-            {showValue && <div className="rating-value">{value}</div>}
+            {showValue && <div className="rating-value">{value?.toFixed(2)}</div>}
         </div>
     )
 }

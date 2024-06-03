@@ -65,6 +65,10 @@ class RecipeCardData(BaseModel):
     isFavorite: bool | None = None
       
 
+class RecipeCardsData(BaseModel):
+    data: list[RecipeCardData]
+    total: int
+
 class RecipeCardsRequest(BaseModel):
     ids: list[str]
 

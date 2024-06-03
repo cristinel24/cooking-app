@@ -47,6 +47,14 @@ class RecipeCollection(MongoCollection):
         except errors.PyMongoError as e:
             raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR)
 
+    def get_recipe_ids_paginated(self, recipe_ids: list[str], start: int, count: int) -> list[str]:
+        try:
+            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+                result = self._collection.find({"id": {"$in": recipe_ids}}, {"id":1}).sort({"updatedAt":-1}).skip(start).limit(count)
+                return [recipe["id"] for recipe in result]
+        except errors.PyMongoError as e:
+            raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR)
+
 
 class UserCollection(MongoCollection):
     def __init__(self, connection: pymongo.MongoClient | None = None):
@@ -58,5 +66,28 @@ class UserCollection(MongoCollection):
             with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
                 item = self._collection.find_one({"id": user_id, "savedRecipes": recipe_id})
                 return item is not None
+        except errors.PyMongoError as e:
+            raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR)
+
+
+    def get_user_recipe_ids(self, user_id: str, start: int, count: int) -> list[str]:
+        try:
+            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+                user = self._collection.find_one({"id": user_id}, projection={"recipes": {"$slice": [start, count]}})
+                return user["recipes"]
+        except errors.PyMongoError as e:
+            raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR)
+
+
+class FollowCollection(MongoCollection):
+    def __init__(self, connection: pymongo.MongoClient | None = None):
+        super().__init__(connection)
+        self._collection = self._connection.get_database(DB_NAME).follow
+
+    def get_following(self, user_id: str) -> list[str]:
+        try:
+            with pymongo.timeout(MAX_TIMEOUT_TIME_SECONDS):
+                users = self._collection.find({"userId": user_id},{"followsId": 1})
+                return [user["followsId"] for user in users]
         except errors.PyMongoError as e:
             raise exceptions.RecipeException(status.HTTP_500_INTERNAL_SERVER_ERROR, ErrorCodes.SERVER_ERROR)
